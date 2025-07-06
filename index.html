@@ -85,6 +85,8 @@
             border: 2px solid white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
             animation: bounce 2s infinite;
+            display: block;
+            z-index: 10;
         }
         
         .pin::before {
@@ -101,11 +103,13 @@
         
         .pin-pole {
             position: absolute;
-            top: 24px;
+            top: 104px;
             right: 75px;
             width: 4px;
             height: 16px;
             background: #ef4444;
+            display: block;
+            z-index: 9;
         }
         
         @keyframes bounce {
@@ -273,8 +277,8 @@
                                     <div class="bubble bubble3"></div>
                                 </div>
                             </div>
-                            <div id="globe-pin" class="pin"></div>
-                            <div class="pin-pole"></div>
+                            <div id="globe-pin" class="pin" style="display: block;"></div>
+                            <div class="pin-pole" style="display: block;"></div>
                         </div>
                     </div>
                 </div>
