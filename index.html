@@ -453,7 +453,6 @@
             </div>
         </div>
     </div><script>
-        // Enhanced destinations database with more locations
         const destinations = {
             cheap: [
                 { 
@@ -585,17 +584,12 @@
             ]
         };
 
-        // App state
         let currentStep = 1;
-        let selectedPreference = null; // Only one preference now
+        let selectedPreference = null;
         let selectedTransport = 'plane';
         let selectedAccommodation = 'hotel';
         let currentResult = null;
-        let userLocation = null;
-
-        // Initialize app
-        function init() {
-            // Try to get geolocation immediately
+        let userLocation = null;function init() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     position => {
@@ -606,9 +600,7 @@
                             city: 'La tua posizione'
                         };
                     },
-                    error => {
-                        // User denied or error - we'll ask later when needed
-                    },
+                    error => {},
                     { timeout: 5000 }
                 );
             }
@@ -618,29 +610,26 @@
                 document.getElementById('main-app').classList.remove('hidden');
                 setupEventListeners();
             }, 1000);
-        }function setupEventListeners() {
-            // Single preference selection (radio button behavior)
+        }
+
+        function setupEventListeners() {
             document.querySelectorAll('.preference-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const pref = btn.dataset.pref;
                     
-                    // Remove selection from all buttons
                     document.querySelectorAll('.preference-btn').forEach(b => {
                         b.classList.remove('selected');
                     });
                     
                     if (selectedPreference === pref) {
-                        // Deselect if clicking the same preference
                         selectedPreference = null;
                     } else {
-                        // Select new preference
                         selectedPreference = pref;
                         btn.classList.add('selected');
                     }
                 });
             });
 
-            // Accommodation dropdown
             const accommodationBtn = document.getElementById('accommodation-btn');
             const accommodationDropdown = document.getElementById('accommodation-dropdown');
             const accommodationSelected = document.getElementById('accommodation-selected');
@@ -657,7 +646,6 @@
                 });
             });
 
-            // Transport dropdown
             const transportBtn = document.getElementById('transport-btn');
             const transportDropdown = document.getElementById('transport-dropdown');
             const transportSelected = document.getElementById('transport-selected');
@@ -674,19 +662,17 @@
                 });
             });
 
-            // Date picker visibility
             const whenSelect = document.getElementById('when');
             const datePickerSection = document.getElementById('date-picker-section');
 
             whenSelect.addEventListener('change', () => {
                 if (whenSelect.value === 'custom') {
                     datePickerSection.classList.remove('hidden');
-                    // Set default dates
                     const today = new Date();
                     const departure = new Date(today);
-                    departure.setDate(today.getDate() + 7); // One week from now
+                    departure.setDate(today.getDate() + 7);
                     const returnDate = new Date(departure);
-                    returnDate.setDate(departure.getDate() + 3); // 3 days trip
+                    returnDate.setDate(departure.getDate() + 3);
                     
                     document.getElementById('departure-date').value = departure.toISOString().split('T')[0];
                     document.getElementById('return-date').value = returnDate.toISOString().split('T')[0];
@@ -695,7 +681,6 @@
                 }
             });
 
-            // Close dropdowns when clicking outside
             document.addEventListener('click', (e) => {
                 if (!accommodationBtn.contains(e.target) && !accommodationDropdown.contains(e.target)) {
                     accommodationDropdown.classList.add('hidden');
@@ -705,7 +690,6 @@
                 }
             });
 
-            // Gloob button
             document.getElementById('gloob-btn').addEventListener('click', () => {
                 const budget = parseInt(document.getElementById('budget').value);
                 if (budget < 200) {
@@ -713,7 +697,6 @@
                     return;
                 }
                 
-                // Check if we have user location
                 if (!userLocation) {
                     showLocationModal();
                 } else {
@@ -721,7 +704,6 @@
                 }
             });
 
-            // Geolocation modal
             document.getElementById('geolocation-btn').addEventListener('click', () => {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
@@ -755,7 +737,6 @@
                 }
             });
 
-            // Other buttons
             document.getElementById('regloob-btn').addEventListener('click', () => {
                 showStep(1);
                 selectedPreference = null;
@@ -767,9 +748,7 @@
             document.getElementById('book-btn').addEventListener('click', () => {
                 if (currentResult) bookTrip();
             });
-        }
-
-        function showLocationModal() {
+        }function showLocationModal() {
             document.getElementById('location-modal').classList.remove('hidden');
         }
 
@@ -839,7 +818,6 @@
                 ? validDestinations[Math.floor(Math.random() * validDestinations.length)]
                 : destinations.cheap[0];
             
-            // Handle custom dates
             let startDate, endDate;
             if (document.getElementById('when').value === 'custom') {
                 startDate = new Date(document.getElementById('departure-date').value);
@@ -991,9 +969,7 @@
             `;
             
             document.getElementById('result-content').innerHTML = resultHTML;
-        }
-
-        function bookTrip() {
+        }function bookTrip() {
             const result = currentResult;
             const people = parseInt(document.getElementById('people').value);
             const checkin = result.startDate.toISOString().split('T')[0];
@@ -1036,7 +1012,6 @@
             document.body.appendChild(modal);
         }
 
-        // Start the app
         init();
     </script>
 </body>
