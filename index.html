@@ -4,802 +4,769 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gloober - Travel Destination Finder</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .globe-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto;
+        }
+        
+        .globe {
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6, #2563eb);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            transition: transform 1s ease-out;
+        }
+        
+        .spinning {
+            animation: spin 3s linear;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(540deg); }
+        }
+        
+        .continent {
+            position: absolute;
+            background: #10b981;
+            border-radius: 8px;
+            opacity: 0.9;
+        }
+        
+        .europa { top: 80px; left: 96px; width: 32px; height: 24px; transform: rotate(12deg); }
+        .europa2 { top: 96px; left: 112px; width: 16px; height: 12px; background: #059669; }
+        
+        .africa { top: 112px; left: 80px; width: 48px; height: 80px; transform: rotate(6deg); }
+        .africa2 { top: 128px; left: 88px; width: 32px; height: 48px; background: #059669; }
+        
+        .asia { top: 64px; right: 64px; width: 64px; height: 48px; transform: rotate(-12deg); }
+        .asia2 { top: 72px; right: 48px; width: 40px; height: 32px; background: #059669; }
+        .asia3 { top: 104px; right: 80px; width: 24px; height: 16px; background: #047857; }
+        
+        .north-america { top: 48px; left: 32px; width: 56px; height: 64px; transform: rotate(45deg); }
+        .north-america2 { top: 64px; left: 24px; width: 32px; height: 40px; background: #059669; }
+        
+        .south-america { bottom: 64px; left: 48px; width: 32px; height: 80px; transform: rotate(12deg); }
+        .south-america2 { bottom: 80px; left: 56px; width: 20px; height: 48px; background: #059669; }
+        
+        .australia { bottom: 80px; right: 80px; width: 40px; height: 24px; transform: rotate(-6deg); }
+        
+        .cloud { position: absolute; background: rgba(255, 255, 255, 0.15); border-radius: 50%; filter: blur(2px); }
+        .cloud1 { top: 32px; left: 32px; width: 48px; height: 48px; }
+        .cloud2 { top: 128px; right: 48px; width: 32px; height: 32px; }
+        .cloud3 { bottom: 96px; left: 64px; width: 40px; height: 40px; }
+        
+        .grid-lines {
+            position: absolute;
+            inset: 0;
+        }
+        
+        .equator { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255, 255, 255, 0.15); }
+        .meridian { position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: rgba(255, 255, 255, 0.15); }
+        .tropic1 { position: absolute; top: 80px; left: 0; width: 100%; height: 2px; background: rgba(255, 255, 255, 0.1); transform: rotate(2deg); }
+        .tropic2 { position: absolute; bottom: 80px; left: 0; width: 100%; height: 2px; background: rgba(255, 255, 255, 0.1); transform: rotate(-2deg); }
+        
+        .pin {
+            position: absolute;
+            top: 80px;
+            right: 64px;
+            width: 24px;
+            height: 24px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            animation: bounce 2s infinite;
+        }
+        
+        .pin::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            width: 8px;
+            height: 8px;
+            background: #fca5a5;
+            border-radius: 50%;
+            animation: ping 2s infinite;
+        }
+        
+        .pin-pole {
+            position: absolute;
+            top: 24px;
+            right: 75px;
+            width: 4px;
+            height: 16px;
+            background: #ef4444;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+            40%, 43% { transform: translate3d(0,-8px,0); }
+            70% { transform: translate3d(0,-4px,0); }
+            90% { transform: translate3d(0,-2px,0); }
+        }
+        
+        @keyframes ping {
+            75%, 100% { transform: scale(2); opacity: 0; }
+        }
+        
+        .ocean-texture {
+            position: absolute;
+            inset: 0;
+        }
+        
+        .bubble {
+            position: absolute;
+            background: #bfdbfe;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+        
+        .bubble1 { top: 40px; left: 40px; width: 8px; height: 8px; }
+        .bubble2 { top: 160px; right: 32px; width: 4px; height: 4px; animation-delay: 0.5s; }
+        .bubble3 { bottom: 48px; left: 80px; width: 6px; height: 6px; animation-delay: 1s; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        .hidden { display: none; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
 </head>
-<body>
-    <div id="root"></div>
+<body class="bg-gradient-to-br from-teal-900 via-green-900 to-emerald-900 text-white min-h-screen">
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading" class="min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="text-6xl mb-4">🌍</div>
+                <h1 class="text-4xl font-bold mb-2">Loading Gloober...</h1>
+                <p class="text-xl">Just gloob it! 🚀</p>
+            </div>
+        </div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { Plane, Globe, MapPin, Star } = lucide;
+        <!-- Main App -->
+        <div id="main-app" class="hidden">
+            <!-- Step 1: Configuration -->
+            <div id="step1" class="container mx-auto px-4 py-8">
+                <div class="text-center mb-8">
+                    <div class="flex justify-end mb-4">
+                        <select id="language-select" class="bg-white/10 text-white border border-white/20 rounded-lg px-3 py-1 text-sm">
+                            <option value="it">🇮🇹 Italiano</option>
+                            <option value="en">🇬🇧 English</option>
+                            <option value="es">🇪🇸 Español</option>
+                            <option value="fr">🇫🇷 Français</option>
+                        </select>
+                    </div>
+                    <h1 class="text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                        Gloober
+                    </h1>
+                    <p class="text-xl text-gray-300">
+                        Gloob your next destination! 🌍
+                    </p>
+                </div>
 
-        function SpinningGlobe({ isSpinning, onSpinComplete }) {
-            const [rotation, setRotation] = useState(0);
-
-            useEffect(() => {
-                if (isSpinning) {
-                    let currentRotation = 0;
-                    const interval = setInterval(() => {
-                        currentRotation += 15;
-                        setRotation(currentRotation);
+                <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+                    <div class="glass-card rounded-3xl p-8">
+                        <h2 class="text-2xl font-bold mb-6">Configura la tua avventura</h2>
                         
-                        if (currentRotation >= 540) {
-                            clearInterval(interval);
-                            setTimeout(() => {
-                                onSpinComplete();
-                            }, 500);
-                        }
-                    }, 50);
-
-                    return () => clearInterval(interval);
-                }
-            }, [isSpinning, onSpinComplete]);
-
-            return (
-                <div className="relative w-80 h-80 mx-auto">
-                    <div 
-                        className="w-80 h-80 rounded-full bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 shadow-2xl relative overflow-hidden border-4 border-white/20"
-                        style={{ 
-                            transform: `rotate(${rotation}deg)`,
-                            transition: isSpinning ? 'none' : 'transform 1s ease-out'
-                        }}
-                    >
-                        {/* Europa */}
-                        <div className="absolute top-20 left-24 w-8 h-6 bg-green-500 rounded-sm opacity-90 transform rotate-12"></div>
-                        <div className="absolute top-24 left-28 w-4 h-3 bg-green-600 rounded-sm opacity-90"></div>
-                        
-                        {/* Africa */}
-                        <div className="absolute top-28 left-20 w-12 h-20 bg-green-500 rounded-lg opacity-90 transform rotate-6"></div>
-                        <div className="absolute top-32 left-22 w-8 h-12 bg-green-600 rounded-md opacity-85"></div>
-                        
-                        {/* Asia */}
-                        <div className="absolute top-16 right-16 w-16 h-12 bg-green-500 rounded-lg opacity-90 transform -rotate-12"></div>
-                        <div className="absolute top-18 right-12 w-10 h-8 bg-green-600 rounded-md opacity-85"></div>
-                        <div className="absolute top-26 right-20 w-6 h-4 bg-green-700 rounded-sm opacity-80"></div>
-                        
-                        {/* Nord America */}
-                        <div className="absolute top-12 left-8 w-14 h-16 bg-green-500 rounded-lg opacity-90 transform rotate-45"></div>
-                        <div className="absolute top-16 left-6 w-8 h-10 bg-green-600 rounded-md opacity-85"></div>
-                        
-                        {/* Sud America */}
-                        <div className="absolute bottom-16 left-12 w-8 h-20 bg-green-500 rounded-lg opacity-90 transform rotate-12"></div>
-                        <div className="absolute bottom-20 left-14 w-5 h-12 bg-green-600 rounded-md opacity-85"></div>
-                        
-                        {/* Australia */}
-                        <div className="absolute bottom-20 right-20 w-10 h-6 bg-green-500 rounded-lg opacity-90 transform -rotate-6"></div>
-                        
-                        {/* Nuvole/Riflessi */}
-                        <div className="absolute top-8 left-8 w-12 h-12 bg-white opacity-15 rounded-full blur-sm"></div>
-                        <div className="absolute top-32 right-12 w-8 h-8 bg-white opacity-10 rounded-full blur-sm"></div>
-                        <div className="absolute bottom-24 left-16 w-10 h-10 bg-white opacity-12 rounded-full blur-sm"></div>
-                        
-                        {/* Linee geografiche */}
-                        <div className="absolute inset-0">
-                            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/15"></div>
-                            <div className="absolute left-1/2 top-0 w-0.5 h-full bg-white/15"></div>
-                            <div className="absolute top-20 left-0 w-full h-0.5 bg-white/10 transform rotate-2"></div>
-                            <div className="absolute bottom-20 left-0 w-full h-0.5 bg-white/10 transform -rotate-2"></div>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">💰 Budget totale (€)</label>
+                            <input type="number" id="budget" value="800" min="200" max="5000" step="50" 
+                                   class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold focus:ring-2 focus:ring-yellow-400 outline-none"
+                                   placeholder="Inserisci budget (es. 800)">
                         </div>
-                        
-                        {/* Texture oceano */}
-                        <div className="absolute inset-0">
-                            <div className="absolute top-10 left-10 w-2 h-2 bg-blue-300 rounded-full opacity-30 animate-pulse"></div>
-                            <div className="absolute top-40 right-8 w-1 h-1 bg-blue-200 rounded-full opacity-40 animate-pulse" style={{animationDelay: '0.5s'}}></div>
-                            <div className="absolute bottom-12 left-20 w-1.5 h-1.5 bg-blue-300 rounded-full opacity-35 animate-pulse" style={{animationDelay: '1s'}}></div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">👥 Quante persone?</label>
+                            <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
+                                <option value="1">1 persona</option>
+                                <option value="2" selected>2 persone</option>
+                                <option value="3">3 persone</option>
+                                <option value="4">4 persone</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">✨ Stile di viaggio</label>
+                            <input type="range" id="luxury" value="40" min="0" max="100" 
+                                   class="w-full h-3 bg-gradient-to-r from-green-500 via-yellow-500 to-purple-500 rounded-lg appearance-none cursor-pointer">
+                            <div class="flex justify-between text-xs mt-2">
+                                <span class="text-green-400 font-bold">CHEAP</span>
+                                <span class="text-yellow-400 font-bold">MID</span>
+                                <span class="text-purple-400 font-bold">LUXURY</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">📅 Quando?</label>
+                            <select id="when" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
+                                <option value="flexible">🎲 Flessibile (sorprendimi!)</option>
+                                <option value="weekend">📅 Viaggio di un weekend</option>
+                                <option value="week">📅 Viaggio di una settimana</option>
+                                <option value="month">📅 Viaggio di un mese</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-8">
+                            <label class="block text-sm font-medium mb-3">🎯 Preferenze</label>
+                            <div class="grid grid-cols-2 gap-2" id="preferences">
+                                <button data-pref="sea" class="pref-btn p-3 rounded-xl text-sm font-medium transition-all bg-white/10 hover:bg-white/20">🏖️ Mare</button>
+                                <button data-pref="mountain" class="pref-btn p-3 rounded-xl text-sm font-medium transition-all bg-white/10 hover:bg-white/20">🏔️ Montagna</button>
+                                <button data-pref="art" class="pref-btn p-3 rounded-xl text-sm font-medium transition-all bg-white/10 hover:bg-white/20">🎨 Arte</button>
+                                <button data-pref="romantic" class="pref-btn p-3 rounded-xl text-sm font-medium transition-all bg-white/10 hover:bg-white/20">💕 Romantico</button>
+                                <button data-pref="adventure" class="pref-btn p-3 rounded-xl text-sm font-medium transition-all bg-white/10 hover:bg-white/20">🎒 Avventura</button>
+                                <button data-pref="food" class="pref-btn p-3 rounded-xl text-sm font-medium transition-all bg-white/10 hover:bg-white/20">🍝 Food</button>
+                                <button data-pref="nightlife" class="pref-btn p-3 rounded-xl text-sm font-medium transition-all bg-white/10 hover:bg-white/20">🌃 Vita Notturna</button>
+                                <button data-pref="culture" class="pref-btn p-3 rounded-xl text-sm font-medium transition-all bg-white/10 hover:bg-white/20">🏛️ Cultura</button>
+                            </div>
+                        </div>
+
+                        <button id="gloob-btn" class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all flex items-center justify-center gap-3">
+                            🌍 JUST GLOOB IT!
+                        </button>
+                    </div>
+
+                    <div class="flex items-center justify-center">
+                        <div class="globe-container">
+                            <div id="globe" class="globe">
+                                <div class="continent europa"></div>
+                                <div class="continent europa2"></div>
+                                <div class="continent africa"></div>
+                                <div class="continent africa2"></div>
+                                <div class="continent asia"></div>
+                                <div class="continent asia2"></div>
+                                <div class="continent asia3"></div>
+                                <div class="continent north-america"></div>
+                                <div class="continent north-america2"></div>
+                                <div class="continent south-america"></div>
+                                <div class="continent south-america2"></div>
+                                <div class="continent australia"></div>
+                                <div class="cloud cloud1"></div>
+                                <div class="cloud cloud2"></div>
+                                <div class="cloud cloud3"></div>
+                                <div class="grid-lines">
+                                    <div class="equator"></div>
+                                    <div class="meridian"></div>
+                                    <div class="tropic1"></div>
+                                    <div class="tropic2"></div>
+                                </div>
+                                <div class="ocean-texture">
+                                    <div class="bubble bubble1"></div>
+                                    <div class="bubble bubble2"></div>
+                                    <div class="bubble bubble3"></div>
+                                </div>
+                            </div>
+                            <div id="globe-pin" class="pin"></div>
+                            <div class="pin-pole"></div>
                         </div>
                     </div>
-                    
-                    {!isSpinning && (
-                        <div className="absolute top-20 right-16 animate-bounce">
-                            <div className="w-6 h-6 bg-red-500 rounded-full border-2 border-white shadow-lg relative">
-                                <div className="absolute -top-1 -left-1 w-2 h-2 bg-red-400 rounded-full animate-ping"></div>
-                            </div>
-                            <div className="w-1 h-4 bg-red-500 mx-auto"></div>
-                        </div>
-                    )}
                 </div>
-            );
+            </div>
+
+            <!-- Step 2: Spinning -->
+            <div id="step2" class="hidden min-h-screen flex items-center justify-center">
+                <div class="text-center">
+                    <div class="globe-container mb-8">
+                        <div id="spinning-globe" class="globe">
+                            <div class="continent europa"></div>
+                            <div class="continent europa2"></div>
+                            <div class="continent africa"></div>
+                            <div class="continent africa2"></div>
+                            <div class="continent asia"></div>
+                            <div class="continent asia2"></div>
+                            <div class="continent asia3"></div>
+                            <div class="continent north-america"></div>
+                            <div class="continent north-america2"></div>
+                            <div class="continent south-america"></div>
+                            <div class="continent south-america2"></div>
+                            <div class="continent australia"></div>
+                            <div class="cloud cloud1"></div>
+                            <div class="cloud cloud2"></div>
+                            <div class="cloud cloud3"></div>
+                            <div class="grid-lines">
+                                <div class="equator"></div>
+                                <div class="meridian"></div>
+                                <div class="tropic1"></div>
+                                <div class="tropic2"></div>
+                            </div>
+                            <div class="ocean-texture">
+                                <div class="bubble bubble1"></div>
+                                <div class="bubble bubble2"></div>
+                                <div class="bubble bubble3"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="text-4xl font-bold mb-4">🌍 Gloobbing...</h2>
+                    <p class="text-xl text-gray-300" id="searching-text">
+                        Cercando la destinazione per 2 persone con budget €800!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3: Result -->
+            <div id="step3" class="hidden container mx-auto px-4 py-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-8">
+                        <h1 class="text-5xl font-bold mb-4">🎉 La tua destinazione!</h1>
+                    </div>
+
+                    <div id="result-content" class="glass-card rounded-3xl p-8 mb-8">
+                        <!-- Result will be populated by JavaScript -->
+                    </div>
+
+                    <div class="text-center">
+                        <button id="book-btn" class="bg-green-500 text-white font-bold py-4 px-12 rounded-xl text-xl mr-4 hover:bg-green-600 transition-colors">
+                            ✈️ PRENOTA!
+                        </button>
+                        <button id="regloob-btn" class="bg-gray-600 text-white font-bold py-4 px-8 rounded-xl text-xl hover:bg-gray-700 transition-colors">
+                            🎲 Regloob
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Destinations database
+        const destinations = {
+            cheap: [
+                { 
+                    name: 'Praga', country: 'Repubblica Ceca', price: 300, image: '🍺', 
+                    description: 'Castello e birra artigianale', days: 4, 
+                    tags: ['art', 'food', 'culture', 'nightlife'], 
+                    hotel: { name: 'Hostel One Home', stars: 2, amenities: ['Design Moderno', 'Pub Crawl', 'Centro Storico'], rating: 9.4 }, 
+                    flights: { departure: '14:20', arrival: '16:05', return_departure: '17:30', return_arrival: '19:15', airline: 'Czech Airlines', duration: '1h 45m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Praga (PRG)' }, 
+                    quote: { text: "Praga non ti lascia andare. Questa piccola madre ha gli artigli.", author: "Franz Kafka" }, 
+                    tip: "Bevi birra nei pub sotterranei medievali: la Pilsner è nata qui nel 1842!" 
+                },
+                { 
+                    name: 'Split', country: 'Croazia', price: 280, image: '🏖️', 
+                    description: 'Palazzo di Diocleziano e spiagge cristalline', days: 4, 
+                    tags: ['sea', 'culture', 'adventure'], 
+                    hotel: { name: 'Villa Dalmacija', stars: 3, amenities: ['Vista Mare', 'Centro Storico', 'Spiaggia 2min'], rating: 9.0 }, 
+                    flights: { departure: '13:45', arrival: '15:20', return_departure: '16:00', return_arrival: '17:35', airline: 'Croatia Airlines', duration: '1h 35m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Split (SPU)' }, 
+                    quote: { text: "Il mare, una volta lanciato il suo incantesimo, ti tiene per sempre nella sua rete di meraviglia.", author: "Jacques Cousteau" }, 
+                    tip: "Dormi nel Palazzo di Diocleziano: l'unico posto al mondo dove vivi in un palazzo romano!" 
+                },
+                { 
+                    name: 'Sofia', country: 'Bulgaria', price: 250, image: '⛪', 
+                    description: 'Chiese ortodosse e montagne', days: 4, 
+                    tags: ['culture', 'mountain', 'art'], 
+                    hotel: { name: 'Art Hostel Sofia', stars: 2, amenities: ['Gallery Hotel', 'Vista Vitosha', 'Breakfast Locale'], rating: 9.2 }, 
+                    flights: { departure: '16:30', arrival: '19:45', return_departure: '14:20', return_arrival: '15:35', airline: 'Bulgaria Air', duration: '2h 15m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Sofia (SOF)' }, 
+                    quote: { text: "Le montagne sono le cattedrali della terra.", author: "John Ruskin" }, 
+                    tip: "Visita il monastero di Rila: patrimonio UNESCO a 2 ore da Sofia, immerso nelle montagne." 
+                },
+                { 
+                    name: 'Cracovia', country: 'Polonia', price: 290, image: '🏛️', 
+                    description: 'Centro medievale UNESCO', days: 4, 
+                    tags: ['art', 'culture', 'romantic'], 
+                    hotel: { name: 'Poco Loco Hostel', stars: 2, amenities: ['Centro UNESCO', 'Rooftop Bar', 'Tour Gratuiti'], rating: 9.5 }, 
+                    flights: { departure: '06:45', arrival: '08:35', return_departure: '19:20', return_arrival: '21:10', airline: 'LOT Polish', duration: '1h 50m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Cracovia (KRK)' }, 
+                    quote: { text: "Cracovia è un libro di pietra che racconta mille anni di storia.", author: "Papa Giovanni Paolo II" }, 
+                    tip: "Prenota il tour delle miniere di sale Wieliczka: cattedrale sotterranea scavata nel sale!" 
+                },
+                { 
+                    name: 'Lisbona', country: 'Portogallo', price: 320, image: '🚋', 
+                    description: 'Tram storici e pastéis de nata', days: 4, 
+                    tags: ['sea', 'culture', 'food', 'romantic'], 
+                    hotel: { name: 'Casa do Bacalhau', stars: 3, amenities: ['Palazzo Storico', 'Azulejos', 'Pastéis Gratis'], rating: 9.1 }, 
+                    flights: { departure: '11:15', arrival: '13:40', return_departure: '14:30', return_arrival: '18:55', airline: 'TAP Air Portugal', duration: '2h 25m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Lisbona (LIS)' }, 
+                    quote: { text: "Lisbona ha quel non so che che la rende unica al mondo.", author: "Fernando Pessoa" }, 
+                    tip: "Prendi il tram 28 al tramonto: attraversa tutta la città per soli €3!" 
+                },
+                { 
+                    name: 'Palma', country: 'Spagna', price: 320, image: '🏖️', 
+                    description: 'Spiagge e vita notturna', days: 4, 
+                    tags: ['sea', 'nightlife', 'adventure'], 
+                    hotel: { name: 'Toc Hostel & Suites', stars: 3, amenities: ['Beach 5min', 'Rooftop Pool', 'Bike Rental'], rating: 8.9 }, 
+                    flights: { departure: '10:15', arrival: '12:30', return_departure: '13:20', return_arrival: '15:35', airline: 'Vueling', duration: '2h 15m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Palma di Maiorca (PMI)' }, 
+                    quote: { text: "Il Mediterraneo è il mare dei mari.", author: "Fernand Braudel" }, 
+                    tip: "Scopri le spiagge nascoste di Formentor: il paradiso segreto dei locali!" 
+                },
+                { 
+                    name: 'Valencia', country: 'Spagna', price: 340, image: '🥘', 
+                    description: 'Paella originale e Città delle Arti', days: 4, 
+                    tags: ['sea', 'food', 'art', 'culture'], 
+                    hotel: { name: 'Purple Nest Hostel', stars: 3, amenities: ['Design Awards', 'Beach Shuttle', 'Paella Classes'], rating: 9.0 }, 
+                    flights: { departure: '09:25', arrival: '11:40', return_departure: '18:15', return_arrival: '20:30', airline: 'Iberia', duration: '2h 15m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Valencia (VLC)' }, 
+                    quote: { text: "Valencia è il giardino di Spagna.", author: "Vicente Blasco Ibáñez" }, 
+                    tip: "Mangia paella solo a pranzo (mai a cena): è la regola d'oro valenciana!" 
+                },
+                { 
+                    name: 'Nizza', country: 'Francia', price: 350, image: '🌴', 
+                    description: 'Costa Azzurra e spiagge chic', days: 4, 
+                    tags: ['sea', 'romantic', 'culture'], 
+                    hotel: { name: 'Hotel Villa Victoria', stars: 3, amenities: ['Centro Storico', 'Vicino Mare', 'Terrazza'], rating: 8.8 }, 
+                    flights: { departure: '12:40', arrival: '14:15', return_departure: '15:20', return_arrival: '16:55', airline: 'easyJet', duration: '1h 35m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Nizza (NCE)' }, 
+                    quote: { text: "Nizza è dove l'azzurro del mare incontra l'azzurro del cielo.", author: "Matisse" }, 
+                    tip: "Passeggia sulla Promenade des Anglais al tramonto: 7km di pura magia!" 
+                }
+            ],
+            mid: [
+                { 
+                    name: 'Barcellona', country: 'Spagna', price: 480, image: '🏖️', 
+                    description: 'Gaudí, tapas e Mare Mediterraneo', days: 4, 
+                    tags: ['sea', 'art', 'food', 'nightlife'], 
+                    hotel: { name: 'Hotel Casa Fuster', stars: 4, amenities: ['Palazzo Modernista', 'Rooftop Bar', 'Centro'], rating: 8.8 }, 
+                    flights: { departure: '11:30', arrival: '13:45', return_departure: '18:15', return_arrival: '20:30', airline: 'Vueling', duration: '2h 15m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Barcellona (BCN)' }, 
+                    quote: { text: "Barcellona è una città che non dorme mai.", author: "Salvador Dalí" }, 
+                    tip: "Visita Park Güell al tramonto: la vista sulla città è magica!" 
+                },
+                { 
+                    name: 'Vienna', country: 'Austria', price: 580, image: '🎼', 
+                    description: 'Musica classica e caffè imperiali', days: 4, 
+                    tags: ['art', 'culture', 'romantic', 'food'], 
+                    hotel: { name: 'Hotel Am Ring', stars: 4, amenities: ['Centro Storico', 'Caffetteria', 'Opera Vicina'], rating: 8.7 }, 
+                    flights: { departure: '12:20', arrival: '14:05', return_departure: '16:40', return_arrival: '18:25', airline: 'Austrian Airlines', duration: '1h 45m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Vienna (VIE)' }, 
+                    quote: { text: "Vienna è la città dei sogni.", author: "Sigmund Freud" }, 
+                    tip: "Prova la Sachertorte originale al Café Sacher: ricetta segreta dal 1832!" 
+                }
+            ],
+            luxury: [
+                { 
+                    name: 'Santorini', country: 'Grecia', price: 1200, image: '🌅', 
+                    description: 'Tramonto cicladico e resort esclusivi', days: 3, 
+                    tags: ['sea', 'romantic'], 
+                    hotel: { name: 'Grace Hotel Santorini', stars: 5, amenities: ['Infinity Pool', 'Vista Caldera', 'Butler Service'], rating: 9.6 }, 
+                    flights: { departure: '09:15', arrival: '13:40', return_departure: '15:50', return_arrival: '18:15', airline: 'Aegean Airlines', duration: '3h 25m', stops: '1 Stop Atene', from: 'Milano Malpensa (MXP)', to: 'Santorini (JTR)' }, 
+                    quote: { text: "Santorini è dove il cielo incontra il mare.", author: "Homer" }, 
+                    tip: "Prenota una cena al tramonto a Oia: il momento più romantico dell'isola!" 
+                }
+            ]
+        };
+
+        // App state
+        let currentStep = 1;
+        let selectedPreferences = [];
+        let currentResult = null;
+
+        // Initialize app
+        function init() {
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                setupEventListeners();
+            }, 1000);
         }
 
-        function BudgetGlobeApp() {
-            const [step, setStep] = useState(1);
-            const [language, setLanguage] = useState('it');
-            const [formData, setFormData] = useState({
-                budget: 800,
-                luxuryLevel: 40,
-                when: 'flexible',
-                people: 2,
-                preferences: [],
-                dateFrom: '',
-                dateTo: ''
+        function setupEventListeners() {
+            // Preference buttons
+            document.querySelectorAll('.pref-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const pref = btn.dataset.pref;
+                    if (selectedPreferences.includes(pref)) {
+                        selectedPreferences = selectedPreferences.filter(p => p !== pref);
+                        btn.classList.remove('bg-yellow-500', 'text-black');
+                        btn.classList.add('bg-white/10');
+                    } else {
+                        selectedPreferences.push(pref);
+                        btn.classList.remove('bg-white/10');
+                        btn.classList.add('bg-yellow-500', 'text-black');
+                    }
+                });
             });
-            const [isSpinning, setIsSpinning] = useState(false);
-            const [result, setResult] = useState(null);
 
-            const translations = {
-                it: {
-                    title: "Gloober",
-                    subtitle: "Gloob your next destination! 🌍",
-                    configure: "Configura la tua avventura",
-                    budget: "💰 Budget totale (€)",
-                    people: "👥 Quante persone?",
-                    style: "✨ Stile di viaggio",
-                    when: "📅 Quando?",
-                    preferences: "🎯 Preferenze",
-                    action: "JUST GLOOB IT!",
-                    minBudget: "Budget minimo: €200",
-                    gloobbing: "🌍 Gloobbing...",
-                    searching: "Cercando la destinazione per {people} persone con budget €{budget}!",
-                    result: "🎉 La tua destinazione!",
-                    regloob: "🎲 Regloob",
-                    book: "✈️ PRENOTA!"
-                },
-                en: {
-                    title: "Gloober", 
-                    subtitle: "Gloob your next destination! 🌍",
-                    configure: "Configure your adventure",
-                    budget: "💰 Total budget (€)",
-                    people: "👥 How many people?",
-                    style: "✨ Travel style", 
-                    when: "📅 When?",
-                    preferences: "🎯 Preferences",
-                    action: "JUST GLOOB IT!",
-                    minBudget: "Minimum budget: €200",
-                    gloobbing: "🌍 Gloobbing...",
-                    searching: "Finding destination for {people} people with €{budget} budget!",
-                    result: "🎉 Your destination!",
-                    regloob: "🎲 Regloob",
-                    book: "✈️ BOOK NOW!"
-                },
-                es: {
-                    title: "Gloober",
-                    subtitle: "¡Gloobea tu próximo destino! 🌍", 
-                    configure: "Configura tu aventura",
-                    budget: "💰 Presupuesto total (€)",
-                    people: "👥 ¿Cuántas personas?",
-                    style: "✨ Estilo de viaje",
-                    when: "📅 ¿Cuándo?", 
-                    preferences: "🎯 Preferencias",
-                    action: "¡JUST GLOOB IT!",
-                    minBudget: "Presupuesto mínimo: €200",
-                    gloobbing: "🌍 Gloobeando...",
-                    searching: "¡Buscando destino para {people} personas con €{budget}!",
-                    result: "🎉 ¡Tu destino!",
-                    regloob: "🎲 Regloobear",
-                    book: "✈️ ¡RESERVAR!"
-                },
-                fr: {
-                    title: "Gloober",
-                    subtitle: "Gloobe ta prochaine destination! 🌍",
-                    configure: "Configure ton aventure", 
-                    budget: "💰 Budget total (€)",
-                    people: "👥 Combien de personnes?",
-                    style: "✨ Style de voyage",
-                    when: "📅 Quand?",
-                    preferences: "🎯 Préférences", 
-                    action: "JUST GLOOB IT!",
-                    minBudget: "Budget minimum: €200",
-                    gloobbing: "🌍 Gloobbing...",
-                    searching: "Recherche destination pour {people} personnes avec €{budget}!",
-                    result: "🎉 Ta destination!",
-                    regloob: "🎲 Regloober",
-                    book: "✈️ RÉSERVER!"
-                }
-            };
-
-            const t = translations[language];
-
-            const preferences = [
-                { id: 'sea', label: { it: '🏖️ Mare', en: '🏖️ Sea', es: '🏖️ Mar', fr: '🏖️ Mer' } },
-                { id: 'mountain', label: { it: '🏔️ Montagna', en: '🏔️ Mountain', es: '🏔️ Montaña', fr: '🏔️ Montagne' } },
-                { id: 'art', label: { it: '🎨 Arte', en: '🎨 Art', es: '🎨 Arte', fr: '🎨 Art' } },
-                { id: 'romantic', label: { it: '💕 Romantico', en: '💕 Romantic', es: '💕 Romántico', fr: '💕 Romantique' } },
-                { id: 'adventure', label: { it: '🎒 Avventura', en: '🎒 Adventure', es: '🎒 Aventura', fr: '🎒 Aventure' } },
-                { id: 'food', label: { it: '🍝 Food', en: '🍝 Food', es: '🍝 Comida', fr: '🍝 Cuisine' } },
-                { id: 'nightlife', label: { it: '🌃 Vita Notturna', en: '🌃 Nightlife', es: '🌃 Vida Nocturna', fr: '🌃 Vie Nocturne' } },
-                { id: 'culture', label: { it: '🏛️ Cultura', en: '🏛️ Culture', es: '🏛️ Cultura', fr: '🏛️ Culture' } }
-            ];
-
-            const destinations = {
-                cheap: [
-                    { 
-                        name: 'Praga', country: 'Repubblica Ceca', price: 300, image: '🍺', 
-                        description: 'Castello e birra artigianale', days: 4, 
-                        tags: ['art', 'food', 'culture', 'nightlife'], 
-                        hotel: { name: 'Hostel One Home', stars: 2, amenities: ['Design Moderno', 'Pub Crawl', 'Centro Storico'], rating: 9.4 }, 
-                        flights: { departure: '14:20', arrival: '16:05', return_departure: '17:30', return_arrival: '19:15', airline: 'Czech Airlines', duration: '1h 45m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Praga (PRG)' }, 
-                        quote: { text: "Praga non ti lascia andare. Questa piccola madre ha gli artigli.", author: "Franz Kafka" }, 
-                        tip: "Bevi birra nei pub sotterranei medievali: la Pilsner è nata qui nel 1842!" 
-                    },
-                    
-                    { 
-                        name: 'Split', country: 'Croazia', price: 280, image: '🏖️', 
-                        description: 'Palazzo di Diocleziano e spiagge cristalline', days: 4, 
-                        tags: ['sea', 'culture', 'adventure'], 
-                        hotel: { name: 'Villa Dalmacija', stars: 3, amenities: ['Vista Mare', 'Centro Storico', 'Spiaggia 2min'], rating: 9.0 }, 
-                        flights: { departure: '13:45', arrival: '15:20', return_departure: '16:00', return_arrival: '17:35', airline: 'Croatia Airlines', duration: '1h 35m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Split (SPU)' }, 
-                        quote: { text: "Il mare, una volta lanciato il suo incantesimo, ti tiene per sempre nella sua rete di meraviglia.", author: "Jacques Cousteau" }, 
-                        tip: "Dormi nel Palazzo di Diocleziano: l'unico posto al mondo dove vivi in un palazzo romano!" 
-                    },
-
-                    { 
-                        name: 'Sofia', country: 'Bulgaria', price: 250, image: '⛪', 
-                        description: 'Chiese ortodosse e montagne', days: 4, 
-                        tags: ['culture', 'mountain', 'art'], 
-                        hotel: { name: 'Art Hostel Sofia', stars: 2, amenities: ['Gallery Hotel', 'Vista Vitosha', 'Breakfast Locale'], rating: 9.2 }, 
-                        flights: { departure: '16:30', arrival: '19:45', return_departure: '14:20', return_arrival: '15:35', airline: 'Bulgaria Air', duration: '2h 15m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Sofia (SOF)' }, 
-                        quote: { text: "Le montagne sono le cattedrali della terra.", author: "John Ruskin" }, 
-                        tip: "Visita il monastero di Rila: patrimonio UNESCO a 2 ore da Sofia, immerso nelle montagne." 
-                    },
-                    
-                    { 
-                        name: 'Cracovia', country: 'Polonia', price: 290, image: '🏛️', 
-                        description: 'Centro medievale UNESCO', days: 4, 
-                        tags: ['art', 'culture', 'romantic'], 
-                        hotel: { name: 'Poco Loco Hostel', stars: 2, amenities: ['Centro UNESCO', 'Rooftop Bar', 'Tour Gratuiti'], rating: 9.5 }, 
-                        flights: { departure: '06:45', arrival: '08:35', return_departure: '19:20', return_arrival: '21:10', airline: 'LOT Polish', duration: '1h 50m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Cracovia (KRK)' }, 
-                        quote: { text: "Cracovia è un libro di pietra che racconta mille anni di storia.", author: "Papa Giovanni Paolo II" }, 
-                        tip: "Prenota il tour delle miniere di sale Wieliczka: cattedrale sotterranea scavata nel sale!" 
-                    },
-                    
-                    { 
-                        name: 'Lisbona', country: 'Portogallo', price: 320, image: '🚋', 
-                        description: 'Tram storici e pastéis de nata', days: 4, 
-                        tags: ['sea', 'culture', 'food', 'romantic'], 
-                        hotel: { name: 'Casa do Bacalhau', stars: 3, amenities: ['Palazzo Storico', 'Azulejos', 'Pastéis Gratis'], rating: 9.1 }, 
-                        flights: { departure: '11:15', arrival: '13:40', return_departure: '14:30', return_arrival: '18:55', airline: 'TAP Air Portugal', duration: '2h 25m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Lisbona (LIS)' }, 
-                        quote: { text: "Lisbona ha quel non so che che la rende unica al mondo.", author: "Fernando Pessoa" }, 
-                        tip: "Prendi il tram 28 al tramonto: attraversa tutta la città per soli €3!" 
-                    },
-                    
-                    { 
-                        name: 'Palma', country: 'Spagna', price: 320, image: '🏖️', 
-                        description: 'Spiagge e vita notturna', days: 4, 
-                        tags: ['sea', 'nightlife', 'adventure'], 
-                        hotel: { name: 'Toc Hostel & Suites', stars: 3, amenities: ['Beach 5min', 'Rooftop Pool', 'Bike Rental'], rating: 8.9 }, 
-                        flights: { departure: '10:15', arrival: '12:30', return_departure: '13:20', return_arrival: '15:35', airline: 'Vueling', duration: '2h 15m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Palma di Maiorca (PMI)' }, 
-                        quote: { text: "Il Mediterraneo è il mare dei mari.", author: "Fernand Braudel" }, 
-                        tip: "Scopri le spiagge nascoste di Formentor: il paradiso segreto dei locali!" 
-                    },
-                    
-                    { 
-                        name: 'Valencia', country: 'Spagna', price: 340, image: '🥘', 
-                        description: 'Paella originale e Città delle Arti', days: 4, 
-                        tags: ['sea', 'food', 'art', 'culture'], 
-                        hotel: { name: 'Purple Nest Hostel', stars: 3, amenities: ['Design Awards', 'Beach Shuttle', 'Paella Classes'], rating: 9.0 }, 
-                        flights: { departure: '09:25', arrival: '11:40', return_departure: '18:15', return_arrival: '20:30', airline: 'Iberia', duration: '2h 15m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Valencia (VLC)' }, 
-                        quote: { text: "Valencia è il giardino di Spagna.", author: "Vicente Blasco Ibáñez" }, 
-                        tip: "Mangia paella solo a pranzo (mai a cena): è la regola d'oro valenciana!" 
-                    },
-                    
-                    { 
-                        name: 'Nizza', country: 'Francia', price: 350, image: '🌴', 
-                        description: 'Costa Azzurra e spiagge chic', days: 4, 
-                        tags: ['sea', 'romantic', 'culture'], 
-                        hotel: { name: 'Hotel Villa Victoria', stars: 3, amenities: ['Centro Storico', 'Vicino Mare', 'Terrazza'], rating: 8.8 }, 
-                        flights: { departure: '12:40', arrival: '14:15', return_departure: '15:20', return_arrival: '16:55', airline: 'easyJet', duration: '1h 35m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Nizza (NCE)' }, 
-                        quote: { text: "Nizza è dove l'azzurro del mare incontra l'azzurro del cielo.", author: "Matisse" }, 
-                        tip: "Passeggia sulla Promenade des Anglais al tramonto: 7km di pura magia!" 
-                    }
-                ],
-                
-                mid: [
-                    { 
-                        name: 'Barcellona', country: 'Spagna', price: 480, image: '🏖️', 
-                        description: 'Gaudí, tapas e Mare Mediterraneo', days: 4, 
-                        tags: ['sea', 'art', 'food', 'nightlife'], 
-                        hotel: { name: 'Hotel Casa Fuster', stars: 4, amenities: ['Palazzo Modernista', 'Rooftop Bar', 'Centro'], rating: 8.8 }, 
-                        flights: { departure: '11:30', arrival: '13:45', return_departure: '18:15', return_arrival: '20:30', airline: 'Vueling', duration: '2h 15m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Barcellona (BCN)' }, 
-                        quote: { text: "Barcellona è una città che non dorme mai.", author: "Salvador Dalí" }, 
-                        tip: "Visita Park Güell al tramonto: la vista sulla città è magica!" 
-                    },
-                    { 
-                        name: 'Vienna', country: 'Austria', price: 580, image: '🎼', 
-                        description: 'Musica classica e caffè imperiali', days: 4, 
-                        tags: ['art', 'culture', 'romantic', 'food'], 
-                        hotel: { name: 'Hotel Am Ring', stars: 4, amenities: ['Centro Storico', 'Caffetteria', 'Opera Vicina'], rating: 8.7 }, 
-                        flights: { departure: '12:20', arrival: '14:05', return_departure: '16:40', return_arrival: '18:25', airline: 'Austrian Airlines', duration: '1h 45m', stops: 'Diretto', from: 'Milano Malpensa (MXP)', to: 'Vienna (VIE)' }, 
-                        quote: { text: "Vienna è la città dei sogni.", author: "Sigmund Freud" }, 
-                        tip: "Prova la Sachertorte originale al Café Sacher: ricetta segreta dal 1832!" 
-                    }
-                ],
-
-                luxury: [
-                    { 
-                        name: 'Santorini', country: 'Grecia', price: 1200, image: '🌅', 
-                        description: 'Tramonto cicladico e resort esclusivi', days: 3, 
-                        tags: ['sea', 'romantic'], 
-                        hotel: { name: 'Grace Hotel Santorini', stars: 5, amenities: ['Infinity Pool', 'Vista Caldera', 'Butler Service'], rating: 9.6 }, 
-                        flights: { departure: '09:15', arrival: '13:40', return_departure: '15:50', return_arrival: '18:15', airline: 'Aegean Airlines', duration: '3h 25m', stops: '1 Stop Atene', from: 'Milano Malpensa (MXP)', to: 'Santorini (JTR)' }, 
-                        quote: { text: "Santorini è dove il cielo incontra il mare.", author: "Homer" }, 
-                        tip: "Prenota una cena al tramonto a Oia: il momento più romantico dell'isola!" 
-                    }
-                ]
-            };
-
-            const handleSpin = () => {
-                if (formData.budget < 200) {
+            // Gloob button
+            document.getElementById('gloob-btn').addEventListener('click', () => {
+                const budget = parseInt(document.getElementById('budget').value);
+                if (budget < 200) {
                     alert('Budget minimo: €200');
                     return;
                 }
-                setIsSpinning(true);
-                setStep(2);
-            };
+                startSpin();
+            });
 
-            const onSpinComplete = () => {
-                setTimeout(() => {
-                    let category = 'cheap';
-                    if (formData.luxuryLevel >= 35 && formData.luxuryLevel < 70) category = 'mid';
-                    else if (formData.luxuryLevel >= 70) category = 'luxury';
-                    
-                    let validDestinations = destinations[category].filter(d => 
-                        d.price <= (formData.budget / formData.people)
-                    );
-                    
-                    if (formData.preferences.length > 0) {
-                        const perfectMatch = validDestinations.filter(destination => {
-                            return formData.preferences.every(pref => 
-                                destination.tags && destination.tags.includes(pref)
-                            );
-                        });
-                        
-                        if (perfectMatch.length > 0) {
-                            validDestinations = perfectMatch;
-                        } else {
-                            const partialMatch = validDestinations.filter(destination => {
-                                return formData.preferences.some(pref => 
-                                    destination.tags && destination.tags.includes(pref)
-                                );
-                            });
-                            
-                            if (partialMatch.length > 0) {
-                                validDestinations = partialMatch;
-                            } else {
-                                if (formData.preferences.includes('sea')) {
-                                    const allSeaDestinations = [];
-                                    Object.values(destinations).forEach(categoryDests => {
-                                        categoryDests.forEach(dest => {
-                                            if (dest.tags && dest.tags.includes('sea') && dest.price <= (formData.budget / formData.people)) {
-                                                allSeaDestinations.push(dest);
-                                            }
-                                        });
-                                    });
-                                    if (allSeaDestinations.length > 0) {
-                                        validDestinations = allSeaDestinations;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    const randomDest = validDestinations.length > 0 
-                        ? validDestinations[Math.floor(Math.random() * validDestinations.length)]
-                        : destinations.cheap[Math.floor(Math.random() * destinations.cheap.length)];
-                    
-                    const startDate = new Date();
-                    if (formData.when === 'custom' && formData.dateFrom) {
-                        startDate.setTime(new Date(formData.dateFrom).getTime());
-                    } else if (formData.when === 'weekend') {
-                        const daysToFriday = (5 - startDate.getDay() + 7) % 7;
-                        if (daysToFriday === 0 && startDate.getDay() !== 5) {
-                            startDate.setDate(startDate.getDate() + 7);
-                        } else {
-                            startDate.setDate(startDate.getDate() + daysToFriday);
-                        }
-                    } else if (formData.when === 'week') {
-                        startDate.setDate(startDate.getDate() + 7);
-                    } else if (formData.when === 'month') {
-                        startDate.setMonth(startDate.getMonth() + 1);
-                    } else {
-                        startDate.setDate(startDate.getDate() + Math.floor(Math.random() * 30) + 1);
-                    }
-                    
-                    const endDate = new Date(startDate);
-                    if (formData.when === 'custom' && formData.dateTo) {
-                        endDate.setTime(new Date(formData.dateTo).getTime());
-                    } else if (formData.when === 'weekend') {
-                        endDate.setDate(endDate.getDate() + 2);
-                    } else if (formData.when === 'week') {
-                        endDate.setDate(endDate.getDate() + 6);
-                    } else if (formData.when === 'month') {
-                        endDate.setDate(endDate.getDate() + 29);
-                    } else {
-                        endDate.setDate(endDate.getDate() + randomDest.days - 1);
-                    }
-                    
-                    setResult({
-                        ...randomDest,
-                        startDate,
-                        endDate,
-                        totalPrice: randomDest.price * formData.people,
-                        pricePerPerson: randomDest.price
-                    });
-                    setIsSpinning(false);
-                    setStep(3);
-                }, 1000);
-            };
+            // Regloob button
+            document.getElementById('regloob-btn').addEventListener('click', () => {
+                showStep(1);
+                selectedPreferences = [];
+                document.querySelectorAll('.pref-btn').forEach(btn => {
+                    btn.classList.remove('bg-yellow-500', 'text-black');
+                    btn.classList.add('bg-white/10');
+                });
+            });
 
-            const togglePreference = (pref) => {
-                setFormData(prev => ({
-                    ...prev,
-                    preferences: prev.preferences.includes(pref)
-                        ? prev.preferences.filter(p => p !== pref)
-                        : [...prev.preferences, pref]
-                }));
-            };
-
-            if (step === 1) {
-                return (
-                    <div className="min-h-screen bg-gradient-to-br from-teal-900 via-green-900 to-emerald-900 text-white">
-                        <div className="container mx-auto px-4 py-8">
-                            <div className="text-center mb-8
-<div className="text-center mb-8">
-                                <div className="flex justify-end mb-4">
-                                    <select 
-                                        value={language} 
-                                        onChange={(e) => setLanguage(e.target.value)}
-                                        className="bg-white/10 text-white border border-white/20 rounded-lg px-3 py-1 text-sm"
-                                    >
-                                        <option value="it" className="text-gray-800">🇮🇹 Italiano</option>
-                                        <option value="en" className="text-gray-800">🇬🇧 English</option>
-                                        <option value="es" className="text-gray-800">🇪🇸 Español</option>
-                                        <option value="fr" className="text-gray-800">🇫🇷 Français</option>
-                                    </select>
-                                </div>
-                                <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                                    {t.title}
-                                </h1>
-                                <p className="text-xl text-gray-300">
-                                    {t.subtitle}
-                                </p>
-                            </div>
-
-                            <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-                                <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
-                                    <h2 className="text-2xl font-bold mb-6">{t.configure}</h2>
-                                    
-                                    <div className="mb-6">
-                                        <label className="block text-sm font-medium mb-2">{t.budget}</label>
-                                        <input
-                                            type="number"
-                                            value={formData.budget === 0 ? '' : formData.budget}
-                                            onChange={(e) => setFormData(prev => ({...prev, budget: e.target.value === '' ? 0 : parseInt(e.target.value) || 0}))}
-                                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold focus:ring-2 focus:ring-yellow-400 outline-none"
-                                            min="200"
-                                            max="5000"
-                                            step="50"
-                                            placeholder="Inserisci budget (es. 800)"
-                                        />
-                                    </div>
-
-                                    <div className="mb-6">
-                                        <label className="block text-sm font-medium mb-2">{t.people}</label>
-                                        <select
-                                            value={formData.people}
-                                            onChange={(e) => setFormData(prev => ({...prev, people: parseInt(e.target.value)}))}
-                                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none"
-                                        >
-                                            <option value={1} className="text-gray-800">1 persona</option>
-                                            <option value={2} className="text-gray-800">2 persone</option>
-                                            <option value={3} className="text-gray-800">3 persone</option>
-                                            <option value={4} className="text-gray-800">4 persone</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="mb-6">
-                                        <label className="block text-sm font-medium mb-2">{t.style}</label>
-                                        <input
-                                            type="range"
-                                            value={formData.luxuryLevel}
-                                            onChange={(e) => setFormData(prev => ({...prev, luxuryLevel: parseInt(e.target.value)}))}
-                                            className="w-full h-3 bg-gradient-to-r from-green-500 via-yellow-500 to-purple-500 rounded-lg appearance-none cursor-pointer"
-                                            min="0"
-                                            max="100"
-                                        />
-                                        <div className="flex justify-between text-xs mt-2">
-                                            <span className="text-green-400 font-bold">CHEAP</span>
-                                            <span className="text-yellow-400 font-bold">MID</span>
-                                            <span className="text-purple-400 font-bold">LUXURY</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="mb-6">
-                                        <label className="block text-sm font-medium mb-2">{t.when}</label>
-                                        <select
-                                            value={formData.when}
-                                            onChange={(e) => setFormData(prev => ({...prev, when: e.target.value}))}
-                                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none mb-3"
-                                        >
-                                            <option value="flexible" className="text-gray-800">🎲 Flessibile (sorprendimi!)</option>
-                                            <option value="weekend" className="text-gray-800">📅 Viaggio di un weekend</option>
-                                            <option value="week" className="text-gray-800">📅 Viaggio di una settimana</option>
-                                            <option value="month" className="text-gray-800">📅 Viaggio di un mese</option>
-                                            <option value="custom" className="text-gray-800">📅 Scegli date specifiche</option>
-                                        </select>
-                                        
-                                        {formData.when === 'custom' && (
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <div>
-                                                    <label className="block text-xs text-gray-400 mb-1">Dal</label>
-                                                    <input
-                                                        type="date"
-                                                        value={formData.dateFrom}
-                                                        onChange={(e) => setFormData(prev => ({...prev, dateFrom: e.target.value}))}
-                                                        className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none"
-                                                        min={new Date().toISOString().split('T')[0]}
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs text-gray-400 mb-1">Al</label>
-                                                    <input
-                                                        type="date"
-                                                        value={formData.dateTo}
-                                                        onChange={(e) => setFormData(prev => ({...prev, dateTo: e.target.value}))}
-                                                        className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none"
-                                                        min={formData.dateFrom || new Date().toISOString().split('T')[0]}
-                                                    />
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="mb-8">
-                                        <label className="block text-sm font-medium mb-3">{t.preferences}</label>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            {preferences.map(pref => (
-                                                <button
-                                                    key={pref.id}
-                                                    onClick={() => togglePreference(pref.id)}
-                                                    className={`p-3 rounded-xl text-sm font-medium transition-all ${
-                                                        formData.preferences.includes(pref.id)
-                                                            ? 'bg-yellow-500 text-black'
-                                                            : 'bg-white/10 hover:bg-white/20'
-                                                    }`}
-                                                >
-                                                    {pref.label[language]}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        onClick={handleSpin}
-                                        className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all flex items-center justify-center gap-3"
-                                        disabled={formData.budget < 200}
-                                    >
-                                        <Globe />
-                                        {formData.budget >= 200 ? t.action : t.minBudget}
-                                    </button>
-                                </div>
-
-                                <div className="flex items-center justify-center">
-                                    <SpinningGlobe isSpinning={false} onSpinComplete={() => {}} />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (step === 2) {
-                return (
-                    <div className="min-h-screen bg-gradient-to-br from-teal-900 via-green-900 to-emerald-900 text-white flex items-center justify-center">
-                        <div className="text-center">
-                            <SpinningGlobe isSpinning={isSpinning} onSpinComplete={onSpinComplete} />
-                            <h2 className="text-4xl font-bold mb-4 mt-8">{t.gloobbing}</h2>
-                            <p className="text-xl text-gray-300">
-                                {t.searching.replace('{people}', formData.people).replace('{budget}', formData.budget)}
-                            </p>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (step === 3 && result) {
-                return (
-                    <div className="min-h-screen bg-gradient-to-br from-teal-900 via-green-900 to-emerald-900 text-white">
-                        <div className="container mx-auto px-4 py-8">
-                            <div className="max-w-4xl mx-auto">
-                                <div className="text-center mb-8">
-                                    <h1 className="text-5xl font-bold mb-4">{t.result}</h1>
-                                </div>
-
-                                <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 mb-8">
-                                    <div className="text-center mb-6">
-                                        <div className="text-8xl mb-4">{result.image}</div>
-                                        <h2 className="text-4xl font-bold text-yellow-400">{result.name}</h2>
-                                        <p className="text-2xl text-gray-300">{result.country}</p>
-                                        <p className="text-lg text-gray-400 mt-2">{result.description}</p>
-                                        
-                                        {formData.preferences.length > 0 && (
-                                            <div className="mt-4 p-3 bg-teal-600/20 rounded-lg border border-teal-400/30">
-                                                <p className="text-sm text-teal-200">
-                                                    🔍 Preferenze selezionate: <span className="font-bold text-white">{formData.preferences.map(p => preferences.find(pref => pref.id === p)?.label[language]).join(', ')}</span>
-                                                </p>
-                                                <p className="text-sm text-teal-200">
-                                                    ✅ Questa destinazione ha: <span className="font-bold text-white">{result.tags?.map(tag => preferences.find(p => p.id === tag)?.label[language] || tag).join(', ')}</span>
-                                                </p>
-                                                {formData.preferences.some(pref => !result.tags?.includes(pref)) && (
-                                                    <p className="text-sm text-yellow-300 mt-1">
-                                                        ⚠️ Alcune preferenze non combaciano perfettamente - hai selezionato più filtri di quelli disponibili per questa destinazione
-                                                    </p>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="grid md:grid-cols-2 gap-6 mb-6">
-                                        <div className="bg-white/90 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg">
-                                            <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-gray-800">
-                                                <Plane className="text-green-600" />
-                                                ✈️ Dettagli Volo
-                                            </h3>
-                                            <div className="space-y-3">
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600 font-medium">Compagnia:</span>
-                                                    <span className="font-bold text-gray-900">{result.flights.airline}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600 font-medium">Da:</span>
-                                                    <span className="font-bold text-gray-900">{result.flights.from}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600 font-medium">A:</span>
-                                                    <span className="font-bold text-gray-900">{result.flights.to}</span>
-                                                </div>
-                                                <div className="bg-gray-50 rounded-lg p-3 mt-4">
-                                                    <p className="text-xs text-gray-500 mb-2">ANDATA</p>
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600">Partenza:</span>
-                                                        <span className="font-bold text-gray-900">{result.flights.departure}</span>
-                                                    </div>
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600">Arrivo:</span>
-                                                        <span className="font-bold text-gray-900">{result.flights.arrival}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="bg-gray-50 rounded-lg p-3">
-                                                    <p className="text-xs text-gray-500 mb-2">RITORNO</p>
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600">Partenza:</span>
-                                                        <span className="font-bold text-gray-900">{result.flights.return_departure}</span>
-                                                    </div>
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600">Arrivo:</span>
-                                                        <span className="font-bold text-gray-900">{result.flights.return_arrival}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600 font-medium">Durata:</span>
-                                                    <span className="font-bold text-gray-900">{result.flights.duration}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600 font-medium">Scali:</span>
-                                                    <span className="font-bold text-gray-900">{result.flights.stops}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="bg-white/90 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg">
-                                            <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-gray-800">
-                                                <MapPin className="text-blue-600" />
-                                                🏨 Hotel
-                                            </h3>
-                                            <div className="space-y-3">
-                                                <div>
-                                                    <h4 className="font-bold text-lg text-gray-900">{result.hotel.name}</h4>
-                                                    <div className="flex items-center gap-1 mt-1">
-                                                        {[...Array(result.hotel.stars)].map((_, i) => (
-                                                            <Star key={i} size={16} className="text-yellow-500 fill-current" />
-                                                        ))}
-                                                        <span className="ml-2 text-sm bg-green-500 text-white px-2 py-1 rounded">
-                                                            {result.hotel.rating}/10
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <p className="text-sm font-medium text-gray-600">Servizi inclusi:</p>
-                                                    {result.hotel.amenities.map((amenity, i) => (
-                                                        <div key={i} className="flex items-center gap-2 text-sm text-gray-900">
-                                                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                                            {amenity}
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid md:grid-cols-2 gap-6 mb-6">
-                                        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 shadow-lg">
-                                            <h3 className="text-lg font-bold mb-3 text-amber-800">💭 Ispirazione</h3>
-                                            <blockquote className="italic text-gray-700 text-center mb-3">
-                                                "{result.quote?.text}"
-                                            </blockquote>
-                                            <p className="text-sm text-amber-700 text-center font-medium">— {result.quote?.author}</p>
-                                        </div>
-                                        
-                                        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg">
-                                            <h3 className="text-lg font-bold mb-3 text-emerald-800">💎 Travel Tip</h3>
-                                            <p className="text-gray-700 text-sm leading-relaxed">
-                                                {result.tip}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="text-center">
-                                        <p className="text-3xl font-bold text-yellow-400 mb-2">
-                                            €{result.totalPrice} totale
-                                        </p>
-                                        <p className="text-lg text-gray-300 mb-4">
-                                            €{result.pricePerPerson} per persona
-                                        </p>
-                                        
-                                        <div className="bg-teal-600/20 rounded-lg p-4 border border-teal-400/30">
-                                            <h3 className="text-lg font-bold text-teal-200 mb-2">📅 Date del viaggio</h3>
-                                            <div className="grid grid-cols-2 gap-4 text-sm">
-                                                <div>
-                                                    <span className="text-teal-300">Partenza:</span>
-                                                    <div className="font-bold text-white">
-                                                        {result.startDate.toLocaleDateString('it-IT', { 
-                                                            weekday: 'long', 
-                                                            year: 'numeric', 
-                                                            month: 'long', 
-                                                            day: 'numeric' 
-                                                        })}
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <span className="text-teal-300">Ritorno:</span>
-                                                    <div className="font-bold text-white">
-                                                        {result.endDate.toLocaleDateString('it-IT', { 
-                                                            weekday: 'long', 
-                                                            year: 'numeric', 
-                                                            month: 'long', 
-                                                            day: 'numeric' 
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <p className="text-xs text-teal-200 mt-2">
-                                                Durata: {Math.ceil((result.endDate - result.startDate) / (1000 * 60 * 60 * 24))} giorni
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="text-center">
-                                    <button 
-                                        onClick={() => window.open(`https://booking.com/searchresults.html?ss=${encodeURIComponent(result.name)}&checkin=${result.startDate.toISOString().split('T')[0]}&checkout=${result.endDate.toISOString().split('T')[0]}&group_adults=${formData.people}`, '_blank')}
-                                        className="bg-green-500 text-white font-bold py-4 px-12 rounded-xl text-xl mr-4 hover:bg-green-600 transition-colors"
-                                    >
-                                        {t.book}
-                                    </button>
-                                    <button 
-                                        onClick={() => {
-                                            setStep(1); 
-                                            setResult(null); 
-                                            setIsSpinning(false);
-                                        }}
-                                        className="bg-gray-600 text-white font-bold py-4 px-8 rounded-xl text-xl hover:bg-gray-700 transition-colors"
-                                    >
-                                        {t.regloob}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
-
-            return null;
+            // Book button
+            document.getElementById('book-btn').addEventListener('click', () => {
+                if (currentResult) {
+                    const url = `https://booking.com/searchresults.html?ss=${encodeURIComponent(currentResult.name)}&group_adults=${document.getElementById('people').value}`;
+                    window.open(url, '_blank');
+                }
+            });
         }
 
-        ReactDOM.render(<BudgetGlobeApp />, document.getElementById('root'));
+        function showStep(step) {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            
+            document.getElementById(`step${step}`).classList.remove('hidden');
+            currentStep = step;
+        }
+
+        function startSpin() {
+            showStep(2);
+            
+            const budget = parseInt(document.getElementById('budget').value);
+            const people = parseInt(document.getElementById('people').value);
+            
+            document.getElementById('searching-text').textContent = 
+                `Cercando la destinazione per ${people} persone con budget €${budget}!`;
+            
+            // Add spinning animation
+            document.getElementById('spinning-globe').classList.add('spinning');
+            
+            setTimeout(() => {
+                document.getElementById('spinning-globe').classList.remove('spinning');
+                generateResult();
+                setTimeout(() => {
+                    showStep(3);
+                }, 500);
+            }, 3000);
+        }
+
+        function generateResult() {
+            const budget = parseInt(document.getElementById('budget').value);
+            const people = parseInt(document.getElementById('people').value);
+            const luxuryLevel = parseInt(document.getElementById('luxury').value);
+            
+            let category = 'cheap';
+            if (luxuryLevel >= 35 && luxuryLevel < 70) category = 'mid';
+            else if (luxuryLevel >= 70) category = 'luxury';
+            
+            let validDestinations = destinations[category].filter(d => 
+                d.price <= (budget / people)
+            );
+            
+            // Filter by preferences if any selected
+            if (selectedPreferences.length > 0) {
+                const perfectMatch = validDestinations.filter(destination => {
+                    return selectedPreferences.every(pref => 
+                        destination.tags && destination.tags.includes(pref)
+                    );
+                });
+                
+                if (perfectMatch.length > 0) {
+                    validDestinations = perfectMatch;
+                } else {
+                    const partialMatch = validDestinations.filter(destination => {
+                        return selectedPreferences.some(pref => 
+                            destination.tags && destination.tags.includes(pref)
+                        );
+                    });
+                    
+                    if (partialMatch.length > 0) {
+                        validDestinations = partialMatch;
+                    }
+                }
+            }
+            
+            const randomDest = validDestinations.length > 0 
+                ? validDestinations[Math.floor(Math.random() * validDestinations.length)]
+                : destinations.cheap[Math.floor(Math.random() * destinations.cheap.length)];
+            
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() + Math.floor(Math.random() * 30) + 1);
+            
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + randomDest.days - 1);
+            
+            currentResult = {
+                ...randomDest,
+                startDate,
+                endDate,
+                totalPrice: randomDest.price * people,
+                pricePerPerson: randomDest.price
+            };
+            
+            displayResult();
+        }
+
+        function displayResult() {
+            const result = currentResult;
+            const people = parseInt(document.getElementById('people').value);
+            
+            const stars = '⭐'.repeat(result.hotel.stars);
+            
+            const resultHTML = `
+                <div class="text-center mb-6">
+                    <div class="text-8xl mb-4">${result.image}</div>
+                    <h2 class="text-4xl font-bold text-yellow-400">${result.name}</h2>
+                    <p class="text-2xl text-gray-300">${result.country}</p>
+                    <p class="text-lg text-gray-400 mt-2">${result.description}</p>
+                    
+                    ${selectedPreferences.length > 0 ? `
+                        <div class="mt-4 p-3 bg-teal-600/20 rounded-lg border border-teal-400/30">
+                            <p class="text-sm text-teal-200">
+                                🔍 Preferenze selezionate: <span class="font-bold text-white">${selectedPreferences.join(', ')}</span>
+                            </p>
+                            <p class="text-sm text-teal-200">
+                                ✅ Questa destinazione ha: <span class="font-bold text-white">${result.tags?.join(', ') || 'N/A'}</span>
+                            </p>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white/90 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2 text-gray-800">
+                            ✈️ Dettagli Volo
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Compagnia:</span>
+                                <span class="font-bold text-gray-900">${result.flights.airline}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Da:</span>
+                                <span class="font-bold text-gray-900">${result.flights.from}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">A:</span>
+                                <span class="font-bold text-gray-900">${result.flights.to}</span>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3 mt-4">
+                                <p class="text-xs text-gray-500 mb-2">ANDATA</p>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Partenza:</span>
+                                    <span class="font-bold text-gray-900">${result.flights.departure}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Arrivo:</span>
+                                    <span class="font-bold text-gray-900">${result.flights.arrival}</span>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs text-gray-500 mb-2">RITORNO</p>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Partenza:</span>
+                                    <span class="font-bold text-gray-900">${result.flights.return_departure}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Arrivo:</span>
+                                    <span class="font-bold text-gray-900">${result.flights.return_arrival}</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Durata:</span>
+                                <span class="font-bold text-gray-900">${result.flights.duration}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 font-medium">Scali:</span>
+                                <span class="font-bold text-gray-900">${result.flights.stops}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white/90 backdrop-blur-lg rounded-2xl p-6 border border-white/20 shadow-lg">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2 text-gray-800">
+                            🏨 Hotel
+                        </h3>
+                        <div class="space-y-3">
+                            <div>
+                                <h4 class="font-bold text-lg text-gray-900">${result.hotel.name}</h4>
+                                <div class="flex items-center gap-1 mt-1">
+                                    <span class="text-yellow-500">${stars}</span>
+                                    <span class="ml-2 text-sm bg-green-500 text-white px-2 py-1 rounded">
+                                        ${result.hotel.rating}/10
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-sm font-medium text-gray-600">Servizi inclusi:</p>
+                                ${result.hotel.amenities.map(amenity => `
+                                    <div class="flex items-center gap-2 text-sm text-gray-900">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        ${amenity}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 shadow-lg">
+                        <h3 class="text-lg font-bold mb-3 text-amber-800">💭 Ispirazione</h3>
+                        <blockquote class="italic text-gray-700 text-center mb-3">
+                            "${result.quote?.text}"
+                        </blockquote>
+                        <p class="text-sm text-amber-700 text-center font-medium">— ${result.quote?.author}</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200 shadow-lg">
+                        <h3 class="text-lg font-bold mb-3 text-emerald-800">💎 Travel Tip</h3>
+                        <p class="text-gray-700 text-sm leading-relaxed">
+                            ${result.tip}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-yellow-400 mb-2">
+                        €${result.totalPrice} totale
+                    </p>
+                    <p class="text-lg text-gray-300 mb-4">
+                        €${result.pricePerPerson} per persona
+                    </p>
+                    
+                    <div class="bg-teal-600/20 rounded-lg p-4 border border-teal-400/30">
+                        <h3 class="text-lg font-bold text-teal-200 mb-2">📅 Date del viaggio</h3>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-teal-300">Partenza:</span>
+                                <div class="font-bold text-white">
+                                    ${result.startDate.toLocaleDateString('it-IT', { 
+                                        weekday: 'long', 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    })}
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-teal-300">Ritorno:</span>
+                                <div class="font-bold text-white">
+                                    ${result.endDate.toLocaleDateString('it-IT', { 
+                                        weekday: 'long', 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-teal-200 mt-2">
+                            Durata: ${Math.ceil((result.endDate - result.startDate) / (1000 * 60 * 60 * 24))} giorni
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('result-content').innerHTML = resultHTML;
+        }
+
+        // Start the app
+        init();
     </script>
 </body>
 </html>
