@@ -452,9 +452,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <script>
+    </div><script>
         // Enhanced destinations database with more locations
         const destinations = {
             cheap: [
@@ -620,9 +618,7 @@
                 document.getElementById('main-app').classList.remove('hidden');
                 setupEventListeners();
             }, 1000);
-        }
-
-        function setupEventListeners() {
+        }function setupEventListeners() {
             // Single preference selection (radio button behavior)
             document.querySelectorAll('.preference-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -885,9 +881,7 @@
 
         function getAccommodationText(accommodation) {
             return accommodation === 'hotel' ? 'Hotel (Booking.com)' : 'B&B/Casa (Airbnb)';
-        }
-
-        function displayResult() {
+        }function displayResult() {
             const result = currentResult;
             const people = parseInt(document.getElementById('people').value);
             const stars = '⭐'.repeat(result.hotel.stars);
