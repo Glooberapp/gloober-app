@@ -1,4 +1,12 @@
-<!DOCTYPE html>
+
+function setupEvents() {
+            // Transport dropdown
+            const transportBtn = document.getElementById('transport-btn');
+            const transportMenu = document.getElementById('transport-menu');
+            const transportSelected = document.getElementById('transport-selected');
+            
+            transportBtn.addEventListener('click', (e) => {
+                e<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -256,6 +264,36 @@
                     </div>
 
                     <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">📏 Durata vs Qualità</label>
+                        <input type="range" id="duration" value="50" min="0" max="100" 
+                               class="w-full h-3 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs mt-1">
+                            <span class="text-blue-400 font-bold">LUNGA & CHEAP</span>
+                            <span class="text-pink-400 font-bold">BREVE & LUXURY</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">🗺️ Destinazione</label>
+                        <input type="range" id="popularity" value="50" min="0" max="100" 
+                               class="w-full h-3 bg-gradient-to-r from-orange-500 via-yellow-500 to-red-500 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs mt-1">
+                            <span class="text-orange-400 font-bold">SCONOSCIUTA</span>
+                            <span class="text-red-400 font-bold">FAMOSA</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">🌍 Distanza</label>
+                        <input type="range" id="distance" value="50" min="0" max="100" 
+                               class="w-full h-3 bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs mt-1">
+                            <span class="text-green-400 font-bold">VICINO</span>
+                            <span class="text-blue-400 font-bold">LONTANO</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
                         <label class="block text-sm font-medium mb-2">🚀 Come viaggi?</label>
                         <div class="custom-dropdown">
                             <button type="button" class="dropdown-btn" id="transport-btn">
@@ -367,65 +405,97 @@
         let selectedTransport = 'plane';
         let currentResult = null;
         let budgetType = 'essential'; // 'essential' or 'complete'
+        let lastSearchParams = null; // Track last search to avoid duplicates
+        let usedDestinations = []; // Track used destinations for variety
 
-        // 🎯 NEW: PURE AI DESTINATION FINDER - ZERO DATABASE!
-        async function findDestinationWithPureAI(budget, people, luxury, preference, transport, budgetType) {
-            // Calculate per-person budget
+        // 🎯 ENHANCED: AI DESTINATION FINDER WITH REAL-TIME VARIETY
+        async function findDestinationWithPureAI(budget, people, luxury, preference, transport, budgetType, duration, popularity, distance) {
+            // Calculate per-person budget and trip duration
             const budgetPerPerson = Math.round(budget / people);
             
-            // Smart prompt for AI to find REAL destinations based on budget
-            const prompt = `Sei un consulente di viaggi esperto con accesso a tutti i database di viaggio online. Un cliente ha queste specifiche:
+            // Smart duration calculation based on slider
+            const tripDays = duration < 30 ? Math.max(3, Math.round(14 - duration/10)) : // Short luxury trips
+                           duration > 70 ? Math.max(7, Math.round(7 + duration/20)) : // Long cheap trips  
+                           7; // Default week
+            
+            // Distance mapping
+            const distanceText = distance < 25 ? 'Europa vicina (max 3h volo)' :
+                               distance < 50 ? 'Europa media (max 5h volo)' :
+                               distance < 75 ? 'Europa/Nord Africa (max 7h volo)' :
+                               'Destinazioni esotiche (anche intercontinentali)';
+            
+            // Popularity mapping  
+            const popularityText = popularity < 25 ? 'destinazioni nascoste e autentiche, poco turistiche' :
+                                  popularity < 50 ? 'destinazioni emergenti, non troppo affollate' :
+                                  popularity < 75 ? 'destinazioni conosciute ma non mainstream' :
+                                  'destinazioni iconiche e famose';
+            
+            // Create variety seed to ensure different results
+            const varietySeed = Date.now() + Math.random() * 1000;
+            const avoidDestinations = usedDestinations.length > 0 ? 
+                `NON suggerire mai: ${usedDestinations.join(', ')}. ` : '';
+            
+            const prompt = `Sei un consulente di viaggi AI con accesso a database globali. TROVA UNA DESTINAZIONE UNICA per:
 
-BUDGET: €${budget} TOTALE per ${people} persone (€${budgetPerPerson} a persona)
-TIPO BUDGET: ${budgetType === 'complete' ? 'TUTTO INCLUSO (volo+hotel+pasti+attività)' : 'SOLO ESSENZIALE (volo+hotel)'}
-PREFERENZA: ${preference ? getPreferenceName(preference) : 'Flessibile, sorprendimi!'}
-TRASPORTO: ${getTransportName(transport)}
-STILE: ${luxury < 30 ? 'Economico/Backpacker' : luxury > 70 ? 'Lusso/Premium' : 'Comfort/Medio'}
-STAGIONE: ${getCurrentSeason()} 2025
+PARAMETRI CLIENTE:
+💰 Budget: €${budget} TOTALE per ${people} persone (€${budgetPerPerson} per persona)
+📅 Durata: ${tripDays} giorni (${duration < 30 ? 'breve e lussuosa' : duration > 70 ? 'lunga ed economica' : 'equilibrata'})
+🎯 Budget type: ${budgetType === 'complete' ? 'TUTTO INCLUSO (volo+hotel+pasti+attività)' : 'SOLO ESSENZIALE (volo+hotel)'}
+✨ Stile: ${luxury < 30 ? 'Economico/Backpacker' : luxury > 70 ? 'Lusso/Premium' : 'Comfort/Medio'}
+🗺️ Popolarità: ${popularityText}
+🌍 Distanza: ${distanceText}
+🎯 Preferenza: ${preference ? getPreferenceName(preference) : 'Flessibile, sorprendimi!'}
+🚀 Trasporto: ${getTransportName(transport)}
+🌍 Stagione: ${getCurrentSeason()} 2025
 
-🎯 COMPITO: Trova UNA destinazione reale che rientra PERFETTAMENTE in questo budget ${budgetType === 'complete' ? 'tutto incluso' : 'essenziale'}.
+${avoidDestinations}
 
-REGOLE IMPORTANTI:
-- Cerca ONLINE destinazioni reali disponibili ora
-- Prezzi REALISTICI per ${getCurrentSeason()} 2025 
-- Destinazione deve essere FATTIBILE con questo budget
-- Se budget basso, scegli Balcani/Europa Est, se alto Scandinavia/Grecia
-- SEMPRE destinazioni diverse (non sempre le stesse 5 città!)
-- Calcola costi reali: volo da Milano + hotel 7 notti + (se tutto incluso: pasti+attività)
+🎲 VARIETÀ OBBLIGATORIA: Seed ${varietySeed} - trova destinazione UNICA e sorprendente!
 
-FORMATO RISPOSTA (JSON PULITO):
+COMPITO: Trova LA destinazione perfetta che:
+✅ Rientra ESATTAMENTE nel budget €${budget} ${budgetType}
+✅ È ${popularityText}
+✅ Rispetta distanza "${distanceText}"
+✅ Ottimizzata per ${tripDays} giorni
+✅ È DIVERSA da tutte le ricerche precedenti
+✅ Ha prezzi REALI aggiornati ${getCurrentSeason()} 2025
+
+CALCOLA con precisione: volo da Milano + hotel ${tripDays} notti + ${budgetType === 'complete' ? 'pasti + attività locali' : 'solo base'}
+
+RISPOSTA JSON (PULITA, NO MARKDOWN):
 {
   "destination": "Nome Città Specifica",
-  "country": "Paese",
+  "country": "Paese", 
   "emoji": "🌅",
   "description": "Perché è perfetta in 10-15 parole",
-  "whyBudget": "Spiegazione specifica di come rientra nel budget €${budget} ${budgetType}",
+  "whyBudget": "Come rientra nel budget €${budget} ${budgetType} per ${tripDays} giorni",
+  "whyUnique": "Cosa la rende speciale e diversa dalle solite destinazioni",
+  "tripDays": ${tripDays},
+  "budgetPerDay": ${Math.round(budget / tripDays)},
   "hotel": {
     "name": "Hotel Reale Della Città",
-    "stars": 4,
-    "pricePerNight": 85,
-    "totalNights": 7,
-    "totalPrice": 595,
+    "stars": ${Math.max(2, Math.min(5, Math.round(luxury / 20)))},
+    "pricePerNight": ${Math.round(budgetPerPerson * 0.4 / tripDays)},
+    "totalPrice": ${Math.round(budget * 0.4)},
     "photo": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&h=300&fit=crop"
   },
   "transport": {
     "type": "${transport}",
     "airline": "Compagnia Reale",
-    "route": "MXP → ABC",
-    "totalPrice": 380,
+    "route": "MXP → ABC", 
+    "totalPrice": ${Math.round(budget * 0.3)},
     "duration": "2h 15m"
   },
   "costs": {
-    "hotel": 595,
-    "transport": 380,
-    ${budgetType === 'complete' ? '"meals": 315, "activities": 120, "extras": 85,' : ''}
-    "total": ${budgetType === 'complete' ? '1495' : '975'}
-  },
-  "feasible": true
+    "hotel": ${Math.round(budget * 0.4)},
+    "transport": ${Math.round(budget * 0.3)},
+    ${budgetType === 'complete' ? `"meals": ${Math.round(budget * 0.2)}, "activities": ${Math.round(budget * 0.08)}, "extras": ${Math.round(budget * 0.02)},` : ''}
+    "total": ${budget}
+  }
 }`;
 
             try {
-                console.log('🤖 Chiamata AI con budget:', budget, 'tipo:', budgetType);
+                console.log('🤖 AI Call with variety seed:', varietySeed);
                 
                 const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
@@ -446,102 +516,120 @@ FORMATO RISPOSTA (JSON PULITO):
                     const aiResponse = data.candidates[0].content.parts[0].text;
                     console.log('🎯 AI Response:', aiResponse);
                     
-                    // Clean and parse AI response
                     const cleanResponse = aiResponse.replace(/```json\n?|\n?```/g, '').trim();
                     const result = JSON.parse(cleanResponse);
                     
-                    // Add travel dates
-                    result.travelDates = generateTravelDates();
+                    // Add to used destinations for variety
+                    if (result.destination && !usedDestinations.includes(result.destination)) {
+                        usedDestinations.push(result.destination);
+                        // Keep only last 10 to allow eventual reuse
+                        if (usedDestinations.length > 10) {
+                            usedDestinations.shift();
+                        }
+                    }
                     
+                    result.travelDates = generateTravelDates();
                     return result;
                 } else {
                     throw new Error('API Error: ' + response.status);
                 }
             } catch (error) {
-                console.log('🔄 AI error, using smart fallback:', error);
-                return generateSmartDestinationByBudget(budget, people, luxury, preference, transport, budgetType);
+                console.log('🔄 AI error, using enhanced smart fallback:', error);
+                return generateEnhancedDestinationByBudget(budget, people, luxury, preference, transport, budgetType, duration, popularity, distance);
             }
         }
 
-        // Smart fallback that considers budget constraints
-        function generateSmartDestinationByBudget(budget, people, luxury, preference, transport, budgetType) {
+        // Enhanced smart fallback with variety and all parameters
+        function generateEnhancedDestinationByBudget(budget, people, luxury, preference, transport, budgetType, duration, popularity, distance) {
             const budgetPerPerson = budget / people;
             
-            // Budget-based destination selection
-            let destinations;
+            // Calculate trip duration from slider
+            const tripDays = duration < 30 ? Math.max(3, Math.round(14 - duration/10)) :
+                           duration > 70 ? Math.max(7, Math.round(7 + duration/20)) :
+                           7;
             
-            if (budgetType === 'complete') {
-                // For "tutto incluso" need higher budget
-                if (budgetPerPerson < 400) {
-                    destinations = [
-                        { name: 'Belgrado', country: 'Serbia', emoji: '🏛️', cost: 350 },
-                        { name: 'Sofia', country: 'Bulgaria', emoji: '🏔️', cost: 380 },
-                        { name: 'Bucarest', country: 'Romania', emoji: '🏰', cost: 360 }
-                    ];
-                } else if (budgetPerPerson < 700) {
-                    destinations = [
-                        { name: 'Praga', country: 'Rep. Ceca', emoji: '🏛️', cost: 520 },
-                        { name: 'Budapest', country: 'Ungheria', emoji: '♨️', cost: 480 },
-                        { name: 'Krakow', country: 'Polonia', emoji: '🏰', cost: 450 }
-                    ];
-                } else {
-                    destinations = [
-                        { name: 'Amsterdam', country: 'Paesi Bassi', emoji: '🌷', cost: 680 },
-                        { name: 'Vienna', country: 'Austria', emoji: '🎼', cost: 650 },
-                        { name: 'Copenaghen', country: 'Danimarca', emoji: '🧜‍♀️', cost: 750 }
-                    ];
-                }
-            } else {
-                // For "solo essenziale" more flexibility
-                if (budgetPerPerson < 300) {
-                    destinations = [
-                        { name: 'Skopje', country: 'Macedonia', emoji: '🏛️', cost: 250 },
-                        { name: 'Tirana', country: 'Albania', emoji: '🏔️', cost: 280 },
-                        { name: 'Sarajevo', country: 'Bosnia', emoji: '🕌', cost: 270 }
-                    ];
-                } else if (budgetPerPerson < 500) {
-                    destinations = [
-                        { name: 'Dubrovnik', country: 'Croazia', emoji: '🏰', cost: 420 },
-                        { name: 'Porto', country: 'Portogallo', emoji: '🍷', cost: 380 },
-                        { name: 'Valencia', country: 'Spagna', emoji: '🥘', cost: 450 }
-                    ];
-                } else {
-                    destinations = [
-                        { name: 'Berlino', country: 'Germania', emoji: '🎨', cost: 480 },
-                        { name: 'Stoccolma', country: 'Svezia', emoji: '🌊', cost: 520 },
-                        { name: 'Helsinki', country: 'Finlandia', emoji: '🦌', cost: 550 }
-                    ];
-                }
+            // Enhanced destination pools based on ALL parameters
+            const destinationPools = {
+                // Nearby + Unknown
+                nearUnknown: [
+                    { name: 'Maribor', country: 'Slovenia', emoji: '🍷', cost: 280 },
+                    { name: 'Graz', country: 'Austria', emoji: '🏛️', cost: 320 },
+                    { name: 'Annecy', country: 'Francia', emoji: '🏔️', cost: 350 },
+                    { name: 'Brasov', country: 'Romania', emoji: '🏰', cost: 290 },
+                    { name: 'Ohrid', country: 'Macedonia', emoji: '🌊', cost: 250 }
+                ],
+                // Nearby + Known  
+                nearKnown: [
+                    { name: 'Vienna', country: 'Austria', emoji: '🎼', cost: 450 },
+                    { name: 'Munich', country: 'Germania', emoji: '🍺', cost: 480 },
+                    { name: 'Zurigo', country: 'Svizzera', emoji: '🏔️', cost: 520 },
+                    { name: 'Praga', country: 'Rep. Ceca', emoji: '🏛️', cost: 420 },
+                    { name: 'Amsterdam', country: 'Paesi Bassi', emoji: '🌷', cost: 490 }
+                ],
+                // Far + Unknown
+                farUnknown: [
+                    { name: 'Tbilisi', country: 'Georgia', emoji: '🍷', cost: 380 },
+                    { name: 'Yerevan', country: 'Armenia', emoji: '🏔️', cost: 360 },
+                    { name: 'Chisinau', country: 'Moldova', emoji: '🍇', cost: 320 },
+                    { name: 'Skopje', country: 'Macedonia', emoji: '🏛️', cost: 290 },
+                    { name: 'Tirana', country: 'Albania', emoji: '🏔️', cost: 310 }
+                ],
+                // Far + Known
+                farKnown: [
+                    { name: 'Istanbul', country: 'Turchia', emoji: '🕌', cost: 420 },
+                    { name: 'Marrakech', country: 'Marocco', emoji: '🐪', cost: 450 },
+                    { name: 'Tel Aviv', country: 'Israele', emoji: '🏖️', cost: 520 },
+                    { name: 'Reykjavik', country: 'Islanda', emoji: '🌋', cost: 580 },
+                    { name: 'Lisbona', country: 'Portogallo', emoji: '🌊', cost: 410 }
+                ]
+            };
+            
+            // Smart pool selection
+            let pool;
+            if (distance < 50 && popularity < 50) pool = destinationPools.nearUnknown;
+            else if (distance < 50 && popularity >= 50) pool = destinationPools.nearKnown;  
+            else if (distance >= 50 && popularity < 50) pool = destinationPools.farUnknown;
+            else pool = destinationPools.farKnown;
+            
+            // Filter by budget compatibility
+            const maxCostPerPerson = budgetType === 'complete' ? budgetPerPerson * 0.6 : budgetPerPerson * 0.8;
+            const compatibleDests = pool.filter(dest => dest.cost <= maxCostPerPerson);
+            const finalPool = compatibleDests.length > 0 ? compatibleDests : pool;
+            
+            // VARIETY: Exclude recently used destinations
+            const availableDests = finalPool.filter(dest => !usedDestinations.includes(dest.name));
+            const selectedPool = availableDests.length > 0 ? availableDests : finalPool;
+            
+            // Random selection with time-based seed for variety
+            const randomSeed = Date.now() + Math.random() * 1000;
+            const destIndex = Math.floor((randomSeed % selectedPool.length));
+            const dest = selectedPool[destIndex];
+            
+            // Add to used destinations
+            if (!usedDestinations.includes(dest.name)) {
+                usedDestinations.push(dest.name);
+                if (usedDestinations.length > 10) usedDestinations.shift();
             }
             
-            // Add preference filter
-            if (preference) {
-                destinations = destinations.map(dest => {
-                    if (preference === 'sea') dest.emoji = '🏖️';
-                    else if (preference === 'mountain') dest.emoji = '🏔️';
-                    else if (preference === 'romantic') dest.emoji = '💕';
-                    return dest;
-                });
-            }
-            
-            // Random selection for variety
-            const dest = destinations[Math.floor(Math.random() * destinations.length)];
-            
-            const hotelPrice = Math.round(dest.cost * 0.6);
-            const transportPrice = Math.round(dest.cost * 0.4);
+            // Calculate costs based on trip duration and budget type
+            const dailyBudget = budget / tripDays;
+            const hotelPrice = Math.round(budget * 0.4);
+            const transportPrice = Math.round(budget * 0.3);
             
             const result = {
                 destination: dest.name,
                 country: dest.country,
                 emoji: dest.emoji,
-                description: `Destinazione perfetta per il tuo budget di €${budget}`,
-                whyBudget: `Con €${budgetPerPerson} a persona rientra perfettamente nel budget ${budgetType}`,
+                description: `${dest.name} perfetta per ${tripDays} giorni con €${budget}`,
+                whyBudget: `€${budgetPerPerson} per persona per ${tripDays} giorni ${budgetType} - perfetto!`,
+                whyUnique: `Destinazione ${popularity < 50 ? 'autentica e poco turistica' : 'famosa ma sempre affascinante'} ${distance < 50 ? 'vicina' : 'esotica'}`,
+                tripDays: tripDays,
+                budgetPerDay: Math.round(dailyBudget),
                 travelDates: generateTravelDates(),
                 hotel: {
-                    name: `${dest.name} Central Hotel`,
-                    stars: Math.min(5, Math.max(2, Math.round(luxury / 25))),
-                    pricePerNight: Math.round(hotelPrice / 7),
-                    totalNights: 7,
+                    name: `${dest.name} ${luxury > 70 ? 'Luxury' : luxury > 40 ? 'Grand' : 'Central'} Hotel`,
+                    stars: Math.min(5, Math.max(2, Math.round(luxury / 20))),
+                    pricePerNight: Math.round(hotelPrice / tripDays),
                     totalPrice: hotelPrice,
                     photo: `https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&h=300&fit=crop`
                 },
@@ -550,24 +638,23 @@ FORMATO RISPOSTA (JSON PULITO):
                     airline: getRandomAirline(),
                     route: `MXP → ${dest.name.substring(0, 3).toUpperCase()}`,
                     totalPrice: transportPrice,
-                    duration: '2h 30m'
+                    duration: distance < 50 ? '2h 30m' : distance < 75 ? '4h 15m' : '6h 45m'
                 },
                 costs: {
                     hotel: hotelPrice,
                     transport: transportPrice,
-                    total: hotelPrice + transportPrice
+                    total: budget
                 }
             };
             
             if (budgetType === 'complete') {
-                const meals = Math.round(budget * 0.25);
-                const activities = Math.round(budget * 0.15);
-                const extras = Math.round(budget * 0.1);
+                const meals = Math.round(budget * 0.2);
+                const activities = Math.round(budget * 0.08);
+                const extras = Math.round(budget * 0.02);
                 
                 result.costs.meals = meals;
                 result.costs.activities = activities;
                 result.costs.extras = extras;
-                result.costs.total = hotelPrice + transportPrice + meals + activities + extras;
             }
             
             return result;
@@ -782,11 +869,30 @@ Sii creativo e usa luoghi VERI di ${destination.destination}!`;
                     selectedTransport = item.dataset.transport;
                     transportSelected.textContent = item.textContent;
                     transportMenu.classList.add('hidden');
+                    triggerLiveSearch(); // 🔥 LIVE SEARCH ON CHANGE
                 });
             });
             
             document.addEventListener('click', () => {
                 transportMenu.classList.add('hidden');
+            });
+
+            // 🔥 REAL-TIME SEARCH ON ALL SLIDERS
+            const sliders = ['luxury', 'duration', 'popularity', 'distance'];
+            sliders.forEach(sliderId => {
+                const slider = document.getElementById(sliderId);
+                slider.addEventListener('input', debounce(() => {
+                    triggerLiveSearch();
+                }, 800)); // Wait 800ms after user stops moving slider
+            });
+
+            // Budget and people changes
+            document.getElementById('budget').addEventListener('input', debounce(() => {
+                triggerLiveSearch();
+            }, 1000));
+            
+            document.getElementById('people').addEventListener('change', () => {
+                triggerLiveSearch();
             });
 
             // Preference selection
@@ -803,12 +909,15 @@ Sii creativo e usa luoghi VERI di ${destination.destination}!`;
                         selectedPreference = pref;
                         btn.classList.add('selected');
                     }
+                    triggerLiveSearch(); // 🔥 LIVE SEARCH ON PREFERENCE CHANGE
                 });
             });
 
             // Main buttons
             document.getElementById('gloob-btn').addEventListener('click', startGloob);
             document.getElementById('regloob-btn').addEventListener('click', () => {
+                // 🎲 FORCE NEW DESTINATION by clearing used destinations
+                usedDestinations = [];
                 showStep('form');
                 selectedPreference = null;
                 document.querySelectorAll('.preference-btn').forEach(btn => 
@@ -820,6 +929,78 @@ Sii creativo e usa luoghi VERI di ${destination.destination}!`;
             document.getElementById('close-guide').addEventListener('click', () => {
                 document.getElementById('guide-modal').classList.add('hidden');
             });
+        }
+
+        // 🔥 LIVE SEARCH FUNCTIONALITY
+        let liveSearchTimeout;
+        let isLiveSearching = false;
+
+        function triggerLiveSearch() {
+            // Only trigger if we have minimum viable inputs
+            const budget = parseInt(document.getElementById('budget').value);
+            if (budget < 300) return;
+
+            clearTimeout(liveSearchTimeout);
+            
+            liveSearchTimeout = setTimeout(async () => {
+                if (isLiveSearching) return; // Prevent overlapping searches
+                
+                isLiveSearching = true;
+                console.log('🔥 LIVE SEARCH triggered');
+                
+                try {
+                    // Show mini loading indicator
+                    const globe = document.getElementById('globe');
+                    globe.style.transform = 'scale(0.95)';
+                    globe.style.opacity = '0.7';
+                    
+                    // Get all current values
+                    const people = parseInt(document.getElementById('people').value);
+                    const luxury = parseInt(document.getElementById('luxury').value);
+                    const duration = parseInt(document.getElementById('duration').value);
+                    const popularity = parseInt(document.getElementById('popularity').value);
+                    const distance = parseInt(document.getElementById('distance').value);
+                    
+                    // Generate preview destination
+                    currentResult = await findDestinationWithPureAI(
+                        budget, people, luxury, selectedPreference, 
+                        selectedTransport, budgetType, duration, popularity, distance
+                    );
+                    
+                    // Update globe with destination hint
+                    const hintElement = document.createElement('div');
+                    hintElement.className = 'absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded';
+                    hintElement.textContent = `${currentResult.emoji} ${currentResult.destination}`;
+                    
+                    // Remove old hint
+                    const oldHint = globe.querySelector('div');
+                    if (oldHint) oldHint.remove();
+                    
+                    globe.appendChild(hintElement);
+                    
+                    // Restore globe
+                    globe.style.transform = 'scale(1)';
+                    globe.style.opacity = '1';
+                    
+                } catch (error) {
+                    console.log('Live search error:', error);
+                } finally {
+                    isLiveSearching = false;
+                }
+            }, 300);
+        }
+
+        // Debounce helper
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
 
         function showStep(step) {
@@ -840,12 +1021,22 @@ Sii creativo e usa luoghi VERI di ${destination.destination}!`;
             
             showStep('spin');
             
-            // Update search text based on budget type
+            // Update search text based on parameters
+            const duration = parseInt(document.getElementById('duration').value);
+            const popularity = parseInt(document.getElementById('popularity').value);
+            const distance = parseInt(document.getElementById('distance').value);
+            
+            const tripType = duration < 30 ? 'breve e lussuosa' : 
+                           duration > 70 ? 'lunga ed economica' : 'equilibrata';
+            const destType = popularity < 50 ? 'autentica' : 'famosa';
+            const distType = distance < 50 ? 'vicina' : 'esotica';
+            
             const searchTexts = [
-                `🤖 L'AI sta cercando destinazioni ${budgetType === 'complete' ? 'tutto incluso' : 'essenziali'} per €${budget}...`,
-                `🌍 Analizzando ${people} persone con budget ${budgetType}...`,
-                `🔍 Controllo offerte reali online del momento...`,
-                `💡 Calcolando cosa puoi permetterti davvero...`
+                `🤖 Cerco destinazione ${destType} e ${distType} per vacanza ${tripType}...`,
+                `🌍 Budget €${budget} ${budgetType} per ${people} persone...`,
+                `🔍 Analizzo ${distance < 50 ? 'Europa vicina' : 'destinazioni lontane'}...`,
+                `💡 Calcolando durata ottimale e qualità del viaggio...`,
+                `🎯 Evito destinazioni già viste - solo sorprese!`
             ];
             
             let textIndex = 0;
@@ -854,15 +1045,18 @@ Sii creativo e usa luoghi VERI di ${destination.destination}!`;
             const textInterval = setInterval(() => {
                 searchTextElement.textContent = searchTexts[textIndex];
                 textIndex = (textIndex + 1) % searchTexts.length;
-            }, 1500);
+            }, 1200);
             
             document.getElementById('spinning-globe').classList.add('spinning');
             
             try {
                 const luxury = parseInt(document.getElementById('luxury').value);
                 
-                // 🎯 Call NEW pure AI function
-                currentResult = await findDestinationWithPureAI(budget, people, luxury, selectedPreference, selectedTransport, budgetType);
+                // 🎯 Call ENHANCED AI function with all parameters
+                currentResult = await findDestinationWithPureAI(
+                    budget, people, luxury, selectedPreference, 
+                    selectedTransport, budgetType, duration, popularity, distance
+                );
                 
                 clearInterval(textInterval);
                 document.getElementById('spinning-globe').classList.remove('spinning');
@@ -887,12 +1081,22 @@ Sii creativo e usa luoghi VERI di ${destination.destination}!`;
                     <h2 class="text-3xl font-bold text-yellow-400 mb-2">${result.destination}</h2>
                     <p class="text-xl text-gray-300 mb-4">${result.country}</p>
                     <p class="text-gray-400 mb-3">${result.description}</p>
+                    
+                    ${result.whyUnique ? `
+                    <div class="bg-blue-500/20 rounded-lg p-3 mx-auto max-w-md mb-3">
+                        <p class="text-sm font-medium text-blue-200">🌟 ${result.whyUnique}</p>
+                    </div>
+                    ` : ''}
+                    
                     <div class="bg-white/20 rounded-lg p-3 mx-auto max-w-md">
                         <p class="text-sm font-medium">${result.whyBudget || result.whyPerfect || 'Destinazione ottimale per il tuo budget!'}</p>
                     </div>
+                    
                     ${result.travelDates ? `
                     <div class="mt-4 text-sm text-yellow-200">
                         📅 <strong>Date viaggio:</strong> ${result.travelDates.start} - ${result.travelDates.end}
+                        ${result.tripDays ? ` (${result.tripDays} giorni)` : ''}
+                        ${result.budgetPerDay ? ` • €${result.budgetPerDay}/giorno` : ''}
                     </div>
                     ` : ''}
                 </div>
@@ -905,8 +1109,8 @@ Sii creativo e usa luoghi VERI di ${destination.destination}!`;
                         <div class="text-yellow-500 text-lg mb-2">${stars}</div>
                         <p class="text-sm text-gray-600 mb-4">${result.hotel.description || 'Hotel di qualità nel centro della città'}</p>
                         <div class="text-sm text-gray-600 mb-4">
-                            <div><strong>Prezzo per notte:</strong> €${result.hotel.pricePerNight || Math.round(result.hotel.totalPrice / 7)}</div>
-                            <div><strong>Totale 7 notti:</strong> €${result.hotel.totalPrice}</div>
+                            <div><strong>Prezzo per notte:</strong> €${result.hotel.pricePerNight || Math.round(result.hotel.totalPrice / (result.tripDays || 7))}</div>
+                            <div><strong>Totale ${result.tripDays || 7} notti:</strong> €${result.hotel.totalPrice}</div>
                         </div>
                         <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(result.destination + ', ' + result.country)}&checkin=${result.travelDates ? result.travelDates.startDate.toISOString().split('T')[0] : ''}&checkout=${result.travelDates ? result.travelDates.endDate.toISOString().split('T')[0] : ''}&group_adults=${people}&no_rooms=1" target="_blank" class="book-btn w-full">
                             🏨 PRENOTA HOTEL
@@ -936,12 +1140,12 @@ Sii creativo e usa luoghi VERI di ${destination.destination}!`;
                     </div>
                 </div>
 
-                <!-- Budget Summary -->
+                <!-- Enhanced Budget Summary -->
                 <div class="glass-card rounded-2xl p-6 text-center mb-6">
-                    <h3 class="text-xl font-bold mb-4">💰 Riepilogo Costi</h3>
+                    <h3 class="text-xl font-bold mb-4">💰 Riepilogo Costi ${budgetType === 'complete' ? 'Tutto Incluso' : 'Essenziale'}</h3>
                     <div class="space-y-2 mb-4 text-left max-w-md mx-auto">
                         <div class="flex justify-between">
-                            <span>🏨 Hotel (7 notti):</span>
+                            <span>🏨 Hotel (${result.tripDays || 7} notti):</span>
                             <span class="font-bold">€${result.costs.hotel}</span>
                         </div>
                         <div class="flex justify-between">
@@ -950,7 +1154,7 @@ Sii creativo e usa luoghi VERI di ${destination.destination}!`;
                         </div>
                         ${budgetType === 'complete' && result.costs.meals ? `
                         <div class="flex justify-between">
-                            <span>🍽️ Pasti (7 giorni):</span>
+                            <span>🍽️ Pasti (${result.tripDays || 7} giorni):</span>
                             <span class="font-bold">€${result.costs.meals}</span>
                         </div>
                         <div class="flex justify-between">
@@ -967,10 +1171,11 @@ Sii creativo e usa luoghi VERI di ${destination.destination}!`;
                             <span class="font-bold text-yellow-400">€${result.costs.total}</span>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-300">
-                        Budget ${budgetType === 'complete' ? 'tutto incluso' : 'essenziale'} per ${people} ${people === 1 ? 'persona' : 'persone'} • 7 giorni
-                        ${selectedPreference ? ` • 🎯 Ottimizzato per "${getPreferenceName(selectedPreference)}"` : ''}
-                    </p>
+                    <div class="text-sm text-gray-300 space-y-1">
+                        <p>Budget ${budgetType === 'complete' ? 'tutto incluso' : 'essenziale'} per ${people} ${people === 1 ? 'persona' : 'persone'} • ${result.tripDays || 7} giorni</p>
+                        ${selectedPreference ? `<p>🎯 Ottimizzato per "${getPreferenceName(selectedPreference)}"</p>` : ''}
+                        ${result.budgetPerDay ? `<p>📊 €${result.budgetPerDay} al giorno per tutto</p>` : ''}
+                    </div>
                 </div>
             `;
             
