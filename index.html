@@ -1,4 +1,168 @@
-<!DOCTYPE html>
+function displayResult() {
+            const result = currentResult;
+            const people = parseInt(document.getElementById('people').value);
+            const budget = parseInt(document.getElementById('budget').value);
+            const luxury = parseInt(document.getElementById('luxury').value);
+            
+            // Calculate prices based on budget type
+            const adjustedBudget = selectedBudgetType === 'full' ? budget * 0.7 : budget;
+            const totalPrice = Math.round(result.basePrice * people * (1 + luxury/100));
+            const remainingBudget = selectedBudgetType === 'full' ? budget - totalPrice : 0;
+            
+            const stars = '⭐'.repeat(result.hotel.stars);
+            
+            // Format dates
+            const dateIn = departureDate.toISOString().split('T')[0];
+            const dateOut = returnDate.toISOString().split('T')[0];
+            const dateInShort = dateIn.replace(/-/g, '').substring(2);
+            const dateOutShort = dateOut.replace(/-/g, '').substring(2);
+            
+            // Build URLs with real dates and people
+            const hotelUrl = `https://www.booking.com/searchresults.html?${result.hotel.bookingId
+                .replace('DATE_IN', dateIn)
+                .replace('DATE_OUT', dateOut)
+                .replace('PEOPLE', people)}`;
+            
+            let transportSection = '';
+            
+            if (selectedTransport === 'plane') {
+                const flightUrl = result.flight.skyscannerUrl
+                    .replace('DATE_OUT_SHORT', dateOutShort)
+                    .replace('DATE_IN_SHORT', dateInShort)
+                    .replace('PEOPLE', people);
+                
+                transportSection = `
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="airline-logo" style="background-color: ${getAirlineColor(result.flight.logo)}; color: white;">
+                                ${result.flight.logo}
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">${result.flight.airline}</h3>
+                                <p class="text-gray-600">${result.flight.route}</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                            <div><strong>Partenza:</strong> ${result.flight.departure}</div>
+                            <div><strong>Arrivo:</strong> ${result.flight.arrival}</div>
+                            <div><strong>Durata:</strong> ${result.flight.duration}</div>
+                            <div><strong>Scali:</strong> ${result.flight.stops}</div>
+                        </div>
+                        <a href="${flightUrl}" target="_blank" class="book-btn w-full">
+                            ✈️ PRENOTA VOLO
+                        </a>
+                    </div>
+                `;
+            } else if (selectedTransport === 'own-car' && result.ownCar) {
+                transportSection = `
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="airline-logo">🚙</div>
+                            <div>
+                                <h3 class="text-xl font-bold">Auto Propria</h3>
+                                <p class="text-gray-600">${result.ownCar.route}</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                            <div><strong>Distanza:</strong> ${result.ownCar.distance}</div>
+                            <div><strong>Durata:</strong> ${result.ownCar.duration}</div>
+                            <div><strong>Pedaggi:</strong> ${result.ownCar.tolls}</div>
+                            <div><strong>Benzina:</strong> ${result.ownCar.fuel}</div>
+                        </div>
+                        <button class="book-btn w-full" onclick="window.open('https://www.google.com/maps/dir/Milano/${result.name}', '_blank')">
+                            🗺️ VISUALIZZA PERCORSO
+                        </button>
+                    </div>
+                `;
+            } else {
+                transportSection = `
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="airline-logo">🚂</div>
+                            <div>
+                                <h3 class="text-xl font-bold">Mezzi Terra/Mare</h3>
+                                <p class="text-gray-600">Combinazione treno + nave/bus</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">Viaggio ecologico verso ${result.name}</p>
+                        <button class="book-btn w-full" onclick="window.open('https://www.trainline.eu/search?from=Milano&to=${result.name}', '_blank')">
+                            🚂 CERCA COLLEGAMENTI
+                        </button>
+                    </div>
+                `;
+            }
+            
+            const duration = Math.ceil((returnDate - departureDate) / (1000 * 60 * 60 * 24));
+            
+            // Budget breakdown section
+            let budgetSection = '';
+            if (selectedBudgetType === 'full') {
+                budgetSection = `
+                    <div class="grid grid-cols-3 gap-4 text-sm mt-4">
+                        <div class="text-center">
+                            <div class="font-bold">🏨 Trasporto + Hotel</div>
+                            <div class="text-yellow-400">€${totalPrice}</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-bold">🍽️ Spese Extra</div>
+                            <div class="text-green-400">€${remainingBudget}</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-bold">📊 Budget Giornaliero</div>
+                            <div class="text-blue-400">€${Math.round(remainingBudget / duration)}/giorno</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            const html = `
+                <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                    <div class="text-6xl mb-4">${result.emoji}</div>
+                    <h2 class="text-3xl font-bold text-yellow-400 mb-2">${result.name}</h2>
+                    <p class="text-xl text-gray-300 mb-4">${result.country}</p>
+                    <p class="text-gray-400">${result.description}</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <!-- Hotel -->
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="hotel-photo" style="background-image: url('${result.hotel.photo}')"></div>
+                        <h3 class="text-xl font-bold mb-2">${result.hotel.name}</h3>
+                        <div class="text-yellow-500 text-lg mb-2">${stars}</div>
+                        <p class="text-sm text-gray-600 mb-4">${result.hotel.description}</p>
+                        <a href="${hotelUrl}" target="_blank" class="book-btn w-full">
+                            🏨 PRENOTA HOTEL
+                        </a>
+                    </div>
+
+                    <!-- Transport -->
+                    ${transportSection}
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <h3 class="text-2xl font-bold mb-2">💰 Budget perfetto!</h3>
+                    <p class="text-3xl font-bold text-yellow-400 mb-2">€${selectedBudgetType === 'full' ? budget : totalPrice}</p>
+                    <p class="text-gray-300 mb-4">per ${people} ${people === 1 ? 'persona' : 'persone'} • ${duration} giorni</p>
+                    
+                    ${budgetSection}
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm mt-4">
+                        <div>
+                            <strong>🛫 Partenza:</strong><br>
+                            ${departureDate.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' })}
+                        </div>
+                        <div>
+                            <strong>🛬 Ritorno:</strong><br>
+                            ${returnDate.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' })}
+                        </div>
+                    </div>
+                    
+                    ${selectedPreference ? `<p class="text-sm text-green-400 mt-3">🎯 Match perfetto per "${selectedPreference}"</p>` : ''}
+                </div>
+            `;
+            
+            document.getElementById('result-content').innerHTML = html;
+        }<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -30,8 +194,8 @@
             transition: transform 1s ease-out;
         }
         
-        .spinning { animation: spin 2.5s ease-out; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(720deg); } }
+        .spinning { animation: spin 3s ease-out; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(900deg); } }
         
         .continent {
             position: absolute;
@@ -63,6 +227,32 @@
             transform: scale(1.1);
         }
 
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: rgba(6, 95, 70, 0.95);
+            backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            margin-top: 4px;
+            width: 100%;
+            z-index: 50;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .dropdown-content.show { display: block; }
+        .dropdown-item {
+            padding: 12px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dropdown-item:hover { background: rgba(255, 255, 255, 0.15); }
+        .dropdown-item:last-child { border-bottom: none; border-radius: 0 0 10px 10px; }
+
         .hotel-photo {
             width: 100%;
             height: 180px;
@@ -83,6 +273,7 @@
             font-weight: bold;
             font-size: 14px;
             color: #1f2937;
+            border: 2px solid #e5e7eb;
         }
 
         .book-btn {
@@ -102,6 +293,62 @@
         .book-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .guide-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+        .guide-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .date-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            padding: 12px;
+            width: 100%;
+        }
+        .date-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal-content {
+            background: rgba(15, 118, 110, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .hidden { display: none; }
@@ -128,13 +375,27 @@
                 <p class="text-xl text-gray-300">Gloob your new destination! 🌍</p>
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
                 <div class="glass-card rounded-2xl p-6">
                     
                     <div class="mb-5">
                         <label class="block text-sm font-medium mb-2">💰 Budget totale (€)</label>
-                        <input type="number" id="budget" value="1000" min="300" max="5000" step="100" 
+                        <input type="number" id="budget" value="1000" min="300" max="10000" step="100" 
                                class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold focus:ring-2 focus:ring-yellow-400 outline-none">
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">📋 Il budget include</label>
+                        <div class="dropdown">
+                            <button id="budget-type-btn" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none flex items-center justify-between">
+                                <span id="budget-type-selected">🏨 Trasporto + Hotel</span>
+                                <span>▼</span>
+                            </button>
+                            <div id="budget-type-dropdown" class="dropdown-content">
+                                <div class="dropdown-item" data-budget-type="basic">🏨 Trasporto + Hotel</div>
+                                <div class="dropdown-item" data-budget-type="full">🍽️ Tutto Incluso (+ spese)</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-5">
@@ -144,6 +405,7 @@
                             <option value="2" selected>2 persone</option>
                             <option value="3">3 persone</option>
                             <option value="4">4 persone</option>
+                            <option value="5">5+ persone</option>
                         </select>
                     </div>
 
@@ -154,6 +416,62 @@
                         <div class="flex justify-between text-xs mt-1">
                             <span class="text-green-400 font-bold">ECONOMICO</span>
                             <span class="text-purple-400 font-bold">LUSSO</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">🌟 Popolarità</label>
+                        <input type="range" id="popularity" value="50" min="0" max="100" 
+                               class="w-full h-3 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs mt-1">
+                            <span class="text-blue-400 font-bold">NASCOSTA</span>
+                            <span class="text-pink-400 font-bold">FAMOSA</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">🚗 Trasporto</label>
+                        <div class="dropdown">
+                            <button id="transport-btn" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none flex items-center justify-between">
+                                <span id="transport-selected">✈️ Aereo</span>
+                                <span>▼</span>
+                            </button>
+                            <div id="transport-dropdown" class="dropdown-content">
+                                <div class="dropdown-item" data-transport="plane">✈️ Aereo</div>
+                                <div class="dropdown-item" data-transport="land-sea">🚂 Mezzi terra/mare</div>
+                                <div class="dropdown-item" data-transport="own-car">🚙 Auto propria</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">📅 Quando</label>
+                        <div class="dropdown">
+                            <button id="when-btn" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none flex items-center justify-between">
+                                <span id="when-selected">🎲 Flessibile</span>
+                                <span>▼</span>
+                            </button>
+                            <div id="when-dropdown" class="dropdown-content">
+                                <div class="dropdown-item" data-when="flexible">🎲 Flessibile</div>
+                                <div class="dropdown-item" data-when="weekend">📅 Prossimo weekend</div>
+                                <div class="dropdown-item" data-when="week">📅 Una settimana</div>
+                                <div class="dropdown-item" data-when="month">📅 Un mese</div>
+                                <div class="dropdown-item" data-when="custom">📅 Date specifiche</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Date Picker -->
+                    <div id="date-picker" class="mb-5 hidden">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">🛫 Partenza</label>
+                                <input type="date" id="departure-date" class="date-input">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">🛬 Ritorno</label>
+                                <input type="date" id="return-date" class="date-input">
+                            </div>
                         </div>
                     </div>
 
@@ -200,14 +518,14 @@
                         <div class="continent oceania"></div>
                     </div>
                 </div>
-                <h2 class="text-3xl font-bold mb-2">🌍 Gloobbing...</h2>
+                <h2 class="text-4xl font-bold mb-2">🌍 Gloobbing...</h2>
                 <p class="text-lg text-gray-300" id="search-text">Trovando la destinazione perfetta!</p>
             </div>
         </div>
 
         <!-- Result -->
         <div id="result-step" class="hidden container mx-auto px-4 py-8">
-            <div class="max-w-4xl mx-auto">
+            <div class="max-w-5xl mx-auto">
                 <div class="text-center mb-6">
                     <h1 class="text-4xl font-bold mb-2">🎉 Ecco la tua destinazione!</h1>
                 </div>
@@ -217,16 +535,32 @@
                 </div>
 
                 <div class="text-center mt-6">
+                    <button id="guide-btn" class="guide-btn mr-4">📚 GUIDA VACANZA</button>
                     <button id="regloob-btn" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-700 transition-colors">
-                        🎲 Gloob di nuovo
+                        🎲 Regloob
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Travel Guide Modal -->
+    <div id="guide-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-bold mb-4">📚 Guida Vacanza</h2>
+                <div id="guide-content">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            <button id="close-guide" class="w-full bg-gray-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-700 transition-colors">
+                ✕ Chiudi
+            </button>
+        </div>
+    </div>
+
     <script>
-        // Elegant destinations database
+        // Enhanced destinations database with transport options
         const destinations = {
             santorini: {
                 name: 'Santorini',
@@ -236,42 +570,83 @@
                 basePrice: 180,
                 tags: ['sea', 'romantic'],
                 popularity: 90,
+                transports: ['plane'],
                 hotel: {
                     name: 'Canaves Oia Suites',
                     stars: 5,
                     photo: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=500&h=300&fit=crop',
-                    bookingId: 'ss=Santorini%2C%20Greece&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
+                    bookingId: 'ss=Santorini%2C%20Greece&checkin=DATE_IN&checkout=DATE_OUT&group_adults=PEOPLE&no_rooms=1',
                     description: 'Suite con infinity pool vista caldera'
                 },
                 flight: {
                     airline: 'Aegean Airlines',
                     logo: 'A3',
                     route: 'MXP → JTR',
+                    departure: '09:15',
+                    arrival: '13:40',
                     duration: '3h 25m',
-                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/sant/240815/240822/?adults=2&children=0&adultsv2=2&childrenv2=&infants=0'
+                    stops: '1 scalo',
+                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/sant/DATE_OUT_SHORT/DATE_IN_SHORT/?adults=PEOPLE'
                 }
             },
-            porto: {
-                name: 'Porto',
-                country: 'Portogallo',
-                emoji: '🍷',
-                description: 'Città del porto e azulejos colorati',
-                basePrice: 120,
-                tags: ['culture', 'food'],
-                popularity: 65,
+            barcelona: {
+                name: 'Barcellona',
+                country: 'Spagna',
+                emoji: '🏛️',
+                description: 'Gaudí, tapas e Mediterraneo',
+                basePrice: 130,
+                tags: ['culture', 'food', 'sea'],
+                popularity: 85,
+                transports: ['plane', 'land-sea'],
                 hotel: {
-                    name: 'The Yeatman',
+                    name: 'Hotel Casa Fuster',
                     stars: 5,
-                    photo: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=500&h=300&fit=crop',
-                    bookingId: 'ss=Porto%2C%20Portugal&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
-                    description: 'Hotel di charme nel quartiere di Vila Nova de Gaia'
+                    photo: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=300&fit=crop',
+                    bookingId: 'ss=Barcelona%2C%20Spain&checkin=DATE_IN&checkout=DATE_OUT&group_adults=PEOPLE&no_rooms=1',
+                    description: 'Modernismo catalano nel cuore della città'
+                },
+                flight: {
+                    airline: 'Vueling',
+                    logo: 'VY',
+                    route: 'MXP → BCN',
+                    departure: '14:25',
+                    arrival: '16:10',
+                    duration: '1h 45m',
+                    stops: 'Diretto',
+                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/barc/DATE_OUT_SHORT/DATE_IN_SHORT/?adults=PEOPLE'
+                },
+                landSea: {
+                    route: 'Milano → Barcellona',
+                    options: ['Treno AVE + TGV', 'Autonoleggio'],
+                    duration: '12-14 ore',
+                    description: 'Viaggio panoramico attraverso le Alpi e Pirenei'
+                }
+            },
+            madeira: {
+                name: 'Madeira',
+                country: 'Portogallo',
+                emoji: '🌺',
+                description: 'Isola subtropicale dell\'eterna primavera',
+                basePrice: 130,
+                tags: ['mountain', 'adventure'],
+                popularity: 45,
+                transports: ['plane'],
+                hotel: {
+                    name: 'Belmond Reid\'s Palace',
+                    stars: 5,
+                    photo: 'https://images.unsplash.com/photo-1588491115447-5e5cdee6aab0?w=500&h=300&fit=crop',
+                    bookingId: 'ss=Funchal%2C%20Madeira&checkin=DATE_IN&checkout=DATE_OUT&group_adults=PEOPLE&no_rooms=1',
+                    description: 'Hotel storico con giardini subtropicali'
                 },
                 flight: {
                     airline: 'TAP Portugal',
                     logo: 'TP',
-                    route: 'MXP → OPO',
-                    duration: '2h 45m',
-                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/port/240815/240822/?adults=2&children=0&adultsv2=2&childrenv2=&infants=0'
+                    route: 'MXP → FNC',
+                    departure: '11:40',
+                    arrival: '14:55',
+                    duration: '3h 15m',
+                    stops: 'Diretto',
+                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/func/DATE_OUT_SHORT/DATE_IN_SHORT/?adults=PEOPLE'
                 }
             },
             dubrovnik: {
@@ -282,63 +657,120 @@
                 basePrice: 140,
                 tags: ['sea', 'culture'],
                 popularity: 75,
+                transports: ['plane', 'land-sea', 'own-car'],
                 hotel: {
                     name: 'Hotel Excelsior',
                     stars: 5,
                     photo: 'https://images.unsplash.com/photo-1594736797933-d0201ba40a65?w=500&h=300&fit=crop',
-                    bookingId: 'ss=Dubrovnik%2C%20Croatia&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
+                    bookingId: 'ss=Dubrovnik%2C%20Croatia&checkin=DATE_IN&checkout=DATE_OUT&group_adults=PEOPLE&no_rooms=1',
                     description: 'Luxury hotel fronte mare nella città vecchia'
                 },
                 flight: {
                     airline: 'Croatia Airlines',
                     logo: 'OU',
                     route: 'MXP → DBV',
+                    departure: '16:30',
+                    arrival: '18:00',
                     duration: '1h 30m',
-                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/dubr/240815/240822/?adults=2&children=0&adultsv2=2&childrenv2=&infants=0'
+                    stops: 'Diretto',
+                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/dubr/DATE_OUT_SHORT/DATE_IN_SHORT/?adults=PEOPLE'
+                },
+                ownCar: {
+                    route: 'Milano → Dubrovnik',
+                    distance: '850 km',
+                    duration: '8 ore',
+                    tolls: '€45',
+                    fuel: '€85'
                 }
             },
-            madeira: {
-                name: 'Madeira',
+            porto: {
+                name: 'Porto',
                 country: 'Portogallo',
-                emoji: '🌺',
-                description: 'Isola subtropicale dell\'eterna primavera',
-                basePrice: 130,
-                tags: ['mountain', 'adventure'],
-                popularity: 50,
+                emoji: '🍷',
+                description: 'Città del porto e azulejos colorati',
+                basePrice: 120,
+                tags: ['culture', 'food'],
+                popularity: 65,
+                transports: ['plane', 'land-sea'],
                 hotel: {
-                    name: 'Belmond Reid\'s Palace',
+                    name: 'The Yeatman',
                     stars: 5,
-                    photo: 'https://images.unsplash.com/photo-1588491115447-5e5cdee6aab0?w=500&h=300&fit=crop',
-                    bookingId: 'ss=Funchal%2C%20Madeira&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
-                    description: 'Hotel storico con giardini subtropicali'
+                    photo: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=500&h=300&fit=crop',
+                    bookingId: 'ss=Porto%2C%20Portugal&checkin=DATE_IN&checkout=DATE_OUT&group_adults=PEOPLE&no_rooms=1',
+                    description: 'Hotel di charme nel quartiere di Vila Nova de Gaia'
                 },
                 flight: {
                     airline: 'TAP Portugal',
                     logo: 'TP',
-                    route: 'MXP → FNC',
-                    duration: '3h 15m',
-                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/func/240815/240822/?adults=2&children=0&adultsv2=2&childrenv2=&infants=0'
+                    route: 'MXP → OPO',
+                    departure: '13:20',
+                    arrival: '16:05',
+                    duration: '2h 45m',
+                    stops: 'Diretto',
+                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/port/DATE_OUT_SHORT/DATE_IN_SHORT/?adults=PEOPLE'
+                }
+            },
+            zagreb: {
+                name: 'Zagabria',
+                country: 'Croazia',
+                emoji: '🏰',
+                description: 'Capitale mitteleuropea dal fascino austroungarico',
+                basePrice: 90,
+                tags: ['culture', 'food'],
+                popularity: 35,
+                transports: ['plane', 'land-sea', 'own-car'],
+                hotel: {
+                    name: 'Esplanade Zagreb Hotel',
+                    stars: 5,
+                    photo: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&h=300&fit=crop',
+                    bookingId: 'ss=Zagreb%2C%20Croatia&checkin=DATE_IN&checkout=DATE_OUT&group_adults=PEOPLE&no_rooms=1',
+                    description: 'Eleganza storica nel cuore della città'
+                },
+                flight: {
+                    airline: 'Croatia Airlines',
+                    logo: 'OU',
+                    route: 'MXP → ZAG',
+                    departure: '12:15',
+                    arrival: '13:30',
+                    duration: '1h 15m',
+                    stops: 'Diretto',
+                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/zagr/DATE_OUT_SHORT/DATE_IN_SHORT/?adults=PEOPLE'
+                },
+                ownCar: {
+                    route: 'Milano → Zagabria',
+                    distance: '650 km',
+                    duration: '6 ore',
+                    tolls: '€35',
+                    fuel: '€65'
                 }
             }
         };
 
         // App state
         let selectedPreference = null;
+        let selectedTransport = 'plane';
+        let selectedWhen = 'flexible';
+        let selectedBudgetType = 'basic';
         let currentResult = null;
+        let departureDate = null;
+        let returnDate = null;
 
-        // Smart destination picker
-        function pickDestination(budget, people, luxury, preference) {
-            const perPersonBudget = budget / people;
-            const availableDestinations = Object.values(destinations);
+        // Smart destination picker with enhanced logic
+        function pickDestination(budget, people, luxury, popularity, preference, transport, budgetType) {
+            // Adjust budget based on type
+            const adjustedBudget = budgetType === 'full' ? budget * 0.7 : budget; // 70% for transport+hotel if full budget
+            const perPersonBudget = adjustedBudget / people;
             
-            // Filter by preference
+            const availableDestinations = Object.values(destinations).filter(d => 
+                d.transports.includes(transport)
+            );
+            
             let filtered = preference ? 
                 availableDestinations.filter(d => d.tags.includes(preference)) : 
                 availableDestinations;
             
             if (filtered.length === 0) filtered = availableDestinations;
             
-            // Smart selection based on budget and luxury level
             let scored = filtered.map(dest => {
                 let score = 50;
                 
@@ -350,17 +782,187 @@
                 if (luxury > 70 && dest.basePrice > 150) score += 20;
                 if (luxury < 30 && dest.basePrice < 140) score += 20;
                 
-                // Popularity for hidden gems
-                if (luxury < 50 && dest.popularity < 70) score += 15;
+                // Popularity matching
+                const popularityDiff = Math.abs(dest.popularity - popularity);
+                score -= popularityDiff * 0.2;
+                
+                // Transport bonus
+                if (transport === 'own-car' && dest.ownCar) score += 15;
+                if (transport === 'land-sea' && dest.landSea) score += 15;
                 
                 return { ...dest, score };
             });
             
-            // Sort and add randomness
             scored.sort((a, b) => b.score - a.score);
-            const topCandidates = scored.slice(0, 2);
+            const topCandidates = scored.slice(0, 3);
             
             return topCandidates[Math.floor(Math.random() * topCandidates.length)];
+        }
+
+        // Date calculation functions
+        function calculateDates(whenOption) {
+            const today = new Date();
+            let departure, returnDate;
+            
+            switch(whenOption) {
+                case 'weekend':
+                    departure = new Date(today);
+                    departure.setDate(today.getDate() + (6 - today.getDay())); // Next Saturday
+                    returnDate = new Date(departure);
+                    returnDate.setDate(departure.getDate() + 2); // Sunday
+                    break;
+                case 'week':
+                    departure = new Date(today);
+                    departure.setDate(today.getDate() + 14); // 2 weeks from now
+                    returnDate = new Date(departure);
+                    returnDate.setDate(departure.getDate() + 7); // 1 week
+                    break;
+                case 'month':
+                    departure = new Date(today);
+                    departure.setDate(today.getDate() + 30); // 1 month from now
+                    returnDate = new Date(departure);
+                    returnDate.setDate(departure.getDate() + 30); // 1 month
+                    break;
+                case 'flexible':
+                    departure = new Date(today);
+                    departure.setDate(today.getDate() + Math.floor(Math.random() * 60) + 7); // Random 1-9 weeks
+                    returnDate = new Date(departure);
+                    returnDate.setDate(departure.getDate() + 5); // 5 days
+                    break;
+                case 'custom':
+                    departure = new Date(document.getElementById('departure-date').value);
+                    returnDate = new Date(document.getElementById('return-date').value);
+                    break;
+            }
+            
+            return { departure, returnDate };
+        }
+
+        // Travel guide generator with budget-aware recommendations
+        function generateTravelGuide(destination, luxury, duration, budgetType, remainingBudget) {
+            const dailyBudget = budgetType === 'full' ? Math.round(remainingBudget / duration) : 0;
+            
+            const guides = {
+                santorini: {
+                    overview: "Santorini è l'isola perfetta per un viaggio romantico tra vulcani e tramonti mozzafiato.",
+                    budget: {
+                        restaurants: luxury > 70 ? ["Selene Restaurant (€80/persona)", "Lycabettus Restaurant (€60/persona)"] : 
+                                   budgetType === 'full' ? ["Roka Restaurant (€35/persona)", "Naoussa Tavern (€25/persona)"] :
+                                   ["Lucky's Souvlakis (€15/persona)", "To Psaraki (€20/persona)"],
+                        activities: luxury > 70 ? ["Tour privato catamarano (€200)", "Degustazione vini esclusiva (€150)"] :
+                                   budgetType === 'full' ? ["Tour dei villaggi (€45)", "Tramonto a Oia (€25)"] :
+                                   ["Hiking Fira-Oia (gratis)", "Spiagge pubbliche (gratis)"],
+                        tips: ["Prenota il tramonto con anticipo", "Assaggia i pomodorini ciliegini locali", "Evita i ristoranti con vista caldera (caro)"]
+                    },
+                    itinerary: [
+                        "Giorno 1: Arrivo a Fira, esplora il centro",
+                        "Giorno 2: Oia e tramonto famoso",
+                        "Giorno 3: Spiagge vulcaniche e Akrotiri",
+                        "Giorno 4: Degustazione vini e relax",
+                        "Giorno 5: Kamari beach e shopping"
+                    ]
+                },
+                barcelona: {
+                    overview: "Barcellona combina perfettamente arte, gastronomia e vita mediterranea.",
+                    budget: {
+                        restaurants: luxury > 70 ? ["Disfrutar (€180/persona)", "ABaC Restaurant (€150/persona)"] :
+                                   budgetType === 'full' ? ["Cal Pep (€45/persona)", "Bar del Pla (€35/persona)"] :
+                                   ["Mercado de la Boquería (€12/persona)", "Tapas bars Gràcia (€20/persona)"],
+                        activities: luxury > 70 ? ["Tour privato Sagrada Familia (€120)", "Cooking class con chef (€180)"] :
+                                   budgetType === 'full' ? ["Sagrada Familia (€26)", "Park Güell (€10)"] :
+                                   ["Free walking tour (gratis)", "Spiagge gratuite"],
+                        tips: ["Evita Las Ramblas per mangiare", "Usa i trasporti pubblici (€10/giorno)", "Aperitivo in Gràcia"]
+                    },
+                    itinerary: [
+                        "Giorno 1: Barrio Gotico e Sagrada Familia",
+                        "Giorno 2: Park Güell e Gràcia",
+                        "Giorno 3: Spiaggia e Barceloneta",
+                        "Giorno 4: Musei e shopping Passeig de Gràcia",
+                        "Giorno 5: Montjuïc e flamenco"
+                    ]
+                },
+                porto: {
+                    overview: "Porto è una gemma portoghese ricca di storia, vino e architettura azulejos.",
+                    budget: {
+                        restaurants: luxury > 70 ? ["The Yeatman (€120/persona)", "Pedro Lemos (€90/persona)"] :
+                                   budgetType === 'full' ? ["Taberna do Real Fado (€35/persona)", "Cantinho do Avillez (€40/persona)"] :
+                                   ["Bifana da Batalha (€8/persona)", "Francesinha locale (€12/persona)"],
+                        activities: luxury > 70 ? ["Tour privato cantine (€85)", "Crociera sul Douro (€120)"] :
+                                   budgetType === 'full' ? ["Cantine tour (€25)", "Libreria Lello (€5)"] :
+                                   ["Walking tour gratuito", "Ponte Dom Luís (gratis)"],
+                        tips: ["Prova i pastéis de nata", "Passeggia lungo il fiume Douro", "Evita i ristoranti turistici in Ribeira"]
+                    },
+                    itinerary: [
+                        "Giorno 1: Centro storico e Ribeira",
+                        "Giorno 2: Cantine di Vila Nova de Gaia",
+                        "Giorno 3: Palácio da Bolsa e Torre dos Clérigos",
+                        "Giorno 4: Foz do Douro e oceano",
+                        "Giorno 5: Aveiro (Venice portoghese)"
+                    ]
+                }
+            };
+
+            const destinationKey = destination.name.toLowerCase().replace(/\s+/g, '');
+            const guide = guides[destinationKey] || guides.porto;
+
+            let budgetSection = '';
+            if (budgetType === 'full' && dailyBudget > 0) {
+                budgetSection = `
+                    <div class="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                        <h4 class="font-bold mb-2 text-green-800">💰 Budget Giornaliero Spese</h4>
+                        <p class="text-green-700">Hai €${dailyBudget}/giorno per attività e pasti</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="text-left">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">${destination.name} - Guida Completa</h3>
+                    
+                    ${budgetSection}
+                    
+                    <div class="mb-6">
+                        <h4 class="font-bold mb-2">📍 Panoramica</h4>
+                        <p class="text-gray-300">${guide.overview}</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="font-bold mb-2">🍽️ Dove Mangiare</h4>
+                        <ul class="list-disc list-inside text-gray-300">
+                            ${guide.budget.restaurants.map(r => `<li>${r}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="font-bold mb-2">🎯 Attività Consigliate</h4>
+                        <ul class="list-disc list-inside text-gray-300">
+                            ${guide.budget.activities.map(a => `<li>${a}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="font-bold mb-2">📋 Itinerario ${duration} Giorni</h4>
+                        <ol class="list-decimal list-inside text-gray-300">
+                            ${guide.itinerary.slice(0, duration).map(day => `<li>${day}</li>`).join('')}
+                        </ol>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="font-bold mb-2">💡 Tips Locali</h4>
+                        <ul class="list-disc list-inside text-gray-300">
+                            ${guide.budget.tips.map(tip => `<li>${tip}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="mt-8 p-4 bg-gray-100 rounded-lg border-l-4 border-blue-500">
+                        <p class="text-gray-700 text-sm">
+                            <strong>📋 Disclaimer:</strong> Prezzi basati su tariffe partner aggiornate. 
+                            Condizioni finali e prenotazioni tramite provider esterni. 
+                            Consigliamo un margine del 15-20% per imprevisti.
+                        </p>
+                    </div>
+                </div>
+            `;
         }
 
         // Initialize
@@ -369,10 +971,41 @@
                 document.getElementById('loading').classList.add('hidden');
                 document.getElementById('form-step').classList.remove('hidden');
                 setupEvents();
+                setDefaultDates();
             }, 800);
         }
 
+        function setDefaultDates() {
+            const today = new Date();
+            const nextWeek = new Date(today);
+            nextWeek.setDate(today.getDate() + 7);
+            const returnDate = new Date(nextWeek);
+            returnDate.setDate(nextWeek.getDate() + 5);
+            
+            document.getElementById('departure-date').value = nextWeek.toISOString().split('T')[0];
+            document.getElementById('return-date').value = returnDate.toISOString().split('T')[0];
+        }
+
         function setupEvents() {
+            // Dropdown handlers
+            setupDropdown('transport', (value, text) => {
+                selectedTransport = value;
+            });
+
+            setupDropdown('when', (value, text) => {
+                selectedWhen = value;
+                const datePicker = document.getElementById('date-picker');
+                if (value === 'custom') {
+                    datePicker.classList.remove('hidden');
+                } else {
+                    datePicker.classList.add('hidden');
+                }
+            });
+
+            setupDropdown('budget-type', (value, text) => {
+                selectedBudgetType = value;
+            });
+
             // Preference selection
             document.querySelectorAll('.preference-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -390,15 +1023,42 @@
                 });
             });
 
-            // Gloob button
+            // Main buttons
             document.getElementById('gloob-btn').addEventListener('click', startGloob);
+            document.getElementById('regloob-btn').addEventListener('click', resetForm);
+            document.getElementById('guide-btn').addEventListener('click', showTravelGuide);
+            document.getElementById('close-guide').addEventListener('click', () => {
+                document.getElementById('guide-modal').classList.add('hidden');
+            });
+        }
 
-            // Regloob
-            document.getElementById('regloob-btn').addEventListener('click', () => {
-                showStep('form');
-                selectedPreference = null;
-                document.querySelectorAll('.preference-btn').forEach(btn => 
-                    btn.classList.remove('selected'));
+        function setupDropdown(prefix, callback) {
+            const btn = document.getElementById(`${prefix}-btn`);
+            const dropdown = document.getElementById(`${prefix}-dropdown`);
+            const selected = document.getElementById(`${prefix}-selected`);
+
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Close other dropdowns
+                document.querySelectorAll('.dropdown-content').forEach(d => {
+                    if (d !== dropdown) d.classList.remove('show');
+                });
+                dropdown.classList.toggle('show');
+            });
+
+            dropdown.addEventListener('click', (e) => {
+                if (e.target.classList.contains('dropdown-item')) {
+                    const value = e.target.dataset[prefix];
+                    const text = e.target.textContent;
+                    selected.textContent = text;
+                    dropdown.classList.remove('show');
+                    callback(value, text);
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                dropdown.classList.remove('show');
             });
         }
 
@@ -420,31 +1080,116 @@
             
             showStep('spin');
             document.getElementById('search-text').textContent = 
-                `Cercando per ${people} persone con €${budget}...`;
+                `Gloobbing per ${people} persone con €${budget}...`;
             
             document.getElementById('spinning-globe').classList.add('spinning');
             
             setTimeout(() => {
                 const luxury = parseInt(document.getElementById('luxury').value);
-                currentResult = pickDestination(budget, people, luxury, selectedPreference);
+                const popularity = parseInt(document.getElementById('popularity').value);
+                
+                currentResult = pickDestination(budget, people, luxury, popularity, selectedPreference, selectedTransport, selectedBudgetType);
+                const dates = calculateDates(selectedWhen);
+                departureDate = dates.departure;
+                returnDate = dates.returnDate;
                 
                 document.getElementById('spinning-globe').classList.remove('spinning');
                 displayResult();
                 setTimeout(() => showStep('result'), 300);
-            }, 2500);
+            }, 3000);
         }
 
         function displayResult() {
             const result = currentResult;
             const people = parseInt(document.getElementById('people').value);
             const budget = parseInt(document.getElementById('budget').value);
+            const luxury = parseInt(document.getElementById('luxury').value);
             
-            const totalPrice = Math.round(result.basePrice * people * 1.2);
+            const totalPrice = Math.round(result.basePrice * people * (1 + luxury/100));
             const stars = '⭐'.repeat(result.hotel.stars);
             
-            // Build booking URLs with real parameters
-            const hotelUrl = `https://www.booking.com/searchresults.html?${result.hotel.bookingId}&group_adults=${people}`;
-            const flightUrl = result.flight.skyscannerUrl.replace('adults=2', `adults=${people}`);
+            // Format dates
+            const dateIn = departureDate.toISOString().split('T')[0];
+            const dateOut = returnDate.toISOString().split('T')[0];
+            const dateInShort = dateIn.replace(/-/g, '').substring(2);
+            const dateOutShort = dateOut.replace(/-/g, '').substring(2);
+            
+            // Build URLs with real dates and people
+            const hotelUrl = `https://www.booking.com/searchresults.html?${result.hotel.bookingId
+                .replace('DATE_IN', dateIn)
+                .replace('DATE_OUT', dateOut)
+                .replace('PEOPLE', people)}`;
+            
+            let transportSection = '';
+            
+            if (selectedTransport === 'plane') {
+                const flightUrl = result.flight.skyscannerUrl
+                    .replace('DATE_OUT_SHORT', dateOutShort)
+                    .replace('DATE_IN_SHORT', dateInShort)
+                    .replace('PEOPLE', people);
+                
+                transportSection = `
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="airline-logo" style="background-color: ${getAirlineColor(result.flight.logo)}; color: white;">
+                                ${result.flight.logo}
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">${result.flight.airline}</h3>
+                                <p class="text-gray-600">${result.flight.route}</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                            <div><strong>Partenza:</strong> ${result.flight.departure}</div>
+                            <div><strong>Arrivo:</strong> ${result.flight.arrival}</div>
+                            <div><strong>Durata:</strong> ${result.flight.duration}</div>
+                            <div><strong>Scali:</strong> ${result.flight.stops}</div>
+                        </div>
+                        <a href="${flightUrl}" target="_blank" class="book-btn w-full">
+                            ✈️ PRENOTA VOLO
+                        </a>
+                    </div>
+                `;
+            } else if (selectedTransport === 'own-car' && result.ownCar) {
+                transportSection = `
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="airline-logo">🚙</div>
+                            <div>
+                                <h3 class="text-xl font-bold">Auto Propria</h3>
+                                <p class="text-gray-600">${result.ownCar.route}</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                            <div><strong>Distanza:</strong> ${result.ownCar.distance}</div>
+                            <div><strong>Durata:</strong> ${result.ownCar.duration}</div>
+                            <div><strong>Pedaggi:</strong> ${result.ownCar.tolls}</div>
+                            <div><strong>Benzina:</strong> ${result.ownCar.fuel}</div>
+                        </div>
+                        <button class="book-btn w-full" onclick="window.open('https://www.google.com/maps/dir/Milano/${result.name}', '_blank')">
+                            🗺️ VISUALIZZA PERCORSO
+                        </button>
+                    </div>
+                `;
+            } else {
+                transportSection = `
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="airline-logo">🚂</div>
+                            <div>
+                                <h3 class="text-xl font-bold">Mezzi Terra/Mare</h3>
+                                <p class="text-gray-600">Combinazione treno + nave/bus</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">Viaggio ecologico verso ${result.name}</p>
+                        <button class="book-btn w-full" onclick="window.open('https://www.trainline.eu/search?from=Milano&to=${result.name}', '_blank')">
+                            🚂 CERCA COLLEGAMENTI
+                        </button>
+                    </div>
+                `;
+            }
+            
+            const duration = Math.ceil((returnDate - departureDate) / (1000 * 60 * 60 * 24));
             
             const html = `
                 <div class="glass-card rounded-2xl p-6 text-center mb-6">
@@ -466,36 +1211,87 @@
                         </a>
                     </div>
 
-                    <!-- Flight -->
-                    <div class="bg-white rounded-2xl p-6 text-gray-800">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="airline-logo">${result.flight.logo}</div>
-                            <div>
-                                <h3 class="text-xl font-bold">${result.flight.airline}</h3>
-                                <p class="text-gray-600">${result.flight.route}</p>
-                            </div>
-                        </div>
-                        <p class="text-lg font-bold mb-2">Durata: ${result.flight.duration}</p>
-                        <p class="text-sm text-gray-600 mb-4">Volo diretto da Milano Malpensa</p>
-                        <a href="${flightUrl}" target="_blank" class="book-btn w-full">
-                            ✈️ PRENOTA VOLO
-                        </a>
-                    </div>
+                    <!-- Transport -->
+                    ${transportSection}
                 </div>
 
                 <div class="glass-card rounded-2xl p-6 text-center">
                     <h3 class="text-2xl font-bold mb-2">💰 Budget perfetto!</h3>
                     <p class="text-3xl font-bold text-yellow-400 mb-2">€${totalPrice}</p>
-                    <p class="text-gray-300">per ${people} ${people === 1 ? 'persona' : 'persone'} • 7 giorni</p>
-                    ${selectedPreference ? `<p class="text-sm text-green-400 mt-2">🎯 Match perfetto per "${selectedPreference}"</p>` : ''}
+                    <p class="text-gray-300 mb-4">per ${people} ${people === 1 ? 'persona' : 'persone'} • ${duration} giorni</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <strong>🛫 Partenza:</strong><br>
+                            ${departureDate.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' })}
+                        </div>
+                        <div>
+                            <strong>🛬 Ritorno:</strong><br>
+                            ${returnDate.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' })}
+                        </div>
+                    </div>
+                    
+                    ${selectedPreference ? `<p class="text-sm text-green-400 mt-3">🎯 Match perfetto per "${selectedPreference}"</p>` : ''}
                 </div>
             `;
             
             document.getElementById('result-content').innerHTML = html;
         }
 
+        function getAirlineColor(code) {
+            const colors = {
+                'A3': '#003f7f', // Aegean
+                'TP': '#dc143c', // TAP
+                'OU': '#ff6600', // Croatia Airlines
+                'VY': '#ffd100', // Vueling
+            };
+            return colors[code] || '#1f2937';
+        }
+
+        function showTravelGuide() {
+            if (!currentResult) return;
+            
+            const luxury = parseInt(document.getElementById('luxury').value);
+            const duration = Math.ceil((returnDate - departureDate) / (1000 * 60 * 60 * 24));
+            const budget = parseInt(document.getElementById('budget').value);
+            const people = parseInt(document.getElementById('people').value);
+            const totalPrice = Math.round(currentResult.basePrice * people * (1 + luxury/100));
+            const remainingBudget = selectedBudgetType === 'full' ? budget - totalPrice : 0;
+            
+            const guideContent = generateTravelGuide(currentResult, luxury, duration, selectedBudgetType, remainingBudget);
+            document.getElementById('guide-content').innerHTML = guideContent;
+            document.getElementById('guide-modal').classList.remove('hidden');
+        }
+
+        function resetForm() {
+            showStep('form');
+            selectedPreference = null;
+            selectedTransport = 'plane';
+            selectedWhen = 'flexible';
+            selectedBudgetType = 'basic';
+            
+            document.querySelectorAll('.preference-btn').forEach(btn => 
+                btn.classList.remove('selected'));
+            
+            document.getElementById('transport-selected').textContent = '✈️ Aereo';
+            document.getElementById('when-selected').textContent = '🎲 Flessibile';
+            document.getElementById('budget-type-selected').textContent = '🏨 Trasporto + Hotel';
+            document.getElementById('date-picker').classList.add('hidden');
+        }
+
         // Start app
         init();
     </script>
+
+    <!-- Footer with legal disclaimer -->
+    <footer class="bg-gray-800 text-gray-300 text-center py-6 mt-12">
+        <div class="container mx-auto px-4">
+            <p class="text-sm">
+                Prezzi basati su tariffe partner aggiornate. 
+                Condizioni finali e prenotazioni tramite provider esterni.
+            </p>
+        </div>
+    </footer>
+
 </body>
 </html>
