@@ -427,6 +427,18 @@
             <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
                 <div class="glass-card rounded-2xl p-6">
                     
+                    <!-- CITTÀ DI PARTENZA -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">📍 Da dove parti?</label>
+                        <div class="relative">
+                            <input type="text" id="departure-city" placeholder="Milano" value="Milano" 
+                                   class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
+                            <button onclick="getLocation()" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-yellow-500 text-black px-3 py-1 rounded-lg text-sm hover:bg-yellow-400">
+                                📍 Usa posizione
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- BUDGET & PERSONE -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium mb-2">💰 Budget totale (€)</label>
@@ -468,19 +480,42 @@
                         </div>
                     </div>
 
-                    <!-- JOYSTICK PRINCIPALE -->
-                    <div class="mb-8">
-                        <label class="block text-sm font-medium mb-6 text-center text-lg">🎮 Choose your vibe</label>
-                        <div class="joystick-4d" id="main-joystick">
-                            <div class="joystick-grid"></div>
-                            <div class="joystick-center"></div>
-                            <div class="joystick-dot" id="main-dot"></div>
+                    <!-- DURATA VIAGGIO (SEMPRE VISIBILE) -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">📅 Durata</label>
+                        <div class="custom-dropdown">
+                            <button type="button" class="dropdown-btn" id="duration-btn">
+                                <span id="duration-selected">🗓️ Indifferente</span>
+                                <span class="ml-auto">▼</span>
+                            </button>
+                            <div class="dropdown-menu hidden" id="duration-menu">
+                                <div class="dropdown-item" data-duration="any">🗓️ Indifferente</div>
+                                <div class="dropdown-item" data-duration="weekend">⚡ Weekend (2-3 giorni)</div>
+                                <div class="dropdown-item" data-duration="week">📅 Una settimana</div>
+                                <div class="dropdown-item" data-duration="two-weeks">🏖️ Due settimane</div>
+                                <div class="dropdown-item" data-duration="month">🌴 Un mese</div>
+                                <div class="dropdown-item" data-duration="custom">📆 Date specifiche</div>
+                            </div>
                         </div>
-                        <div style="position: relative; width: 200px; margin: 0 auto;">
-                            <div class="joystick-label top">🎒 AVVENTURA</div>
-                            <div class="joystick-label bottom">😌 RELAX</div>
-                            <div class="joystick-label left">🏖️ MARE</div>
-                            <div class="joystick-label right">🏔️ MONTAGNA</div>
+                        <div id="date-picker" class="hidden mt-2">
+                            <input type="date" id="start-date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white mr-2" placeholder="Partenza">
+                            <input type="date" id="end-date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white" placeholder="Ritorno">
+                        </div>
+                    </div>
+                    <!-- JOYSTICK PRINCIPALE -->
+                    <div class="mb-8" style="margin-top: 20px;">
+                        <label class="block text-sm font-medium mb-4 text-center text-lg">🎮 Choose your vibe</label>
+                        <div style="position: relative; width: 280px; margin: 0 auto;">
+                            <div class="joystick-label" style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%);">🎒 AVVENTURA</div>
+                            <div class="joystick-label" style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%);">😌 RELAX</div>
+                            <div class="joystick-label" style="position: absolute; left: -45px; top: 50%; transform: translateY(-50%);">🏖️ MARE</div>
+                            <div class="joystick-label" style="position: absolute; right: -65px; top: 50%; transform: translateY(-50%);">🏔️ MONTAGNA</div>
+                            
+                            <div class="joystick-4d" id="main-joystick" style="margin: 40px auto;">
+                                <div class="joystick-grid"></div>
+                                <div class="joystick-center"></div>
+                                <div class="joystick-dot" id="main-dot"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -500,32 +535,34 @@
                         <!-- 4D SLIDER: STILE & POPOLARITÀ -->
                         <div class="mb-6">
                             <label class="block text-sm font-medium mb-4 text-center">✨ Style</label>
-                            <div class="slider-4d" id="style-slider">
-                                <div class="slider-4d-grid"></div>
-                                <div class="slider-4d-center"></div>
-                                <div class="slider-4d-dot" id="style-dot"></div>
-                            </div>
-                            <div style="position: relative; width: 140px; margin: 0 auto;">
-                                <div class="slider-4d-label top">🌟 FAMOSA</div>
-                                <div class="slider-4d-label bottom">💎 NASCOSTA</div>
-                                <div class="slider-4d-label left">💚 ECONOMICO</div>
-                                <div class="slider-4d-label right">💜 LUSSO</div>
+                            <div style="position: relative; width: 200px; margin: 0 auto;">
+                                <div class="slider-4d-label" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">🌟 FAMOSA</div>
+                                <div class="slider-4d-label" style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">💎 NASCOSTA</div>
+                                <div class="slider-4d-label" style="position: absolute; left: -55px; top: 50%; transform: translateY(-50%); font-size: 11px;">💚 ECONOMICO</div>
+                                <div class="slider-4d-label" style="position: absolute; right: -40px; top: 50%; transform: translateY(-50%); font-size: 11px;">💜 LUSSO</div>
+                                
+                                <div class="slider-4d" id="style-slider" style="margin: 30px auto;">
+                                    <div class="slider-4d-grid"></div>
+                                    <div class="slider-4d-center"></div>
+                                    <div class="slider-4d-dot" id="style-dot"></div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- TERZO SLIDER: CULTURA & SOCIAL -->
                         <div class="mb-6">
                             <label class="block text-sm font-medium mb-4 text-center">🎭 Experience Type</label>
-                            <div class="slider-4d" id="culture-slider">
-                                <div class="slider-4d-grid"></div>
-                                <div class="slider-4d-center"></div>
-                                <div class="slider-4d-dot" id="culture-dot"></div>
-                            </div>
-                            <div style="position: relative; width: 140px; margin: 0 auto;">
-                                <div class="slider-4d-label top">🏛️ CULTURA</div>
-                                <div class="slider-4d-label bottom">🍝 FOOD</div>
-                                <div class="slider-4d-label left">💑 ROMANTICO</div>
-                                <div class="slider-4d-label right">🎉 FESTA</div>
+                            <div style="position: relative; width: 200px; margin: 0 auto;">
+                                <div class="slider-4d-label" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">🏛️ CULTURA</div>
+                                <div class="slider-4d-label" style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">🍝 FOOD</div>
+                                <div class="slider-4d-label" style="position: absolute; left: -60px; top: 50%; transform: translateY(-50%); font-size: 11px;">💑 ROMANTICO</div>
+                                <div class="slider-4d-label" style="position: absolute; right: -35px; top: 50%; transform: translateY(-50%); font-size: 11px;">🎉 FESTA</div>
+                                
+                                <div class="slider-4d" id="culture-slider" style="margin: 30px auto;">
+                                    <div class="slider-4d-grid"></div>
+                                    <div class="slider-4d-center"></div>
+                                    <div class="slider-4d-dot" id="culture-dot"></div>
+                                </div>
                             </div>
                         </div>
 
@@ -630,6 +667,8 @@
         // App state
         let selectedTransport = 'plane';
         let selectedDuration = 'any';
+        let departureCity = 'Milano';
+        let departureAirport = 'MXP';
         let currentResult = null;
         let budgetType = 'complete';
         let usedDestinations = [];
@@ -656,10 +695,23 @@
                 popularity = 100 - styleValues.y; // 0 = unknown, 100 = famous (inverted Y)
             }
             
-            // Smart duration based on luxury level
-            const tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :
-                           luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :
-                           Math.max(5, Math.round(7 - luxury/50));
+            // Smart duration based on budget per person AND luxury
+            let tripDays;
+            if (budgetPerPerson < 150) {
+                tripDays = 2; // Weekend only for very low budget
+            } else if (budgetPerPerson < 300) {
+                tripDays = Math.min(4, Math.max(2, Math.round(7 - budgetPerPerson/100)));
+            } else {
+                // Original luxury-based calculation for normal budgets
+                tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :
+                          luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :
+                          Math.max(5, Math.round(7 - luxury/50));
+            }
+            
+            // Override with user selected duration
+            if (selectedDuration !== 'any') {
+                tripDays = getDurationDays();
+            }
             
             // Create variety seed
             const varietySeed = Date.now() + Math.random() * 1000;
@@ -684,7 +736,7 @@ ${isAdvancedMode ? `🔧 MODALITÀ AVANZATA:
 🎭 CULTURA & SOCIAL:
 ${getCultureDescription(cultureValues)}` : ''}
 
-🚀 Trasporto: ${getTransportName(transport)}
+🚀 Trasporto: ${getTransportName(transport)} da ${departureCity}
 🌍 Stagione: ${getCurrentSeason()} 2025
 
 ${avoidDestinations}
@@ -718,7 +770,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
     "type": "${transport}",
     "airline": "${getRandomAirlineName()}",
     "logo": "${getRandomAirlineLogo()}",
-    "route": "MXP → ${getRandomAirportCode()}",
+    "route": "${departureAirport} → ${getRandomAirportCode()}",
     "totalPrice": ${Math.round(budget * 0.3)},
     "duration": "${getFlightDuration(50)}"
   },
@@ -792,35 +844,32 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                            luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :
                            Math.max(5, Math.round(7 - luxury/50));
             
-            // Joystick destination pools
+            // Joystick destination pools with REALISTIC budgets
             const destinationsJoystick = [
-                // Sea + Relax
-                { name: 'Santorini', country: 'Grecia', emoji: '🌅', match: [20, 20], cost: 650 },
-                { name: 'Ksamil', country: 'Albania', emoji: '🏖️', match: [25, 15], cost: 280 },
-                { name: 'Nesebar', country: 'Bulgaria', emoji: '🌊', match: [30, 20], cost: 300 },
+                // BUDGET SUPER LOW (under 200€/person) - Only nearby
+                { name: 'Lago di Como', country: 'Italia', emoji: '🏞️', match: [50, 30], costPerPerson: 80 },
+                { name: 'Cinque Terre', country: 'Italia', emoji: '🌊', match: [20, 40], costPerPerson: 120 },
+                { name: 'Verona', country: 'Italia', emoji: '💑', match: [50, 20], costPerPerson: 100 },
                 
-                // Sea + Adventure
-                { name: 'Split', country: 'Croazia', emoji: '⛵', match: [25, 80], cost: 420 },
-                { name: 'Lagos', country: 'Portogallo', emoji: '🏄', match: [30, 85], cost: 450 },
-                { name: 'Malta', country: 'Malta', emoji: '🤿', match: [35, 75], cost: 480 },
+                // LOW BUDGET (200-400€/person)
+                { name: 'Ljubljana', country: 'Slovenia', emoji: '🏞️', match: [70, 50], costPerPerson: 250 },
+                { name: 'Trieste', country: 'Italia', emoji: '🌊', match: [30, 30], costPerPerson: 180 },
+                { name: 'Innsbruck', country: 'Austria', emoji: '🏔️', match: [90, 60], costPerPerson: 280 },
                 
-                // Mountain + Relax
-                { name: 'Bled', country: 'Slovenia', emoji: '🏔️', match: [85, 25], cost: 380 },
-                { name: 'Hallstatt', country: 'Austria', emoji: '🏞️', match: [90, 20], cost: 520 },
-                { name: 'Annecy', country: 'Francia', emoji: '⛰️', match: [85, 30], cost: 480 },
+                // MEDIUM BUDGET (400-600€/person)
+                { name: 'Budapest', country: 'Ungheria', emoji: '🏰', match: [50, 50], costPerPerson: 380 },
+                { name: 'Praga', country: 'Repubblica Ceca', emoji: '🍺', match: [60, 60], costPerPerson: 420 },
+                { name: 'Cracovia', country: 'Polonia', emoji: '🏰', match: [55, 45], costPerPerson: 350 },
                 
-                // Mountain + Adventure
-                { name: 'Chamonix', country: 'Francia', emoji: '🎿', match: [95, 90], cost: 720 },
-                { name: 'Bansko', country: 'Bulgaria', emoji: '⛷️', match: [80, 85], cost: 320 },
-                { name: 'Zakopane', country: 'Polonia', emoji: '🏔️', match: [85, 80], cost: 350 },
+                // HIGHER BUDGET (600-800€/person)
+                { name: 'Amsterdam', country: 'Paesi Bassi', emoji: '🚲', match: [40, 70], costPerPerson: 650 },
+                { name: 'Barcellona', country: 'Spagna', emoji: '🏖️', match: [25, 75], costPerPerson: 580 },
+                { name: 'Vienna', country: 'Austria', emoji: '🎭', match: [65, 40], costPerPerson: 550 },
                 
-                // Mixed combinations
-                { name: 'Dubrovnik', country: 'Croazia', emoji: '🏰', match: [40, 60], cost: 450 },
-                { name: 'Porto', country: 'Portogallo', emoji: '🍷', match: [45, 55], cost: 420 },
-                { name: 'Ljubljana', country: 'Slovenia', emoji: '🏞️', match: [70, 50], cost: 380 },
-                { name: 'Ohrid', country: 'Macedonia', emoji: '🌊', match: [25, 40], cost: 300 },
-                { name: 'Brasov', country: 'Romania', emoji: '🏰', match: [75, 55], cost: 320 },
-                { name: 'Kotor', country: 'Montenegro', emoji: '⛰️', match: [60, 65], cost: 370 }
+                // HIGH BUDGET (800+€/person)
+                { name: 'Santorini', country: 'Grecia', emoji: '🌅', match: [20, 20], costPerPerson: 850 },
+                { name: 'Reykjavik', country: 'Islanda', emoji: '🔥', match: [85, 90], costPerPerson: 1200 },
+                { name: 'Londra', country: 'Regno Unito', emoji: '🏰', match: [50, 65], costPerPerson: 900 }
             ];
             
             // Find best match using joystick distance
@@ -835,7 +884,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                     Math.pow(energy - dest.match[1], 2)
                 );
                 
-                if (score < bestScore && dest.cost <= budgetPerPerson * 0.8) {
+                if (score < bestScore && dest.costPerPerson <= budgetPerPerson) {
                     bestScore = score;
                     bestMatch = dest;
                 }
@@ -876,7 +925,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                     type: transport,
                     airline: getRandomAirlineName(),
                     logo: getRandomAirlineLogo(),
-                    route: `MXP → ${bestMatch.name.substring(0, 3).toUpperCase()}`,
+                    route: `${departureAirport} → ${bestMatch.name.substring(0, 3).toUpperCase()}`,
                     totalPrice: transportPrice,
                     duration: getFlightDuration(50)
                 },
@@ -1184,6 +1233,11 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                 });
             }
 
+            // Departure city change
+            document.getElementById('departure-city').addEventListener('input', debounce(() => {
+                updateDepartureCity();
+            }, 500));
+
             // Budget and people changes
             document.getElementById('budget').addEventListener('input', debounce(() => {
                 triggerLiveSearch();
@@ -1236,9 +1290,9 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                         budget, people, selectedTransport, budgetType, mainJoystickValues, advancedStyleValues
                     );
                     
-                    // Update globe with destination hint
-                    const existingHint = globe.querySelector('.destination-hint');
-                    if (existingHint) existingHint.remove();
+                    // Remove any existing hints first
+                    const existingHints = globe.querySelectorAll('.destination-hint');
+                    existingHints.forEach(hint => hint.remove());
                     
                     const hintElement = document.createElement('div');
                     hintElement.className = 'destination-hint absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded';
@@ -1384,7 +1438,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                             <div><strong>Round trip for ${people} ${people === 1 ? 'person' : 'people'}</strong></div>
                         </div>
                         <p class="text-lg font-bold text-green-600 mb-4">€${result.transport.totalPrice}</p>
-                        <a href="https://www.skyscanner.it/transport/flights/mila/${result.destination.toLowerCase().replace(/\s+/g, '').substring(0,4)}/?adults=${people}" target="_blank" class="book-btn w-full">
+                        <a href="https://www.skyscanner.it/transport/flights/${departureAirport.toLowerCase()}/${result.destination.toLowerCase().replace(/\s+/g, '').substring(0,4)}/?adults=${people}" target="_blank" class="book-btn w-full">
                             ✈️ BOOK FLIGHT
                         </a>
                     </div>
@@ -1535,6 +1589,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
         // Make functions globally accessible  
         window.toggleMode = toggleMode;
         window.toggleBudgetType = toggleBudgetType;
+        window.getLocation = getLocation;
 
         // New helper functions
         function getDurationDays() {
@@ -1567,6 +1622,82 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
             else desc += ` con atmosfera festosa (${x}%)`;
             
             return desc;
+        }
+
+        // Geolocation function
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    // Here you would call a reverse geocoding API
+                    // For now, we'll use a simple mapping
+                    const city = await getCityFromCoords(lat, lon);
+                    document.getElementById('departure-city').value = city.name;
+                    departureCity = city.name;
+                    departureAirport = city.airport;
+                    
+                    triggerLiveSearch();
+                }, (error) => {
+                    console.log('Geolocation error:', error);
+                    alert('Non riesco a trovare la tua posizione. Inserisci manualmente la città.');
+                });
+            } else {
+                alert('Geolocalizzazione non supportata dal browser.');
+            }
+        }
+
+        async function getCityFromCoords(lat, lon) {
+            // Simple mapping for major Italian cities
+            const cities = [
+                { name: 'Milano', lat: 45.46, lon: 9.19, airport: 'MXP' },
+                { name: 'Roma', lat: 41.90, lon: 12.49, airport: 'FCO' },
+                { name: 'Venezia', lat: 45.44, lon: 12.31, airport: 'VCE' },
+                { name: 'Napoli', lat: 40.85, lon: 14.26, airport: 'NAP' },
+                { name: 'Torino', lat: 45.07, lon: 7.68, airport: 'TRN' },
+                { name: 'Bologna', lat: 44.49, lon: 11.34, airport: 'BLQ' },
+                { name: 'Firenze', lat: 43.77, lon: 11.25, airport: 'FLR' }
+            ];
+            
+            // Find nearest city
+            let nearest = cities[0];
+            let minDistance = Infinity;
+            
+            cities.forEach(city => {
+                const distance = Math.sqrt(
+                    Math.pow(lat - city.lat, 2) + 
+                    Math.pow(lon - city.lon, 2)
+                );
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearest = city;
+                }
+            });
+            
+            return nearest;
+        }
+
+        // Update city on input change
+        function updateDepartureCity() {
+            const input = document.getElementById('departure-city');
+            departureCity = input.value;
+            
+            // Map city to airport code
+            const airportMap = {
+                'Milano': 'MXP',
+                'Roma': 'FCO',
+                'Venezia': 'VCE',
+                'Napoli': 'NAP',
+                'Torino': 'TRN',
+                'Bologna': 'BLQ',
+                'Firenze': 'FLR',
+                'Bergamo': 'BGY',
+                'Verona': 'VRN'
+            };
+            
+            departureAirport = airportMap[departureCity] || 'MXP';
+            triggerLiveSearch();
         }
 
         // Start app
