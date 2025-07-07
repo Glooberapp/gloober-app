@@ -360,49 +360,57 @@
 
         // AI-powered destination finder
         async function findDestinationWithAI(budget, people, luxury, preference, transport) {
-            const prompt = `Sei un esperto consulente di viaggi. Suggerisci una destinazione perfetta per:
+            const prompt = `Sei un esperto consulente di viaggi con 20 anni di esperienza. Suggerisci una destinazione unica e sorprendente per:
 
-Budget: €${budget} totale per ${people} persone
-Stile: ${luxury < 30 ? 'Economico' : luxury > 70 ? 'Lusso' : 'Medio'}
-Preferenza: ${preference || 'Flessibile'}
+Budget: €${budget} totale per ${people} persone (€${Math.round(budget/people)} per persona)
+Stile: ${luxury < 30 ? 'Economico/Backpacker' : luxury > 70 ? 'Lusso/Premium' : 'Medio/Confort'}
+Preferenza: ${preference || 'Flessibile, sorprendimi'}
 Trasporto: ${getTransportName(transport)}
+Stagione: ${getCurrentSeason()}
 
-Rispondi SOLO in questo formato JSON:
+IMPORTANTE: 
+- Scegli destinazioni DIVERSE ogni volta (non sempre le stesse città)
+- Considera destinazioni meno turistiche ma fantastiche
+- Prezzi realistici per ${getCurrentSeason()} 2024
+- Sii creativo ma pratico
+
+Rispondi ESATTAMENTE in questo formato JSON (senza markdown):
 {
-  "destination": "Nome Città",
+  "destination": "Nome Città Specifica",
   "country": "Paese",
   "emoji": "🌅",
-  "description": "Descrizione coinvolgente",
-  "whyPerfect": "Perché è perfetto per loro",
+  "description": "Descrizione coinvolgente in 10-15 parole",
+  "whyPerfect": "Spiegazione personalizzata di 20-30 parole del perché è perfetto per loro",
+  "bestTime": "Periodo migliore per visitarla",
   "hotel": {
-    "name": "Nome Hotel",
+    "name": "Nome Hotel Reale",
     "stars": 4,
-    "pricePerNight": 120,
-    "description": "Descrizione hotel"
+    "pricePerNight": 85,
+    "description": "Descrizione accattivante hotel",
+    "photo": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&h=300&fit=crop"
   },
   "transport": {
-    "airline": "Nome Compagnia",
+    "airline": "Nome Compagnia Reale",
+    "logo": "LH",
     "route": "MXP → ABC",
-    "price": 180,
-    "duration": "2h"
+    "price": 240,
+    "duration": "2h 15m"
   },
   "essentialCosts": {
-    "hotel": 840,
-    "transport": 360,
-    "total": 1200
+    "hotel": 595,
+    "transport": 480,
+    "total": 1075
   },
   "completeCosts": {
-    "hotel": 840,
-    "transport": 360,
+    "hotel": 595,
+    "transport": 480,
     "meals": 420,
-    "activities": 150,
-    "local": 80,
-    "shopping": 100,
-    "total": 1950
+    "activities": 180,
+    "local": 70,
+    "shopping": 120,
+    "total": 1865
   }
-}
-
-Sii creativo ma realistico con prezzi reali 2024!`;
+}`;
 
             try {
                 // Try real Gemini API first
@@ -433,39 +441,85 @@ Sii creativo ma realistico con prezzi reali 2024!`;
             }
         }
 
-        // AI simulation fallback
+        // AI simulation fallback with variety
         function simulateAIResponse(budget, people, luxury, preference, transport) {
-            const destinations = {
-                sea: { name: 'Dubrovnik', country: 'Croazia', emoji: '🏰' },
-                mountain: { name: 'Innsbruck', country: 'Austria', emoji: '🏔️' },
-                culture: { name: 'Praga', country: 'Repubblica Ceca', emoji: '🏛️' },
-                romantic: { name: 'Santorini', country: 'Grecia', emoji: '🌅' },
-                food: { name: 'Bologna', country: 'Italia', emoji: '🍝' },
-                adventure: { name: 'Interlaken', country: 'Svizzera', emoji: '🎒' }
-            };
+            const destinations = [
+                // Sea destinations
+                { name: 'Dubrovnik', country: 'Croazia', emoji: '🏰', pref: 'sea', photo: 'https://images.unsplash.com/photo-1594736797933-d0201ba40a65?w=500&h=300&fit=crop' },
+                { name: 'Lagos', country: 'Portogallo', emoji: '🌊', pref: 'sea', photo: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=500&h=300&fit=crop' },
+                { name: 'Kotor', country: 'Montenegro', emoji: '⛰️', pref: 'sea', photo: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=500&h=300&fit=crop' },
+                
+                // Mountain destinations  
+                { name: 'Innsbruck', country: 'Austria', emoji: '🏔️', pref: 'mountain', photo: 'https://images.unsplash.com/photo-1551524164-d526cebc14a5?w=500&h=300&fit=crop' },
+                { name: 'Interlaken', country: 'Svizzera', emoji: '🎿', pref: 'mountain', photo: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop' },
+                { name: 'Zakopane', country: 'Polonia', emoji: '🏔️', pref: 'mountain', photo: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&h=300&fit=crop' },
+                
+                // Culture destinations
+                { name: 'Praga', country: 'Repubblica Ceca', emoji: '🏛️', pref: 'culture', photo: 'https://images.unsplash.com/photo-1541849546-216549ae216d?w=500&h=300&fit=crop' },
+                { name: 'Krakow', country: 'Polonia', emoji: '🏰', pref: 'culture', photo: 'https://images.unsplash.com/photo-1544427920-c49ccfb85579?w=500&h=300&fit=crop' },
+                { name: 'Budapest', country: 'Ungheria', emoji: '🏛️', pref: 'culture', photo: 'https://images.unsplash.com/photo-1541049299839-7c7fcd86e7e0?w=500&h=300&fit=crop' },
+                
+                // Romantic destinations
+                { name: 'Santorini', country: 'Grecia', emoji: '🌅', pref: 'romantic', photo: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=500&h=300&fit=crop' },
+                { name: 'Bruges', country: 'Belgio', emoji: '💕', pref: 'romantic', photo: 'https://images.unsplash.com/photo-1542995963-4d1ce68f74f4?w=500&h=300&fit=crop' },
+                { name: 'Rothenburg', country: 'Germania', emoji: '💕', pref: 'romantic', photo: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500&h=300&fit=crop' },
+                
+                // Food destinations
+                { name: 'Bologna', country: 'Italia', emoji: '🍝', pref: 'food', photo: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=500&h=300&fit=crop' },
+                { name: 'Lyon', country: 'Francia', emoji: '🍷', pref: 'food', photo: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=500&h=300&fit=crop' },
+                { name: 'San Sebastian', country: 'Spagna', emoji: '🍽️', pref: 'food', photo: 'https://images.unsplash.com/photo-1544427920-c49ccfb85579?w=500&h=300&fit=crop' },
+                
+                // Adventure destinations
+                { name: 'Queenstown', country: 'Nuova Zelanda', emoji: '🎒', pref: 'adventure', photo: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=500&h=300&fit=crop' },
+                { name: 'Chamonix', country: 'Francia', emoji: '⛷️', pref: 'adventure', photo: 'https://images.unsplash.com/photo-1551524164-6cf472eb7d6b?w=500&h=300&fit=crop' },
+                { name: 'Bled', country: 'Slovenia', emoji: '🎒', pref: 'adventure', photo: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=500&h=300&fit=crop' }
+            ];
 
-            const dest = destinations[preference] || destinations.culture;
-            const priceMultiplier = luxury / 50;
-            const baseHotelPrice = 80 * priceMultiplier;
-            const baseTravelPrice = 150;
+            // Smart destination selection with variety
+            let candidates = preference ? 
+                destinations.filter(d => d.pref === preference) : 
+                destinations;
+            
+            // Add randomness to avoid always same result
+            const randomIndex = Math.floor(Math.random() * candidates.length);
+            const dest = candidates[randomIndex] || destinations[0];
+            
+            const priceMultiplier = (luxury + 50) / 100;
+            const baseHotelPrice = Math.round(60 * priceMultiplier);
+            const baseTravelPrice = Math.round(120 + (Math.random() * 100));
+            
+            // Generate travel dates
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() + Math.floor(Math.random() * 60) + 7);
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 6); // 7 day trip
 
             return {
                 destination: dest.name,
                 country: dest.country,
                 emoji: dest.emoji,
-                description: `Destinazione perfetta che combina ${preference || 'cultura'} e relax`,
-                whyPerfect: `Analizzando il tuo budget di €${budget} e la preferenza per ${preference || 'viaggi vari'}, ${dest.name} offre il miglior rapporto qualità-prezzo per ${people} persone.`,
+                description: `Destinazione ${preference || 'fantastica'} con ottimo rapporto qualità-prezzo`,
+                whyPerfect: `Con €${budget} per ${people} persone, ${dest.name} offre esperienze autentiche ${preference ? 'per ' + preference : ''} a prezzi accessibili`,
+                bestTime: getCurrentSeason(),
+                travelDates: {
+                    start: startDate.toLocaleDateString('it-IT'),
+                    end: endDate.toLocaleDateString('it-IT'),
+                    startDate: startDate,
+                    endDate: endDate
+                },
                 hotel: {
-                    name: `Hotel ${dest.name} Premium`,
+                    name: `${dest.name} Grand Hotel`,
                     stars: Math.min(5, Math.max(3, Math.round(luxury / 20))),
-                    pricePerNight: Math.round(baseHotelPrice),
-                    description: `Hotel ${luxury > 70 ? 'di lusso' : luxury > 40 ? 'elegante' : 'confortevole'} nel centro storico`
+                    pricePerNight: baseHotelPrice,
+                    description: `Hotel ${luxury > 70 ? 'di lusso' : luxury > 40 ? 'elegante' : 'confortevole'} nel centro storico`,
+                    photo: dest.photo
                 },
                 transport: {
-                    airline: getAirlineName(transport),
+                    airline: getRandomAirline(),
+                    logo: getRandomAirlineLogo(),
                     route: `MXP → ${dest.name.substring(0, 3).toUpperCase()}`,
                     price: Math.round(baseTravelPrice * people),
-                    duration: '2h 15m'
+                    duration: getRandomDuration()
                 },
                 essentialCosts: {
                     hotel: Math.round(baseHotelPrice * 7),
@@ -475,13 +529,36 @@ Sii creativo ma realistico con prezzi reali 2024!`;
                 completeCosts: {
                     hotel: Math.round(baseHotelPrice * 7),
                     transport: Math.round(baseTravelPrice * people),
-                    meals: Math.round(60 * 7 * people),
-                    activities: Math.round(100 * people),
-                    local: Math.round(50 * people),
-                    shopping: Math.round(80 * people),
-                    total: Math.round((baseHotelPrice * 7) + (baseTravelPrice * people) + (60 * 7 * people) + (100 * people) + (50 * people) + (80 * people))
+                    meals: Math.round(45 * 7 * people),
+                    activities: Math.round(25 * people * 3),
+                    local: Math.round(15 * people * 7),
+                    shopping: Math.round(60 * people),
+                    total: Math.round((baseHotelPrice * 7) + (baseTravelPrice * people) + (45 * 7 * people) + (75 * people) + (105 * people) + (60 * people))
                 }
             };
+        }
+
+        function getRandomAirline() {
+            const airlines = ['Lufthansa', 'ITA Airways', 'Austrian Airlines', 'KLM', 'Air France', 'Swiss', 'Brussels Airlines'];
+            return airlines[Math.floor(Math.random() * airlines.length)];
+        }
+
+        function getRandomAirlineLogo() {
+            const logos = ['LH', 'AZ', 'OS', 'KL', 'AF', 'LX', 'SN'];
+            return logos[Math.floor(Math.random() * logos.length)];
+        }
+
+        function getRandomDuration() {
+            const durations = ['1h 30m', '1h 45m', '2h 15m', '2h 30m', '2h 45m'];
+            return durations[Math.floor(Math.random() * durations.length)];
+        }
+
+        function getCurrentSeason() {
+            const month = new Date().getMonth();
+            if (month >= 2 && month <= 4) return 'Primavera';
+            if (month >= 5 && month <= 7) return 'Estate'; 
+            if (month >= 8 && month <= 10) return 'Autunno';
+            return 'Inverno';
         }
 
         // Generate travel guide with AI
