@@ -821,26 +821,15 @@
             const people = parseInt(document.getElementById('people').value);
             const budgetInEUR = convertCurrency(budget, selectedCurrency, 'EUR');
             
+            // Get dates
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
             // Get vibes description
             const energy = 100 - vibesPosition.y;
             const environment = vibesPosition.x;
             
             const vibesDesc = `${environment < 30 ? 'mare' : environment > 70 ? 'montagna' : 'colline/natura'} e ${energy < 30 ? 'relax totale' : energy > 70 ? 'avventura pura' : 'mix equilibrato'}`;
-            
-            // Get dates
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
-            let dateRange = '';
-            
-            if (startDate && endDate) {
-                const start = new Date(startDate);
-                const end = new Date(endDate);
-                const options = { day: 'numeric', month: 'long' };
-                dateRange = `dal ${start.toLocaleDateString('it-IT', options)} al ${end.toLocaleDateString('it-IT', options)}`;
-            } else {
-                const days = getDurationDays();
-                dateRange = `${days} giorni`;
-            }
             
             // Budget 0 special case
             const isZeroBudget = budget === 0;
@@ -1009,12 +998,8 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
                 { name: "Verona", country: "Italia", emoji: "💑", distance: "250 km", hasAirport: true }
             ];
             
-            // Filter destinations based on transport type
-            let availableDests = destinations;
-            if (selectedTransport === 'plane') {
-                availableDests = destinations.filter(d => d.hasAirport);
-            }
-            
+            // Filter destinations - only cities with airports
+            const availableDests = destinations.filter(d => d.hasAirport);
             const dest = availableDests[Math.floor(Math.random() * availableDests.length)];
             
             // Generate daily program for all days
@@ -1060,19 +1045,11 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
                 distance: dest.distance,
                 duration: `${days} giorni`,
                 transport: {
-                    type: selectedTransport,
-                    details: selectedTransport === 'plane' 
-                        ? `Volo diretto ${departureCity || 'Milano'} - ${dest.name}` 
-                        : selectedTransport === 'train' 
-                        ? `Treno da ${departureCity || 'Lugano'}` 
-                        : `${selectedTransport} da ${departureCity || 'Lugano'}`,
+                    type: 'plane',
+                    details: `Volo diretto ${departureCity || 'Milano'} - ${dest.name}`,
                     cost: Math.round(budget * 0.3),
-                    duration: selectedTransport === 'plane' ? "1h 30min" : "3-4 ore",
-                    link: selectedTransport === 'plane' 
-                        ? `https://www.easyjet.com/it` 
-                        : selectedTransport === 'train'
-                        ? `https://www.sbb.ch/it`
-                        : '#'
+                    duration: "1h 30min",
+                    link: `https://www.easyjet.com/it`
                 },
                 accommodation: {
                     name: accommodationType === 'bnb' ? "B&B del Centro" : "Hotel Gloober",
