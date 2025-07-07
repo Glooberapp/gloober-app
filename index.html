@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gloober - AI Travel Destination Finder</title>
+    <title>Gloober - Zero Stress Travel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -13,1349 +13,489 @@
 
         .globe-container {
             position: relative;
-            width: 320px;
-            height: 320px;
+            width: 280px;
+            height: 280px;
             margin: 0 auto;
         }
         
         .globe {
-            width: 320px;
-            height: 320px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
             background: linear-gradient(135deg, #60a5fa, #3b82f6, #2563eb);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
-            border: 4px solid rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.2);
             transition: transform 1s ease-out;
         }
         
-        .spinning {
-            animation: spin 3s linear;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(540deg); }
-        }
+        .spinning { animation: spin 2.5s ease-out; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(720deg); } }
         
         .continent {
             position: absolute;
-            background: linear-gradient(135deg, #10b981, #059669, #047857);
-            border-radius: 6px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 4px;
             opacity: 0.9;
-            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
         }
         
-        .europa { top: 80px; left: 96px; width: 32px; height: 24px; transform: rotate(12deg); border-radius: 8px 15px 6px 20px; }
-        .europa2 { top: 96px; left: 112px; width: 16px; height: 12px; background: #059669; border-radius: 4px 8px 12px 6px; }
-        .africa { top: 112px; left: 80px; width: 48px; height: 80px; transform: rotate(6deg); border-radius: 15px 8px 20px 25px; }
-        .africa2 { top: 128px; left: 88px; width: 32px; height: 48px; background: #059669; opacity: 0.8; border-radius: 12px 6px 18px 20px; }
-        .asia { top: 64px; right: 64px; width: 64px; height: 48px; transform: rotate(-12deg); border-radius: 25px 15px 8px 30px; }
-        .asia2 { top: 72px; right: 48px; width: 40px; height: 32px; background: #059669; border-radius: 18px 12px 6px 20px; }
-        .asia3 { top: 104px; right: 80px; width: 24px; height: 16px; background: #047857; border-radius: 8px 12px 4px 15px; }
-        .north-america { top: 48px; left: 32px; width: 56px; height: 64px; transform: rotate(45deg); border-radius: 20px 12px 15px 25px; }
-        .north-america2 { top: 64px; left: 24px; width: 32px; height: 40px; background: #059669; border-radius: 15px 8px 12px 18px; }
-        .south-america { bottom: 64px; left: 48px; width: 32px; height: 80px; transform: rotate(12deg); border-radius: 12px 8px 20px 15px; }
-        .south-america2 { bottom: 80px; left: 56px; width: 20px; height: 48px; background: #059669; border-radius: 8px 6px 15px 12px; }
-        .australia { bottom: 80px; right: 80px; width: 40px; height: 24px; transform: rotate(-6deg); border-radius: 20px 12px 8px 15px; }
+        .europa { top: 70px; left: 86px; width: 28px; height: 20px; transform: rotate(12deg); }
+        .africa { top: 100px; left: 75px; width: 40px; height: 65px; transform: rotate(6deg); }
+        .asia { top: 60px; right: 60px; width: 50px; height: 35px; transform: rotate(-12deg); }
+        .america { top: 45px; left: 30px; width: 45px; height: 55px; transform: rotate(45deg); }
+        .oceania { bottom: 70px; right: 70px; width: 30px; height: 18px; }
         
-        .cloud { position: absolute; background: rgba(255, 255, 255, 0.15); border-radius: 50%; filter: blur(2px); }
-        .cloud1 { top: 32px; left: 32px; width: 48px; height: 48px; }
-        .cloud2 { top: 128px; right: 48px; width: 32px; height: 32px; }
-        .cloud3 { bottom: 96px; left: 64px; width: 40px; height: 40px; }
-        
-        .grid-lines { position: absolute; inset: 0; }
-        .equator { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255, 255, 255, 0.15); }
-        .meridian { position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: rgba(255, 255, 255, 0.15); }
-        .tropic1 { position: absolute; top: 80px; left: 0; width: 100%; height: 2px; background: rgba(255, 255, 255, 0.1); transform: rotate(2deg); }
-        .tropic2 { position: absolute; bottom: 80px; left: 0; width: 100%; height: 2px; background: rgba(255, 255, 255, 0.1); transform: rotate(-2deg); }
-        
-        .pin {
-            position: absolute; top: 80px; right: 64px; width: 24px; height: 24px; background: #ef4444; border-radius: 50%;
-            border: 2px solid white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); animation: bounce 2s infinite;
-            display: block; z-index: 10;
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
         }
-        
-        .pin::before {
-            content: ''; position: absolute; top: -4px; left: -4px; width: 8px; height: 8px; background: #fca5a5;
-            border-radius: 50%; animation: ping 2s infinite;
-        }
-        
-        .pin-pole { position: absolute; top: 104px; right: 75px; width: 4px; height: 16px; background: #ef4444; display: block; z-index: 9; }
-        
-        @keyframes bounce {
-            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
-            40%, 43% { transform: translate3d(0,-8px,0); }
-            70% { transform: translate3d(0,-4px,0); }
-            90% { transform: translate3d(0,-2px,0); }
-        }
-        
-        @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
-        
-        .ocean-texture { position: absolute; inset: 0; }
-        .bubble { position: absolute; background: #bfdbfe; border-radius: 50%; opacity: 0.3; animation: pulse 2s infinite; }
-        .bubble1 { top: 40px; left: 40px; width: 8px; height: 8px; }
-        .bubble2 { top: 160px; right: 32px; width: 4px; height: 4px; animation-delay: 0.5s; }
-        .bubble3 { bottom: 48px; left: 80px; width: 6px; height: 6px; animation-delay: 1s; }
-        
-        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
-        
-        .hidden { display: none; }
-        .glass-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.2); }
-        
-        .custom-dropdown { position: relative; }
-        .dropdown-content {
-            position: absolute; top: 100%; left: 0; right: 0; 
-            background: rgba(6, 95, 70, 0.95); backdrop-filter: blur(16px);
-            border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 12px; 
-            margin-top: 4px; z-index: 50; max-height: 200px; overflow-y: auto;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        .dropdown-item {
-            padding: 14px 16px; color: white; cursor: pointer; 
-            transition: all 0.2s; display: flex; align-items: center; gap: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .dropdown-item:hover { 
-            background: rgba(255, 255, 255, 0.15); 
-            transform: translateX(4px);
-        }
-        .dropdown-item:first-child { border-radius: 10px 10px 0 0; }
-        .dropdown-item:last-child { border-radius: 0 0 10px 10px; border-bottom: none; }
         
         .preference-btn {
             transition: all 0.3s ease;
-            transform: scale(1);
             cursor: pointer;
-            min-height: 50px;
-            touch-action: manipulation;
         }
-        
-        .preference-btn:hover {
-            transform: scale(1.05);
-        }
-        
+        .preference-btn:hover { transform: scale(1.05); }
         .preference-btn.selected {
             background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
             color: #000 !important;
             transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
         }
-        
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center; z-index: 100;
-        }
-        .modal-content {
-            background: rgba(15, 118, 110, 0.95); backdrop-filter: blur(16px); 
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 24px; padding: 32px; max-width: 400px; width: 90%; text-align: center;
-        }
-        
-        .date-picker {
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 12px;
+
+        .hotel-photo {
+            width: 100%;
+            height: 180px;
+            background-size: cover;
+            background-position: center;
             border-radius: 12px;
-            font-size: 16px;
-        }
-        
-        .date-picker:focus {
-            outline: none;
-            border-color: #fbbf24;
-            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
-        }
-
-        .language-selector {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 50;
-        }
-
-        .language-btn {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .language-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-
-        .ai-badge {
-            position: absolute;
-            top: 80px;
-            right: 20px;
-            background: linear-gradient(135deg, #8b5cf6, #a855f7);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            animation: pulse 2s infinite;
-        }
-
-        .result-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(16px);
-            border-radius: 20px;
-            padding: 24px;
             margin-bottom: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .airline-logo {
+            width: 60px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
             color: #1f2937;
         }
 
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 2px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-            padding: 16px;
+        .book-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            padding: 16px 32px;
             border-radius: 12px;
-            margin: 16px 0;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body class="text-white min-h-screen">
-    <!-- AI Badge -->
-    <div class="ai-badge">
-        🤖 AI-POWERED
-    </div>
-
-    <!-- Language Selector -->
-    <div class="language-selector">
-        <div class="custom-dropdown">
-            <button id="language-btn" class="language-btn">
-                🇮🇹 IT
-            </button>
-            <div id="language-dropdown" class="dropdown-content hidden">
-                <div class="language-option" data-lang="it">🇮🇹 Italiano</div>
-                <div class="language-option" data-lang="en">🇬🇧 English</div>
-                <div class="language-option" data-lang="fr">🇫🇷 Français</div>
-                <div class="language-option" data-lang="es">🇪🇸 Español</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal geolocalizzazione -->
-    <div id="location-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2 class="text-2xl font-bold mb-4" data-translate="modal_title">📍 Da dove parti?</h2>
-            <p class="text-gray-300 mb-6" data-translate="modal_subtitle">Per offrirti le migliori opzioni di viaggio</p>
-            
-            <button id="geolocation-btn" class="w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-xl mb-4 hover:bg-blue-600 transition-colors" data-translate="use_location">
-                🌍 Usa la mia posizione
-            </button>
-            
-            <div class="text-gray-400 mb-4" data-translate="or">oppure</div>
-            
-            <input type="text" id="manual-location" placeholder="Inserisci città (es. Milano)" 
-                   class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none mb-4"
-                   data-translate-placeholder="enter_city">
-            
-            <button id="manual-location-btn" class="w-full bg-yellow-500 text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400 transition-colors" data-translate="confirm">
-                ✅ Conferma
-            </button>
-        </div>
-    </div>
-
+    
     <div id="app">
-        <!-- Loading Screen -->
+        <!-- Loading -->
         <div id="loading" class="min-h-screen flex items-center justify-center">
             <div class="text-center">
                 <div class="text-6xl mb-4">🌍</div>
-                <h1 class="text-4xl font-bold mb-2" data-translate="loading_title">Loading Gloober...</h1>
-                <p class="text-xl" data-translate="loading_subtitle">Just gloob it! 🚀</p>
+                <h1 class="text-4xl font-bold">Gloober</h1>
+                <p class="text-xl">Zero stress, massima vacanza</p>
             </div>
         </div>
 
-        <!-- Main App -->
-        <div id="main-app" class="hidden">
-            <!-- Step 1: Configuration -->
-            <div id="step1" class="container mx-auto px-4 py-8">
-                <div class="text-center mb-8">
-                    <h1 class="text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                        Gloober
-                    </h1>
-                    <p class="text-xl text-gray-300" data-translate="main_subtitle">Gloob your new destination! 🌍</p>
-                </div>
-
-                <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-                    <div class="glass-card rounded-3xl p-8">
-                        
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium mb-2" data-translate="budget_label">💰 Budget totale (€)</label>
-                            <input type="number" id="budget" value="800" min="200" max="10000" step="50" 
-                                   class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold focus:ring-2 focus:ring-yellow-400 outline-none">
-                        </div>
-
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium mb-2" data-translate="people_label">👥 Quante persone?</label>
-                            <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
-                                <option value="1" data-translate="people_1">1 persona</option>
-                                <option value="2" selected data-translate="people_2">2 persone</option>
-                                <option value="3" data-translate="people_3">3 persone</option>
-                                <option value="4" data-translate="people_4">4 persone</option>
-                                <option value="5" data-translate="people_5">5+ persone</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium mb-2" data-translate="style_label">✨ Stile di viaggio</label>
-                            <input type="range" id="luxury" value="40" min="0" max="100" 
-                                   class="w-full h-3 bg-gradient-to-r from-green-500 via-yellow-500 to-purple-500 rounded-lg appearance-none cursor-pointer">
-                            <div class="flex justify-between text-xs mt-2">
-                                <span class="text-green-400 font-bold" data-translate="cheap">ECONOMICO</span>
-                                <span class="text-yellow-400 font-bold" data-translate="mid">MEDIO</span>
-                                <span class="text-purple-400 font-bold" data-translate="luxury">LUSSO</span>
-                            </div>
-                        </div>
-
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium mb-2" data-translate="accommodation_label">🏨 Tipo alloggio</label>
-                            <div class="custom-dropdown">
-                                <button id="accommodation-btn" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none flex items-center justify-between">
-                                    <span id="accommodation-selected" data-translate="hotel_option">🏨 Hotel</span>
-                                    <span>▼</span>
-                                </button>
-                                <div id="accommodation-dropdown" class="dropdown-content hidden">
-                                    <div class="dropdown-item" data-accommodation="hotel" data-translate="hotel_option">🏨 Hotel</div>
-                                    <div class="dropdown-item" data-accommodation="bnb" data-translate="bnb_option">🏠 B&B/Casa</div>
-                                    <div class="dropdown-item" data-accommodation="hostel" data-translate="hostel_option">🎒 Hostel</div>
-                                    <div class="dropdown-item" data-accommodation="resort" data-translate="resort_option">🏖️ Resort</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium mb-2" data-translate="when_label">📅 Quando?</label>
-                            <select id="when" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
-                                <option value="flexible" data-translate="flexible">🎲 Flessibile (sorprendimi!)</option>
-                                <option value="weekend" data-translate="weekend">📅 Weekend</option>
-                                <option value="week" data-translate="week">📅 Una settimana</option>
-                                <option value="month" data-translate="month">📅 Un mese</option>
-                                <option value="custom" data-translate="custom">📅 Date personalizzate</option>
-                            </select>
-                        </div>
-
-                        <!-- Date Picker (hidden by default) -->
-                        <div id="date-picker-section" class="mb-6 hidden">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium mb-2" data-translate="departure_label">🛫 Partenza</label>
-                                    <input type="date" id="departure-date" class="date-picker w-full">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-2" data-translate="return_label">🛬 Ritorno</label>
-                                    <input type="date" id="return-date" class="date-picker w-full">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-8">
-                            <label class="block text-sm font-medium mb-3" data-translate="preference_label">🎯 Preferenze (scegli tutte quelle che vuoi)</label>
-                            <div class="grid grid-cols-2 gap-3">
-                                <button data-pref="sea" class="preference-btn p-4 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20" data-translate="sea">🏖️ Mare</button>
-                                <button data-pref="mountain" class="preference-btn p-4 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20" data-translate="mountain">🏔️ Montagna</button>
-                                <button data-pref="art" class="preference-btn p-4 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20" data-translate="art">🎨 Arte</button>
-                                <button data-pref="romantic" class="preference-btn p-4 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20" data-translate="romantic">💕 Romantico</button>
-                                <button data-pref="adventure" class="preference-btn p-4 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20" data-translate="adventure">🎒 Avventura</button>
-                                <button data-pref="food" class="preference-btn p-4 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20" data-translate="food">🍝 Food</button>
-                                <button data-pref="nightlife" class="preference-btn p-4 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20" data-translate="nightlife">🌃 Vita Notturna</button>
-                                <button data-pref="culture" class="preference-btn p-4 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20" data-translate="culture">🏛️ Cultura</button>
-                                <button data-pref="relax" class="preference-btn p-4 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20" data-translate="relax">🧘 Relax</button>
-                                <button data-pref="shopping" class="preference-btn p-4 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20" data-translate="shopping">🛍️ Shopping</button>
-                            </div>
-                        </div>
-
-                        <button id="gloob-btn" class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all flex items-center justify-center gap-3" data-translate="gloob_button">
-                            🤖 JUST GLOOB IT!
-                        </button>
-                    </div>
-
-                    <div class="flex items-center justify-center">
-                        <div class="globe-container">
-                            <div id="globe" class="globe">
-                                <div class="continent europa"></div>
-                                <div class="continent europa2"></div>
-                                <div class="continent africa"></div>
-                                <div class="continent africa2"></div>
-                                <div class="continent asia"></div>
-                                <div class="continent asia2"></div>
-                                <div class="continent asia3"></div>
-                                <div class="continent north-america"></div>
-                                <div class="continent north-america2"></div>
-                                <div class="continent south-america"></div>
-                                <div class="continent south-america2"></div>
-                                <div class="continent australia"></div>
-                                <div class="cloud cloud1"></div>
-                                <div class="cloud cloud2"></div>
-                                <div class="cloud cloud3"></div>
-                                <div class="grid-lines">
-                                    <div class="equator"></div>
-                                    <div class="meridian"></div>
-                                    <div class="tropic1"></div>
-                                    <div class="tropic2"></div>
-                                </div>
-                                <div class="ocean-texture">
-                                    <div class="bubble bubble1"></div>
-                                    <div class="bubble bubble2"></div>
-                                    <div class="bubble bubble3"></div>
-                                </div>
-                            </div>
-                            <div class="pin"></div>
-                            <div class="pin-pole"></div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Form -->
+        <div id="form-step" class="hidden container mx-auto px-4 py-8">
+            <div class="text-center mb-8">
+                <h1 class="text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                    Gloober
+                </h1>
+                <p class="text-xl text-gray-300">Gloob your new destination! 🌍</p>
             </div>
 
-            <!-- Step 2: AI Thinking -->
-            <div id="step2" class="hidden min-h-screen flex items-center justify-center">
-                <div class="text-center">
-                    <div class="globe-container mb-8">
-                        <div id="spinning-globe" class="globe">
+            <div class="grid lg:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+                <div class="glass-card rounded-2xl p-6">
+                    
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">💰 Budget totale (€)</label>
+                        <input type="number" id="budget" value="1000" min="300" max="5000" step="100" 
+                               class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold focus:ring-2 focus:ring-yellow-400 outline-none">
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">👥 Persone</label>
+                        <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
+                            <option value="1">1 persona</option>
+                            <option value="2" selected>2 persone</option>
+                            <option value="3">3 persone</option>
+                            <option value="4">4 persone</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">✨ Stile</label>
+                        <input type="range" id="luxury" value="50" min="0" max="100" 
+                               class="w-full h-3 bg-gradient-to-r from-green-500 via-yellow-500 to-purple-500 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs mt-1">
+                            <span class="text-green-400 font-bold">ECONOMICO</span>
+                            <span class="text-purple-400 font-bold">LUSSO</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-3">🎯 Cosa cerchi?</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button data-pref="sea" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">🏖️ Mare</button>
+                            <button data-pref="mountain" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">🏔️ Montagna</button>
+                            <button data-pref="romantic" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">💕 Romantico</button>
+                            <button data-pref="culture" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">🏛️ Cultura</button>
+                            <button data-pref="food" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">🍝 Gastronomia</button>
+                            <button data-pref="adventure" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">🎒 Avventura</button>
+                        </div>
+                    </div>
+
+                    <button id="gloob-btn" class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
+                        🌍 GLOOB IT!
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-center">
+                    <div class="globe-container">
+                        <div id="globe" class="globe">
                             <div class="continent europa"></div>
-                            <div class="continent europa2"></div>
                             <div class="continent africa"></div>
-                            <div class="continent africa2"></div>
                             <div class="continent asia"></div>
-                            <div class="continent asia2"></div>
-                            <div class="continent asia3"></div>
-                            <div class="continent north-america"></div>
-                            <div class="continent north-america2"></div>
-                            <div class="continent south-america"></div>
-                            <div class="continent south-america2"></div>
-                            <div class="continent australia"></div>
-                            <div class="cloud cloud1"></div>
-                            <div class="cloud cloud2"></div>
-                            <div class="cloud cloud3"></div>
-                            <div class="grid-lines">
-                                <div class="equator"></div>
-                                <div class="meridian"></div>
-                                <div class="tropic1"></div>
-                                <div class="tropic2"></div>
-                            </div>
-                            <div class="ocean-texture">
-                                <div class="bubble bubble1"></div>
-                                <div class="bubble bubble2"></div>
-                                <div class="bubble bubble3"></div>
-                            </div>
+                            <div class="continent america"></div>
+                            <div class="continent oceania"></div>
                         </div>
                     </div>
-                    <h2 class="text-4xl font-bold mb-4" data-translate="ai_thinking">🤖 AI sta pensando...</h2>
-                    <p class="text-xl text-gray-300" id="thinking-text" data-translate="ai_searching">Analizzando milioni di destinazioni nel mondo!</p>
                 </div>
             </div>
+        </div>
 
-            <!-- Step 3: Result -->
-            <div id="step3" class="hidden container mx-auto px-4 py-8">
-                <div class="max-w-4xl mx-auto">
-                    <div class="text-center mb-8">
-                        <h1 class="text-5xl font-bold mb-4" data-translate="result_title">🎉 La tua destinazione AI!</h1>
+        <!-- Spinning -->
+        <div id="spin-step" class="hidden min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="globe-container mb-6">
+                    <div id="spinning-globe" class="globe">
+                        <div class="continent europa"></div>
+                        <div class="continent africa"></div>
+                        <div class="continent asia"></div>
+                        <div class="continent america"></div>
+                        <div class="continent oceania"></div>
                     </div>
+                </div>
+                <h2 class="text-3xl font-bold mb-2">🌍 Gloobbing...</h2>
+                <p class="text-lg text-gray-300" id="search-text">Trovando la destinazione perfetta!</p>
+            </div>
+        </div>
 
-                    <div id="result-content">
-                        <!-- Result will be populated by AI -->
-                    </div>
+        <!-- Result -->
+        <div id="result-step" class="hidden container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-6">
+                    <h1 class="text-4xl font-bold mb-2">🎉 Ecco la tua destinazione!</h1>
+                </div>
 
-                    <div class="text-center">
-                        <button id="book-btn" class="bg-green-500 text-white font-bold py-4 px-12 rounded-xl text-xl mr-4 hover:bg-green-600 transition-colors" data-translate="book_button">
-                            ✈️ ESPLORA BOOKING!
-                        </button>
-                        <button id="regloob-btn" class="bg-gray-600 text-white font-bold py-4 px-8 rounded-xl text-xl hover:bg-gray-700 transition-colors" data-translate="regloob_button">
-                            🎲 Regloob
-                        </button>
-                    </div>
+                <div id="result-content">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="text-center mt-6">
+                    <button id="regloob-btn" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-700 transition-colors">
+                        🎲 Gloob di nuovo
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Multilingual support
-        const translations = {
-            it: {
-                modal_title: "📍 Da dove parti?",
-                modal_subtitle: "Per offrirti le migliori opzioni di viaggio",
-                use_location: "🌍 Usa la mia posizione",
-                or: "oppure",
-                enter_city: "Inserisci città (es. Milano)",
-                confirm: "✅ Conferma",
-                loading_title: "Loading Gloober...",
-                loading_subtitle: "Just gloob it! 🚀",
-                main_subtitle: "Gloob your new destination! 🌍",
-                budget_label: "💰 Budget totale (€)",
-                people_label: "👥 Quante persone?",
-                people_1: "1 persona",
-                people_2: "2 persone",
-                people_3: "3 persone",
-                people_4: "4 persone",
-                people_5: "5+ persone",
-                style_label: "✨ Stile di viaggio",
-                cheap: "ECONOMICO",
-                mid: "MEDIO",
-                luxury: "LUSSO",
-                accommodation_label: "🏨 Tipo alloggio",
-                hotel_option: "🏨 Hotel",
-                bnb_option: "🏠 B&B/Casa",
-                hostel_option: "🎒 Hostel",
-                resort_option: "🏖️ Resort",
-                when_label: "📅 Quando?",
-                flexible: "🎲 Flessibile (sorprendimi!)",
-                weekend: "📅 Weekend",
-                week: "📅 Una settimana",
-                month: "📅 Un mese",
-                custom: "📅 Date personalizzate",
-                departure_label: "🛫 Partenza",
-                return_label: "🛬 Ritorno",
-                preference_label: "🎯 Preferenze (scegli tutte quelle che vuoi)",
-                sea: "🏖️ Mare",
-                mountain: "🏔️ Montagna",
-                art: "🎨 Arte",
-                romantic: "💕 Romantico",
-                adventure: "🎒 Avventura",
-                food: "🍝 Food",
-                nightlife: "🌃 Vita Notturna",
-                culture: "🏛️ Cultura",
-                relax: "🧘 Relax",
-                shopping: "🛍️ Shopping",
-                gloob_button: "🤖 JUST GLOOB IT!",
-                ai_thinking: "🤖 AI sta pensando...",
-                ai_searching: "Analizzando milioni di destinazioni nel mondo!",
-                result_title: "🎉 La tua destinazione AI!",
-                book_button: "✈️ ESPLORA BOOKING!",
-                regloob_button: "🎲 Regloob"
+        // Elegant destinations database
+        const destinations = {
+            santorini: {
+                name: 'Santorini',
+                country: 'Grecia',
+                emoji: '🌅',
+                description: 'Tramonti cicladici e resort esclusivi',
+                basePrice: 180,
+                tags: ['sea', 'romantic'],
+                popularity: 90,
+                hotel: {
+                    name: 'Canaves Oia Suites',
+                    stars: 5,
+                    photo: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=500&h=300&fit=crop',
+                    bookingId: 'ss=Santorini%2C%20Greece&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
+                    description: 'Suite con infinity pool vista caldera'
+                },
+                flight: {
+                    airline: 'Aegean Airlines',
+                    logo: 'A3',
+                    route: 'MXP → JTR',
+                    duration: '3h 25m',
+                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/sant/240815/240822/?adults=2&children=0&adultsv2=2&childrenv2=&infants=0'
+                }
             },
-            en: {
-                modal_title: "📍 Where are you departing from?",
-                modal_subtitle: "To offer you the best travel options",
-                use_location: "🌍 Use my location",
-                or: "or",
-                enter_city: "Enter city (e.g. Milan)",
-                confirm: "✅ Confirm",
-                loading_title: "Loading Gloober...",
-                loading_subtitle: "Just gloob it! 🚀",
-                main_subtitle: "Gloob your new destination! 🌍",
-                budget_label: "💰 Total budget (€)",
-                people_label: "👥 How many people?",
-                people_1: "1 person",
-                people_2: "2 people",
-                people_3: "3 people",
-                people_4: "4 people",
-                people_5: "5+ people",
-                style_label: "✨ Travel style",
-                cheap: "BUDGET",
-                mid: "MID",
-                luxury: "LUXURY",
-                accommodation_label: "🏨 Accommodation type",
-                hotel_option: "🏨 Hotel",
-                bnb_option: "🏠 B&B/House",
-                hostel_option: "🎒 Hostel",
-                resort_option: "🏖️ Resort",
-                when_label: "📅 When?",
-                flexible: "🎲 Flexible (surprise me!)",
-                weekend: "📅 Weekend",
-                week: "📅 One week",
-                month: "📅 One month",
-                custom: "📅 Custom dates",
-                departure_label: "🛫 Departure",
-                return_label: "🛬 Return",
-                preference_label: "🎯 Preferences (choose all you want)",
-                sea: "🏖️ Sea",
-                mountain: "🏔️ Mountain",
-                art: "🎨 Art",
-                romantic: "💕 Romantic",
-                adventure: "🎒 Adventure",
-                food: "🍝 Food",
-                nightlife: "🌃 Nightlife",
-                culture: "🏛️ Culture",
-                relax: "🧘 Relax",
-                shopping: "🛍️ Shopping",
-                gloob_button: "🤖 JUST GLOOB IT!",
-                ai_thinking: "🤖 AI is thinking...",
-                ai_searching: "Analyzing millions of destinations worldwide!",
-                result_title: "🎉 Your AI destination!",
-                book_button: "✈️ EXPLORE BOOKING!",
-                regloob_button: "🎲 Regloob"
+            porto: {
+                name: 'Porto',
+                country: 'Portogallo',
+                emoji: '🍷',
+                description: 'Città del porto e azulejos colorati',
+                basePrice: 120,
+                tags: ['culture', 'food'],
+                popularity: 65,
+                hotel: {
+                    name: 'The Yeatman',
+                    stars: 5,
+                    photo: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=500&h=300&fit=crop',
+                    bookingId: 'ss=Porto%2C%20Portugal&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
+                    description: 'Hotel di charme nel quartiere di Vila Nova de Gaia'
+                },
+                flight: {
+                    airline: 'TAP Portugal',
+                    logo: 'TP',
+                    route: 'MXP → OPO',
+                    duration: '2h 45m',
+                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/port/240815/240822/?adults=2&children=0&adultsv2=2&childrenv2=&infants=0'
+                }
             },
-            fr: {
-                modal_title: "📍 D'où partez-vous?",
-                modal_subtitle: "Pour vous offrir les meilleures options de voyage",
-                use_location: "🌍 Utiliser ma position",
-                or: "ou",
-                enter_city: "Entrez la ville (ex. Milan)",
-                confirm: "✅ Confirmer",
-                loading_title: "Chargement Gloober...",
-                loading_subtitle: "Just gloob it! 🚀",
-                main_subtitle: "Gloob your new destination! 🌍",
-                budget_label: "💰 Budget total (€)",
-                people_label: "👥 Combien de personnes?",
-                people_1: "1 personne",
-                people_2: "2 personnes",
-                people_3: "3 personnes",
-                people_4: "4 personnes",
-                people_5: "5+ personnes",
-                style_label: "✨ Style de voyage",
-                cheap: "ÉCONOMIQUE",
-                mid: "MOYEN",
-                luxury: "LUXE",
-                accommodation_label: "🏨 Type d'hébergement",
-                hotel_option: "🏨 Hôtel",
-                bnb_option: "🏠 B&B/Maison",
-                hostel_option: "🎒 Auberge",
-                resort_option: "🏖️ Resort",
-                when_label: "📅 Quand?",
-                flexible: "🎲 Flexible (surprenez-moi!)",
-                weekend: "📅 Weekend",
-                week: "📅 Une semaine",
-                month: "📅 Un mois",
-                custom: "📅 Dates personnalisées",
-                departure_label: "🛫 Départ",
-                return_label: "🛬 Retour",
-                preference_label: "🎯 Préférences (choisissez toutes celles que vous voulez)",
-                sea: "🏖️ Mer",
-                mountain: "🏔️ Montagne",
-                art: "🎨 Art",
-                romantic: "💕 Romantique",
-                adventure: "🎒 Aventure",
-                food: "🍝 Gastronomie",
-                nightlife: "🌃 Vie nocturne",
-                culture: "🏛️ Culture",
-                relax: "🧘 Détente",
-                shopping: "🛍️ Shopping",
-                gloob_button: "🤖 JUST GLOOB IT!",
-                ai_thinking: "🤖 L'IA réfléchit...",
-                ai_searching: "Analyse de millions de destinations dans le monde!",
-                result_title: "🎉 Votre destination IA!",
-                book_button: "✈️ EXPLORER BOOKING!",
-                regloob_button: "🎲 Regloob"
+            dubrovnik: {
+                name: 'Dubrovnik',
+                country: 'Croazia',
+                emoji: '🏰',
+                description: 'Perla dell\'Adriatico con mura medievali',
+                basePrice: 140,
+                tags: ['sea', 'culture'],
+                popularity: 75,
+                hotel: {
+                    name: 'Hotel Excelsior',
+                    stars: 5,
+                    photo: 'https://images.unsplash.com/photo-1594736797933-d0201ba40a65?w=500&h=300&fit=crop',
+                    bookingId: 'ss=Dubrovnik%2C%20Croatia&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
+                    description: 'Luxury hotel fronte mare nella città vecchia'
+                },
+                flight: {
+                    airline: 'Croatia Airlines',
+                    logo: 'OU',
+                    route: 'MXP → DBV',
+                    duration: '1h 30m',
+                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/dubr/240815/240822/?adults=2&children=0&adultsv2=2&childrenv2=&infants=0'
+                }
             },
-            es: {
-                modal_title: "📍 ¿Desde dónde partes?",
-                modal_subtitle: "Para ofrecerte las mejores opciones de viaje",
-                use_location: "🌍 Usar mi ubicación",
-                or: "o",
-                enter_city: "Introduce ciudad (ej. Milán)",
-                confirm: "✅ Confirmar",
-                loading_title: "Cargando Gloober...",
-                loading_subtitle: "Just gloob it! 🚀",
-                main_subtitle: "Gloob your new destination! 🌍",
-                budget_label: "💰 Presupuesto total (€)",
-                people_label: "👥 ¿Cuántas personas?",
-                people_1: "1 persona",
-                people_2: "2 personas",
-                people_3: "3 personas",
-                people_4: "4 personas",
-                people_5: "5+ personas",
-                style_label: "✨ Estilo de viaje",
-                cheap: "ECONÓMICO",
-                mid: "MEDIO",
-                luxury: "LUJO",
-                accommodation_label: "🏨 Tipo de alojamiento",
-                hotel_option: "🏨 Hotel",
-                bnb_option: "🏠 B&B/Casa",
-                hostel_option: "🎒 Hostel",
-                resort_option: "🏖️ Resort",
-                when_label: "📅 ¿Cuándo?",
-                flexible: "🎲 Flexible (¡sorpréndeme!)",
-                weekend: "📅 Fin de semana",
-                week: "📅 Una semana",
-                month: "📅 Un mes",
-                custom: "📅 Fechas personalizadas",
-                departure_label: "🛫 Salida",
-                return_label: "🛬 Regreso",
-                preference_label: "🎯 Preferencias (elige todas las que quieras)",
-                sea: "🏖️ Mar",
-                mountain: "🏔️ Montaña",
-                art: "🎨 Arte",
-                romantic: "💕 Romántico",
-                adventure: "🎒 Aventura",
-                food: "🍝 Gastronomía",
-                nightlife: "🌃 Vida nocturna",
-                culture: "🏛️ Cultura",
-                relax: "🧘 Relajación",
-                shopping: "🛍️ Shopping",
-                gloob_button: "🤖 JUST GLOOB IT!",
-                ai_thinking: "🤖 La IA está pensando...",
-                ai_searching: "¡Analizando millones de destinos en el mundo!",
-                result_title: "🎉 ¡Tu destino IA!",
-                book_button: "✈️ ¡EXPLORAR BOOKING!",
-                regloob_button: "🎲 Regloob"
+            madeira: {
+                name: 'Madeira',
+                country: 'Portogallo',
+                emoji: '🌺',
+                description: 'Isola subtropicale dell\'eterna primavera',
+                basePrice: 130,
+                tags: ['mountain', 'adventure'],
+                popularity: 50,
+                hotel: {
+                    name: 'Belmond Reid\'s Palace',
+                    stars: 5,
+                    photo: 'https://images.unsplash.com/photo-1588491115447-5e5cdee6aab0?w=500&h=300&fit=crop',
+                    bookingId: 'ss=Funchal%2C%20Madeira&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
+                    description: 'Hotel storico con giardini subtropicali'
+                },
+                flight: {
+                    airline: 'TAP Portugal',
+                    logo: 'TP',
+                    route: 'MXP → FNC',
+                    duration: '3h 15m',
+                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/func/240815/240822/?adults=2&children=0&adultsv2=2&childrenv2=&infants=0'
+                }
             }
         };
 
         // App state
-        let currentStep = 1;
-        let selectedPreferences = [];
-        let selectedAccommodation = 'hotel';
+        let selectedPreference = null;
         let currentResult = null;
-        let userLocation = null;
-        let currentLanguage = 'it';
 
-        // Groq API Configuration
-        const GROQ_API_KEY = 'gsk_placeholder_key_for_demo'; // Replace with actual key
-        const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-
-        // Language Management
-        function updateLanguage(lang) {
-            currentLanguage = lang;
-            const elements = document.querySelectorAll('[data-translate]');
-            elements.forEach(element => {
-                const key = element.getAttribute('data-translate');
-                if (translations[lang] && translations[lang][key]) {
-                    element.textContent = translations[lang][key];
-                }
-            });
-
-            // Update placeholders
-            const placeholderElements = document.querySelectorAll('[data-translate-placeholder]');
-            placeholderElements.forEach(element => {
-                const key = element.getAttribute('data-translate-placeholder');
-                if (translations[lang] && translations[lang][key]) {
-                    element.placeholder = translations[lang][key];
-                }
-            });
-
-            // Update language button
-            const langFlags = { it: '🇮🇹 IT', en: '🇬🇧 EN', fr: '🇫🇷 FR', es: '🇪🇸 ES' };
-            document.getElementById('language-btn').textContent = langFlags[lang];
-        }
-
-        // AI-powered destination matching
-        async function getAIDestination(userParams) {
-            const prompt = `You are a professional travel advisor. Based on these parameters, suggest the PERFECT travel destination:
-
-PARAMETERS:
-- Budget: €${userParams.budget} total for ${userParams.people} people
-- Departure: ${userParams.departure}
-- Travel style: ${userParams.style} (0=budget, 50=mid-range, 100=luxury)
-- Accommodation: ${userParams.accommodation}
-- Duration: ${userParams.duration}
-- Preferences: ${userParams.preferences.join(', ')}
-- When: ${userParams.when}
-${userParams.customDates ? `- Specific dates: ${userParams.departureDate} to ${userParams.returnDate}` : ''}
-
-RESPOND with a JSON object with this EXACT structure:
-{
-  "destination": "City Name",
-  "country": "Country",
-  "emoji": "🏝️",
-  "description": "Brief appealing description",
-  "why": "Why this destination matches perfectly",
-  "budget_breakdown": {
-    "flights": 200,
-    "accommodation": 400,
-    "food": 150,
-    "activities": 100,
-    "total": 850
-  },
-  "best_time": "When to visit and why",
-  "highlights": ["Highlight 1", "Highlight 2", "Highlight 3"],
-  "tips": ["Practical tip 1", "Practical tip 2"],
-  "accommodation_suggestion": "Specific hotel/area recommendation",
-  "perfect_for": ["Who this destination is perfect for"]
-}
-
-Focus on destinations that REALLY match the budget and preferences. Be creative but realistic.`;
-
-            try {
-                // Demo mode - simulate AI response
-                if (GROQ_API_KEY === 'gsk_placeholder_key_for_demo') {
-                    return simulateAIResponse(userParams);
-                }
-
-                const response = await fetch(GROQ_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${GROQ_API_KEY}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        messages: [
-                            {
-                                role: 'user',
-                                content: prompt
-                            }
-                        ],
-                        model: 'llama-3.1-70b-versatile',
-                        temperature: 0.7,
-                        max_tokens: 1500
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                const aiContent = data.choices[0].message.content;
+        // Smart destination picker
+        function pickDestination(budget, people, luxury, preference) {
+            const perPersonBudget = budget / people;
+            const availableDestinations = Object.values(destinations);
+            
+            // Filter by preference
+            let filtered = preference ? 
+                availableDestinations.filter(d => d.tags.includes(preference)) : 
+                availableDestinations;
+            
+            if (filtered.length === 0) filtered = availableDestinations;
+            
+            // Smart selection based on budget and luxury level
+            let scored = filtered.map(dest => {
+                let score = 50;
                 
-                // Parse JSON from AI response
-                const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
-                if (jsonMatch) {
-                    return JSON.parse(jsonMatch[0]);
-                } else {
-                    throw new Error('Invalid AI response format');
-                }
-
-            } catch (error) {
-                console.error('AI API Error:', error);
-                return simulateAIResponse(userParams);
-            }
+                // Budget matching
+                const estimatedPrice = dest.basePrice * (1 + luxury/100);
+                if (estimatedPrice <= perPersonBudget) score += 30;
+                
+                // Luxury preference
+                if (luxury > 70 && dest.basePrice > 150) score += 20;
+                if (luxury < 30 && dest.basePrice < 140) score += 20;
+                
+                // Popularity for hidden gems
+                if (luxury < 50 && dest.popularity < 70) score += 15;
+                
+                return { ...dest, score };
+            });
+            
+            // Sort and add randomness
+            scored.sort((a, b) => b.score - a.score);
+            const topCandidates = scored.slice(0, 2);
+            
+            return topCandidates[Math.floor(Math.random() * topCandidates.length)];
         }
 
-        // Fallback simulation for demo
-        function simulateAIResponse(userParams) {
-            const destinations = [
-                {
-                    destination: "Santorini",
-                    country: "Grecia",
-                    emoji: "🌅",
-                    description: "Isola vulcanica con tramonti mozzafiato e architettura cicladica",
-                    why: "Perfetta per il tuo budget e le preferenze romantiche/mare",
-                    budget_breakdown: {
-                        flights: Math.round(userParams.budget * 0.25),
-                        accommodation: Math.round(userParams.budget * 0.45),
-                        food: Math.round(userParams.budget * 0.20),
-                        activities: Math.round(userParams.budget * 0.10),
-                        total: userParams.budget
-                    },
-                    best_time: "Maggio-Ottobre per il clima perfetto",
-                    highlights: ["Tramonto a Oia", "Spiagge vulcaniche", "Vini locali"],
-                    tips: ["Prenota il tramonto in anticipo", "Assaggia i pomodorini locali"],
-                    accommodation_suggestion: "Canaves Oia Hotel per vista caldera",
-                    perfect_for: ["Coppie romantiche", "Amanti della fotografia"]
-                },
-                {
-                    destination: "Praga",
-                    country: "Repubblica Ceca",
-                    emoji: "🏰",
-                    description: "Città delle cento torri con architettura gotica e birra artigianale",
-                    why: "Budget ottimo per una città ricca di cultura e arte",
-                    budget_breakdown: {
-                        flights: Math.round(userParams.budget * 0.20),
-                        accommodation: Math.round(userParams.budget * 0.35),
-                        food: Math.round(userParams.budget * 0.25),
-                        activities: Math.round(userParams.budget * 0.20),
-                        total: userParams.budget
-                    },
-                    best_time: "Aprile-Ottobre per il clima mite",
-                    highlights: ["Ponte Carlo", "Castello di Praga", "Quartiere ebraico"],
-                    tips: ["Visita i pub sotterranei", "Sali sulla torre dell'orologio"],
-                    accommodation_suggestion: "Hotel nel centro storico vicino alla piazza",
-                    perfect_for: ["Amanti della storia", "Appassionati di birra"]
-                },
-                {
-                    destination: "Porto",
-                    country: "Portogallo",
-                    emoji: "🍷",
-                    description: "Città fluviale con azulejos colorati e cantine di porto",
-                    why: "Destinazione emergente perfetta per il tuo stile di viaggio",
-                    budget_breakdown: {
-                        flights: Math.round(userParams.budget * 0.22),
-                        accommodation: Math.round(userParams.budget * 0.38),
-                        food: Math.round(userParams.budget * 0.25),
-                        activities: Math.round(userParams.budget * 0.15),
-                        total: userParams.budget
-                    },
-                    best_time: "Tutto l'anno, evita solo l'inverno piovoso",
-                    highlights: ["Ribeira district", "Libreria Lello", "Degustazione porto"],
-                    tips: ["Prova i pastéis de nata", "Passeggia lungo il Douro"],
-                    accommodation_suggestion: "Pousada nel centro storico",
-                    perfect_for: ["Foodie", "Amanti del vino", "Esploratori urbani"]
-                }
-            ];
-
-            // Simple matching based on preferences
-            let best = destinations[0];
-            if (userParams.preferences.includes('culture') || userParams.preferences.includes('art')) {
-                best = destinations[1];
-            } else if (userParams.preferences.includes('food') || userParams.preferences.includes('adventure')) {
-                best = destinations[2];
-            }
-
-            return best;
-        }
-
-        // Initialize app
+        // Initialize
         function init() {
-            // Try to get geolocation immediately
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    position => {
-                        userLocation = {
-                            type: 'coords',
-                            latitude: position.coords.latitude,
-                            longitude: position.coords.longitude,
-                            city: 'La tua posizione'
-                        };
-                    },
-                    error => {
-                        // User denied or error - we'll ask later when needed
-                    },
-                    { timeout: 5000 }
-                );
-            }
-
             setTimeout(() => {
                 document.getElementById('loading').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                setupEventListeners();
-            }, 1000);
+                document.getElementById('form-step').classList.remove('hidden');
+                setupEvents();
+            }, 800);
         }
 
-        function setupEventListeners() {
-            // Language selector
-            const languageBtn = document.getElementById('language-btn');
-            const languageDropdown = document.getElementById('language-dropdown');
-
-            languageBtn.addEventListener('click', () => {
-                languageDropdown.classList.toggle('hidden');
-            });
-
-            document.querySelectorAll('.language-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    const lang = option.dataset.lang;
-                    updateLanguage(lang);
-                    languageDropdown.classList.add('hidden');
-                });
-            });
-
-            // Multi-preference selection
+        function setupEvents() {
+            // Preference selection
             document.querySelectorAll('.preference-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const pref = btn.dataset.pref;
                     
-                    if (selectedPreferences.includes(pref)) {
-                        // Remove preference
-                        selectedPreferences = selectedPreferences.filter(p => p !== pref);
-                        btn.classList.remove('selected');
+                    document.querySelectorAll('.preference-btn').forEach(b => 
+                        b.classList.remove('selected'));
+                    
+                    if (selectedPreference === pref) {
+                        selectedPreference = null;
                     } else {
-                        // Add preference
-                        selectedPreferences.push(pref);
+                        selectedPreference = pref;
                         btn.classList.add('selected');
                     }
                 });
             });
 
-            // Accommodation dropdown
-            const accommodationBtn = document.getElementById('accommodation-btn');
-            const accommodationDropdown = document.getElementById('accommodation-dropdown');
-            const accommodationSelected = document.getElementById('accommodation-selected');
-
-            accommodationBtn.addEventListener('click', () => {
-                accommodationDropdown.classList.toggle('hidden');
-            });
-
-            document.querySelectorAll('[data-accommodation]').forEach(item => {
-                item.addEventListener('click', () => {
-                    selectedAccommodation = item.dataset.accommodation;
-                    accommodationSelected.textContent = item.textContent;
-                    accommodationDropdown.classList.add('hidden');
-                });
-            });
-
-            // Date picker visibility
-            const whenSelect = document.getElementById('when');
-            const datePickerSection = document.getElementById('date-picker-section');
-
-            whenSelect.addEventListener('change', () => {
-                if (whenSelect.value === 'custom') {
-                    datePickerSection.classList.remove('hidden');
-                    // Set default dates
-                    const today = new Date();
-                    const departure = new Date(today);
-                    departure.setDate(today.getDate() + 7);
-                    const returnDate = new Date(departure);
-                    returnDate.setDate(departure.getDate() + 7);
-                    
-                    document.getElementById('departure-date').value = departure.toISOString().split('T')[0];
-                    document.getElementById('return-date').value = returnDate.toISOString().split('T')[0];
-                } else {
-                    datePickerSection.classList.add('hidden');
-                }
-            });
-
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!accommodationBtn.contains(e.target) && !accommodationDropdown.contains(e.target)) {
-                    accommodationDropdown.classList.add('hidden');
-                }
-                if (!languageBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
-                    languageDropdown.classList.add('hidden');
-                }
-            });
-
             // Gloob button
-            document.getElementById('gloob-btn').addEventListener('click', () => {
-                const budget = parseInt(document.getElementById('budget').value);
-                if (budget < 200) {
-                    alert('Budget minimo: €200');
-                    return;
-                }
-                
-                // Check if we have user location
-                if (!userLocation) {
-                    showLocationModal();
-                } else {
-                    startAISpin();
-                }
-            });
+            document.getElementById('gloob-btn').addEventListener('click', startGloob);
 
-            // Geolocation modal
-            document.getElementById('geolocation-btn').addEventListener('click', () => {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        position => {
-                            userLocation = {
-                                type: 'coords',
-                                latitude: position.coords.latitude,
-                                longitude: position.coords.longitude,
-                                city: 'La tua posizione'
-                            };
-                            hideLocationModal();
-                            startAISpin();
-                        },
-                        error => {
-                            alert('Impossibile ottenere la posizione. Inserisci manualmente.');
-                        }
-                    );
-                } else {
-                    alert('Geolocalizzazione non supportata.');
-                }
-            });
-
-            document.getElementById('manual-location-btn').addEventListener('click', () => {
-                const city = document.getElementById('manual-location').value.trim();
-                if (city) {
-                    userLocation = { type: 'manual', city: city };
-                    hideLocationModal();
-                    startAISpin();
-                } else {
-                    alert('Inserisci una città valida.');
-                }
-            });
-
-            // Other buttons
+            // Regloob
             document.getElementById('regloob-btn').addEventListener('click', () => {
-                showStep(1);
-                selectedPreferences = [];
-                document.querySelectorAll('.preference-btn').forEach(btn => {
-                    btn.classList.remove('selected');
-                });
+                showStep('form');
+                selectedPreference = null;
+                document.querySelectorAll('.preference-btn').forEach(btn => 
+                    btn.classList.remove('selected'));
             });
-
-            document.getElementById('book-btn').addEventListener('click', () => {
-                if (currentResult) exploreBooking();
-            });
-        }
-
-        function showLocationModal() {
-            document.getElementById('location-modal').classList.remove('hidden');
-        }
-
-        function hideLocationModal() {
-            document.getElementById('location-modal').classList.add('hidden');
         }
 
         function showStep(step) {
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step2').classList.add('hidden');
-            document.getElementById('step3').classList.add('hidden');
-            document.getElementById(`step${step}`).classList.remove('hidden');
-            currentStep = step;
+            document.getElementById('form-step').classList.add('hidden');
+            document.getElementById('spin-step').classList.add('hidden');
+            document.getElementById('result-step').classList.add('hidden');
+            document.getElementById(step + '-step').classList.remove('hidden');
         }
 
-        async function startAISpin() {
-            showStep(2);
+        function startGloob() {
             const budget = parseInt(document.getElementById('budget').value);
             const people = parseInt(document.getElementById('people').value);
             
-            document.getElementById('thinking-text').textContent = 
-                `AI analizza ${selectedPreferences.length} preferenze per ${people} persone con €${budget}!`;
+            if (budget < 300) {
+                alert('Budget minimo: €300');
+                return;
+            }
+            
+            showStep('spin');
+            document.getElementById('search-text').textContent = 
+                `Cercando per ${people} persone con €${budget}...`;
             
             document.getElementById('spinning-globe').classList.add('spinning');
             
-            // Build user parameters
-            const userParams = {
-                budget: budget,
-                people: people,
-                departure: userLocation.city,
-                style: document.getElementById('luxury').value,
-                accommodation: selectedAccommodation,
-                preferences: selectedPreferences,
-                when: document.getElementById('when').value,
-                duration: getDuration(),
-                customDates: document.getElementById('when').value === 'custom',
-                departureDate: document.getElementById('departure-date').value,
-                returnDate: document.getElementById('return-date').value
-            };
-
-            try {
-                // Call AI while globe spins
-                const aiResult = await getAIDestination(userParams);
-                currentResult = aiResult;
+            setTimeout(() => {
+                const luxury = parseInt(document.getElementById('luxury').value);
+                currentResult = pickDestination(budget, people, luxury, selectedPreference);
                 
-                setTimeout(() => {
-                    document.getElementById('spinning-globe').classList.remove('spinning');
-                    displayAIResult();
-                    setTimeout(() => showStep(3), 500);
-                }, 3000);
-                
-            } catch (error) {
-                console.error('AI Error:', error);
-                setTimeout(() => {
-                    document.getElementById('spinning-globe').classList.remove('spinning');
-                    displayError();
-                    setTimeout(() => showStep(3), 500);
-                }, 3000);
-            }
+                document.getElementById('spinning-globe').classList.remove('spinning');
+                displayResult();
+                setTimeout(() => showStep('result'), 300);
+            }, 2500);
         }
 
-        function getDuration() {
-            const when = document.getElementById('when').value;
-            const durations = {
-                'weekend': '2-3 giorni',
-                'week': '1 settimana',
-                'month': '1 mese',
-                'flexible': '4-7 giorni',
-                'custom': 'date personalizzate'
-            };
-            return durations[when] || 'flessibile';
-        }
-
-        function displayAIResult() {
+        function displayResult() {
             const result = currentResult;
             const people = parseInt(document.getElementById('people').value);
-            
-            const resultHTML = `
-                <div class="result-card text-center mb-6">
-                    <div class="text-8xl mb-4">${result.emoji}</div>
-                    <h2 class="text-4xl font-bold text-gray-800 mb-2">${result.destination}</h2>
-                    <p class="text-2xl text-gray-600 mb-4">${result.country}</p>
-                    <p class="text-lg text-gray-700 mb-4">${result.description}</p>
-                    
-                    <div class="bg-gradient-to-r from-purple-100 to-blue-100 rounded-lg p-4 mb-4">
-                        <h3 class="font-bold text-purple-800 mb-2">🤖 Perché l'AI ha scelto questo:</h3>
-                        <p class="text-purple-700">${result.why}</p>
-                    </div>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div class="result-card">
-                        <h3 class="text-xl font-bold mb-4 text-gray-800">💰 Budget Breakdown</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span>✈️ Voli:</span>
-                                <span class="font-bold">€${result.budget_breakdown.flights}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>🏨 Alloggio:</span>
-                                <span class="font-bold">€${result.budget_breakdown.accommodation}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>🍽️ Cibo:</span>
-                                <span class="font-bold">€${result.budget_breakdown.food}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>🎯 Attività:</span>
-                                <span class="font-bold">€${result.budget_breakdown.activities}</span>
-                            </div>
-                            <hr class="border-gray-300">
-                            <div class="flex justify-between text-lg font-bold">
-                                <span>💎 Totale:</span>
-                                <span class="text-green-600">€${result.budget_breakdown.total}</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="result-card">
-                        <h3 class="text-xl font-bold mb-4 text-gray-800">🌟 Highlights</h3>
-                        <div class="space-y-2 mb-4">
-                            ${result.highlights.map(highlight => `
-                                <div class="flex items-center gap-2">
-                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                                    <span>${highlight}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                        
-                        <div class="bg-blue-50 rounded-lg p-3">
-                            <h4 class="font-bold text-blue-800 mb-1">⏰ Periodo migliore:</h4>
-                            <p class="text-blue-700 text-sm">${result.best_time}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div class="result-card">
-                        <h3 class="text-xl font-bold mb-4 text-gray-800">💡 Smart Tips AI</h3>
-                        <div class="space-y-2">
-                            ${result.tips.map(tip => `
-                                <div class="flex items-start gap-2">
-                                    <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
-                                    <span class="text-sm">${tip}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="result-card">
-                        <h3 class="text-xl font-bold mb-4 text-gray-800">🏨 Dove Dormire</h3>
-                        <p class="text-gray-700 mb-4">${result.accommodation_suggestion}</p>
-                        
-                        <div class="bg-green-50 rounded-lg p-3">
-                            <h4 class="font-bold text-green-800 mb-2">✨ Perfetto per:</h4>
-                            <div class="flex flex-wrap gap-2">
-                                ${result.perfect_for.map(type => `
-                                    <span class="bg-green-200 text-green-800 px-2 py-1 rounded-full text-xs">${type}</span>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="result-card text-center">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">🎯 Destinazione AI-Selected!</h3>
-                    <p class="text-lg text-gray-600 mb-2">
-                        💰 €${result.budget_breakdown.total} per ${people} ${people === 1 ? 'persona' : 'persone'}
-                    </p>
-                    <p class="text-gray-500">
-                        📅 ${getDuration()} • 🎯 ${selectedPreferences.length} preferenze matchate
-                    </p>
-                </div>
-            `;
-            
-            document.getElementById('result-content').innerHTML = resultHTML;
-        }
-
-        function displayError() {
-            const errorHTML = `
-                <div class="error-message text-center">
-                    <div class="text-6xl mb-4">🤖❌</div>
-                    <h2 class="text-2xl font-bold mb-4">Oops! AI temporaneamente non disponibile</h2>
-                    <p class="mb-4">L'AI è sovraccarica. Prova con una destinazione suggerita:</p>
-                    
-                    <div class="grid md:grid-cols-3 gap-4 mt-6">
-                        <div class="bg-white/10 rounded-lg p-4 cursor-pointer hover:bg-white/20 transition-colors" onclick="selectFallback('Santorini', '🌅')">
-                            <div class="text-4xl mb-2">🌅</div>
-                            <h3 class="font-bold">Santorini</h3>
-                            <p class="text-sm">Grecia romantica</p>
-                        </div>
-                        <div class="bg-white/10 rounded-lg p-4 cursor-pointer hover:bg-white/20 transition-colors" onclick="selectFallback('Praga', '🏰')">
-                            <div class="text-4xl mb-2">🏰</div>
-                            <h3 class="font-bold">Praga</h3>
-                            <p class="text-sm">Cultura e arte</p>
-                        </div>
-                        <div class="bg-white/10 rounded-lg p-4 cursor-pointer hover:bg-white/20 transition-colors" onclick="selectFallback('Porto', '🍷')">
-                            <div class="text-4xl mb-2">🍷</div>
-                            <h3 class="font-bold">Porto</h3>
-                            <p class="text-sm">Gastronomia</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('result-content').innerHTML = errorHTML;
-        }
-
-        function selectFallback(destination, emoji) {
             const budget = parseInt(document.getElementById('budget').value);
             
-            currentResult = {
-                destination: destination,
-                country: destination === 'Santorini' ? 'Grecia' : (destination === 'Praga' ? 'Repubblica Ceca' : 'Portogallo'),
-                emoji: emoji,
-                description: `Destinazione suggerita per il tuo budget di €${budget}`,
-                why: 'Scelta di fallback del sistema',
-                budget_breakdown: {
-                    flights: Math.round(budget * 0.25),
-                    accommodation: Math.round(budget * 0.40),
-                    food: Math.round(budget * 0.20),
-                    activities: Math.round(budget * 0.15),
-                    total: budget
-                },
-                best_time: 'Tutto l\'anno con stagioni diverse',
-                highlights: ['Architettura unica', 'Cultura locale', 'Esperienza autentica'],
-                tips: ['Prenota in anticipo', 'Esplora i quartieri locali'],
-                accommodation_suggestion: 'Hotel nel centro storico',
-                perfect_for: ['Viaggiatori curiosi', 'Amanti della cultura']
-            };
+            const totalPrice = Math.round(result.basePrice * people * 1.2);
+            const stars = '⭐'.repeat(result.hotel.stars);
             
-            displayAIResult();
-        }
+            // Build booking URLs with real parameters
+            const hotelUrl = `https://www.booking.com/searchresults.html?${result.hotel.bookingId}&group_adults=${people}`;
+            const flightUrl = result.flight.skyscannerUrl.replace('adults=2', `adults=${people}`);
+            
+            const html = `
+                <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                    <div class="text-6xl mb-4">${result.emoji}</div>
+                    <h2 class="text-3xl font-bold text-yellow-400 mb-2">${result.name}</h2>
+                    <p class="text-xl text-gray-300 mb-4">${result.country}</p>
+                    <p class="text-gray-400">${result.description}</p>
+                </div>
 
-        function exploreBooking() {
-            const result = currentResult;
-            const people = parseInt(document.getElementById('people').value);
-            
-            // Build search URLs
-            const bookingUrl = `https://booking.com/searchresults.html?ss=${encodeURIComponent(result.destination)}&group_adults=${people}`;
-            const skyscannerUrl = `https://skyscanner.com/transport/flights/mila/${result.destination.toLowerCase().replace(/\s+/g, '')}/?adults=${people}`;
-            const airbnbUrl = `https://airbnb.com/s/${encodeURIComponent(result.destination)}?adults=${people}`;
-            
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <h2 class="text-2xl font-bold mb-6">🚀 Esplora ${result.destination}!</h2>
-                    
-                    <div class="space-y-4">
-                        <button onclick="window.open('${bookingUrl}', '_blank')" 
-                                class="w-full bg-blue-500 text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-600 transition-colors">
-                            🏨 Cerca Hotel su Booking.com
-                        </button>
-                        
-                        <button onclick="window.open('${skyscannerUrl}', '_blank')" 
-                                class="w-full bg-green-500 text-white font-bold py-4 px-6 rounded-xl hover:bg-green-600 transition-colors">
-                            ✈️ Trova Voli su Skyscanner
-                        </button>
-                        
-                        <button onclick="window.open('${airbnbUrl}', '_blank')" 
-                                class="w-full bg-red-500 text-white font-bold py-4 px-6 rounded-xl hover:bg-red-600 transition-colors">
-                            🏠 Cerca Casa su Airbnb
-                        </button>
-                        
-                        <button onclick="window.open('https://google.com/search?q=${encodeURIComponent(result.destination + ' travel guide')}', '_blank')" 
-                                class="w-full bg-purple-500 text-white font-bold py-4 px-6 rounded-xl hover:bg-purple-600 transition-colors">
-                            📚 Guida di Viaggio
-                        </button>
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <!-- Hotel -->
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="hotel-photo" style="background-image: url('${result.hotel.photo}')"></div>
+                        <h3 class="text-xl font-bold mb-2">${result.hotel.name}</h3>
+                        <div class="text-yellow-500 text-lg mb-2">${stars}</div>
+                        <p class="text-sm text-gray-600 mb-4">${result.hotel.description}</p>
+                        <a href="${hotelUrl}" target="_blank" class="book-btn w-full">
+                            🏨 PRENOTA HOTEL
+                        </a>
                     </div>
-                    
-                    <div class="mt-6 p-4 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-lg">
-                        <p class="text-sm text-gray-700 text-center">
-                            💡 <strong>Tip AI:</strong> Confronta sempre i prezzi su più siti per trovare le migliori offerte!
-                        </p>
+
+                    <!-- Flight -->
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="airline-logo">${result.flight.logo}</div>
+                            <div>
+                                <h3 class="text-xl font-bold">${result.flight.airline}</h3>
+                                <p class="text-gray-600">${result.flight.route}</p>
+                            </div>
+                        </div>
+                        <p class="text-lg font-bold mb-2">Durata: ${result.flight.duration}</p>
+                        <p class="text-sm text-gray-600 mb-4">Volo diretto da Milano Malpensa</p>
+                        <a href="${flightUrl}" target="_blank" class="book-btn w-full">
+                            ✈️ PRENOTA VOLO
+                        </a>
                     </div>
-                    
-                    <button onclick="this.parentElement.parentElement.remove()" 
-                            class="w-full bg-gray-600 text-white font-bold py-3 px-6 rounded-xl mt-6 hover:bg-gray-700 transition-colors">
-                        ✕ Chiudi
-                    </button>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <h3 class="text-2xl font-bold mb-2">💰 Budget perfetto!</h3>
+                    <p class="text-3xl font-bold text-yellow-400 mb-2">€${totalPrice}</p>
+                    <p class="text-gray-300">per ${people} ${people === 1 ? 'persona' : 'persone'} • 7 giorni</p>
+                    ${selectedPreference ? `<p class="text-sm text-green-400 mt-2">🎯 Match perfetto per "${selectedPreference}"</p>` : ''}
                 </div>
             `;
             
-            document.body.appendChild(modal);
+            document.getElementById('result-content').innerHTML = html;
         }
 
-        // Start the app
+        // Start app
         init();
-
-        // Make selectFallback globally available
-        window.selectFallback = selectFallback;
     </script>
 </body>
 </html>
