@@ -134,7 +134,7 @@
             font-weight: bold;
         }
 
-        /* 🎮 MODE TOGGLE */
+        /* MODE TOGGLE */
         .mode-toggle {
             position: absolute;
             top: 20px;
@@ -155,7 +155,7 @@
             transform: translateY(-2px);
         }
 
-        /* 🔥 JOYSTICK STYLES */
+        /* JOYSTICK STYLES */
         .joystick-4d {
             position: relative;
             width: 250px;
@@ -165,7 +165,7 @@
             border-radius: 20px;
             background: rgba(255, 255, 255, 0.05);
             cursor: pointer;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .joystick-grid {
@@ -202,6 +202,7 @@
             transition: all 0.2s;
             transform: translate(-50%, -50%);
             box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5);
+            z-index: 10;
         }
 
         .joystick-dot:hover {
@@ -213,32 +214,35 @@
             cursor: grabbing;
         }
 
-        .joystick-labels {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-        }
-
         .joystick-label {
             position: absolute;
             color: white;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             text-align: center;
             white-space: nowrap;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            background: rgba(0,0,0,0.3);
-            padding: 2px 8px;
-            border-radius: 4px;
         }
 
-        .joystick-label.top { top: -35px; left: 50%; transform: translateX(-50%); }
-        .joystick-label.bottom { bottom: -35px; left: 50%; transform: translateX(-50%); }
-        .joystick-label.left { left: -80px; top: 50%; transform: translateY(-50%); }
-        .joystick-label.right { right: -80px; top: 50%; transform: translateY(-50%); }
+        .joystick-label.top { 
+            top: -30px; 
+            left: 50%; 
+            transform: translateX(-50%);
+        }
+        .joystick-label.bottom { 
+            bottom: -30px; 
+            left: 50%; 
+            transform: translateX(-50%);
+        }
+        .joystick-label.left { 
+            left: -50px; 
+            top: 50%; 
+            transform: translateY(-50%);
+        }
+        .joystick-label.right { 
+            right: -50px; 
+            top: 50%; 
+            transform: translateY(-50%);
+        }
 
         /* ADVANCED CONTROLS */
         .advanced-controls {
@@ -268,7 +272,7 @@
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.05);
             cursor: pointer;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .slider-4d-grid {
@@ -304,20 +308,12 @@
             transition: all 0.2s;
             transform: translate(-50%, -50%);
             box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+            z-index: 10;
         }
 
         .slider-4d-dot:hover {
             transform: translate(-50%, -50%) scale(1.2);
             box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
-        }
-
-        .slider-4d-labels {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
         }
 
         .slider-4d-label {
@@ -327,16 +323,28 @@
             font-weight: bold;
             text-align: center;
             white-space: nowrap;
-            background: rgba(0,0,0,0.3);
-            padding: 2px 6px;
-            border-radius: 3px;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         }
 
-        .slider-4d-label.top { top: -25px; left: 50%; transform: translateX(-50%); }
-        .slider-4d-label.bottom { bottom: -25px; left: 50%; transform: translateX(-50%); }
-        .slider-4d-label.left { left: -60px; top: 50%; transform: translateY(-50%); }
-        .slider-4d-label.right { right: -60px; top: 50%; transform: translateY(-50%); }
+        .slider-4d-label.top { 
+            top: -25px; 
+            left: 50%; 
+            transform: translateX(-50%);
+        }
+        .slider-4d-label.bottom { 
+            bottom: -25px; 
+            left: 50%; 
+            transform: translateX(-50%);
+        }
+        .slider-4d-label.left { 
+            left: -55px; 
+            top: 50%; 
+            transform: translateY(-50%);
+        }
+        .slider-4d-label.right { 
+            right: -55px; 
+            top: 50%; 
+            transform: translateY(-50%);
+        }
 
         .modal {
             position: fixed;
@@ -395,14 +403,14 @@
             <div class="text-center">
                 <div class="text-6xl mb-4">🌍</div>
                 <h1 class="text-4xl font-bold">Gloober</h1>
-                <p class="text-xl">Zero stress, massima vacanza</p>
+                <p class="text-xl">Zero stress travel</p>
             </div>
         </div>
 
         <!-- Form -->
         <div id="form-step" class="hidden container mx-auto px-4 py-8 relative">
             
-            <!-- 🎮 MODE TOGGLE BUTTON -->
+            <!-- MODE TOGGLE BUTTON -->
             <button id="mode-toggle" class="mode-toggle" onclick="toggleMode()">
                 <span id="mode-text">🔧 Modalità Avanzata</span>
             </button>
@@ -411,13 +419,13 @@
                 <h1 class="text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
                     Gloober
                 </h1>
-                <p class="text-xl text-gray-300">Muovi il joystick, trova la vacanza! 🎮</p>
+                <p class="text-xl text-gray-300">Start gloobing! 🎮</p>
             </div>
 
             <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
                 <div class="glass-card rounded-2xl p-6">
                     
-                    <!-- 💰 BUDGET & PERSONE (SEMPRE VISIBILI) -->
+                    <!-- BUDGET & PERSONE -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium mb-2">💰 Budget totale (€)</label>
                         <input type="number" id="budget" value="1000" min="300" max="10000" step="100" 
@@ -435,55 +443,50 @@
                         </select>
                     </div>
 
-                    <!-- 🎮 JOYSTICK PRINCIPALE (SEMPRE VISIBILE) -->
+                    <!-- JOYSTICK PRINCIPALE -->
                     <div class="mb-8">
-                        <label class="block text-sm font-medium mb-6 text-center text-lg">🎮 Che tipo di vacanza vuoi?</label>
+                        <label class="block text-sm font-medium mb-6 text-center text-lg">🎮 Choose your vibe</label>
                         <div class="joystick-4d" id="main-joystick">
                             <div class="joystick-grid"></div>
                             <div class="joystick-center"></div>
                             <div class="joystick-dot" id="main-dot"></div>
-                            <div class="joystick-labels">
-                                <div class="joystick-label top">🎒 AVVENTURA</div>
-                                <div class="joystick-label bottom">😌 RELAX</div>
-                                <div class="joystick-label left">🏖️ MARE</div>
-                                <div class="joystick-label right">🏔️ MONTAGNA</div>
-                            </div>
+                            <div class="joystick-label top">🎒 AVVENTURA</div>
+                            <div class="joystick-label bottom">😌 RELAX</div>
+                            <div class="joystick-label left">🏖️ MARE</div>
+                            <div class="joystick-label right">🏔️ MONTAGNA</div>
                         </div>
-                        <p class="text-center text-xs text-gray-400 mt-4">Trascina il joystick per scegliere il tuo stile di vacanza</p>
                     </div>
 
-                    <!-- 🔧 CONTROLLI AVANZATI (NASCOSTI DI DEFAULT) -->
+                    <!-- CONTROLLI AVANZATI -->
                     <div id="advanced-controls" class="advanced-controls hidden">
                         
                         <!-- BUDGET TYPE TOGGLE -->
                         <div class="mb-6 text-center">
-                            <label class="block text-sm font-medium mb-3">💰 Tipo di Vacanza</label>
+                            <label class="block text-sm font-medium mb-3">💰 Package</label>
                             <div class="budget-toggle justify-center">
-                                <button id="budget-type-essential" onclick="toggleBudgetType('essential')">💡 Solo Base</button>
-                                <button id="budget-type-complete" class="active" onclick="toggleBudgetType('complete')">🎯 Tutto Incluso</button>
+                                <button id="budget-type-essential" onclick="toggleBudgetType('essential')">💡 Basic</button>
+                                <button id="budget-type-complete" class="active" onclick="toggleBudgetType('complete')">🎯 All inclusive</button>
                             </div>
-                            <p id="budget-description" class="text-xs text-gray-400 mt-2">Volo + Hotel + Pasti + Attività • Zero pensieri!</p>
+                            <p id="budget-description" class="text-xs text-gray-400 mt-2">Flight + Hotel + Meals + Activities</p>
                         </div>
                         
-                        <!-- 4D SLIDER 1: STILE & POPOLARITÀ -->
+                        <!-- 4D SLIDER: STILE & POPOLARITÀ -->
                         <div class="mb-6">
-                            <label class="block text-sm font-medium mb-4 text-center">✨ Stile & Popolarità</label>
+                            <label class="block text-sm font-medium mb-4 text-center">✨ Style</label>
                             <div class="slider-4d" id="style-slider">
                                 <div class="slider-4d-grid"></div>
                                 <div class="slider-4d-center"></div>
                                 <div class="slider-4d-dot" id="style-dot"></div>
-                                <div class="slider-4d-labels">
-                                    <div class="slider-4d-label top">🌟 FAMOSA</div>
-                                    <div class="slider-4d-label bottom">💎 NASCOSTA</div>
-                                    <div class="slider-4d-label left">💚 ECONOMICO</div>
-                                    <div class="slider-4d-label right">💜 LUSSO</div>
-                                </div>
+                                <div class="slider-4d-label top">🌟 FAMOSA</div>
+                                <div class="slider-4d-label bottom">💎 NASCOSTA</div>
+                                <div class="slider-4d-label left">💚 ECONOMICO</div>
+                                <div class="slider-4d-label right">💜 LUSSO</div>
                             </div>
                         </div>
 
                         <!-- TRANSPORT DROPDOWN -->
                         <div class="mb-6">
-                            <label class="block text-sm font-medium mb-2">🚀 Come viaggi?</label>
+                            <label class="block text-sm font-medium mb-2">🚀 Transport</label>
                             <div class="custom-dropdown">
                                 <button type="button" class="dropdown-btn" id="transport-btn">
                                     <span id="transport-selected">✈️ Aereo</span>
@@ -533,8 +536,8 @@
                         <div class="continent oceania"></div>
                     </div>
                 </div>
-                <h2 class="text-4xl font-bold mb-2">🎮 Joystick AI al lavoro...</h2>
-                <p class="text-lg text-gray-300" id="search-text">Analizzo la posizione del joystick...</p>
+                <h2 class="text-4xl font-bold mb-2">Gloobing...</h2>
+                <p class="text-lg text-gray-300" id="search-text">Finding your perfect match...</p>
             </div>
         </div>
 
@@ -542,7 +545,7 @@
         <div id="result-step" class="hidden container mx-auto px-4 py-8">
             <div class="max-w-4xl mx-auto">
                 <div class="text-center mb-6">
-                    <h1 class="text-4xl font-bold mb-2">🎉 Ecco la tua vacanza joystick!</h1>
+                    <h1 class="text-4xl font-bold mb-2">Gloobed! 🎉</h1>
                 </div>
 
                 <div id="result-content">
@@ -551,10 +554,10 @@
 
                 <div class="text-center mt-6">
                     <button id="guide-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-xl mr-4 hover:bg-blue-700 transition-colors">
-                        📋 Guida al Viaggio
+                        📋 Travel Guide
                     </button>
                     <button id="regloob-btn" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-700 transition-colors">
-                        🎲 Regloob
+                        🎲 Re-Gloob
                     </button>
                 </div>
             </div>
@@ -564,7 +567,7 @@
         <div id="guide-modal" class="modal hidden">
             <div class="modal-content">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold">📋 Guida al Viaggio</h2>
+                    <h2 class="text-2xl font-bold">📋 Your Gloob Guide</h2>
                     <button id="close-guide" class="text-2xl hover:text-red-400">✕</button>
                 </div>
                 <div id="guide-content">
@@ -582,15 +585,15 @@
         // App state
         let selectedTransport = 'plane';
         let currentResult = null;
-        let budgetType = 'complete'; // DEFAULT: All inclusive
+        let budgetType = 'complete';
         let usedDestinations = [];
         let isAdvancedMode = false;
 
-        // 🎮 JOYSTICK VALUES
-        let mainJoystickValues = { x: 50, y: 50 }; // x: energy (0-100), y: environment (0-100)
-        let styleValues = { x: 50, y: 50 }; // x: luxury (0-100), y: popularity (0-100)
+        // JOYSTICK VALUES
+        let mainJoystickValues = { x: 50, y: 50 };
+        let styleValues = { x: 50, y: 50 };
 
-        // 🎯 AI DESTINATION FINDER WITH JOYSTICK
+        // AI DESTINATION FINDER WITH JOYSTICK
         async function findDestinationWithJoystick(budget, people, transport, budgetType, mainValues, styleValues = null) {
             const budgetPerPerson = Math.round(budget / people);
             
@@ -607,9 +610,9 @@
             }
             
             // Smart duration based on luxury level
-            const tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :  // Long cheap
-                           luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :     // Short luxury
-                           Math.max(5, Math.round(7 - luxury/50));                    // Medium
+            const tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :
+                           luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :
+                           Math.max(5, Math.round(7 - luxury/50));
             
             // Create variety seed
             const varietySeed = Date.now() + Math.random() * 1000;
@@ -650,8 +653,8 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
   "destination": "Nome Città Specifica",
   "country": "Paese", 
   "emoji": "🌅",
-  "description": "Perché è perfetta per questa posizione joystick",
-  "whyPerfectJoystick": "Come rispecchia esattamente ambiente ${environment}%, energia ${energy}%${isAdvancedMode ? `, stile ${luxury}%, popolarità ${popularity}%` : ''}",
+  "description": "Breve descrizione",
+  "whyPerfectJoystick": "Match: ${environment}% montagna, ${energy}% avventura",
   "tripDays": ${tripDays},
   "budgetPerDay": ${Math.round(budget / tripDays)},
   "hotel": {
@@ -678,7 +681,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
 }`;
 
             try {
-                console.log('🎮 Joystick AI Call:', { energy, environment, luxury, popularity, isAdvancedMode });
+                console.log('🎮 Gloobing...', { energy, environment, luxury, popularity, isAdvancedMode });
                 
                 const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
@@ -697,7 +700,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                 if (response.ok) {
                     const data = await response.json();
                     const aiResponse = data.candidates[0].content.parts[0].text;
-                    console.log('🎯 Joystick AI Response:', aiResponse);
+                    console.log('🎯 Gloobed!', aiResponse);
                     
                     const cleanResponse = aiResponse.replace(/```json\n?|\n?```/g, '').trim();
                     const result = JSON.parse(cleanResponse);
@@ -716,7 +719,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                     throw new Error('API Error: ' + response.status);
                 }
             } catch (error) {
-                console.log('🔄 Joystick AI error, using smart fallback:', error);
+                console.log('🔄 Using fallback gloob:', error);
                 return generateJoystickFallback(budget, people, transport, budgetType, mainValues, styleValues);
             }
         }
@@ -807,8 +810,8 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                 destination: bestMatch.name,
                 country: bestMatch.country,
                 emoji: bestMatch.emoji,
-                description: `${bestMatch.name} perfetta per la tua posizione joystick`,
-                whyPerfectJoystick: `${environment > 50 ? 'Montagna' : 'Mare'} ${energy > 50 ? 'avventurosa' : 'relax'} - Ambiente ${environment}%, Energia ${energy}%`,
+                description: `Perfect gloob destination`,
+                whyPerfectJoystick: `Match: ${environment > 50 ? 'Montagna' : 'Mare'} ${energy > 50 ? 'avventura' : 'relax'}`,
                 tripDays: tripDays,
                 budgetPerDay: Math.round(budget / tripDays),
                 travelDates: generateTravelDates(),
@@ -911,7 +914,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
             };
         }
 
-        // 🎮 JOYSTICK FUNCTIONALITY
+        // JOYSTICK FUNCTIONALITY
         function setupJoystick(joystickId, dotId, valuesObj) {
             const joystick = document.getElementById(joystickId);
             const dot = document.getElementById(dotId);
@@ -1122,7 +1125,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                 if (isLiveSearching) return;
                 
                 isLiveSearching = true;
-                console.log('🔥 Joystick LIVE SEARCH triggered');
+                console.log('🔥 Live gloobing...');
                 
                 try {
                     const globe = document.getElementById('globe');
@@ -1151,7 +1154,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                     globe.style.opacity = '1';
                     
                 } catch (error) {
-                    console.log('Joystick Live search error:', error);
+                    console.log('Live gloob error:', error);
                 } finally {
                     isLiveSearching = false;
                 }
@@ -1188,15 +1191,15 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
             
             showStep('spin');
             
-            const environment = 100 - mainJoystickValues.y;
-            const energy = mainJoystickValues.x;
+            const environment = mainJoystickValues.x;
+            const energy = 100 - mainJoystickValues.y;
             
             const searchTexts = [
-                `🎮 Analizzo posizione joystick...`,
-                `🏞️ ${environment > 50 ? 'Montagna' : 'Mare'} + ${energy > 50 ? 'Avventura' : 'Relax'}...`,
-                `💰 Budget €${budget} per ${people} persone...`,
-                `${isAdvancedMode ? '🔧 Modalità avanzata attiva...' : '🎯 Modalità semplice ottimizzata...'}`,
-                `🌍 Trovata destinazione perfetta!`
+                `🎮 Gloobing...`,
+                `🏞️ ${environment > 50 ? 'Mountain' : 'Sea'} + ${energy > 50 ? 'Adventure' : 'Relax'}...`,
+                `💰 €${budget} for ${people} ${people === 1 ? 'person' : 'people'}...`,
+                `${isAdvancedMode ? '🔧 Advanced gloob mode...' : '🎯 Simple gloob...'}`,
+                `🌍 Perfect match found!`
             ];
             
             let textIndex = 0;
@@ -1221,9 +1224,9 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                 displayResult();
                 setTimeout(() => showStep('result'), 300);
             } catch (error) {
-                console.error('Joystick Error:', error);
+                console.error('Gloob Error:', error);
                 clearInterval(textInterval);
-                alert('Errore durante la ricerca joystick. Riprova!');
+                alert('Gloob error! Try again.');
                 showStep('form');
             }
         }
@@ -1238,7 +1241,6 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                     <div class="text-6xl mb-4">${result.emoji}</div>
                     <h2 class="text-3xl font-bold text-yellow-400 mb-2">${result.destination}</h2>
                     <p class="text-xl text-gray-300 mb-4">${result.country}</p>
-                    <p class="text-gray-400 mb-3">${result.description}</p>
                     
                     ${result.whyPerfectJoystick ? `
                     <div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg p-3 mx-auto max-w-md mb-3">
@@ -1248,9 +1250,9 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                     
                     ${result.travelDates ? `
                     <div class="mt-4 text-sm text-yellow-200">
-                        📅 <strong>Date viaggio:</strong> ${result.travelDates.start} - ${result.travelDates.end}
-                        ${result.tripDays ? ` (${result.tripDays} giorni)` : ''}
-                        ${result.budgetPerDay ? ` • €${result.budgetPerDay}/giorno` : ''}
+                        📅 ${result.travelDates.start} - ${result.travelDates.end}
+                        ${result.tripDays ? ` • ${result.tripDays} days` : ''}
+                        ${result.budgetPerDay ? ` • €${result.budgetPerDay}/day` : ''}
                     </div>
                     ` : ''}
                 </div>
@@ -1261,13 +1263,12 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                         <div class="hotel-photo rounded-lg mb-4 h-48 bg-cover bg-center" style="background-image: url('${result.hotel.photo}')"></div>
                         <h3 class="text-xl font-bold mb-2">${result.hotel.name}</h3>
                         <div class="text-yellow-500 text-lg mb-2">${stars}</div>
-                        <p class="text-sm text-gray-600 mb-4">Hotel selezionato tramite joystick AI</p>
                         <div class="text-sm text-gray-600 mb-4">
-                            <div><strong>Prezzo per notte:</strong> €${result.hotel.pricePerNight}</div>
-                            <div><strong>Totale ${result.tripDays || 7} notti:</strong> €${result.hotel.totalPrice}</div>
+                            <div><strong>Per night:</strong> €${result.hotel.pricePerNight}</div>
+                            <div><strong>Total ${result.tripDays || 7} nights:</strong> €${result.hotel.totalPrice}</div>
                         </div>
                         <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(result.destination + ', ' + result.country)}&checkin=${result.travelDates ? result.travelDates.startDate.toISOString().split('T')[0] : ''}&checkout=${result.travelDates ? result.travelDates.endDate.toISOString().split('T')[0] : ''}&group_adults=${people}&no_rooms=1" target="_blank" class="book-btn w-full">
-                            🏨 PRENOTA HOTEL
+                            🏨 BOOK HOTEL
                         </a>
                     </div>
 
@@ -1283,52 +1284,46 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                             </div>
                         </div>
                         <div class="text-sm text-gray-600 mb-4">
-                            <div><strong>Durata:</strong> ${result.transport.duration}</div>
-                            <div><strong>A/R per ${people} persone</strong></div>
-                            ${result.travelDates ? `<div><strong>Partenza:</strong> ${result.travelDates.start}</div><div><strong>Ritorno:</strong> ${result.travelDates.end}</div>` : ''}
+                            <div><strong>Duration:</strong> ${result.transport.duration}</div>
+                            <div><strong>Round trip for ${people} ${people === 1 ? 'person' : 'people'}</strong></div>
                         </div>
                         <p class="text-lg font-bold text-green-600 mb-4">€${result.transport.totalPrice}</p>
-                        <a href="https://www.skyscanner.it/transport/flights/mila/${result.destination.toLowerCase().replace(/\s+/g, '').substring(0,4)}/${result.travelDates ? result.travelDates.startDate.toISOString().split('T')[0].replace(/-/g, '') : ''}/${result.travelDates ? result.travelDates.endDate.toISOString().split('T')[0].replace(/-/g, '') : ''}/?adults=${people}" target="_blank" class="book-btn w-full">
-                            ✈️ PRENOTA VOLO
+                        <a href="https://www.skyscanner.it/transport/flights/mila/${result.destination.toLowerCase().replace(/\s+/g, '').substring(0,4)}/?adults=${people}" target="_blank" class="book-btn w-full">
+                            ✈️ BOOK FLIGHT
                         </a>
                     </div>
                 </div>
 
-                <!-- Joystick Budget Summary -->
+                <!-- Budget Summary -->
                 <div class="glass-card rounded-2xl p-6 text-center mb-6">
-                    <h3 class="text-xl font-bold mb-4">🎮 Budget Joystick ${budgetType === 'complete' ? 'Tutto Incluso' : 'Essenziale'}</h3>
+                    <h3 class="text-xl font-bold mb-4">🎮 Your Gloob Budget</h3>
                     <div class="space-y-2 mb-4 text-left max-w-md mx-auto">
                         <div class="flex justify-between">
-                            <span>🏨 Hotel (${result.tripDays || 7} notti):</span>
+                            <span>🏨 Hotel:</span>
                             <span class="font-bold">€${result.costs.hotel}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>✈️ ${getTransportName(selectedTransport)} A/R:</span>
+                            <span>✈️ Transport:</span>
                             <span class="font-bold">€${result.costs.transport}</span>
                         </div>
                         ${budgetType === 'complete' && result.costs.meals ? `
                         <div class="flex justify-between">
-                            <span>🍽️ Pasti (${result.tripDays || 7} giorni):</span>
+                            <span>🍽️ Meals:</span>
                             <span class="font-bold">€${result.costs.meals}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>🎫 Attività/Tour:</span>
+                            <span>🎫 Activities:</span>
                             <span class="font-bold">€${result.costs.activities}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>🎁 Extra/Shopping:</span>
+                            <span>🎁 Extras:</span>
                             <span class="font-bold">€${result.costs.extras}</span>
                         </div>
                         ` : ''}
                         <div class="border-t border-white/30 pt-2 flex justify-between text-lg">
-                            <span>TOTALE:</span>
+                            <span>TOTAL:</span>
                             <span class="font-bold text-yellow-400">€${result.costs.total}</span>
                         </div>
-                    </div>
-                    <div class="text-sm text-gray-300 space-y-1">
-                        <p>🎮 Vacanza joystick per ${people} ${people === 1 ? 'persona' : 'persone'} • ${result.tripDays || 7} giorni</p>
-                        <p>📊 €${result.budgetPerDay || Math.round(result.costs.total / (result.tripDays || 7))} al giorno per tutto</p>
-                        ${isAdvancedMode ? '<p>🔧 Modalità avanzata utilizzata</p>' : '<p>🎯 Modalità semplice utilizzata</p>'}
                     </div>
                 </div>
             `;
@@ -1344,9 +1339,9 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
             
             const description = document.getElementById('budget-description');
             if (type === 'essential') {
-                description.textContent = 'Solo volo + hotel • Pasti e attività esclusi';
+                description.textContent = 'Flight + Hotel only';
             } else {
-                description.textContent = 'Volo + Hotel + Pasti + Attività • Zero pensieri!';
+                description.textContent = 'Flight + Hotel + Meals + Activities';
             }
             
             triggerLiveSearch();
@@ -1358,7 +1353,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
             const modal = document.getElementById('guide-modal');
             const content = document.getElementById('guide-content');
             
-            content.innerHTML = '<div class="text-center"><div class="text-4xl mb-4">🎮</div><p>L\'AI sta creando la tua guida joystick personalizzata...</p></div>';
+            content.innerHTML = '<div class="text-center"><div class="text-4xl mb-4">🎮</div><p>Gloobing your travel guide...</p></div>';
             modal.classList.remove('hidden');
             
             try {
@@ -1367,53 +1362,47 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                 content.innerHTML = `
                     <div class="bg-white/10 rounded-lg p-4 mb-4">
                         <h3 class="text-lg font-bold mb-2">📍 ${currentResult.destination}, ${currentResult.country}</h3>
-                        <p class="text-sm text-gray-300">Guida joystick personalizzata per ${document.getElementById('people').value} persone</p>
-                        ${currentResult.travelDates ? `<p class="text-sm text-yellow-200 mt-1">📅 ${currentResult.travelDates.start} - ${currentResult.travelDates.end}</p>` : ''}
-                        ${currentResult.whyPerfectJoystick ? `<p class="text-sm text-yellow-200 mt-1">🎮 ${currentResult.whyPerfectJoystick}</p>` : ''}
+                        <p class="text-sm text-gray-300">Gloobed for ${document.getElementById('people').value} ${document.getElementById('people').value === '1' ? 'person' : 'people'}</p>
                     </div>
                     <div class="space-y-4 text-sm whitespace-pre-line leading-relaxed">
                         ${guide}
                     </div>
                     <div class="mt-6 p-4 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
                         <p class="text-sm text-yellow-200">
-                            💡 <strong>Consiglio:</strong> Questa guida è ottimizzata per la tua posizione joystick! 
-                            Prezzi realistici aggiornati al 2025.
+                            💡 <strong>Pro tip:</strong> This guide is optimized for your gloob style!
                         </p>
                     </div>
                 `;
             } catch (error) {
-                content.innerHTML = '<p class="text-red-400">Errore nella generazione della guida joystick. Riprova!</p>';
+                content.innerHTML = '<p class="text-red-400">Gloob guide error. Try again!</p>';
             }
         }
 
         async function generateTravelGuide(destination, people, days = 7) {
-            const prompt = `Crea guida turistica per ${destination.destination}, ${destination.country} per ${people} persone per ${days || destination.tripDays} giorni. Sii creativo con luoghi reali e attività varie. Ogni giorno diverso con orari logici e prezzi 2025.`;
-            
-            // Simplified guide generation for now
-            const guide = `📅 GIORNO 1 - Arrivo e scoperta
-• 10:00 - Check-in hotel e colazione (€25)
-• 12:00 - Tour centro storico (€30)  
-• 15:00 - Pranzo locale (€35)
-• 17:30 - Visita attrazione principale (€20)
-• 20:00 - Cena tipica (€45)
-💰 Budget giorno: €155
+            const guide = `📅 DAY 1 - Arrival
+• 10:00 - Hotel check-in (€25 breakfast)
+• 12:00 - City tour (€30)  
+• 15:00 - Local lunch (€35)
+• 17:30 - Main attraction (€20)
+• 20:00 - Traditional dinner (€45)
+💰 Day budget: €155
 
-📅 GIORNO 2 - Cultura e tradizioni
-• 09:30 - Colazione vista panoramica (€20)
-• 11:00 - Musei e arte locale (€25)
-• 14:00 - Pranzo tradizionale (€30)
-• 16:30 - Shopping e artigianato (€40)  
-• 19:00 - Aperitivo locale (€18)
-• 21:00 - Spettacolo folkloristico (€35)
-💰 Budget giorno: €168
+📅 DAY 2 - Culture
+• 09:30 - Panoramic breakfast (€20)
+• 11:00 - Museums (€25)
+• 14:00 - Traditional lunch (€30)
+• 16:30 - Shopping (€40)  
+• 19:00 - Aperitivo (€18)
+• 21:00 - Local show (€35)
+💰 Day budget: €168
 
-📅 GIORNO 3 - Natura e relax
-• 09:00 - Escursione naturalistica (€40)
-• 12:30 - Picnic vista panoramica (€25)
-• 15:00 - Attività all'aperto (€30)
-• 18:00 - Rientro e riposo (€0)
-• 20:30 - Cena con specialità locali (€50)
-💰 Budget giorno: €145`;
+📅 DAY 3 - Nature
+• 09:00 - Nature excursion (€40)
+• 12:30 - Panoramic picnic (€25)
+• 15:00 - Outdoor activities (€30)
+• 18:00 - Rest (€0)
+• 20:30 - Special dinner (€50)
+💰 Day budget: €145`;
             
             return guide;
         }
@@ -1427,7 +1416,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
             if (isAdvancedMode) {
                 advancedControls.classList.remove('hidden');
                 advancedControls.classList.add('visible');
-                modeText.textContent = '🎮 Modalità Semplice';
+                modeText.textContent = '🎮 Simple Mode';
                 
                 // Setup advanced sliders when mode is activated
                 setTimeout(() => {
@@ -1436,7 +1425,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
             } else {
                 advancedControls.classList.remove('visible');
                 advancedControls.classList.add('hidden');
-                modeText.textContent = '🔧 Modalità Avanzata';
+                modeText.textContent = '🔧 Advanced Mode';
             }
             
             // Trigger search after mode change
