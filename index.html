@@ -1,28 +1,778 @@
-{ name: 'Chamonix', country: 'Francia', emoji: '🏔️', match: [85, 80, 95, 90], cost: 720 },
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gloober - Zero Stress Travel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f766e, #065f46, #064e3b);
+            min-height: 100vh;
+        }
+
+        .globe-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+        }
+        
+        .globe {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6, #2563eb);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            transition: transform 1s ease-out;
+        }
+        
+        .spinning { animation: spin 3s ease-out; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(900deg); } }
+        
+        .continent {
+            position: absolute;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 4px;
+            opacity: 0.9;
+        }
+        
+        .europa { top: 70px; left: 86px; width: 28px; height: 20px; transform: rotate(12deg); }
+        .africa { top: 100px; left: 75px; width: 40px; height: 65px; transform: rotate(6deg); }
+        .asia { top: 60px; right: 60px; width: 50px; height: 35px; transform: rotate(-12deg); }
+        .america { top: 45px; left: 30px; width: 45px; height: 55px; transform: rotate(45deg); }
+        .oceania { bottom: 70px; right: 70px; width: 30px; height: 18px; }
+        
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+        }
+
+        .custom-dropdown {
+            position: relative;
+        }
+        
+        .dropdown-btn {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(6, 95, 70, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            margin-top: 4px;
+            z-index: 50;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dropdown-item {
+            padding: 12px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .budget-toggle {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+        
+        .budget-toggle button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .budget-toggle button.active {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: black;
+            font-weight: bold;
+        }
+
+        /* 🎮 MODE TOGGLE */
+        .mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 🔥 JOYSTICK STYLES */
+        .joystick-4d {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .joystick-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .joystick-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .joystick-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border: 3px solid white;
+            border-radius: 50%;
+            cursor: grab;
+            transition: all 0.2s;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5);
+        }
+
+        .joystick-dot:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.7);
+        }
+
+        .joystick-dot:active {
+            cursor: grabbing;
+        }
+
+        .joystick-labels {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            pointer-events: none;
+        }
+
+        .joystick-label {
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .joystick-label.top { top: -30px; left: 50%; transform: translateX(-50%); }
+        .joystick-label.bottom { bottom: -30px; left: 50%; transform: translateX(-50%); }
+        .joystick-label.left { left: -70px; top: 50%; transform: translateY(-50%); }
+        .joystick-label.right { right: -70px; top: 50%; transform: translateY(-50%); }
+
+        /* ADVANCED CONTROLS */
+        .advanced-controls {
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        .advanced-controls.hidden {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .advanced-controls.visible {
+            max-height: 1000px;
+            opacity: 1;
+        }
+
+        /* 4D SLIDER STYLES */
+        .slider-4d {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .slider-4d-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 45px 45px;
+        }
+
+        .slider-4d-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+        }
+
+        .slider-4d-dot {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: grab;
+            transition: all 0.2s;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .slider-4d-dot:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+        }
+
+        .slider-4d-labels {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            pointer-events: none;
+        }
+
+        .slider-4d-label {
+            position: absolute;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .slider-4d-label.top { top: -20px; left: 50%; transform: translateX(-50%); }
+        .slider-4d-label.bottom { bottom: -20px; left: 50%; transform: translateX(-50%); }
+        .slider-4d-label.left { left: -50px; top: 50%; transform: translateY(-50%); }
+        .slider-4d-label.right { right: -50px; top: 50%; transform: translateY(-50%); }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .modal-content {
+            background: rgba(15, 118, 110, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            max-height: 80vh;
+            width: 90%;
+            overflow-y: auto;
+            color: white;
+        }
+
+        .book-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+    
+    <div id="app">
+        <!-- Loading -->
+        <div id="loading" class="min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="text-6xl mb-4">🌍</div>
+                <h1 class="text-4xl font-bold">Gloober</h1>
+                <p class="text-xl">Zero stress, massima vacanza</p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div id="form-step" class="hidden container mx-auto px-4 py-8 relative">
+            
+            <!-- 🎮 MODE TOGGLE BUTTON -->
+            <button id="mode-toggle" class="mode-toggle" onclick="toggleMode()">
+                <span id="mode-text">🔧 Modalità Avanzata</span>
+            </button>
+
+            <div class="text-center mb-8">
+                <h1 class="text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                    Gloober
+                </h1>
+                <p class="text-xl text-gray-300">Muovi il joystick, trova la vacanza! 🎮</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+                <div class="glass-card rounded-2xl p-6">
+                    
+                    <!-- 💰 BUDGET & PERSONE (SEMPRE VISIBILI) -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">💰 Budget totale (€)</label>
+                        <input type="number" id="budget" value="1000" min="300" max="10000" step="100" 
+                               class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold focus:ring-2 focus:ring-yellow-400 outline-none">
+                    </div>
+
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium mb-2">👥 Persone</label>
+                        <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
+                            <option value="1">1 persona</option>
+                            <option value="2" selected>2 persone</option>
+                            <option value="3">3 persone</option>
+                            <option value="4">4 persone</option>
+                            <option value="5">5+ persone</option>
+                        </select>
+                    </div>
+
+                    <!-- 🎮 JOYSTICK PRINCIPALE (SEMPRE VISIBILE) -->
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium mb-6 text-center text-lg">🎮 Che tipo di vacanza vuoi?</label>
+                        <div class="joystick-4d" id="main-joystick">
+                            <div class="joystick-grid"></div>
+                            <div class="joystick-center"></div>
+                            <div class="joystick-dot" id="main-dot"></div>
+                            <div class="joystick-labels">
+                                <div class="joystick-label top">🏔️ MONTAGNA</div>
+                                <div class="joystick-label bottom">🏖️ MARE</div>
+                                <div class="joystick-label left">😌 RELAX</div>
+                                <div class="joystick-label right">🎒 AVVENTURA</div>
+                            </div>
+                        </div>
+                        <p class="text-center text-xs text-gray-400 mt-4">Trascina il joystick per scegliere il tuo stile di vacanza</p>
+                    </div>
+
+                    <!-- 🔧 CONTROLLI AVANZATI (NASCOSTI DI DEFAULT) -->
+                    <div id="advanced-controls" class="advanced-controls hidden">
+                        
+                        <!-- BUDGET TYPE TOGGLE -->
+                        <div class="mb-6 text-center">
+                            <label class="block text-sm font-medium mb-3">💰 Tipo di Vacanza</label>
+                            <div class="budget-toggle justify-center">
+                                <button id="budget-type-essential" onclick="toggleBudgetType('essential')">💡 Solo Base</button>
+                                <button id="budget-type-complete" class="active" onclick="toggleBudgetType('complete')">🎯 Tutto Incluso</button>
+                            </div>
+                            <p id="budget-description" class="text-xs text-gray-400 mt-2">Volo + Hotel + Pasti + Attività • Zero pensieri!</p>
+                        </div>
+                        
+                        <!-- 4D SLIDER 1: STILE & POPOLARITÀ -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-4 text-center">✨ Stile & Popolarità</label>
+                            <div class="slider-4d" id="style-slider">
+                                <div class="slider-4d-grid"></div>
+                                <div class="slider-4d-center"></div>
+                                <div class="slider-4d-dot" id="style-dot"></div>
+                                <div class="slider-4d-labels">
+                                    <div class="slider-4d-label top">🌟 FAMOSA</div>
+                                    <div class="slider-4d-label bottom">💎 NASCOSTA</div>
+                                    <div class="slider-4d-label left">💚 ECONOMICO</div>
+                                    <div class="slider-4d-label right">💜 LUSSO</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TRANSPORT DROPDOWN -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">🚀 Come viaggi?</label>
+                            <div class="custom-dropdown">
+                                <button type="button" class="dropdown-btn" id="transport-btn">
+                                    <span id="transport-selected">✈️ Aereo</span>
+                                    <span class="ml-auto">▼</span>
+                                </button>
+                                <div class="dropdown-menu hidden" id="transport-menu">
+                                    <div class="dropdown-item" data-transport="plane">✈️ Aereo</div>
+                                    <div class="dropdown-item" data-transport="train">🚆 Treno</div>
+                                    <div class="dropdown-item" data-transport="car">🚗 Auto (noleggio)</div>
+                                    <div class="dropdown-item" data-transport="own-car">🚙 Auto propria</div>
+                                    <div class="dropdown-item" data-transport="bus">🚌 Bus</div>
+                                    <div class="dropdown-item" data-transport="ferry">⛴️ Nave/Traghetto</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button id="gloob-btn" class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
+                        🌍 GLOOB IT!
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-center">
+                    <div class="globe-container">
+                        <div id="globe" class="globe">
+                            <div class="continent europa"></div>
+                            <div class="continent africa"></div>
+                            <div class="continent asia"></div>
+                            <div class="continent america"></div>
+                            <div class="continent oceania"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spinning -->
+        <div id="spin-step" class="hidden min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="globe-container mb-6">
+                    <div id="spinning-globe" class="globe">
+                        <div class="continent europa"></div>
+                        <div class="continent africa"></div>
+                        <div class="continent asia"></div>
+                        <div class="continent america"></div>
+                        <div class="continent oceania"></div>
+                    </div>
+                </div>
+                <h2 class="text-4xl font-bold mb-2">🎮 Joystick AI al lavoro...</h2>
+                <p class="text-lg text-gray-300" id="search-text">Analizzo la posizione del joystick...</p>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div id="result-step" class="hidden container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-6">
+                    <h1 class="text-4xl font-bold mb-2">🎉 Ecco la tua vacanza joystick!</h1>
+                </div>
+
+                <div id="result-content">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="text-center mt-6">
+                    <button id="guide-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-xl mr-4 hover:bg-blue-700 transition-colors">
+                        📋 Guida al Viaggio
+                    </button>
+                    <button id="regloob-btn" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-700 transition-colors">
+                        🎲 Regloob
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Travel Guide Modal -->
+        <div id="guide-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">📋 Guida al Viaggio</h2>
+                    <button id="close-guide" class="text-2xl hover:text-red-400">✕</button>
+                </div>
+                <div id="guide-content">
+                    <!-- Generated by AI -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const GEMINI_API_KEY = 'AIzaSyB3FtGA9NJ8FB5GNCPrAWwAzUkhy4kTZwo';
+        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+
+        // App state
+        let selectedTransport = 'plane';
+        let currentResult = null;
+        let budgetType = 'complete'; // DEFAULT: All inclusive
+        let usedDestinations = [];
+        let isAdvancedMode = false;
+
+        // 🎮 JOYSTICK VALUES
+        let mainJoystickValues = { x: 50, y: 50 }; // x: energy (0-100), y: environment (0-100)
+        let styleValues = { x: 50, y: 50 }; // x: luxury (0-100), y: popularity (0-100)
+
+        // 🎯 AI DESTINATION FINDER WITH JOYSTICK
+        async function findDestinationWithJoystick(budget, people, transport, budgetType, mainValues, styleValues = null) {
+            const budgetPerPerson = Math.round(budget / people);
+            
+            // Convert joystick values to readable parameters
+            const energy = mainValues.x; // 0 = relax, 100 = adventure  
+            const environment = 100 - mainValues.y; // 0 = sea, 100 = mountain (inverted Y)
+            
+            // Advanced mode parameters (if available)
+            let luxury = 50;
+            let popularity = 50;
+            if (isAdvancedMode && styleValues) {
+                luxury = styleValues.x; // 0 = cheap, 100 = luxury
+                popularity = 100 - styleValues.y; // 0 = unknown, 100 = famous (inverted Y)
+            }
+            
+            // Smart duration based on luxury level
+            const tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :  // Long cheap
+                           luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :     // Short luxury
+                           Math.max(5, Math.round(7 - luxury/50));                    // Medium
+            
+            // Create variety seed
+            const varietySeed = Date.now() + Math.random() * 1000;
+            const avoidDestinations = usedDestinations.length > 0 ? 
+                `NON suggerire mai: ${usedDestinations.join(', ')}. ` : '';
+            
+            const prompt = `Sei un consulente di viaggi AI Joystick. TROVA UNA DESTINAZIONE UNICA per:
+
+PARAMETRI JOYSTICK CLIENTE:
+💰 Budget: €${budget} TOTALE per ${people} persone (€${budgetPerPerson} per persona)
+📅 Durata: ${tripDays} giorni
+🎯 Budget type: ${budgetType === 'complete' ? 'TUTTO INCLUSO (volo+hotel+pasti+attività)' : 'SOLO ESSENZIALE (volo+hotel)'}
+
+🎮 POSIZIONE JOYSTICK:
+🏞️ Ambiente: ${environment}% montagna (${environment < 25 ? 'mare e spiagge' : environment < 50 ? 'costa e colline' : environment < 75 ? 'colline e natura' : 'montagna e vette'})
+⚡ Energia: ${energy}% avventura (${energy < 25 ? 'massimo relax' : energy < 50 ? 'relax attivo' : energy < 75 ? 'moderate attività' : 'avventura pura'})
+
+${isAdvancedMode ? `🔧 MODALITÀ AVANZATA:
+✨ Stile: ${luxury}% lusso (${luxury < 25 ? 'ultra economico' : luxury < 50 ? 'economico' : luxury < 75 ? 'medio-alto' : 'lusso premium'})
+🗺️ Popolarità: ${popularity}% famosa (${popularity < 25 ? 'destinazione segreta' : popularity < 50 ? 'poco conosciuta' : popularity < 75 ? 'conosciuta' : 'iconica e famosa'})` : ''}
+
+🚀 Trasporto: ${getTransportName(transport)}
+🌍 Stagione: ${getCurrentSeason()} 2025
+
+${avoidDestinations}
+
+🎲 VARIETÀ OBBLIGATORIA: Seed ${varietySeed} - trova destinazione UNICA e sorprendente!
+
+COMPITO: Trova LA destinazione perfetta che:
+✅ Rientra ESATTAMENTE nel budget €${budget} ${budgetType}
+✅ Rispecchia PERFETTAMENTE la posizione joystick (ambiente ${environment}%, energia ${energy}%)
+✅ È ottimizzata per ${tripDays} giorni
+✅ È DIVERSA da tutte le ricerche precedenti
+✅ Ha prezzi REALI aggiornati ${getCurrentSeason()} 2025
+
+RISPOSTA JSON (PULITA, NO MARKDOWN):
+{
+  "destination": "Nome Città Specifica",
+  "country": "Paese", 
+  "emoji": "🌅",
+  "description": "Perché è perfetta per questa posizione joystick",
+  "whyPerfectJoystick": "Come rispecchia esattamente ambiente ${environment}%, energia ${energy}%${isAdvancedMode ? `, stile ${luxury}%, popolarità ${popularity}%` : ''}",
+  "tripDays": ${tripDays},
+  "budgetPerDay": ${Math.round(budget / tripDays)},
+  "hotel": {
+    "name": "Hotel Reale Della Città",
+    "stars": ${Math.max(2, Math.min(5, Math.round(luxury / 20)))},
+    "pricePerNight": ${Math.round(budgetPerPerson * 0.4 / tripDays)},
+    "totalPrice": ${Math.round(budget * 0.4)},
+    "photo": "https://images.unsplash.com/photo-${getRandomUnsplashId()}?w=500&h=300&fit=crop"
+  },
+  "transport": {
+    "type": "${transport}",
+    "airline": "${getRandomAirlineName()}",
+    "logo": "${getRandomAirlineLogo()}",
+    "route": "MXP → ${getRandomAirportCode()}",
+    "totalPrice": ${Math.round(budget * 0.3)},
+    "duration": "${getFlightDuration(50)}"
+  },
+  "costs": {
+    "hotel": ${Math.round(budget * 0.4)},
+    "transport": ${Math.round(budget * 0.3)},
+    ${budgetType === 'complete' ? `"meals": ${Math.round(budget * 0.2)}, "activities": ${Math.round(budget * 0.08)}, "extras": ${Math.round(budget * 0.02)},` : ''}
+    "total": ${budget}
+  }
+}`;
+
+            try {
+                console.log('🎮 Joystick AI Call:', { energy, environment, luxury, popularity, isAdvancedMode });
                 
-                // Medium combinations
-                { name: 'Dubrovnik', country: 'Croazia', emoji: '🏰', match: [60, 70, 30, 50], cost: 450 },
-                { name: 'Porto', country: 'Portogallo', emoji: '🍷', match: [50, 60, 40, 45], cost: 420 },
-                { name: 'Ljubljana', country: 'Slovenia', emoji: '🏞️', match: [45, 40, 70, 60], cost: 380 },
-                { name: 'Bled', country: 'Slovenia', emoji: '🏔️', match: [55, 50, 75, 65], cost: 400 },
-                { name: 'Ohrid', country: 'Macedonia', emoji: '🌊', match: [35, 25, 25, 40], cost: 300 },
-                { name: 'Brasov', country: 'Romania', emoji: '🏰', match: [40, 35, 65, 55], cost: 320 },
-                { name: 'Kotor', country: 'Montenegro', emoji: '⛰️', match: [50, 45, 60, 60], cost: 370 },
-                { name: 'Tallinn', country: 'Estonia', emoji: '🏛️', match: [45, 55, 50, 50], cost: 410 }
+                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }]
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    console.log('🎯 Joystick AI Response:', aiResponse);
+                    
+                    const cleanResponse = aiResponse.replace(/```json\n?|\n?```/g, '').trim();
+                    const result = JSON.parse(cleanResponse);
+                    
+                    // Add to used destinations
+                    if (result.destination && !usedDestinations.includes(result.destination)) {
+                        usedDestinations.push(result.destination);
+                        if (usedDestinations.length > 10) {
+                            usedDestinations.shift();
+                        }
+                    }
+                    
+                    result.travelDates = generateTravelDates();
+                    return result;
+                } else {
+                    throw new Error('API Error: ' + response.status);
+                }
+            } catch (error) {
+                console.log('🔄 Joystick AI error, using smart fallback:', error);
+                return generateJoystickFallback(budget, people, transport, budgetType, mainValues, styleValues);
+            }
+        }
+
+        // Joystick Smart Fallback
+        function generateJoystickFallback(budget, people, transport, budgetType, mainValues, styleValues) {
+            const budgetPerPerson = budget / people;
+            const energy = mainValues.x;
+            const environment = 100 - mainValues.y;
+            
+            // Advanced mode parameters
+            let luxury = 50;
+            let popularity = 50;
+            if (isAdvancedMode && styleValues) {
+                luxury = styleValues.x;
+                popularity = 100 - styleValues.y;
+            }
+            
+            const tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :
+                           luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :
+                           Math.max(5, Math.round(7 - luxury/50));
+            
+            // Joystick destination pools
+            const destinationsJoystick = [
+                // Sea + Relax
+                { name: 'Santorini', country: 'Grecia', emoji: '🌅', match: [20, 20], cost: 650 },
+                { name: 'Ksamil', country: 'Albania', emoji: '🏖️', match: [25, 15], cost: 280 },
+                { name: 'Nesebar', country: 'Bulgaria', emoji: '🌊', match: [30, 20], cost: 300 },
+                
+                // Sea + Adventure
+                { name: 'Split', country: 'Croazia', emoji: '⛵', match: [25, 80], cost: 420 },
+                { name: 'Lagos', country: 'Portogallo', emoji: '🏄', match: [30, 85], cost: 450 },
+                { name: 'Malta', country: 'Malta', emoji: '🤿', match: [35, 75], cost: 480 },
+                
+                // Mountain + Relax
+                { name: 'Bled', country: 'Slovenia', emoji: '🏔️', match: [85, 25], cost: 380 },
+                { name: 'Hallstatt', country: 'Austria', emoji: '🏞️', match: [90, 20], cost: 520 },
+                { name: 'Annecy', country: 'Francia', emoji: '⛰️', match: [85, 30], cost: 480 },
+                
+                // Mountain + Adventure
+                { name: 'Chamonix', country: 'Francia', emoji: '🎿', match: [95, 90], cost: 720 },
+                { name: 'Bansko', country: 'Bulgaria', emoji: '⛷️', match: [80, 85], cost: 320 },
+                { name: 'Zakopane', country: 'Polonia', emoji: '🏔️', match: [85, 80], cost: 350 },
+                
+                // Mixed combinations
+                { name: 'Dubrovnik', country: 'Croazia', emoji: '🏰', match: [40, 60], cost: 450 },
+                { name: 'Porto', country: 'Portogallo', emoji: '🍷', match: [45, 55], cost: 420 },
+                { name: 'Ljubljana', country: 'Slovenia', emoji: '🏞️', match: [70, 50], cost: 380 },
+                { name: 'Ohrid', country: 'Macedonia', emoji: '🌊', match: [25, 40], cost: 300 },
+                { name: 'Brasov', country: 'Romania', emoji: '🏰', match: [75, 55], cost: 320 },
+                { name: 'Kotor', country: 'Montenegro', emoji: '⛰️', match: [60, 65], cost: 370 }
             ];
             
-            // Find best match using 4D distance
-            let bestMatch = destinations4D[0];
+            // Find best match using joystick distance
+            let bestMatch = destinationsJoystick[0];
             let bestScore = Infinity;
             
-            destinations4D.forEach(dest => {
+            destinationsJoystick.forEach(dest => {
                 if (usedDestinations.includes(dest.name)) return;
                 
                 const score = Math.sqrt(
-                    Math.pow(luxury - dest.match[0], 2) +
-                    Math.pow(popularity - dest.match[1], 2) +  
-                    Math.pow(environment - dest.match[2], 2) +
-                    Math.pow(energy - dest.match[3], 2)
+                    Math.pow(environment - dest.match[0], 2) +
+                    Math.pow(energy - dest.match[1], 2)
                 );
                 
                 if (score < bestScore && dest.cost <= budgetPerPerson * 0.8) {
@@ -32,8 +782,8 @@
             });
             
             // Add randomness if no perfect match
-            if (bestScore > 50) {
-                const availableDests = destinations4D.filter(d => !usedDestinations.includes(d.name));
+            if (bestScore > 40) {
+                const availableDests = destinationsJoystick.filter(d => !usedDestinations.includes(d.name));
                 bestMatch = availableDests[Math.floor(Math.random() * availableDests.length)] || bestMatch;
             }
             
@@ -50,8 +800,8 @@
                 destination: bestMatch.name,
                 country: bestMatch.country,
                 emoji: bestMatch.emoji,
-                description: `${bestMatch.name} perfetta per le tue preferenze 4D`,
-                whyPerfect4D: `Stile ${luxury}%, popolarità ${popularity}%, ${environment > 50 ? 'montagna' : 'mare'} ${energy > 50 ? 'avventurosa' : 'relax'}`,
+                description: `${bestMatch.name} perfetta per la tua posizione joystick`,
+                whyPerfectJoystick: `${environment > 50 ? 'Montagna' : 'Mare'} ${energy > 50 ? 'avventurosa' : 'relax'} - Ambiente ${environment}%, Energia ${energy}%`,
                 tripDays: tripDays,
                 budgetPerDay: Math.round(budget / tripDays),
                 travelDates: generateTravelDates(),
@@ -154,11 +904,10 @@
             };
         }
 
-        // 🔥 4D SLIDER FUNCTIONALITY
-        function setup4DSlider(sliderId, dotId, valuesObj) {
-            const slider = document.getElementById(sliderId);
+        // 🎮 JOYSTICK FUNCTIONALITY
+        function setupJoystick(joystickId, dotId, valuesObj) {
+            const joystick = document.getElementById(joystickId);
             const dot = document.getElementById(dotId);
-            const rect = slider.getBoundingClientRect();
             
             // Initialize dot position (center)
             dot.style.left = '50%';
@@ -167,9 +916,9 @@
             let isDragging = false;
             
             function updatePosition(clientX, clientY) {
-                const sliderRect = slider.getBoundingClientRect();
-                const x = Math.max(0, Math.min(100, ((clientX - sliderRect.left) / sliderRect.width) * 100));
-                const y = Math.max(0, Math.min(100, ((clientY - sliderRect.top) / sliderRect.height) * 100));
+                const joystickRect = joystick.getBoundingClientRect();
+                const x = Math.max(0, Math.min(100, ((clientX - joystickRect.left) / joystickRect.width) * 100));
+                const y = Math.max(0, Math.min(100, ((clientY - joystickRect.top) / joystickRect.height) * 100));
                 
                 dot.style.left = x + '%';
                 dot.style.top = y + '%';
@@ -187,7 +936,7 @@
                 e.preventDefault();
             });
             
-            slider.addEventListener('click', (e) => {
+            joystick.addEventListener('click', (e) => {
                 if (!isDragging) {
                     updatePosition(e.clientX, e.clientY);
                 }
@@ -221,44 +970,113 @@
             });
         }
 
+        // Setup 4D slider (for advanced mode)
+        function setup4DSlider(sliderId, dotId, valuesObj) {
+            const slider = document.getElementById(sliderId);
+            const dot = document.getElementById(dotId);
+            
+            if (!slider || !dot) return; // Skip if elements don't exist
+            
+            // Initialize dot position (center)
+            dot.style.left = '50%';
+            dot.style.top = '50%';
+            
+            let isDragging = false;
+            
+            function updatePosition(clientX, clientY) {
+                const sliderRect = slider.getBoundingClientRect();
+                const x = Math.max(0, Math.min(100, ((clientX - sliderRect.left) / sliderRect.width) * 100));
+                const y = Math.max(0, Math.min(100, ((clientY - sliderRect.top) / sliderRect.height) * 100));
+                
+                dot.style.left = x + '%';
+                dot.style.top = y + '%';
+                
+                valuesObj.x = Math.round(x);
+                valuesObj.y = Math.round(y);
+                
+                triggerLiveSearch();
+            }
+            
+            // Mouse events
+            dot.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            slider.addEventListener('click', (e) => {
+                if (!isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+            
+            // Touch events
+            dot.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    const touch = e.touches[0];
+                    updatePosition(touch.clientX, touch.clientY);
+                }
+            });
+            
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
         // App initialization
         function init() {
             setTimeout(() => {
                 document.getElementById('loading').classList.add('hidden');
                 document.getElementById('form-step').classList.remove('hidden');
                 setupEvents();
-                setup4DSliders();
+                setupJoysticks();
             }, 800);
         }
 
-        function setup4DSliders() {
-            setup4DSlider('style-slider', 'style-dot', styleValues);
-            setup4DSlider('environment-slider', 'environment-dot', environmentValues);
+        function setupJoysticks() {
+            setupJoystick('main-joystick', 'main-dot', mainJoystickValues);
+            // Advanced sliders will be set up when mode is toggled
         }
 
         function setupEvents() {
-            // Transport dropdown
+            // Transport dropdown (only for advanced mode)
             const transportBtn = document.getElementById('transport-btn');
             const transportMenu = document.getElementById('transport-menu');
             const transportSelected = document.getElementById('transport-selected');
             
-            transportBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                transportMenu.classList.toggle('hidden');
-            });
-            
-            document.querySelectorAll('[data-transport]').forEach(item => {
-                item.addEventListener('click', () => {
-                    selectedTransport = item.dataset.transport;
-                    transportSelected.textContent = item.textContent;
-                    transportMenu.classList.add('hidden');
-                    triggerLiveSearch();
+            if (transportBtn) {
+                transportBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    transportMenu.classList.toggle('hidden');
                 });
-            });
-            
-            document.addEventListener('click', () => {
-                transportMenu.classList.add('hidden');
-            });
+                
+                document.querySelectorAll('[data-transport]').forEach(item => {
+                    item.addEventListener('click', () => {
+                        selectedTransport = item.dataset.transport;
+                        transportSelected.textContent = item.textContent;
+                        transportMenu.classList.add('hidden');
+                        triggerLiveSearch();
+                    });
+                });
+                
+                document.addEventListener('click', () => {
+                    transportMenu.classList.add('hidden');
+                });
+            }
 
             // Budget and people changes
             document.getElementById('budget').addEventListener('input', debounce(() => {
@@ -297,7 +1115,7 @@
                 if (isLiveSearching) return;
                 
                 isLiveSearching = true;
-                console.log('🔥 4D LIVE SEARCH triggered');
+                console.log('🔥 Joystick LIVE SEARCH triggered');
                 
                 try {
                     const globe = document.getElementById('globe');
@@ -306,8 +1124,10 @@
                     
                     const people = parseInt(document.getElementById('people').value);
                     
-                    currentResult = await findDestinationWith4D(
-                        budget, people, selectedTransport, budgetType, styleValues, environmentValues
+                    const advancedStyleValues = isAdvancedMode ? styleValues : null;
+                    
+                    currentResult = await findDestinationWithJoystick(
+                        budget, people, selectedTransport, budgetType, mainJoystickValues, advancedStyleValues
                     );
                     
                     // Update globe with destination hint
@@ -324,7 +1144,7 @@
                     globe.style.opacity = '1';
                     
                 } catch (error) {
-                    console.log('4D Live search error:', error);
+                    console.log('Joystick Live search error:', error);
                 } finally {
                     isLiveSearching = false;
                 }
@@ -361,12 +1181,15 @@
             
             showStep('spin');
             
+            const environment = 100 - mainJoystickValues.y;
+            const energy = mainJoystickValues.x;
+            
             const searchTexts = [
-                `🎮 Analizzo i tuoi parametri 4D...`,
-                `🤖 Stile ${styleValues.x}%, Popolarità ${100-styleValues.y}%...`,
-                `🏞️ ${environmentValues.y < 50 ? 'Mare' : 'Montagna'} + ${environmentValues.x > 50 ? 'Avventura' : 'Relax'}...`,
-                `🌍 Cerco destinazione perfetta per budget €${budget}...`,
-                `🎯 Trovata! Preparando risultato 4D...`
+                `🎮 Analizzo posizione joystick...`,
+                `🏞️ ${environment > 50 ? 'Montagna' : 'Mare'} + ${energy > 50 ? 'Avventura' : 'Relax'}...`,
+                `💰 Budget €${budget} per ${people} persone...`,
+                `${isAdvancedMode ? '🔧 Modalità avanzata attiva...' : '🎯 Modalità semplice ottimizzata...'}`,
+                `🌍 Trovata destinazione perfetta!`
             ];
             
             let textIndex = 0;
@@ -380,8 +1203,10 @@
             document.getElementById('spinning-globe').classList.add('spinning');
             
             try {
-                currentResult = await findDestinationWith4D(
-                    budget, people, selectedTransport, budgetType, styleValues, environmentValues
+                const advancedStyleValues = isAdvancedMode ? styleValues : null;
+                
+                currentResult = await findDestinationWithJoystick(
+                    budget, people, selectedTransport, budgetType, mainJoystickValues, advancedStyleValues
                 );
                 
                 clearInterval(textInterval);
@@ -389,9 +1214,9 @@
                 displayResult();
                 setTimeout(() => showStep('result'), 300);
             } catch (error) {
-                console.error('4D Error:', error);
+                console.error('Joystick Error:', error);
                 clearInterval(textInterval);
-                alert('Errore durante la ricerca 4D. Riprova!');
+                alert('Errore durante la ricerca joystick. Riprova!');
                 showStep('form');
             }
         }
@@ -408,9 +1233,9 @@
                     <p class="text-xl text-gray-300 mb-4">${result.country}</p>
                     <p class="text-gray-400 mb-3">${result.description}</p>
                     
-                    ${result.whyPerfect4D ? `
-                    <div class="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg p-3 mx-auto max-w-md mb-3">
-                        <p class="text-sm font-medium text-pink-200">🎮 ${result.whyPerfect4D}</p>
+                    ${result.whyPerfectJoystick ? `
+                    <div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg p-3 mx-auto max-w-md mb-3">
+                        <p class="text-sm font-medium text-yellow-200">🎮 ${result.whyPerfectJoystick}</p>
                     </div>
                     ` : ''}
                     
@@ -429,7 +1254,7 @@
                         <div class="hotel-photo rounded-lg mb-4 h-48 bg-cover bg-center" style="background-image: url('${result.hotel.photo}')"></div>
                         <h3 class="text-xl font-bold mb-2">${result.hotel.name}</h3>
                         <div class="text-yellow-500 text-lg mb-2">${stars}</div>
-                        <p class="text-sm text-gray-600 mb-4">Hotel selezionato per i tuoi parametri 4D</p>
+                        <p class="text-sm text-gray-600 mb-4">Hotel selezionato tramite joystick AI</p>
                         <div class="text-sm text-gray-600 mb-4">
                             <div><strong>Prezzo per notte:</strong> €${result.hotel.pricePerNight}</div>
                             <div><strong>Totale ${result.tripDays || 7} notti:</strong> €${result.hotel.totalPrice}</div>
@@ -462,9 +1287,9 @@
                     </div>
                 </div>
 
-                <!-- 4D Budget Summary -->
+                <!-- Joystick Budget Summary -->
                 <div class="glass-card rounded-2xl p-6 text-center mb-6">
-                    <h3 class="text-xl font-bold mb-4">💰 Budget 4D ${budgetType === 'complete' ? 'Tutto Incluso' : 'Essenziale'}</h3>
+                    <h3 class="text-xl font-bold mb-4">🎮 Budget Joystick ${budgetType === 'complete' ? 'Tutto Incluso' : 'Essenziale'}</h3>
                     <div class="space-y-2 mb-4 text-left max-w-md mx-auto">
                         <div class="flex justify-between">
                             <span>🏨 Hotel (${result.tripDays || 7} notti):</span>
@@ -494,8 +1319,9 @@
                         </div>
                     </div>
                     <div class="text-sm text-gray-300 space-y-1">
-                        <p>🎮 Vacanza 4D per ${people} ${people === 1 ? 'persona' : 'persone'} • ${result.tripDays || 7} giorni</p>
+                        <p>🎮 Vacanza joystick per ${people} ${people === 1 ? 'persona' : 'persone'} • ${result.tripDays || 7} giorni</p>
                         <p>📊 €${result.budgetPerDay || Math.round(result.costs.total / (result.tripDays || 7))} al giorno per tutto</p>
+                        ${isAdvancedMode ? '<p>🔧 Modalità avanzata utilizzata</p>' : '<p>🎯 Modalità semplice utilizzata</p>'}
                     </div>
                 </div>
             `;
@@ -525,7 +1351,7 @@
             const modal = document.getElementById('guide-modal');
             const content = document.getElementById('guide-content');
             
-            content.innerHTML = '<div class="text-center"><div class="text-4xl mb-4">🤖</div><p>L\'AI sta creando la tua guida 4D personalizzata...</p></div>';
+            content.innerHTML = '<div class="text-center"><div class="text-4xl mb-4">🎮</div><p>L\'AI sta creando la tua guida joystick personalizzata...</p></div>';
             modal.classList.remove('hidden');
             
             try {
@@ -534,22 +1360,22 @@
                 content.innerHTML = `
                     <div class="bg-white/10 rounded-lg p-4 mb-4">
                         <h3 class="text-lg font-bold mb-2">📍 ${currentResult.destination}, ${currentResult.country}</h3>
-                        <p class="text-sm text-gray-300">Guida 4D personalizzata per ${document.getElementById('people').value} persone</p>
+                        <p class="text-sm text-gray-300">Guida joystick personalizzata per ${document.getElementById('people').value} persone</p>
                         ${currentResult.travelDates ? `<p class="text-sm text-yellow-200 mt-1">📅 ${currentResult.travelDates.start} - ${currentResult.travelDates.end}</p>` : ''}
-                        ${currentResult.whyPerfect4D ? `<p class="text-sm text-pink-200 mt-1">🎮 ${currentResult.whyPerfect4D}</p>` : ''}
+                        ${currentResult.whyPerfectJoystick ? `<p class="text-sm text-yellow-200 mt-1">🎮 ${currentResult.whyPerfectJoystick}</p>` : ''}
                     </div>
                     <div class="space-y-4 text-sm whitespace-pre-line leading-relaxed">
                         ${guide}
                     </div>
                     <div class="mt-6 p-4 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
                         <p class="text-sm text-yellow-200">
-                            💡 <strong>Consiglio:</strong> Questa guida è ottimizzata per i tuoi parametri 4D! 
+                            💡 <strong>Consiglio:</strong> Questa guida è ottimizzata per la tua posizione joystick! 
                             Prezzi realistici aggiornati al 2025.
                         </p>
                     </div>
                 `;
             } catch (error) {
-                content.innerHTML = '<p class="text-red-400">Errore nella generazione della guida 4D. Riprova!</p>';
+                content.innerHTML = '<p class="text-red-400">Errore nella generazione della guida joystick. Riprova!</p>';
             }
         }
 
@@ -572,633 +1398,52 @@
 • 16:30 - Shopping e artigianato (€40)  
 • 19:00 - Aperitivo locale (€18)
 • 21:00 - Spettacolo folkloristico (€35)
-💰 Budget giorno: €168`;
+💰 Budget giorno: €168
+
+📅 GIORNO 3 - Natura e relax
+• 09:00 - Escursione naturalistica (€40)
+• 12:30 - Picnic vista panoramica (€25)
+• 15:00 - Attività all'aperto (€30)
+• 18:00 - Rientro e riposo (€0)
+• 20:30 - Cena con specialità locali (€50)
+💰 Budget giorno: €145`;
             
             return guide;
         }
 
-        // Make functions globally accessible
+        // Enhanced mode toggle with advanced slider setup
+        window.toggleMode = function() {
+            isAdvancedMode = !isAdvancedMode;
+            const advancedControls = document.getElementById('advanced-controls');
+            const modeText = document.getElementById('mode-text');
+            
+            if (isAdvancedMode) {
+                advancedControls.classList.remove('hidden');
+                advancedControls.classList.add('visible');
+                modeText.textContent = '🎮 Modalità Semplice';
+                
+                // Setup advanced sliders when mode is activated
+                setTimeout(() => {
+                    setup4DSlider('style-slider', 'style-dot', styleValues);
+                }, 100);
+            } else {
+                advancedControls.classList.remove('visible');
+                advancedControls.classList.add('hidden');
+                modeText.textContent = '🔧 Modalità Avanzata';
+            }
+            
+            // Trigger search after mode change
+            setTimeout(() => {
+                triggerLiveSearch();
+            }, 300);
+        };
+
+        // Make functions globally accessible  
         window.toggleBudgetType = toggleBudgetType;
 
         // Start app
         init();
     </script>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-300 text-center py-6 mt-12">
-        <div class="container mx-auto px-4">
-            <p class="text-sm">
-                🎮 Powered by AI 4D • Destinazioni ottimizzate per le tue preferenze multidimensionali<br>
-                Prenotazioni sicure tramite Booking.com e Skyscanner
-            </p>
-        </div>
-    </footer>
-
 </body>
-</html><!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gloober - Zero Stress Travel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background: linear-gradient(135deg, #0f766e, #065f46, #064e3b);
-            min-height: 100vh;
-        }
-
-        .globe-container {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 0 auto;
-        }
-        
-        .globe {
-            width: 280px;
-            height: 280px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #60a5fa, #3b82f6, #2563eb);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-            transition: transform 1s ease-out;
-        }
-        
-        .spinning { animation: spin 3s ease-out; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(900deg); } }
-        
-        .continent {
-            position: absolute;
-            background: linear-gradient(135deg, #10b981, #059669);
-            border-radius: 4px;
-            opacity: 0.9;
-        }
-        
-        .europa { top: 70px; left: 86px; width: 28px; height: 20px; transform: rotate(12deg); }
-        .africa { top: 100px; left: 75px; width: 40px; height: 65px; transform: rotate(6deg); }
-        .asia { top: 60px; right: 60px; width: 50px; height: 35px; transform: rotate(-12deg); }
-        .america { top: 45px; left: 30px; width: 45px; height: 55px; transform: rotate(45deg); }
-        .oceania { bottom: 70px; right: 70px; width: 30px; height: 18px; }
-        
-        .glass-card { 
-            background: rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(16px); 
-            border: 1px solid rgba(255, 255, 255, 0.2); 
-        }
-
-        .custom-dropdown {
-            position: relative;
-        }
-        
-        .dropdown-btn {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            cursor: pointer;
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-        
-        .dropdown-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-        
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: rgba(6, 95, 70, 0.95);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            margin-top: 4px;
-            z-index: 50;
-            max-height: 200px;
-            overflow-y: auto;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        
-        .dropdown-item {
-            padding: 12px 16px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateX(4px);
-        }
-        
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-
-        .budget-toggle {
-            display: inline-flex;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 16px;
-        }
-        
-        .budget-toggle button {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: none;
-            background: transparent;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .budget-toggle button.active {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: black;
-            font-weight: bold;
-        }
-
-        /* 🔥 4D SLIDER STYLES */
-        .slider-4d {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            cursor: pointer;
-            overflow: hidden;
-        }
-
-        .slider-4d-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-        }
-
-        .slider-4d-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 2px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.5);
-            transform: translate(-50%, -50%);
-        }
-
-        .slider-4d-dot {
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            border: 2px solid white;
-            border-radius: 50%;
-            cursor: grab;
-            transition: all 0.2s;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
-        }
-
-        .slider-4d-dot:hover {
-            transform: translate(-50%, -50%) scale(1.2);
-            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.6);
-        }
-
-        .slider-4d-dot:active {
-            cursor: grabbing;
-        }
-
-        .slider-4d-labels {
-            position: absolute;
-            top: -8px;
-            left: -8px;
-            right: -8px;
-            bottom: -8px;
-            pointer-events: none;
-        }
-
-        .slider-4d-label {
-            position: absolute;
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        .slider-4d-label.top { top: -24px; left: 50%; transform: translateX(-50%); }
-        .slider-4d-label.bottom { bottom: -24px; left: 50%; transform: translateX(-50%); }
-        .slider-4d-label.left { left: -60px; top: 50%; transform: translateY(-50%); }
-        .slider-4d-label.right { right: -60px; top: 50%; transform: translateY(-50%); }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-        }
-        
-        .modal-content {
-            background: rgba(15, 118, 110, 0.95);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 600px;
-            max-height: 80vh;
-            width: 90%;
-            overflow-y: auto;
-            color: white;
-        }
-
-        .book-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
-            border: none;
-            padding: 16px 32px;
-            border-radius: 12px;
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        .book-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
-        }
-
-        .hidden { display: none; }
-    </style>
-</head>
-<body class="text-white min-h-screen">
-    
-    <div id="app">
-        <!-- Loading -->
-        <div id="loading" class="min-h-screen flex items-center justify-center">
-            <div class="text-center">
-                <div class="text-6xl mb-4">🌍</div>
-                <h1 class="text-4xl font-bold">Gloober</h1>
-                <p class="text-xl">Zero stress, massima vacanza</p>
-            </div>
-        </div>
-
-        <!-- Form -->
-        <div id="form-step" class="hidden container mx-auto px-4 py-8">
-            <div class="text-center mb-8">
-                <h1 class="text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                    Gloober
-                </h1>
-                <p class="text-xl text-gray-300">Gloob your new destination! 🌍</p>
-            </div>
-
-            <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-                <div class="glass-card rounded-2xl p-6">
-                    
-                    <!-- BUDGET TYPE TOGGLE - DEFAULT ALL INCLUSIVE -->
-                    <div class="mb-6 text-center">
-                        <label class="block text-sm font-medium mb-3">💰 Tipo di Vacanza</label>
-                        <div class="budget-toggle justify-center">
-                            <button id="budget-type-essential" onclick="toggleBudgetType('essential')">💡 Solo Base</button>
-                            <button id="budget-type-complete" class="active" onclick="toggleBudgetType('complete')">🎯 Tutto Incluso</button>
-                        </div>
-                        <p id="budget-description" class="text-xs text-gray-400 mt-2">Volo + Hotel + Pasti + Attività • Zero pensieri!</p>
-                    </div>
-                    
-                    <div class="mb-5">
-                        <label class="block text-sm font-medium mb-2">💰 Budget totale (€)</label>
-                        <input type="number" id="budget" value="1000" min="300" max="10000" step="100" 
-                               class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold focus:ring-2 focus:ring-yellow-400 outline-none">
-                    </div>
-
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">👥 Persone</label>
-                        <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
-                            <option value="1">1 persona</option>
-                            <option value="2" selected>2 persone</option>
-                            <option value="3">3 persone</option>
-                            <option value="4">4 persone</option>
-                            <option value="5">5+ persone</option>
-                        </select>
-                    </div>
-
-                    <!-- 🔥 4D SLIDER 1: STILE & POPOLARITÀ -->
-                    <div class="mb-8">
-                        <label class="block text-sm font-medium mb-4 text-center">✨ Stile & Popolarità</label>
-                        <div class="slider-4d" id="style-slider">
-                            <div class="slider-4d-grid"></div>
-                            <div class="slider-4d-center"></div>
-                            <div class="slider-4d-dot" id="style-dot"></div>
-                            <div class="slider-4d-labels">
-                                <div class="slider-4d-label top">🌟 FAMOSA</div>
-                                <div class="slider-4d-label bottom">💎 SCONOSCIUTA</div>
-                                <div class="slider-4d-label left">💚 ECONOMICO</div>
-                                <div class="slider-4d-label right">💜 LUSSO</div>
-                            </div>
-                        </div>
-                        <p class="text-center text-xs text-gray-400 mt-2">Trascina il pallino per scegliere il tuo stile</p>
-                    </div>
-
-                    <!-- 🔥 4D SLIDER 2: AMBIENTE & ENERGIA -->
-                    <div class="mb-8">
-                        <label class="block text-sm font-medium mb-4 text-center">🏞️ Ambiente & Energia</label>
-                        <div class="slider-4d" id="environment-slider">
-                            <div class="slider-4d-grid"></div>
-                            <div class="slider-4d-center"></div>
-                            <div class="slider-4d-dot" id="environment-dot"></div>
-                            <div class="slider-4d-labels">
-                                <div class="slider-4d-label top">🏔️ MONTAGNA</div>
-                                <div class="slider-4d-label bottom">🏖️ MARE</div>
-                                <div class="slider-4d-label left">😌 RELAX</div>
-                                <div class="slider-4d-label right">🎒 AVVENTURA</div>
-                            </div>
-                        </div>
-                        <p class="text-center text-xs text-gray-400 mt-2">Scegli ambiente e livello di attività</p>
-                    </div>
-
-                    <div class="mb-5">
-                        <label class="block text-sm font-medium mb-2">🚀 Come viaggi?</label>
-                        <div class="custom-dropdown">
-                            <button type="button" class="dropdown-btn" id="transport-btn">
-                                <span id="transport-selected">✈️ Aereo</span>
-                                <span class="ml-auto">▼</span>
-                            </button>
-                            <div class="dropdown-menu hidden" id="transport-menu">
-                                <div class="dropdown-item" data-transport="plane">✈️ Aereo</div>
-                                <div class="dropdown-item" data-transport="train">🚆 Treno</div>
-                                <div class="dropdown-item" data-transport="car">🚗 Auto (noleggio)</div>
-                                <div class="dropdown-item" data-transport="own-car">🚙 Auto propria</div>
-                                <div class="dropdown-item" data-transport="bus">🚌 Bus</div>
-                                <div class="dropdown-item" data-transport="ferry">⛴️ Nave/Traghetto</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button id="gloob-btn" class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
-                        🌍 GLOOB IT!
-                    </button>
-                </div>
-
-                <div class="flex items-center justify-center">
-                    <div class="globe-container">
-                        <div id="globe" class="globe">
-                            <div class="continent europa"></div>
-                            <div class="continent africa"></div>
-                            <div class="continent asia"></div>
-                            <div class="continent america"></div>
-                            <div class="continent oceania"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Spinning -->
-        <div id="spin-step" class="hidden min-h-screen flex items-center justify-center">
-            <div class="text-center">
-                <div class="globe-container mb-6">
-                    <div id="spinning-globe" class="globe">
-                        <div class="continent europa"></div>
-                        <div class="continent africa"></div>
-                        <div class="continent asia"></div>
-                        <div class="continent america"></div>
-                        <div class="continent oceania"></div>
-                    </div>
-                </div>
-                <h2 class="text-4xl font-bold mb-2">🤖 AI 4D al lavoro...</h2>
-                <p class="text-lg text-gray-300" id="search-text">Analizzo le tue preferenze multidimensionali...</p>
-            </div>
-        </div>
-
-        <!-- Result -->
-        <div id="result-step" class="hidden container mx-auto px-4 py-8">
-            <div class="max-w-4xl mx-auto">
-                <div class="text-center mb-6">
-                    <h1 class="text-4xl font-bold mb-2">🎉 Ecco la tua destinazione 4D!</h1>
-                </div>
-
-                <div id="result-content">
-                    <!-- Populated by JS -->
-                </div>
-
-                <div class="text-center mt-6">
-                    <button id="guide-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-xl mr-4 hover:bg-blue-700 transition-colors">
-                        📋 Guida al Viaggio
-                    </button>
-                    <button id="regloob-btn" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-700 transition-colors">
-                        🎲 Regloob
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Travel Guide Modal -->
-        <div id="guide-modal" class="modal hidden">
-            <div class="modal-content">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold">📋 Guida al Viaggio</h2>
-                    <button id="close-guide" class="text-2xl hover:text-red-400">✕</button>
-                </div>
-                <div id="guide-content">
-                    <!-- Generated by AI -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Configuration
-        const GEMINI_API_KEY = 'AIzaSyB3FtGA9NJ8FB5GNCPrAWwAzUkhy4kTZwo';
-        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
-
-        // App state
-        let selectedTransport = 'plane';
-        let currentResult = null;
-        let budgetType = 'complete'; // DEFAULT: All inclusive
-        let usedDestinations = [];
-
-        // 🔥 4D SLIDER VALUES
-        let styleValues = { x: 50, y: 50 }; // x: luxury (0-100), y: popularity (0-100) 
-        let environmentValues = { x: 50, y: 50 }; // x: energy (0-100), y: environment (0-100)
-
-        // 🎯 AI DESTINATION FINDER WITH 4D SLIDERS
-        async function findDestinationWith4D(budget, people, transport, budgetType, styleValues, environmentValues) {
-            const budgetPerPerson = Math.round(budget / people);
-            
-            // Convert 4D values to readable parameters
-            const luxury = styleValues.x; // 0 = cheap, 100 = luxury
-            const popularity = 100 - styleValues.y; // 0 = unknown, 100 = famous (inverted Y)
-            const energy = environmentValues.x; // 0 = relax, 100 = adventure  
-            const environment = 100 - environmentValues.y; // 0 = sea, 100 = mountain (inverted Y)
-            
-            // Smart duration based on luxury level
-            const tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :  // Long cheap
-                           luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :     // Short luxury
-                           Math.max(5, Math.round(7 - luxury/50));                    // Medium
-            
-            // Create variety seed
-            const varietySeed = Date.now() + Math.random() * 1000;
-            const avoidDestinations = usedDestinations.length > 0 ? 
-                `NON suggerire mai: ${usedDestinations.join(', ')}. ` : '';
-            
-            const prompt = `Sei un consulente di viaggi AI 4D. TROVA UNA DESTINAZIONE UNICA per:
-
-PARAMETRI 4D CLIENTE:
-💰 Budget: €${budget} TOTALE per ${people} persone (€${budgetPerPerson} per persona)
-📅 Durata: ${tripDays} giorni (${luxury < 30 ? 'viaggio lungo ed economico' : luxury > 70 ? 'viaggio breve e lussuoso' : 'viaggio equilibrato'})
-🎯 Budget type: ${budgetType === 'complete' ? 'TUTTO INCLUSO (volo+hotel+pasti+attività)' : 'SOLO ESSENZIALE (volo+hotel)'}
-
-🎮 PREFERENZE 4D:
-✨ Stile: ${luxury}% lusso (${luxury < 25 ? 'ultra economico' : luxury < 50 ? 'economico' : luxury < 75 ? 'medio-alto' : 'lusso premium'})
-🗺️ Popolarità: ${popularity}% famosa (${popularity < 25 ? 'destinazione segreta' : popularity < 50 ? 'poco conosciuta' : popularity < 75 ? 'conosciuta' : 'iconica e famosa'})
-🏞️ Ambiente: ${environment}% montagna (${environment < 25 ? 'mare e spiagge' : environment < 50 ? 'costa e colline' : environment < 75 ? 'colline e natura' : 'montagna e vette'})
-⚡ Energia: ${energy}% avventura (${energy < 25 ? 'massimo relax' : energy < 50 ? 'relax attivo' : energy < 75 ? 'moderate attività' : 'avventura pura'})
-
-🚀 Trasporto: ${getTransportName(transport)}
-🌍 Stagione: ${getCurrentSeason()} 2025
-
-${avoidDestinations}
-
-🎲 VARIETÀ OBBLIGATORIA: Seed ${varietySeed} - trova destinazione UNICA e sorprendente!
-
-COMPITO: Trova LA destinazione perfetta che:
-✅ Rientra ESATTAMENTE nel budget €${budget} ${budgetType}
-✅ Rispecchia PERFETTAMENTE i valori 4D (stile, popolarità, ambiente, energia)
-✅ È ottimizzata per ${tripDays} giorni
-✅ È DIVERSA da tutte le ricerche precedenti
-✅ Ha prezzi REALI aggiornati ${getCurrentSeason()} 2025
-
-RISPOSTA JSON (PULITA, NO MARKDOWN):
-{
-  "destination": "Nome Città Specifica",
-  "country": "Paese", 
-  "emoji": "🌅",
-  "description": "Perché è perfetta per questi parametri 4D",
-  "whyPerfect4D": "Come rispecchia esattamente stile ${luxury}%, popolarità ${popularity}%, ambiente ${environment}%, energia ${energy}%",
-  "tripDays": ${tripDays},
-  "budgetPerDay": ${Math.round(budget / tripDays)},
-  "hotel": {
-    "name": "Hotel Reale Della Città",
-    "stars": ${Math.max(2, Math.min(5, Math.round(luxury / 20)))},
-    "pricePerNight": ${Math.round(budgetPerPerson * 0.4 / tripDays)},
-    "totalPrice": ${Math.round(budget * 0.4)},
-    "photo": "https://images.unsplash.com/photo-${getRandomUnsplashId()}?w=500&h=300&fit=crop"
-  },
-  "transport": {
-    "type": "${transport}",
-    "airline": "${getRandomAirlineName()}",
-    "logo": "${getRandomAirlineLogo()}",
-    "route": "MXP → ${getRandomAirportCode()}",
-    "totalPrice": ${Math.round(budget * 0.3)},
-    "duration": "${getFlightDuration(50)}"
-  },
-  "costs": {
-    "hotel": ${Math.round(budget * 0.4)},
-    "transport": ${Math.round(budget * 0.3)},
-    ${budgetType === 'complete' ? `"meals": ${Math.round(budget * 0.2)}, "activities": ${Math.round(budget * 0.08)}, "extras": ${Math.round(budget * 0.02)},` : ''}
-    "total": ${budget}
-  }
-}`;
-
-            try {
-                console.log('🎮 4D AI Call:', { luxury, popularity, environment, energy });
-                
-                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: prompt
-                            }]
-                        }]
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    const aiResponse = data.candidates[0].content.parts[0].text;
-                    console.log('🎯 4D AI Response:', aiResponse);
-                    
-                    const cleanResponse = aiResponse.replace(/```json\n?|\n?```/g, '').trim();
-                    const result = JSON.parse(cleanResponse);
-                    
-                    // Add to used destinations
-                    if (result.destination && !usedDestinations.includes(result.destination)) {
-                        usedDestinations.push(result.destination);
-                        if (usedDestinations.length > 10) {
-                            usedDestinations.shift();
-                        }
-                    }
-                    
-                    result.travelDates = generateTravelDates();
-                    return result;
-                } else {
-                    throw new Error('API Error: ' + response.status);
-                }
-            } catch (error) {
-                console.log('🔄 4D AI error, using smart fallback:', error);
-                return generate4DFallback(budget, people, transport, budgetType, styleValues, environmentValues);
-            }
-        }
-
-        // 4D Smart Fallback
-        function generate4DFallback(budget, people, transport, budgetType, styleValues, environmentValues) {
-            const budgetPerPerson = budget / people;
-            const luxury = styleValues.x;
-            const popularity = 100 - styleValues.y;
-            const energy = environmentValues.x;
-            const environment = 100 - environmentValues.y;
-            
-            const tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :
-                           luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :
-                           Math.max(5, Math.round(7 - luxury/50));
-            
-            // 4D destination pools
-            const destinations4D = [
-                // Cheap + Unknown + Sea + Relax
-                { name: 'Nesebar', country: 'Bulgaria', emoji: '🏖️', match: [20, 20, 20, 20], cost: 280 },
-                { name: 'Ksamil', country: 'Albania', emoji: '🌊', match: [15, 15, 15, 25], cost: 250 },
-                
-                // Cheap + Unknown + Mountain + Adventure  
-                { name: 'Bansko', country: 'Bulgaria', emoji: '🏔️', match: [25, 20, 80, 75], cost: 290 },
-                { name: 'Zakopane', country: 'Polonia', emoji: '⛷️', match: [30, 30, 85, 80], cost: 320 },
-                
-                // Luxury + Famous + Sea + Relax
-                { name: 'Santorini', country: 'Grecia', emoji: '🌅', match: [85, 90, 20, 30], cost: 650 },
-                { name: 'Monaco', country: 'Francia', emoji: '🛥️', match: [95, 95, 25, 20], cost: 800 },
-                
-                // Luxury + Famous + Mountain + Adventure
-                { name: 'St. Moritz', country: 'Svizzera', emoji: '🎿', match: [90, 85, 90, 85], cost: 750 },
-                { name: 'Chamonix', country: 'Francia', emoji: '🏔️',
+</html>
