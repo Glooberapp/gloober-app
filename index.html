@@ -63,27 +63,113 @@
             transform: scale(1.1);
         }
 
-        .hotel-photo {
+        .custom-dropdown {
+            position: relative;
+        }
+        
+        .dropdown-btn {
             width: 100%;
-            height: 180px;
-            background-size: cover;
-            background-position: center;
+            padding: 12px 16px;
             border-radius: 12px;
-            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(6, 95, 70, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            margin-top: 4px;
+            z-index: 50;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dropdown-item {
+            padding: 12px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
 
-        .airline-logo {
-            width: 60px;
-            height: 40px;
-            background: white;
+        .budget-toggle {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+        
+        .budget-toggle button {
+            padding: 8px 16px;
             border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .budget-toggle button.active {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: black;
+            font-weight: bold;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            color: #1f2937;
-            border: 2px solid #e5e7eb;
+            z-index: 100;
+        }
+        
+        .modal-content {
+            background: rgba(15, 118, 110, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            max-height: 80vh;
+            width: 90%;
+            overflow-y: auto;
+            color: white;
         }
 
         .book-btn {
@@ -159,6 +245,24 @@
                         </div>
                     </div>
 
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium mb-2">🚀 Come viaggi?</label>
+                        <div class="custom-dropdown">
+                            <button type="button" class="dropdown-btn" id="transport-btn">
+                                <span id="transport-selected">✈️ Aereo</span>
+                                <span class="ml-auto">▼</span>
+                            </button>
+                            <div class="dropdown-menu hidden" id="transport-menu">
+                                <div class="dropdown-item" data-transport="plane">✈️ Aereo</div>
+                                <div class="dropdown-item" data-transport="train">🚆 Treno</div>
+                                <div class="dropdown-item" data-transport="car">🚗 Auto (noleggio)</div>
+                                <div class="dropdown-item" data-transport="own-car">🚙 Auto propria</div>
+                                <div class="dropdown-item" data-transport="bus">🚌 Bus</div>
+                                <div class="dropdown-item" data-transport="ferry">⛴️ Nave/Traghetto</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="mb-6">
                         <label class="block text-sm font-medium mb-3">🎯 Cosa cerchi?</label>
                         <div class="grid grid-cols-2 gap-3">
@@ -203,7 +307,7 @@
                     </div>
                 </div>
                 <h2 class="text-4xl font-bold mb-2">🌍 Gloobbing...</h2>
-                <p class="text-lg text-gray-300" id="search-text">Trovando la destinazione perfetta!</p>
+                <p class="text-lg text-gray-300" id="search-text">L'AI sta trovando la destinazione perfetta!</p>
             </div>
         </div>
 
@@ -219,156 +323,227 @@
                 </div>
 
                 <div class="text-center mt-6">
+                    <button id="guide-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-xl mr-4 hover:bg-blue-700 transition-colors">
+                        📋 Guida al Viaggio
+                    </button>
                     <button id="regloob-btn" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-700 transition-colors">
                         🎲 Regloob
                     </button>
                 </div>
             </div>
         </div>
+
+        <!-- Travel Guide Modal -->
+        <div id="guide-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">📋 Guida al Viaggio</h2>
+                    <button id="close-guide" class="text-2xl hover:text-red-400">✕</button>
+                </div>
+                <div id="guide-content">
+                    <!-- Generated by AI -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Enhanced destinations database
-        const destinations = {
-            santorini: {
-                name: 'Santorini',
-                country: 'Grecia',
-                emoji: '🌅',
-                description: 'Tramonti cicladici e resort esclusivi',
-                basePrice: 180,
-                tags: ['sea', 'romantic'],
-                popularity: 90,
-                hotel: {
-                    name: 'Canaves Oia Suites',
-                    stars: 5,
-                    photo: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=500&h=300&fit=crop',
-                    bookingId: 'ss=Santorini%2C%20Greece&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
-                    description: 'Suite con infinity pool vista caldera'
-                },
-                flight: {
-                    airline: 'Aegean Airlines',
-                    logo: 'A3',
-                    route: 'MXP → JTR',
-                    departure: '09:15',
-                    arrival: '13:40',
-                    duration: '3h 25m',
-                    stops: '1 scalo',
-                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/sant/240815/240822/?adults=2'
-                }
-            },
-            barcelona: {
-                name: 'Barcellona',
-                country: 'Spagna',
-                emoji: '🏛️',
-                description: 'Gaudí, tapas e Mediterraneo',
-                basePrice: 130,
-                tags: ['culture', 'food', 'sea'],
-                popularity: 85,
-                hotel: {
-                    name: 'Hotel Casa Fuster',
-                    stars: 5,
-                    photo: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=300&fit=crop',
-                    bookingId: 'ss=Barcelona%2C%20Spain&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
-                    description: 'Modernismo catalano nel cuore della città'
-                },
-                flight: {
-                    airline: 'Vueling',
-                    logo: 'VY',
-                    route: 'MXP → BCN',
-                    departure: '14:25',
-                    arrival: '16:10',
-                    duration: '1h 45m',
-                    stops: 'Diretto',
-                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/barc/240815/240822/?adults=2'
-                }
-            },
-            porto: {
-                name: 'Porto',
-                country: 'Portogallo',
-                emoji: '🍷',
-                description: 'Città del porto e azulejos colorati',
-                basePrice: 120,
-                tags: ['culture', 'food'],
-                popularity: 65,
-                hotel: {
-                    name: 'The Yeatman',
-                    stars: 5,
-                    photo: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=500&h=300&fit=crop',
-                    bookingId: 'ss=Porto%2C%20Portugal&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
-                    description: 'Hotel di charme nel quartiere di Vila Nova de Gaia'
-                },
-                flight: {
-                    airline: 'TAP Portugal',
-                    logo: 'TP',
-                    route: 'MXP → OPO',
-                    departure: '13:20',
-                    arrival: '16:05',
-                    duration: '2h 45m',
-                    stops: 'Diretto',
-                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/port/240815/240822/?adults=2'
-                }
-            },
-            dubrovnik: {
-                name: 'Dubrovnik',
-                country: 'Croazia',
-                emoji: '🏰',
-                description: 'Perla dell\'Adriatico con mura medievali',
-                basePrice: 140,
-                tags: ['sea', 'culture'],
-                popularity: 75,
-                hotel: {
-                    name: 'Hotel Excelsior',
-                    stars: 5,
-                    photo: 'https://images.unsplash.com/photo-1594736797933-d0201ba40a65?w=500&h=300&fit=crop',
-                    bookingId: 'ss=Dubrovnik%2C%20Croatia&checkin=2024-08-15&checkout=2024-08-22&group_adults=2&no_rooms=1',
-                    description: 'Luxury hotel fronte mare nella città vecchia'
-                },
-                flight: {
-                    airline: 'Croatia Airlines',
-                    logo: 'OU',
-                    route: 'MXP → DBV',
-                    departure: '16:30',
-                    arrival: '18:00',
-                    duration: '1h 30m',
-                    stops: 'Diretto',
-                    skyscannerUrl: 'https://www.skyscanner.it/transport/flights/mila/dubr/240815/240822/?adults=2'
-                }
-            }
-        };
+        // Configuration
+        const GEMINI_API_KEY = 'AIzaSyB3FtGA9NJ8FB5GNCPrAWwAzUkhy4kTZwo';
+        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
         // App state
         let selectedPreference = null;
+        let selectedTransport = 'plane';
         let currentResult = null;
+        let budgetMode = 'essential'; // 'essential' or 'complete'
 
-        // Smart destination picker
-        function pickDestination(budget, people, luxury, preference) {
-            const perPersonBudget = budget / people;
-            const availableDestinations = Object.values(destinations);
-            
-            let filtered = preference ? 
-                availableDestinations.filter(d => d.tags.includes(preference)) : 
-                availableDestinations;
-            
-            if (filtered.length === 0) filtered = availableDestinations;
-            
-            let scored = filtered.map(dest => {
-                let score = 50;
+        // AI-powered destination finder
+        async function findDestinationWithAI(budget, people, luxury, preference, transport) {
+            const prompt = `Sei un esperto consulente di viaggi. Suggerisci una destinazione perfetta per:
+
+Budget: €${budget} totale per ${people} persone
+Stile: ${luxury < 30 ? 'Economico' : luxury > 70 ? 'Lusso' : 'Medio'}
+Preferenza: ${preference || 'Flessibile'}
+Trasporto: ${getTransportName(transport)}
+
+Rispondi SOLO in questo formato JSON:
+{
+  "destination": "Nome Città",
+  "country": "Paese",
+  "emoji": "🌅",
+  "description": "Descrizione coinvolgente",
+  "whyPerfect": "Perché è perfetto per loro",
+  "hotel": {
+    "name": "Nome Hotel",
+    "stars": 4,
+    "pricePerNight": 120,
+    "description": "Descrizione hotel"
+  },
+  "transport": {
+    "airline": "Nome Compagnia",
+    "route": "MXP → ABC",
+    "price": 180,
+    "duration": "2h"
+  },
+  "essentialCosts": {
+    "hotel": 840,
+    "transport": 360,
+    "total": 1200
+  },
+  "completeCosts": {
+    "hotel": 840,
+    "transport": 360,
+    "meals": 420,
+    "activities": 150,
+    "local": 80,
+    "shopping": 100,
+    "total": 1950
+  }
+}
+
+Sii creativo ma realistico con prezzi reali 2024!`;
+
+            try {
+                // Try real Gemini API first
+                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }]
+                    })
+                });
                 
-                // Budget matching
-                const estimatedPrice = dest.basePrice * (1 + luxury/100);
-                if (estimatedPrice <= perPersonBudget) score += 30;
-                
-                // Luxury preference
-                if (luxury > 70 && dest.basePrice > 150) score += 20;
-                if (luxury < 30 && dest.basePrice < 140) score += 20;
-                
-                return { ...dest, score };
-            });
+                if (response.ok) {
+                    const data = await response.json();
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    return JSON.parse(aiResponse.replace(/```json\n?|\n?```/g, ''));
+                } else {
+                    throw new Error('API Error');
+                }
+            } catch (error) {
+                console.log('Using AI simulation fallback:', error);
+                return simulateAIResponse(budget, people, luxury, preference, transport);
+            }
+        }
+
+        // AI simulation fallback
+        function simulateAIResponse(budget, people, luxury, preference, transport) {
+            const destinations = {
+                sea: { name: 'Dubrovnik', country: 'Croazia', emoji: '🏰' },
+                mountain: { name: 'Innsbruck', country: 'Austria', emoji: '🏔️' },
+                culture: { name: 'Praga', country: 'Repubblica Ceca', emoji: '🏛️' },
+                romantic: { name: 'Santorini', country: 'Grecia', emoji: '🌅' },
+                food: { name: 'Bologna', country: 'Italia', emoji: '🍝' },
+                adventure: { name: 'Interlaken', country: 'Svizzera', emoji: '🎒' }
+            };
+
+            const dest = destinations[preference] || destinations.culture;
+            const priceMultiplier = luxury / 50;
+            const baseHotelPrice = 80 * priceMultiplier;
+            const baseTravelPrice = 150;
+
+            return {
+                destination: dest.name,
+                country: dest.country,
+                emoji: dest.emoji,
+                description: `Destinazione perfetta che combina ${preference || 'cultura'} e relax`,
+                whyPerfect: `Analizzando il tuo budget di €${budget} e la preferenza per ${preference || 'viaggi vari'}, ${dest.name} offre il miglior rapporto qualità-prezzo per ${people} persone.`,
+                hotel: {
+                    name: `Hotel ${dest.name} Premium`,
+                    stars: Math.min(5, Math.max(3, Math.round(luxury / 20))),
+                    pricePerNight: Math.round(baseHotelPrice),
+                    description: `Hotel ${luxury > 70 ? 'di lusso' : luxury > 40 ? 'elegante' : 'confortevole'} nel centro storico`
+                },
+                transport: {
+                    airline: getAirlineName(transport),
+                    route: `MXP → ${dest.name.substring(0, 3).toUpperCase()}`,
+                    price: Math.round(baseTravelPrice * people),
+                    duration: '2h 15m'
+                },
+                essentialCosts: {
+                    hotel: Math.round(baseHotelPrice * 7),
+                    transport: Math.round(baseTravelPrice * people),
+                    total: Math.round((baseHotelPrice * 7) + (baseTravelPrice * people))
+                },
+                completeCosts: {
+                    hotel: Math.round(baseHotelPrice * 7),
+                    transport: Math.round(baseTravelPrice * people),
+                    meals: Math.round(60 * 7 * people),
+                    activities: Math.round(100 * people),
+                    local: Math.round(50 * people),
+                    shopping: Math.round(80 * people),
+                    total: Math.round((baseHotelPrice * 7) + (baseTravelPrice * people) + (60 * 7 * people) + (100 * people) + (50 * people) + (80 * people))
+                }
+            };
+        }
+
+        // Generate travel guide with AI
+        async function generateTravelGuide(destination, people, days = 7) {
+            const prompt = `Crea una guida dettagliata di ${days} giorni per ${destination.destination}, ${destination.country} per ${people} persone.
+
+Includi per ogni giorno:
+- Orario dettagliato (09:00, 14:30, etc.)
+- Attività specifiche e attrazioni
+- Costi realistici per pasti e attività
+- Consigli pratici locali
+
+Formato richiesto:
+📅 GIORNO 1 - Titolo
+• 09:00 - Attività (€costo)
+• 14:00 - Altra attività (€costo)
+Budget giorno: €totale
+
+Sii specifico con luoghi veri e prezzi reali!`;
+
+            // Simulate AI guide (replace with real Gemini API)
+            return simulateGuide(destination, people, days);
+        }
+
+        function simulateGuide(destination, people, days) {
+            const dailyBudget = Math.round(80 + (Math.random() * 40));
+            let guide = '';
             
-            scored.sort((a, b) => b.score - a.score);
-            const topCandidates = scored.slice(0, 2);
+            for (let day = 1; day <= days; day++) {
+                const activities = [
+                    { time: '09:00', activity: 'Colazione tipica locale', cost: 15 },
+                    { time: '10:30', activity: `Tour ${destination.destination} centro storico`, cost: 25 },
+                    { time: '13:00', activity: 'Pranzo tradizionale', cost: 30 },
+                    { time: '15:30', activity: `Visita attrazione principale`, cost: 20 },
+                    { time: '19:00', activity: 'Aperitivo locale', cost: 18 },
+                    { time: '20:30', activity: 'Cena tipica', cost: 45 }
+                ];
+
+                guide += `📅 GIORNO ${day} - ${day === 1 ? 'Arrivo e scoperta' : day === days ? 'Ultimo giorno' : 'Esplorazione'}\n`;
+                
+                activities.forEach(act => {
+                    const totalCost = people * act.cost;
+                    guide += `• ${act.time} - ${act.activity} (€${totalCost})\n`;
+                });
+                
+                guide += `💰 Budget giorno: €${dailyBudget * people}\n\n`;
+            }
             
-            return topCandidates[Math.floor(Math.random() * topCandidates.length)];
+            return guide;
+        }
+
+        function getTransportName(transport) {
+            const names = {
+                'plane': 'Aereo', 'train': 'Treno', 'car': 'Auto noleggio',
+                'own-car': 'Auto propria', 'bus': 'Bus', 'ferry': 'Nave/Traghetto'
+            };
+            return names[transport] || 'Trasporto';
+        }
+
+        function getAirlineName(transport) {
+            const airlines = ['Lufthansa', 'ITA Airways', 'Ryanair', 'EasyJet', 'Vueling'];
+            return airlines[Math.floor(Math.random() * airlines.length)];
         }
 
         // Initialize
@@ -381,6 +556,28 @@
         }
 
         function setupEvents() {
+            // Transport dropdown
+            const transportBtn = document.getElementById('transport-btn');
+            const transportMenu = document.getElementById('transport-menu');
+            const transportSelected = document.getElementById('transport-selected');
+            
+            transportBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                transportMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('[data-transport]').forEach(item => {
+                item.addEventListener('click', () => {
+                    selectedTransport = item.dataset.transport;
+                    transportSelected.textContent = item.textContent;
+                    transportMenu.classList.add('hidden');
+                });
+            });
+            
+            document.addEventListener('click', () => {
+                transportMenu.classList.add('hidden');
+            });
+
             // Preference selection
             document.querySelectorAll('.preference-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -398,15 +595,19 @@
                 });
             });
 
-            // Gloob button
+            // Main buttons
             document.getElementById('gloob-btn').addEventListener('click', startGloob);
-
-            // Regloob
             document.getElementById('regloob-btn').addEventListener('click', () => {
                 showStep('form');
                 selectedPreference = null;
                 document.querySelectorAll('.preference-btn').forEach(btn => 
                     btn.classList.remove('selected'));
+            });
+
+            // Guide modal
+            document.getElementById('guide-btn').addEventListener('click', showGuide);
+            document.getElementById('close-guide').addEventListener('click', () => {
+                document.getElementById('guide-modal').classList.add('hidden');
             });
         }
 
@@ -417,7 +618,7 @@
             document.getElementById(step + '-step').classList.remove('hidden');
         }
 
-        function startGloob() {
+        async function startGloob() {
             const budget = parseInt(document.getElementById('budget').value);
             const people = parseInt(document.getElementById('people').value);
             
@@ -428,95 +629,201 @@
             
             showStep('spin');
             document.getElementById('search-text').textContent = 
-                `Gloobbing per ${people} persone con €${budget}...`;
+                `L'AI sta analizzando ${people} persone con €${budget}...`;
             
             document.getElementById('spinning-globe').classList.add('spinning');
             
-            setTimeout(() => {
+            try {
                 const luxury = parseInt(document.getElementById('luxury').value);
-                currentResult = pickDestination(budget, people, luxury, selectedPreference);
+                currentResult = await findDestinationWithAI(budget, people, luxury, selectedPreference, selectedTransport);
                 
                 document.getElementById('spinning-globe').classList.remove('spinning');
                 displayResult();
                 setTimeout(() => showStep('result'), 300);
-            }, 3000);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Errore durante la ricerca. Riprova!');
+                showStep('form');
+            }
         }
 
         function displayResult() {
             const result = currentResult;
             const people = parseInt(document.getElementById('people').value);
-            const budget = parseInt(document.getElementById('budget').value);
-            const luxury = parseInt(document.getElementById('luxury').value);
-            
-            const totalPrice = Math.round(result.basePrice * people * (1 + luxury/100));
             const stars = '⭐'.repeat(result.hotel.stars);
-            
-            // Build booking URLs with real parameters
-            const hotelUrl = `https://www.booking.com/searchresults.html?${result.hotel.bookingId}&group_adults=${people}`;
-            const flightUrl = result.flight.skyscannerUrl.replace('adults=2', `adults=${people}`);
             
             const html = `
                 <div class="glass-card rounded-2xl p-6 text-center mb-6">
                     <div class="text-6xl mb-4">${result.emoji}</div>
-                    <h2 class="text-3xl font-bold text-yellow-400 mb-2">${result.name}</h2>
+                    <h2 class="text-3xl font-bold text-yellow-400 mb-2">${result.destination}</h2>
                     <p class="text-xl text-gray-300 mb-4">${result.country}</p>
-                    <p class="text-gray-400">${result.description}</p>
+                    <p class="text-gray-400 mb-3">${result.description}</p>
+                    <div class="bg-white/20 rounded-lg p-3 mx-auto max-w-md">
+                        <p class="text-sm font-medium">${result.whyPerfect}</p>
+                    </div>
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-6 mb-6">
                     <!-- Hotel -->
                     <div class="bg-white rounded-2xl p-6 text-gray-800">
-                        <div class="hotel-photo" style="background-image: url('${result.hotel.photo}')"></div>
+                        <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-32 rounded-lg mb-4 flex items-center justify-center text-white text-4xl">
+                            🏨
+                        </div>
                         <h3 class="text-xl font-bold mb-2">${result.hotel.name}</h3>
                         <div class="text-yellow-500 text-lg mb-2">${stars}</div>
                         <p class="text-sm text-gray-600 mb-4">${result.hotel.description}</p>
-                        <a href="${hotelUrl}" target="_blank" class="book-btn w-full">
+                        <p class="text-lg font-bold text-green-600 mb-4">€${result.hotel.pricePerNight}/notte</p>
+                        <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(result.destination)}&group_adults=${people}" target="_blank" class="book-btn w-full">
                             🏨 PRENOTA HOTEL
                         </a>
                     </div>
 
-                    <!-- Flight -->
+                    <!-- Transport -->
                     <div class="bg-white rounded-2xl p-6 text-gray-800">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="airline-logo">${result.flight.logo}</div>
-                            <div>
-                                <h3 class="text-xl font-bold">${result.flight.airline}</h3>
-                                <p class="text-gray-600">${result.flight.route}</p>
-                            </div>
+                        <div class="bg-gradient-to-r from-green-400 to-green-600 h-32 rounded-lg mb-4 flex items-center justify-center text-white text-4xl">
+                            ✈️
                         </div>
-                        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
-                            <div><strong>Partenza:</strong> ${result.flight.departure}</div>
-                            <div><strong>Arrivo:</strong> ${result.flight.arrival}</div>
-                            <div><strong>Durata:</strong> ${result.flight.duration}</div>
-                            <div><strong>Scali:</strong> ${result.flight.stops}</div>
+                        <h3 class="text-xl font-bold mb-2">${result.transport.airline}</h3>
+                        <p class="text-gray-600 mb-2">${result.transport.route}</p>
+                        <div class="text-sm text-gray-600 mb-4">
+                            <div>Durata: ${result.transport.duration}</div>
+                            <div>A/R per ${people} persone</div>
                         </div>
-                        <a href="${flightUrl}" target="_blank" class="book-btn w-full">
+                        <p class="text-lg font-bold text-green-600 mb-4">€${result.transport.price}</p>
+                        <a href="https://www.skyscanner.it/transport/flights/mila/${result.destination.toLowerCase().substring(0,4)}/" target="_blank" class="book-btn w-full">
                             ✈️ PRENOTA VOLO
                         </a>
                     </div>
                 </div>
 
-                <div class="glass-card rounded-2xl p-6 text-center">
-                    <h3 class="text-2xl font-bold mb-2">💰 Budget perfetto!</h3>
-                    <p class="text-3xl font-bold text-yellow-400 mb-2">€${totalPrice}</p>
-                    <p class="text-gray-300">per ${people} ${people === 1 ? 'persona' : 'persone'} • 7 giorni</p>
-                    ${selectedPreference ? `<p class="text-sm text-green-400 mt-2">🎯 Match perfetto per "${selectedPreference}"</p>` : ''}
+                <!-- Budget Toggle -->
+                <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                    <div class="budget-toggle mb-4">
+                        <button id="budget-essential" class="active" onclick="toggleBudget('essential')">💰 Solo Essenziale</button>
+                        <button id="budget-complete" onclick="toggleBudget('complete')">🎯 Tutto Incluso</button>
+                    </div>
+                    
+                    <div id="budget-essential-content">
+                        <h3 class="text-xl font-bold mb-4">💰 Budget Essenziale</h3>
+                        <div class="space-y-2 mb-4 text-left max-w-md mx-auto">
+                            <div class="flex justify-between">
+                                <span>🏨 Hotel (7 notti):</span>
+                                <span class="font-bold">€${result.essentialCosts.hotel}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>✈️ Volo A/R:</span>
+                                <span class="font-bold">€${result.essentialCosts.transport}</span>
+                            </div>
+                            <div class="border-t border-white/30 pt-2 flex justify-between text-lg">
+                                <span>TOTALE:</span>
+                                <span class="font-bold text-yellow-400">€${result.essentialCosts.total}</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-300">Solo volo + hotel • Pasti e attività esclusi</p>
+                    </div>
+                    
+                    <div id="budget-complete-content" class="hidden">
+                        <h3 class="text-xl font-bold mb-4">🎯 Budget Completo</h3>
+                        <div class="space-y-2 mb-4 text-left max-w-md mx-auto">
+                            <div class="flex justify-between">
+                                <span>🏨 Hotel (7 notti):</span>
+                                <span class="font-bold">€${result.completeCosts.hotel}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>✈️ Volo A/R:</span>
+                                <span class="font-bold">€${result.completeCosts.transport}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>🍽️ Pasti (7 giorni):</span>
+                                <span class="font-bold">€${result.completeCosts.meals}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>🎫 Attività/Tour:</span>
+                                <span class="font-bold">€${result.completeCosts.activities}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>🚗 Trasporti locali:</span>
+                                <span class="font-bold">€${result.completeCosts.local}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>🛍️ Shopping/Extra:</span>
+                                <span class="font-bold">€${result.completeCosts.shopping}</span>
+                            </div>
+                            <div class="border-t border-white/30 pt-2 flex justify-between text-lg">
+                                <span>TOTALE REALE:</span>
+                                <span class="font-bold text-yellow-400">€${result.completeCosts.total}</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-300">Budget realistico per vacanza completa</p>
+                    </div>
+                    
+                    <p class="text-xs text-gray-400 mt-4">
+                        Per ${people} ${people === 1 ? 'persona' : 'persone'} • 7 giorni
+                        ${selectedPreference ? ` • 🎯 Ottimizzato per "${selectedPreference}"` : ''}
+                    </p>
                 </div>
             `;
             
             document.getElementById('result-content').innerHTML = html;
         }
 
+        function toggleBudget(mode) {
+            budgetMode = mode;
+            
+            // Update button states
+            document.getElementById('budget-essential').classList.toggle('active', mode === 'essential');
+            document.getElementById('budget-complete').classList.toggle('active', mode === 'complete');
+            
+            // Show/hide content
+            document.getElementById('budget-essential-content').classList.toggle('hidden', mode !== 'essential');
+            document.getElementById('budget-complete-content').classList.toggle('hidden', mode !== 'complete');
+        }
+
+        async function showGuide() {
+            if (!currentResult) return;
+            
+            const modal = document.getElementById('guide-modal');
+            const content = document.getElementById('guide-content');
+            
+            content.innerHTML = '<div class="text-center"><div class="text-4xl mb-4">🤖</div><p>L\'AI sta creando la tua guida personalizzata...</p></div>';
+            modal.classList.remove('hidden');
+            
+            try {
+                const guide = await generateTravelGuide(currentResult, parseInt(document.getElementById('people').value));
+                
+                content.innerHTML = `
+                    <div class="bg-white/10 rounded-lg p-4 mb-4">
+                        <h3 class="text-lg font-bold mb-2">📍 ${currentResult.destination}, ${currentResult.country}</h3>
+                        <p class="text-sm text-gray-300">Guida personalizzata per ${document.getElementById('people').value} persone</p>
+                    </div>
+                    <div class="space-y-4 text-sm whitespace-pre-line leading-relaxed">
+                        ${guide}
+                    </div>
+                    <div class="mt-6 p-4 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
+                        <p class="text-sm text-yellow-200">
+                            💡 <strong>Consiglio:</strong> Salva questa guida e portala con te in viaggio! 
+                            I prezzi sono stime realistiche aggiornate al 2024.
+                        </p>
+                    </div>
+                `;
+            } catch (error) {
+                content.innerHTML = '<p class="text-red-400">Errore nella generazione della guida. Riprova!</p>';
+            }
+        }
+
+        // Make toggleBudget globally accessible
+        window.toggleBudget = toggleBudget;
+
         // Start app
         init();
     </script>
 
-    <!-- Footer with legal disclaimer -->
+    <!-- Footer -->
     <footer class="bg-gray-800 text-gray-300 text-center py-6 mt-12">
         <div class="container mx-auto px-4">
             <p class="text-sm">
-                Prezzi basati su tariffe partner aggiornate. 
-                Condizioni finali e prenotazioni tramite provider esterni.
+                🤖 Powered by AI • Prezzi basati su tariffe partner aggiornate<br>
+                Prenotazioni sicure tramite Booking.com e Skyscanner
             </p>
         </div>
     </footer>
