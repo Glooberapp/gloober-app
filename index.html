@@ -221,25 +221,29 @@
             font-weight: bold;
             text-align: center;
             white-space: nowrap;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
         }
 
         .joystick-label.top { 
-            top: -30px; 
+            top: -40px; 
             left: 50%; 
             transform: translateX(-50%);
         }
         .joystick-label.bottom { 
-            bottom: -30px; 
+            bottom: -40px; 
             left: 50%; 
             transform: translateX(-50%);
         }
         .joystick-label.left { 
-            left: -50px; 
+            left: -80px; 
             top: 50%; 
             transform: translateY(-50%);
         }
         .joystick-label.right { 
-            right: -50px; 
+            right: -80px; 
             top: 50%; 
             transform: translateY(-50%);
         }
@@ -323,25 +327,29 @@
             font-weight: bold;
             text-align: center;
             white-space: nowrap;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 8px;
+            border-radius: 15px;
+            backdrop-filter: blur(4px);
         }
 
         .slider-4d-label.top { 
-            top: -25px; 
+            top: -35px; 
             left: 50%; 
             transform: translateX(-50%);
         }
         .slider-4d-label.bottom { 
-            bottom: -25px; 
+            bottom: -35px; 
             left: 50%; 
             transform: translateX(-50%);
         }
         .slider-4d-label.left { 
-            left: -55px; 
+            left: -70px; 
             top: 50%; 
             transform: translateY(-50%);
         }
         .slider-4d-label.right { 
-            right: -55px; 
+            right: -70px; 
             top: 50%; 
             transform: translateY(-50%);
         }
@@ -390,6 +398,19 @@
         .book-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .destination-hint {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            pointer-events: none;
+            z-index: 20;
         }
 
         .hidden { display: none; }
@@ -660,7 +681,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
   "hotel": {
     "name": "Hotel Reale Della Città",
     "stars": ${Math.max(2, Math.min(5, Math.round(luxury / 20)))},
-    "pricePerNight": ${Math.round(budgetPerPerson * 0.4 / tripDays)},
+    "pricePerNight": ${Math.round(budget * 0.4 / tripDays)},
     "totalPrice": ${Math.round(budget * 0.4)},
     "photo": "https://images.unsplash.com/photo-${getRandomUnsplashId()}?w=500&h=300&fit=crop"
   },
@@ -1141,12 +1162,12 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                     );
                     
                     // Update globe with destination hint
-                    const hintElement = document.createElement('div');
-                    hintElement.className = 'absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded';
-                    hintElement.textContent = `${currentResult.emoji} ${currentResult.destination}`;
+                    const existingHint = globe.querySelector('.destination-hint');
+                    if (existingHint) existingHint.remove();
                     
-                    const oldHint = globe.querySelector('div');
-                    if (oldHint) oldHint.remove();
+                    const hintElement = document.createElement('div');
+                    hintElement.className = 'destination-hint absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded';
+                    hintElement.textContent = `${currentResult.emoji} ${currentResult.destination}`;
                     
                     globe.appendChild(hintElement);
                     
@@ -1264,7 +1285,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                         <h3 class="text-xl font-bold mb-2">${result.hotel.name}</h3>
                         <div class="text-yellow-500 text-lg mb-2">${stars}</div>
                         <div class="text-sm text-gray-600 mb-4">
-                            <div><strong>Per night:</strong> €${result.hotel.pricePerNight}</div>
+                            <div><strong>Per night (${people} ${people === 1 ? 'person' : 'people'}):</strong> €${result.hotel.pricePerNight}</div>
                             <div><strong>Total ${result.tripDays || 7} nights:</strong> €${result.hotel.totalPrice}</div>
                         </div>
                         <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(result.destination + ', ' + result.country)}&checkin=${result.travelDates ? result.travelDates.startDate.toISOString().split('T')[0] : ''}&checkout=${result.travelDates ? result.travelDates.endDate.toISOString().split('T')[0] : ''}&group_adults=${people}&no_rooms=1" target="_blank" class="book-btn w-full">
@@ -1379,30 +1400,31 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
         }
 
         async function generateTravelGuide(destination, people, days = 7) {
-            const guide = `📅 DAY 1 - Arrival
-• 10:00 - Hotel check-in (€25 breakfast)
-• 12:00 - City tour (€30)  
-• 15:00 - Local lunch (€35)
-• 17:30 - Main attraction (€20)
-• 20:00 - Traditional dinner (€45)
-💰 Day budget: €155
+                const budgetPerPersonGuide = Math.round(budget / people);
+                const guide = `📅 DAY 1 - Arrival
+• 10:00 - Hotel check-in (€${Math.round(25 * people)} total)
+• 12:00 - City tour (€${Math.round(30 * people)} total)  
+• 15:00 - Local lunch (€${Math.round(35 * people)} total)
+• 17:30 - Main attraction (€${Math.round(20 * people)} total)
+• 20:00 - Traditional dinner (€${Math.round(45 * people)} total)
+💰 Day budget: €${Math.round(155 * people)} (€${155}/person)
 
 📅 DAY 2 - Culture
-• 09:30 - Panoramic breakfast (€20)
-• 11:00 - Museums (€25)
-• 14:00 - Traditional lunch (€30)
-• 16:30 - Shopping (€40)  
-• 19:00 - Aperitivo (€18)
-• 21:00 - Local show (€35)
-💰 Day budget: €168
+• 09:30 - Panoramic breakfast (€${Math.round(20 * people)} total)
+• 11:00 - Museums (€${Math.round(25 * people)} total)
+• 14:00 - Traditional lunch (€${Math.round(30 * people)} total)
+• 16:30 - Shopping (€${Math.round(40 * people)} total)  
+• 19:00 - Aperitivo (€${Math.round(18 * people)} total)
+• 21:00 - Local show (€${Math.round(35 * people)} total)
+💰 Day budget: €${Math.round(168 * people)} (€${168}/person)
 
 📅 DAY 3 - Nature
-• 09:00 - Nature excursion (€40)
-• 12:30 - Panoramic picnic (€25)
-• 15:00 - Outdoor activities (€30)
+• 09:00 - Nature excursion (€${Math.round(40 * people)} total)
+• 12:30 - Panoramic picnic (€${Math.round(25 * people)} total)
+• 15:00 - Outdoor activities (€${Math.round(30 * people)} total)
 • 18:00 - Rest (€0)
-• 20:30 - Special dinner (€50)
-💰 Day budget: €145`;
+• 20:30 - Special dinner (€${Math.round(50 * people)} total)
+💰 Day budget: €${Math.round(145 * people)} (€${145}/person)`;
             
             return guide;
         }
