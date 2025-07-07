@@ -1,4 +1,4 @@
-'gloob-type': 'Tipo de Gloob',
+'departure-city': 'Which city are you flying from?',                'departure-city': 'Da quale città prendi il volo?',                'gloob-type': 'Tipo de Gloob',
                 'gloob-vibes': 'Gloob Vibes',
                 'dates': 'Fechas del viaje',
                 'departure-date': 'Salida',
@@ -335,6 +335,21 @@
             <div class="grid lg:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl mx-auto">
                 <div class="glass-card rounded-2xl p-6">
                     
+                    <!-- DEPARTURE CITY -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">✈️ <span data-translate="departure-city">Da quale città prendi il volo?</span></label>
+                        <div class="relative">
+                            <input type="text" 
+                                   id="departure-city" 
+                                   placeholder="Milano, Roma, Zurigo..." 
+                                   class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none"
+                                   autocomplete="off">
+                            <div id="airport-suggestions" class="absolute top-full left-0 right-0 mt-1 bg-gray-800 rounded-lg shadow-lg hidden max-h-48 overflow-y-auto z-50">
+                                <!-- Suggestions will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- BUDGET & VALUTA -->
                     <div class="grid grid-cols-3 gap-4 mb-6">
                         <div class="col-span-2">
@@ -487,6 +502,7 @@
         let currentResult = null;
         let userLocation = null;
         let departureCity = null;
+        let departureAirport = null;
 
         // Currency conversion rates (simplified)
         const currencyRates = {
@@ -495,6 +511,86 @@
             USD: 1.08,
             GBP: 0.86
         };
+
+        // Airport list with cities
+        const airports = [
+            // Italia
+            { city: 'Milano', code: 'MXP', name: 'Milano Malpensa', country: 'Italia' },
+            { city: 'Milano', code: 'LIN', name: 'Milano Linate', country: 'Italia' },
+            { city: 'Bergamo', code: 'BGY', name: 'Bergamo Orio al Serio', country: 'Italia' },
+            { city: 'Roma', code: 'FCO', name: 'Roma Fiumicino', country: 'Italia' },
+            { city: 'Roma', code: 'CIA', name: 'Roma Ciampino', country: 'Italia' },
+            { city: 'Venezia', code: 'VCE', name: 'Venezia Marco Polo', country: 'Italia' },
+            { city: 'Firenze', code: 'FLR', name: 'Firenze', country: 'Italia' },
+            { city: 'Napoli', code: 'NAP', name: 'Napoli', country: 'Italia' },
+            { city: 'Bologna', code: 'BLQ', name: 'Bologna', country: 'Italia' },
+            { city: 'Torino', code: 'TRN', name: 'Torino', country: 'Italia' },
+            { city: 'Verona', code: 'VRN', name: 'Verona', country: 'Italia' },
+            { city: 'Genova', code: 'GOA', name: 'Genova', country: 'Italia' },
+            // Svizzera
+            { city: 'Zurigo', code: 'ZRH', name: 'Zurigo', country: 'Svizzera' },
+            { city: 'Ginevra', code: 'GVA', name: 'Ginevra', country: 'Svizzera' },
+            { city: 'Basilea', code: 'BSL', name: 'Basilea', country: 'Svizzera' },
+            // Francia vicina
+            { city: 'Nizza', code: 'NCE', name: 'Nizza', country: 'Francia' },
+            { city: 'Lione', code: 'LYS', name: 'Lione', country: 'Francia' },
+            // Germania vicina
+            { city: 'Monaco', code: 'MUC', name: 'Monaco di Baviera', country: 'Germania' },
+            { city: 'Stoccarda', code: 'STR', name: 'Stoccarda', country: 'Germania' },
+            // Austria
+            { city: 'Innsbruck', code: 'INN', name: 'Innsbruck', country: 'Austria' }
+        ];
+
+        // Setup airport autocomplete
+        function setupAirportAutocomplete() {
+            const input = document.getElementById('departure-city');
+            const suggestions = document.getElementById('airport-suggestions');
+            
+            if (!input || !suggestions) return;
+            
+            input.addEventListener('input', (e) => {
+                const value = e.target.value.toLowerCase();
+                
+                if (value.length < 2) {
+                    suggestions.classList.add('hidden');
+                    return;
+                }
+                
+                const matches = airports.filter(airport => 
+                    airport.city.toLowerCase().includes(value) ||
+                    airport.name.toLowerCase().includes(value) ||
+                    airport.code.toLowerCase().includes(value)
+                );
+                
+                if (matches.length > 0) {
+                    suggestions.innerHTML = matches.map(airport => `
+                        <div class="px-4 py-3 hover:bg-gray-700 cursor-pointer transition-colors" 
+                             onclick="selectAirport('${airport.city}', '${airport.code}')">
+                            <div class="font-medium">${airport.city} - ${airport.name}</div>
+                            <div class="text-sm text-gray-400">${airport.code} • ${airport.country}</div>
+                        </div>
+                    `).join('');
+                    suggestions.classList.remove('hidden');
+                } else {
+                    suggestions.classList.add('hidden');
+                }
+            });
+            
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+                    suggestions.classList.add('hidden');
+                }
+            });
+        }
+
+        // Select airport from suggestions
+        function selectAirport(city, code) {
+            document.getElementById('departure-city').value = city;
+            document.getElementById('airport-suggestions').classList.add('hidden');
+            departureCity = city;
+            departureAirport = code;
+        }
 
         // Translations
         const translations = {
@@ -1182,6 +1278,7 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
                 document.getElementById('form-step').classList.remove('hidden');
                 setupEvents();
                 setupVibesSlider();
+                setupAirportAutocomplete();
             }, 800);
         }
 
@@ -1225,6 +1322,20 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
 
         // Start gloob
         async function startGloob() {
+            // Validate departure city
+            const departureCityInput = document.getElementById('departure-city').value;
+            if (!departureCityInput) {
+                alert(selectedLanguage === 'it' ? 
+                    'Per favore inserisci la città di partenza!' : 
+                    'Please enter departure city!');
+                return;
+            }
+            
+            // If departure city not set from autocomplete, use input value
+            if (!departureCity) {
+                departureCity = departureCityInput;
+            }
+            
             // Validate dates
             const startDate = document.getElementById('start-date').value;
             const endDate = document.getElementById('end-date').value;
@@ -1243,44 +1354,7 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
                 return;
             }
             
-            const budget = parseInt(document.getElementById('budget').value) || 0;
-            
-            // Always check location first
-            if (!userLocation || !departureCity) {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        async (position) => {
-                            userLocation = {
-                                lat: position.coords.latitude,
-                                lon: position.coords.longitude
-                            };
-                            // Get city name from coordinates
-                            departureCity = await getCityFromCoords(position.coords.latitude, position.coords.longitude);
-                            proceedWithGloob();
-                        },
-                        () => {
-                            // If geolocation fails, ask for city
-                            const city = prompt(selectedLanguage === 'it' ? 
-                                'Da quale città parti?' : 
-                                'Which city are you departing from?');
-                            if (city) {
-                                departureCity = city;
-                                proceedWithGloob();
-                            }
-                        }
-                    );
-                } else {
-                    const city = prompt(selectedLanguage === 'it' ? 
-                        'Da quale città parti?' : 
-                        'Which city are you departing from?');
-                    if (city) {
-                        departureCity = city;
-                        proceedWithGloob();
-                    }
-                }
-            } else {
-                proceedWithGloob();
-            }
+            proceedWithGloob();
         }
 
         // Get city from coordinates
@@ -1350,6 +1424,7 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
         window.toggleBudgetType = toggleBudgetType;
         window.toggleAccommodationType = toggleAccommodationType;
         window.toggleProgram = toggleProgram;
+        window.selectAirport = selectAirport;
 
         // Start app
         init();
