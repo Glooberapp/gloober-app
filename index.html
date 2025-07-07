@@ -1,4 +1,20 @@
-<!DOCTYPE html>
+'gloob-type': 'Tipo de Gloob',
+                'gloob-vibes': 'Gloob Vibes',
+                'dates': 'Fechas del viaje',
+                'departure-date': 'Salida',
+                'return-date': 'Regreso',                'gloob-type': 'Gloob-Typ',
+                'gloob-vibes': 'Gloob Vibes',
+                'dates': 'Reisedaten',
+                'departure-date': 'Abfahrt',
+                'return-date': 'Rückkehr',                'gloob-type': 'Type de Gloob',
+                'gloob-vibes': 'Gloob Vibes',
+                'dates': 'Dates du voyage',
+                'departure-date': 'Départ',
+                'return-date': 'Retour',                'gloob-type': 'Gloob Type',
+                'gloob-vibes': 'Gloob Vibes',
+                'dates': 'Travel dates',
+                'departure-date': 'Departure',
+                'return-date': 'Return',<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -377,37 +393,22 @@
 
                     <!-- DURATA -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">📅 <span data-translate="duration">Durata</span></label>
-                        <div class="custom-dropdown">
-                            <button type="button" class="dropdown-btn" id="duration-btn">
-                                <span id="duration-selected">🗓️ <span data-translate="any-duration">Indifferente</span></span>
-                                <span class="ml-auto">▼</span>
-                            </button>
-                            <div class="dropdown-menu hidden" id="duration-menu">
-                                <div class="dropdown-item" data-duration="any">🗓️ <span data-translate="any-duration">Indifferente</span></div>
-                                <div class="dropdown-item" data-duration="day">🌅 <span data-translate="day-trip">Gita giornaliera</span></div>
-                                <div class="dropdown-item" data-duration="weekend">⚡ Weekend (2-3 <span data-translate="days">giorni</span>)</div>
-                                <div class="dropdown-item" data-duration="week">📅 <span data-translate="one-week">Una settimana</span></div>
-                                <div class="dropdown-item" data-duration="two-weeks">🏖️ <span data-translate="two-weeks">Due settimane</span></div>
-                                <div class="dropdown-item" data-duration="month">🌴 <span data-translate="one-month">Un mese</span></div>
-                                <div class="dropdown-item" data-duration="custom">📆 <span data-translate="specific-dates">Date specifiche</span></div>
-                            </div>
-                        </div>
-                        <div id="date-picker" class="hidden mt-3 grid grid-cols-2 gap-3">
+                        <label class="block text-sm font-medium mb-2">📅 <span data-translate="dates">Date del viaggio</span></label>
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="text-xs text-gray-300"><span data-translate="departure">Partenza</span></label>
-                                <input type="date" id="start-date" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white">
+                                <label class="text-xs text-gray-300"><span data-translate="departure-date">Partenza</span></label>
+                                <input type="date" id="start-date" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white" required>
                             </div>
                             <div>
-                                <label class="text-xs text-gray-300"><span data-translate="return">Ritorno</span></label>
-                                <input type="date" id="end-date" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white">
+                                <label class="text-xs text-gray-300"><span data-translate="return-date">Ritorno</span></label>
+                                <input type="date" id="end-date" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white" required>
                             </div>
                         </div>
                     </div>
 
                     <!-- VIBES SLIDER -->
                     <div class="mb-8" style="margin-top: 20px;">
-                        <label class="block text-sm font-medium mb-4 text-center text-lg">✨ <span data-translate="vibes">Le tue vibes</span></label>
+                        <label class="block text-sm font-medium mb-4 text-center text-lg">✨ <span data-translate="gloob-vibes">Gloob Vibes</span></label>
                         <div style="position: relative; width: 280px; margin: 0 auto;">
                             <div class="vibes-label" style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%);">🎒 <span data-translate="adventure">AVVENTURA</span></div>
                             <div class="vibes-label" style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%);">😌 <span data-translate="relax">RELAX</span></div>
@@ -417,25 +418,6 @@
                             <div class="vibes-slider" id="vibes-slider" style="margin: 40px auto;">
                                 <div class="vibes-center"></div>
                                 <div class="vibes-dot" id="vibes-dot"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- TRANSPORT -->
-                    <div class="mb-8">
-                        <label class="block text-sm font-medium mb-2">🚀 <span data-translate="transport">Trasporto</span></label>
-                        <div class="custom-dropdown">
-                            <button type="button" class="dropdown-btn" id="transport-btn">
-                                <span id="transport-selected">✈️ <span data-translate="plane">Aereo</span></span>
-                                <span class="ml-auto">▼</span>
-                            </button>
-                            <div class="dropdown-menu hidden" id="transport-menu">
-                                <div class="dropdown-item" data-transport="plane">✈️ <span data-translate="plane">Aereo</span></div>
-                                <div class="dropdown-item" data-transport="train">🚆 <span data-translate="train">Treno</span></div>
-                                <div class="dropdown-item" data-transport="car">🚗 <span data-translate="car">Auto</span></div>
-                                <div class="dropdown-item" data-transport="bus">🚌 Bus</div>
-                                <div class="dropdown-item" data-transport="ferry">⛴️ <span data-translate="ferry">Nave</span></div>
-                                <div class="dropdown-item" data-transport="walk">🚶 <span data-translate="walk">A piedi</span></div>
                             </div>
                         </div>
                     </div>
@@ -497,8 +479,6 @@
         const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
         // App state
-        let selectedTransport = 'plane';
-        let selectedDuration = 'any';
         let selectedCurrency = 'CHF';
         let selectedLanguage = 'it';
         let budgetType = 'flight-hotel';
@@ -523,7 +503,11 @@
                 'currency': 'Valuta',
                 'people': 'Persone',
                 'person': 'persona',
-                'gloob-type': 'Tipo di Gloob',
+                'gloob-type': 'Gloob Type',
+                'gloob-vibes': 'Gloob Vibes',
+                'dates': 'Date del viaggio',
+                'departure-date': 'Partenza',
+                'return-date': 'Ritorno',
                 'package-type': 'Tipo pacchetto',
                 'all-inclusive': 'Viaggio + Hotel + Pasti ed extra',
                 'flight-hotel': 'Viaggio + Hotel',
@@ -735,22 +719,13 @@
 
         // Get trip duration in days
         function getDurationDays() {
-            switch(selectedDuration) {
-                case 'day': return 1;
-                case 'weekend': return 3;
-                case 'week': return 7;
-                case 'two-weeks': return 14;
-                case 'month': return 30;
-                case 'custom':
-                    const start = document.getElementById('start-date').value;
-                    const end = document.getElementById('end-date').value;
-                    if (start && end) {
-                        const diff = new Date(end) - new Date(start);
-                        return Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
-                    }
-                    return 7;
-                default: return 7;
+            const start = document.getElementById('start-date').value;
+            const end = document.getElementById('end-date').value;
+            if (start && end) {
+                const diff = new Date(end) - new Date(start);
+                return Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
             }
+            return 7; // default
         }
 
         // Setup vibes slider
@@ -853,13 +828,15 @@
             const vibesDesc = `${environment < 30 ? 'mare' : environment > 70 ? 'montagna' : 'colline/natura'} e ${energy < 30 ? 'relax totale' : energy > 70 ? 'avventura pura' : 'mix equilibrato'}`;
             
             // Get dates
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
             let dateRange = '';
-            if (selectedDuration === 'custom') {
-                const start = document.getElementById('start-date').value;
-                const end = document.getElementById('end-date').value;
-                if (start && end) {
-                    dateRange = `dal ${start} al ${end}`;
-                }
+            
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const options = { day: 'numeric', month: 'long' };
+                dateRange = `dal ${start.toLocaleDateString('it-IT', options)} al ${end.toLocaleDateString('it-IT', options)}`;
             } else {
                 const days = getDurationDays();
                 dateRange = `${days} giorni`;
@@ -1025,12 +1002,20 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
 
             // Normal budget fallback
             const destinations = [
-                { name: "Lago di Como", country: "Italia", emoji: "🏞️", distance: "80 km" },
-                { name: "Milano", country: "Italia", emoji: "🏙️", distance: "90 km" },
-                { name: "Zermatt", country: "Svizzera", emoji: "🏔️", distance: "200 km" }
+                { name: "Milano", country: "Italia", emoji: "🏙️", distance: "90 km", hasAirport: true },
+                { name: "Venezia", country: "Italia", emoji: "🛶", distance: "280 km", hasAirport: true },
+                { name: "Firenze", country: "Italia", emoji: "🎨", distance: "300 km", hasAirport: true },
+                { name: "Como", country: "Italia", emoji: "🏞️", distance: "30 km", hasAirport: false },
+                { name: "Verona", country: "Italia", emoji: "💑", distance: "250 km", hasAirport: true }
             ];
             
-            const dest = destinations[Math.floor(Math.random() * destinations.length)];
+            // Filter destinations based on transport type
+            let availableDests = destinations;
+            if (selectedTransport === 'plane') {
+                availableDests = destinations.filter(d => d.hasAirport);
+            }
+            
+            const dest = availableDests[Math.floor(Math.random() * availableDests.length)];
             
             // Generate daily program for all days
             const dailyProgram = [];
@@ -1038,12 +1023,27 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
                 dailyProgram.push({
                     day: i,
                     title: `Giorno ${i}${i === 1 ? ' - Arrivo' : i === days ? ' - Partenza' : ''}`,
-                    activities: [
-                        "09:00 - Colazione",
-                        "10:30 - Attività mattutina",
-                        "13:00 - Pranzo",
-                        "15:00 - Attività pomeridiana",
-                        "19:30 - Cena"
+                    activities: i === 1 ? [
+                        `08:00 - Partenza da ${departureCity || 'Lugano'} (incluso)`,
+                        `10:30 - Arrivo e check-in hotel (incluso)`,
+                        `12:30 - Pranzo al Ristorante Centrale (€${Math.round(25 * people)})`,
+                        `15:00 - Tour guidato del centro storico (€${Math.round(15 * people)})`,
+                        `18:00 - Aperitivo in Piazza (€${Math.round(12 * people)})`,
+                        `20:00 - Cena tipica locale (€${Math.round(35 * people)})`
+                    ] : i === days ? [
+                        `09:00 - Colazione in hotel (inclusa)`,
+                        `10:00 - Check-out e deposito bagagli (gratis)`,
+                        `11:00 - Shopping souvenirs (€${Math.round(20 * people)})`,
+                        `13:00 - Pranzo veloce (€${Math.round(20 * people)})`,
+                        `15:00 - Partenza per ${departureCity || 'Lugano'}`,
+                        `18:00 - Arrivo a casa`
+                    ] : [
+                        `09:00 - Colazione in hotel (inclusa)`,
+                        `10:00 - Visita museo principale (€${Math.round(20 * people)})`,
+                        `13:00 - Pranzo trattoria locale (€${Math.round(30 * people)})`,
+                        `15:30 - Attività pomeridiana (€${Math.round(25 * people)})`,
+                        `18:30 - Tempo libero per shopping`,
+                        `20:30 - Cena libera (€${Math.round(40 * people)})`
                     ]
                 });
             }
@@ -1061,9 +1061,18 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
                 duration: `${days} giorni`,
                 transport: {
                     type: selectedTransport,
-                    details: `${selectedTransport} diretto`,
+                    details: selectedTransport === 'plane' 
+                        ? `Volo diretto ${departureCity || 'Milano'} - ${dest.name}` 
+                        : selectedTransport === 'train' 
+                        ? `Treno da ${departureCity || 'Lugano'}` 
+                        : `${selectedTransport} da ${departureCity || 'Lugano'}`,
                     cost: Math.round(budget * 0.3),
-                    duration: "2 ore"
+                    duration: selectedTransport === 'plane' ? "1h 30min" : "3-4 ore",
+                    link: selectedTransport === 'plane' 
+                        ? `https://www.easyjet.com/it` 
+                        : selectedTransport === 'train'
+                        ? `https://www.sbb.ch/it`
+                        : '#'
                 },
                 accommodation: {
                     name: accommodationType === 'bnb' ? "B&B del Centro" : "Hotel Gloober",
@@ -1206,55 +1215,6 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
                 selectedCurrency = e.target.value;
             });
 
-            // Duration dropdown
-            const durationBtn = document.getElementById('duration-btn');
-            const durationMenu = document.getElementById('duration-menu');
-            const durationSelected = document.getElementById('duration-selected');
-            const datePicker = document.getElementById('date-picker');
-            
-            durationBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                durationMenu.classList.toggle('hidden');
-            });
-            
-            document.querySelectorAll('[data-duration]').forEach(item => {
-                item.addEventListener('click', () => {
-                    selectedDuration = item.dataset.duration;
-                    durationSelected.innerHTML = item.innerHTML;
-                    durationMenu.classList.add('hidden');
-                    
-                    if (selectedDuration === 'custom') {
-                        datePicker.classList.remove('hidden');
-                    } else {
-                        datePicker.classList.add('hidden');
-                    }
-                });
-            });
-
-            // Transport dropdown
-            const transportBtn = document.getElementById('transport-btn');
-            const transportMenu = document.getElementById('transport-menu');
-            const transportSelected = document.getElementById('transport-selected');
-            
-            transportBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                transportMenu.classList.toggle('hidden');
-            });
-            
-            document.querySelectorAll('[data-transport]').forEach(item => {
-                item.addEventListener('click', () => {
-                    selectedTransport = item.dataset.transport;
-                    transportSelected.innerHTML = item.innerHTML;
-                    transportMenu.classList.add('hidden');
-                });
-            });
-
-            // Close dropdowns on outside click
-            document.addEventListener('click', () => {
-                durationMenu.classList.add('hidden');
-                transportMenu.classList.add('hidden');
-            });
-
             // Gloob button
             document.getElementById('gloob-btn').addEventListener('click', startGloob);
             
@@ -1288,6 +1248,24 @@ Rispondi in formato JSON con TUTTI i giorni del viaggio:
 
         // Start gloob
         async function startGloob() {
+            // Validate dates
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            if (!startDate || !endDate) {
+                alert(selectedLanguage === 'it' ? 
+                    'Per favore inserisci le date del viaggio!' : 
+                    'Please enter travel dates!');
+                return;
+            }
+            
+            if (new Date(startDate) >= new Date(endDate)) {
+                alert(selectedLanguage === 'it' ? 
+                    'La data di ritorno deve essere dopo quella di partenza!' : 
+                    'Return date must be after departure date!');
+                return;
+            }
+            
             const budget = parseInt(document.getElementById('budget').value) || 0;
             
             // Always check location first
