@@ -13,6 +13,3663 @@
 
         .globe-container {
             position: relative;
+            width: min(280px, 40vw);
+            height: min(280px, 40vw);
+            margin: 0 auto;
+        }
+        
+        .globe {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6, #2563eb);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            transition: transform 1s ease-out;
+        }
+        
+        .spinning { animation: spin 3s ease-out; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(900deg); } }
+        
+        .continent {
+            position: absolute;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 4px;
+            opacity: 0.9;
+        }
+        
+        .europa { top: 25%; left: 30%; width: 10%; height: 7%; transform: rotate(12deg); }
+        .africa { top: 35%; left: 27%; width: 14%; height: 23%; transform: rotate(6deg); }
+        .asia { top: 21%; right: 21%; width: 18%; height: 12%; transform: rotate(-12deg); }
+        .america { top: 16%; left: 11%; width: 16%; height: 20%; transform: rotate(45deg); }
+        .oceania { bottom: 25%; right: 25%; width: 11%; height: 6%; }
+        
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+        }
+
+        .custom-dropdown {
+            position: relative;
+        }
+        
+        .dropdown-btn {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(6, 95, 70, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            margin-top: 4px;
+            z-index: 50;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dropdown-item {
+            padding: 12px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .budget-toggle {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+        
+        .budget-toggle button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .budget-toggle button.active {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: black;
+            font-weight: bold;
+        }
+
+        /* MODE TOGGLE */
+        .mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* LANGUAGE SELECTOR */
+        .lang-selector {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .lang-btn {
+            width: 32px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.2s;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lang-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .lang-btn.active {
+            opacity: 1;
+            box-shadow: 0 0 0 2px white;
+        }
+
+        /* JOYSTICK STYLES */
+        .joystick-4d {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1), rgba(16,185,129,0.05));
+            cursor: pointer;
+            overflow: visible;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .joystick-grid {
+            display: none;
+        }
+
+        .joystick-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .joystick-dot {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border: 3px solid white;
+            border-radius: 50%;
+            cursor: grab;
+            transition: all 0.2s;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.6);
+            z-index: 10;
+        }
+
+        .joystick-dot:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.8);
+        }
+
+        .joystick-dot:active {
+            cursor: grabbing;
+        }
+
+        .joystick-label {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        /* ADVANCED CONTROLS */
+        .advanced-controls {
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        .advanced-controls.hidden {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .advanced-controls.visible {
+            max-height: 1000px;
+            opacity: 1;
+        }
+
+        /* 4D SLIDER STYLES */
+        .slider-4d {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: radial-gradient(circle at center, rgba(139,92,246,0.1), rgba(168,85,247,0.05));
+            cursor: pointer;
+            overflow: visible;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        }
+
+        .slider-4d-grid {
+            display: none;
+        }
+
+        .slider-4d-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .slider-4d-dot {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: grab;
+            transition: all 0.2s;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 3px 10px rgba(139, 92, 246, 0.5);
+            z-index: 10;
+        }
+
+        .slider-4d-dot:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.7);
+        }
+
+        .slider-4d-label {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .modal-content {
+            background: rgba(15, 118, 110, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: min(600px, 90vw);
+            max-height: 80vh;
+            width: 90%;
+            overflow-y: auto;
+            color: white;
+        }
+
+        .book-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .destination-hint {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .hidden { display: none; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .mode-toggle {
+                top: 60px;
+                right: 10px;
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            
+            .lang-selector {
+                top: 60px;
+                left: 10px;
+            }
+            
+            .globe-container {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+    
+    <div id="app">
+        <!-- Loading -->
+        <div id="loading" class="min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="text-6xl mb-4">🌍</div>
+                <h1 class="text-4xl font-bold">Gloober</h1>
+                <p class="text-xl">Zero stress travel</p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div id="form-step" class="hidden container mx-auto px-4 py-8 relative">
+            
+            <!-- LANGUAGE SELECTOR -->
+            <div class="lang-selector">
+                <div class="lang-btn active" data-lang="it" onclick="setLanguage('it')">🇮🇹</div>
+                <div class="lang-btn" data-lang="en" onclick="setLanguage('en')">🇬🇧</div>
+                <div class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">🇫🇷</div>
+                <div class="lang-btn" data-lang="de" onclick="setLanguage('de')">🇩🇪</div>
+                <div class="lang-btn" data-lang="es" onclick="setLanguage('es')">🇪🇸</div>
+            </div>
+
+            <!-- MODE TOGGLE BUTTON -->
+            <button id="mode-toggle" class="mode-toggle" onclick="toggleMode()">
+                <span id="mode-text">🔧 Modalità Avanzata</span>
+            </button>
+
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                    Gloober
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300">Start gloobing! 🎮</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl mx-auto">
+                <div class="glass-card rounded-2xl p-6">
+                    
+                    <!-- CITTÀ DI PARTENZA -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">📍 <span data-translate="departure">Da dove parti?</span></label>
+                        <div class="relative">
+                            <input type="text" id="departure-city" placeholder="Milano" value="Milano" 
+                                   class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
+                            <button onclick="getLocation()" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-yellow-500 text-black px-3 py-1 rounded-lg text-sm hover:bg-yellow-400">
+                                📍 <span data-translate="use-location">Usa posizione</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BUDGET & PERSONE & VALUTA -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">💰 <span data-translate="budget">Budget totale</span></label>
+                            <input type="number" id="budget" value="1000" min="300" max="10000" step="100" 
+                                   class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold focus:ring-2 focus:ring-yellow-400 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">💱 <span data-translate="currency">Valuta</span></label>
+                            <select id="currency" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
+                                <option value="EUR">€ EUR</option>
+                                <option value="CHF">₣ CHF</option>
+                                <option value="USD">$ USD</option>
+                                <option value="GBP">£ GBP</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">👥 <span data-translate="people">Persone</span></label>
+                        <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
+                            <option value="1">1 <span data-translate="person">persona</span></option>
+                            <option value="2" selected>2 <span data-translate="people">persone</span></option>
+                            <option value="3">3 <span data-translate="people">persone</span></option>
+                            <option value="4">4 <span data-translate="people">persone</span></option>
+                            <option value="5">5+ <span data-translate="people">persone</span></option>
+                        </select>
+                    </div>
+
+                    <!-- DURATA VIAGGIO (SEMPRE VISIBILE) -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">📅 <span data-translate="duration">Durata</span></label>
+                        <div class="custom-dropdown">
+                            <button type="button" class="dropdown-btn" id="duration-btn">
+                                <span id="duration-selected">🗓️ <span data-translate="any-duration">Indifferente</span></span>
+                                <span class="ml-auto">▼</span>
+                            </button>
+                            <div class="dropdown-menu hidden" id="duration-menu">
+                                <div class="dropdown-item" data-duration="any">🗓️ <span data-translate="any-duration">Indifferente</span></div>
+                                <div class="dropdown-item" data-duration="weekend">⚡ Weekend (2-3 <span data-translate="days">giorni</span>)</div>
+                                <div class="dropdown-item" data-duration="week">📅 <span data-translate="one-week">Una settimana</span></div>
+                                <div class="dropdown-item" data-duration="two-weeks">🏖️ <span data-translate="two-weeks">Due settimane</span></div>
+                                <div class="dropdown-item" data-duration="month">🌴 <span data-translate="one-month">Un mese</span></div>
+                                <div class="dropdown-item" data-duration="custom">📆 <span data-translate="specific-dates">Date specifiche</span></div>
+                            </div>
+                        </div>
+                        <div id="date-picker" class="hidden mt-2">
+                            <input type="date" id="start-date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white mr-2" placeholder="Partenza">
+                            <input type="date" id="end-date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white" placeholder="Ritorno">
+                        </div>
+                    </div>
+
+                    <!-- JOYSTICK PRINCIPALE -->
+                    <div class="mb-8" style="margin-top: 20px;">
+                        <label class="block text-sm font-medium mb-4 text-center text-lg">🎮 Choose your vibe</label>
+                        <div style="position: relative; width: 280px; margin: 0 auto;">
+                            <div class="joystick-label" style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%);">🎒 <span data-translate="adventure">AVVENTURA</span></div>
+                            <div class="joystick-label" style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%);">😌 <span data-translate="relax">RELAX</span></div>
+                            <div class="joystick-label" style="position: absolute; left: -45px; top: 50%; transform: translateY(-50%);">🏖️ <span data-translate="sea">MARE</span></div>
+                            <div class="joystick-label" style="position: absolute; right: -65px; top: 50%; transform: translateY(-50%);">🏔️ <span data-translate="mountain">MONTAGNA</span></div>
+                            
+                            <div class="joystick-4d" id="main-joystick" style="margin: 40px auto;">
+                                <div class="joystick-grid"></div>
+                                <div class="joystick-center"></div>
+                                <div class="joystick-dot" id="main-dot"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTROLLI AVANZATI -->
+                    <div id="advanced-controls" class="advanced-controls hidden">
+                        
+                        <!-- BUDGET TYPE TOGGLE -->
+                        <div class="mb-6 text-center">
+                            <label class="block text-sm font-medium mb-3">💰 Package</label>
+                            <div class="budget-toggle justify-center">
+                                <button id="budget-type-essential" onclick="toggleBudgetType('essential')">💡 Basic</button>
+                                <button id="budget-type-complete" class="active" onclick="toggleBudgetType('complete')">🎯 All inclusive</button>
+                            </div>
+                            <p id="budget-description" class="text-xs text-gray-400 mt-2">Flight + Hotel + Meals + Activities</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-6 mb-6">
+                            <!-- 4D SLIDER: STILE & POPOLARITÀ -->
+                            <div>
+                                <label class="block text-sm font-medium mb-4 text-center">✨ Style</label>
+                                <div style="position: relative; width: 200px; margin: 0 auto;">
+                                    <div class="slider-4d-label" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">🌟 <span data-translate="famous">FAMOSA</span></div>
+                                    <div class="slider-4d-label" style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">💎 <span data-translate="hidden">NASCOSTA</span></div>
+                                    <div class="slider-4d-label" style="position: absolute; left: -55px; top: 50%; transform: translateY(-50%); font-size: 11px;">💚 <span data-translate="cheap">ECONOMICO</span></div>
+                                    <div class="slider-4d-label" style="position: absolute; right: -40px; top: 50%; transform: translateY(-50%); font-size: 11px;">💜 <span data-translate="luxury">LUSSO</span></div>
+                                    
+                                    <div class="slider-4d" id="style-slider" style="margin: 30px auto;">
+                                        <div class="slider-4d-grid"></div>
+                                        <div class="slider-4d-center"></div>
+                                        <div class="slider-4d-dot" id="style-dot"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TERZO SLIDER: CULTURA & SOCIAL -->
+                            <div>
+                                <label class="block text-sm font-medium mb-4 text-center">🎭 Experience Type</label>
+                                <div style="position: relative; width: 200px; margin: 0 auto;">
+                                    <div class="slider-4d-label" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">🏛️ <span data-translate="culture">CULTURA</span></div>
+                                    <div class="slider-4d-label" style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">🍝 <span data-translate="food">FOOD</span></div>
+                                    <div class="slider-4d-label" style="position: absolute; left: -60px; top: 50%; transform: translateY(-50%); font-size: 11px;">💑 <span data-translate="romantic">ROMANTICO</span></div>
+                                    <div class="slider-4d-label" style="position: absolute; right: -35px; top: 50%; transform: translateY(-50%); font-size: 11px;">🎉 <span data-translate="party">FESTA</span></div>
+                                    
+                                    <div class="slider-4d" id="culture-slider" style="margin: 30px auto;">
+                                        <div class="slider-4d-grid"></div>
+                                        <div class="slider-4d-center"></div>
+                                        <div class="slider-4d-dot" id="culture-dot"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TRANSPORT DROPDOWN -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">🚀 Transport</label>
+                            <div class="custom-dropdown">
+                                <button type="button" class="dropdown-btn" id="transport-btn">
+                                    <span id="transport-selected">✈️ <span data-translate="plane">Aereo</span></span>
+                                    <span class="ml-auto">▼</span>
+                                </button>
+                                <div class="dropdown-menu hidden" id="transport-menu">
+                                    <div class="dropdown-item" data-transport="plane">✈️ <span data-translate="plane">Aereo</span></div>
+                                    <div class="dropdown-item" data-transport="train">🚆 <span data-translate="train">Treno</span></div>
+                                    <div class="dropdown-item" data-transport="car">🚗 <span data-translate="car-rental">Auto (noleggio)</span></div>
+                                    <div class="dropdown-item" data-transport="own-car">🚙 <span data-translate="own-car">Auto propria</span></div>
+                                    <div class="dropdown-item" data-transport="bus">🚌 Bus</div>
+                                    <div class="dropdown-item" data-transport="ferry">⛴️ <span data-translate="ferry">Nave/Traghetto</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button id="gloob-btn" class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
+                        🌍 GLOOB IT!
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-center">
+                    <div class="globe-container">
+                        <div id="globe" class="globe">
+                            <div class="continent europa"></div>
+                            <div class="continent africa"></div>
+                            <div class="continent asia"></div>
+                            <div class="continent america"></div>
+                            <div class="continent oceania"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spinning -->
+        <div id="spin-step" class="hidden min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="globe-container mb-6">
+                    <div id="spinning-globe" class="globe">
+                        <div class="continent europa"></div>
+                        <div class="continent africa"></div>
+                        <div class="continent asia"></div>
+                        <div class="continent america"></div>
+                        <div class="continent oceania"></div>
+                    </div>
+                </div>
+                <h2 class="text-4xl font-bold mb-2">Gloobing...</h2>
+                <p class="text-lg text-gray-300" id="search-text">Finding your perfect match...</p>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div id="result-step" class="hidden container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-6">
+                    <h1 class="text-4xl font-bold mb-2">Gloobed! 🎉</h1>
+                </div>
+
+                <div id="result-content">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="text-center mt-6">
+                    <button id="guide-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-xl mr-4 hover:bg-blue-700 transition-colors">
+                        📋 Travel Guide
+                    </button>
+                    <button id="regloob-btn" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-700 transition-colors">
+                        🎲 Re-Gloob
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Travel Guide Modal -->
+        <div id="guide-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">📋 Your Gloob Guide</h2>
+                    <button id="close-guide" class="text-2xl hover:text-red-400">✕</button>
+                </div>
+                <div id="guide-content">
+                    <!-- Generated by AI -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const GEMINI_API_KEY = 'AIzaSyB3FtGA9NJ8FB5GNCPrAWwAzUkhy4kTZwo';
+        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+
+        // App state
+        let selectedTransport = 'plane';
+        let selectedDuration = 'any';
+        let selectedCurrency = 'EUR';
+        let selectedLanguage = 'it';
+        let departureCity = 'Milano';
+        let departureAirport = 'MXP';
+        let currentResult = null;
+        let budgetType = 'complete';
+        let usedDestinations = [];
+        let isAdvancedMode = false;
+
+        // Currency conversion rates (simplified)
+        const currencyRates = {
+            EUR: 1,
+            CHF: 0.95,
+            USD: 1.08,
+            GBP: 0.86
+        };
+
+        // JOYSTICK VALUES
+        let mainJoystickValues = { x: 50, y: 50 };
+        let styleValues = { x: 50, y: 50 };
+        let cultureValues = { x: 50, y: 50 };
+
+        // Translations
+        const translations = {
+            it: {
+                'departure': 'Da dove parti?',
+                'budget': 'Budget totale',
+                'currency': 'Valuta',
+                'people': 'Persone',
+                'person': 'persona',
+                'duration': 'Durata',
+                'any-duration': 'Indifferente',
+                'days': 'giorni',
+                'one-week': 'Una settimana',
+                'two-weeks': 'Due settimane',
+                'one-month': 'Un mese',
+                'specific-dates': 'Date specifiche',
+                'use-location': 'Usa posizione',
+                'adventure': 'AVVENTURA',
+                'relax': 'RELAX',
+                'sea': 'MARE',
+                'mountain': 'MONTAGNA',
+                'famous': 'FAMOSA',
+                'hidden': 'NASCOSTA',
+                'cheap': 'ECONOMICO',
+                'luxury': 'LUSSO',
+                'culture': 'CULTURA',
+                'food': 'FOOD',
+                'romantic': 'ROMANTICO',
+                'party': 'FESTA',
+                'plane': 'Aereo',
+                'train': 'Treno',
+                'car-rental': 'Auto (noleggio)',
+                'own-car': 'Auto propria',
+                'ferry': 'Nave/Traghetto'
+            },
+            en: {
+                'departure': 'Where from?',
+                'budget': 'Total budget',
+                'currency': 'Currency',
+                'people': 'People',
+                'person': 'person',
+                'duration': 'Duration',
+                'any-duration': 'Any',
+                'days': 'days',
+                'one-week': 'One week',
+                'two-weeks': 'Two weeks',
+                'one-month': 'One month',
+                'specific-dates': 'Specific dates',
+                'use-location': 'Use location',
+                'adventure': 'ADVENTURE',
+                'relax': 'RELAX',
+                'sea': 'SEA',
+                'mountain': 'MOUNTAIN',
+                'famous': 'FAMOUS',
+                'hidden': 'HIDDEN',
+                'cheap': 'CHEAP',
+                'luxury': 'LUXURY',
+                'culture': 'CULTURE',
+                'food': 'FOOD',
+                'romantic': 'ROMANTIC',
+                'party': 'PARTY',
+                'plane': 'Plane',
+                'train': 'Train',
+                'car-rental': 'Car rental',
+                'own-car': 'Own car',
+                'ferry': 'Ferry'
+            },
+            fr: {
+                'departure': 'D\'où partez-vous?',
+                'budget': 'Budget total',
+                'currency': 'Devise',
+                'people': 'Personnes',
+                'person': 'personne',
+                'duration': 'Durée',
+                'any-duration': 'Indifférent',
+                'days': 'jours',
+                'one-week': 'Une semaine',
+                'two-weeks': 'Deux semaines',
+                'one-month': 'Un mois',
+                'specific-dates': 'Dates spécifiques',
+                'use-location': 'Utiliser position',
+                'adventure': 'AVENTURE',
+                'relax': 'DÉTENTE',
+                'sea': 'MER',
+                'mountain': 'MONTAGNE',
+                'famous': 'CÉLÈBRE',
+                'hidden': 'CACHÉ',
+                'cheap': 'ÉCONOMIQUE',
+                'luxury': 'LUXE',
+                'culture': 'CULTURE',
+                'food': 'GASTRONOMIE',
+                'romantic': 'ROMANTIQUE',
+                'party': 'FÊTE',
+                'plane': 'Avion',
+                'train': 'Train',
+                'car-rental': 'Location voiture',
+                'own-car': 'Voiture personnelle',
+                'ferry': 'Ferry'
+            },
+            de: {
+                'departure': 'Von wo?',
+                'budget': 'Gesamtbudget',
+                'currency': 'Währung',
+                'people': 'Personen',
+                'person': 'Person',
+                'duration': 'Dauer',
+                'any-duration': 'Egal',
+                'days': 'Tage',
+                'one-week': 'Eine Woche',
+                'two-weeks': 'Zwei Wochen',
+                'one-month': 'Ein Monat',
+                'specific-dates': 'Bestimmte Daten',
+                'use-location': 'Standort nutzen',
+                'adventure': 'ABENTEUER',
+                'relax': 'ENTSPANNUNG',
+                'sea': 'MEER',
+                'mountain': 'BERGE',
+                'famous': 'BERÜHMT',
+                'hidden': 'VERSTECKT',
+                'cheap': 'GÜNSTIG',
+                'luxury': 'LUXUS',
+                'culture': 'KULTUR',
+                'food': 'ESSEN',
+                'romantic': 'ROMANTISCH',
+                'party': 'PARTY',
+                'plane': 'Flugzeug',
+                'train': 'Zug',
+                'car-rental': 'Mietwagen',
+                'own-car': 'Eigenes Auto',
+                'ferry': 'Fähre'
+            },
+            es: {
+                'departure': '¿Desde dónde?',
+                'budget': 'Presupuesto total',
+                'currency': 'Moneda',
+                'people': 'Personas',
+                'person': 'persona',
+                'duration': 'Duración',
+                'any-duration': 'Indiferente',
+                'days': 'días',
+                'one-week': 'Una semana',
+                'two-weeks': 'Dos semanas',
+                'one-month': 'Un mes',
+                'specific-dates': 'Fechas específicas',
+                'use-location': 'Usar ubicación',
+                'adventure': 'AVENTURA',
+                'relax': 'RELAX',
+                'sea': 'MAR',
+                'mountain': 'MONTAÑA',
+                'famous': 'FAMOSO',
+                'hidden': 'ESCONDIDO',
+                'cheap': 'ECONÓMICO',
+                'luxury': 'LUJO',
+                'culture': 'CULTURA',
+                'food': 'COMIDA',
+                'romantic': 'ROMÁNTICO',
+                'party': 'FIESTA',
+                'plane': 'Avión',
+                'train': 'Tren',
+                'car-rental': 'Coche alquiler',
+                'own-car': 'Coche propio',
+                'ferry': 'Ferry'
+            }
+        };
+
+        // Set language
+        function setLanguage(lang) {
+            selectedLanguage = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            
+            // Update all translations
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+        }
+
+        // Convert currency
+        function convertCurrency(amount, from, to) {
+            const amountInEUR = amount / currencyRates[from];
+            return Math.round(amountInEUR * currencyRates[to]);
+        }
+
+        // Get currency symbol
+        function getCurrencySymbol(currency) {
+            const symbols = { EUR: '€', CHF: '₣', USD: '<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gloober - Zero Stress Travel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f766e, #065f46, #064e3b);
+            min-height: 100vh;
+        }
+
+        .globe-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+        }
+        
+        .globe {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6, #2563eb);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            transition: transform 1s ease-out;
+        }
+        
+        .spinning { animation: spin 3s ease-out; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(900deg); } }
+        
+        .continent {
+            position: absolute;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 4px;
+            opacity: 0.9;
+        }
+        
+        .europa { top: 70px; left: 86px; width: 28px; height: 20px; transform: rotate(12deg); }
+        .africa { top: 100px; left: 75px; width: 40px; height: 65px; transform: rotate(6deg); }
+        .asia { top: 60px; right: 60px; width: 50px; height: 35px; transform: rotate(-12deg); }
+        .america { top: 45px; left: 30px; width: 45px; height: 55px; transform: rotate(45deg); }
+        .oceania { bottom: 70px; right: 70px; width: 30px; height: 18px; }
+        
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+        }
+
+        .custom-dropdown {
+            position: relative;
+        }
+        
+        .dropdown-btn {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(6, 95, 70, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            margin-top: 4px;
+            z-index: 50;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dropdown-item {
+            padding: 12px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .budget-toggle {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+        
+        .budget-toggle button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .budget-toggle button.active {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: black;
+            font-weight: bold;
+        }
+
+        /* MODE TOGGLE */
+        .mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* JOYSTICK STYLES */
+        .joystick-4d {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1), rgba(16,185,129,0.05));
+            cursor: pointer;
+            overflow: visible;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .joystick-grid {
+            display: none; /* Rimossa la griglia */
+        }
+
+        .joystick-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .joystick-dot {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border: 3px solid white;
+            border-radius: 50%;
+            cursor: grab;
+            transition: all 0.2s;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.6);
+            z-index: 10;
+        }
+
+        .joystick-dot:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.8);
+        }
+
+        .joystick-dot:active {
+            cursor: grabbing;
+        }
+
+        .joystick-label {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .joystick-label.top { 
+            top: -28px; 
+            left: 50%; 
+            transform: translateX(-50%);
+        }
+        .joystick-label.bottom { 
+            bottom: -28px; 
+            left: 50%; 
+            transform: translateX(-50%);
+        }
+        .joystick-label.left { 
+            left: -55px; 
+            top: 50%; 
+            transform: translateY(-50%);
+        }
+        .joystick-label.right { 
+            right: -55px; 
+            top: 50%; 
+            transform: translateY(-50%);
+        }
+
+        /* ADVANCED CONTROLS */
+        .advanced-controls {
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        .advanced-controls.hidden {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .advanced-controls.visible {
+            max-height: 1000px;
+            opacity: 1;
+        }
+
+        /* 4D SLIDER STYLES */
+        .slider-4d {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: radial-gradient(circle at center, rgba(139,92,246,0.1), rgba(168,85,247,0.05));
+            cursor: pointer;
+            overflow: visible;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        }
+
+        .slider-4d-grid {
+            display: none; /* Rimossa la griglia */
+        }
+
+        .slider-4d-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .slider-4d-dot {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: grab;
+            transition: all 0.2s;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 3px 10px rgba(139, 92, 246, 0.5);
+            z-index: 10;
+        }
+
+        .slider-4d-dot:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.7);
+        }
+
+        .slider-4d-label {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 10px;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+
+        .slider-4d-label.top { 
+            top: -22px; 
+            left: 50%; 
+            transform: translateX(-50%);
+        }
+        .slider-4d-label.bottom { 
+            bottom: -22px; 
+            left: 50%; 
+            transform: translateX(-50%);
+        }
+        .slider-4d-label.left { 
+            left: -50px; 
+            top: 50%; 
+            transform: translateY(-50%);
+        }
+        .slider-4d-label.right { 
+            right: -50px; 
+            top: 50%; 
+            transform: translateY(-50%);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .modal-content {
+            background: rgba(15, 118, 110, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            max-height: 80vh;
+            width: 90%;
+            overflow-y: auto;
+            color: white;
+        }
+
+        .book-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .destination-hint {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+    
+    <div id="app">
+        <!-- Loading -->
+        <div id="loading" class="min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="text-6xl mb-4">🌍</div>
+                <h1 class="text-4xl font-bold">Gloober</h1>
+                <p class="text-xl">Zero stress travel</p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div id="form-step" class="hidden container mx-auto px-4 py-8 relative">
+            
+            <!-- MODE TOGGLE BUTTON -->
+            <button id="mode-toggle" class="mode-toggle" onclick="toggleMode()">
+                <span id="mode-text">🔧 Modalità Avanzata</span>
+            </button>
+
+            <div class="text-center mb-8">
+                <h1 class="text-6xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                    Gloober
+                </h1>
+                <p class="text-xl text-gray-300">Start gloobing! 🎮</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+                <div class="glass-card rounded-2xl p-6">
+                    
+                    <!-- CITTÀ DI PARTENZA -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">📍 Da dove parti?</label>
+                        <div class="relative">
+                            <input type="text" id="departure-city" placeholder="Milano" value="Milano" 
+                                   class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
+                            <button onclick="getLocation()" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-yellow-500 text-black px-3 py-1 rounded-lg text-sm hover:bg-yellow-400">
+                                📍 Usa posizione
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BUDGET & PERSONE -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">💰 Budget totale (€)</label>
+                        <input type="number" id="budget" value="1000" min="300" max="10000" step="100" 
+                               class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold focus:ring-2 focus:ring-yellow-400 outline-none">
+                    </div>
+
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium mb-2">👥 Persone</label>
+                        <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
+                            <option value="1">1 persona</option>
+                            <option value="2" selected>2 persone</option>
+                            <option value="3">3 persone</option>
+                            <option value="4">4 persone</option>
+                            <option value="5">5+ persone</option>
+                        </select>
+                    </div>
+
+                    <!-- DURATA VIAGGIO (SEMPRE VISIBILE) -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">📅 Durata</label>
+                        <div class="custom-dropdown">
+                            <button type="button" class="dropdown-btn" id="duration-btn">
+                                <span id="duration-selected">🗓️ Indifferente</span>
+                                <span class="ml-auto">▼</span>
+                            </button>
+                            <div class="dropdown-menu hidden" id="duration-menu">
+                                <div class="dropdown-item" data-duration="any">🗓️ Indifferente</div>
+                                <div class="dropdown-item" data-duration="weekend">⚡ Weekend (2-3 giorni)</div>
+                                <div class="dropdown-item" data-duration="week">📅 Una settimana</div>
+                                <div class="dropdown-item" data-duration="two-weeks">🏖️ Due settimane</div>
+                                <div class="dropdown-item" data-duration="month">🌴 Un mese</div>
+                                <div class="dropdown-item" data-duration="custom">📆 Date specifiche</div>
+                            </div>
+                        </div>
+                        <div id="date-picker" class="hidden mt-2">
+                            <input type="date" id="start-date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white mr-2">
+                            <input type="date" id="end-date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white">
+                        </div>
+                    </div>
+
+                    <!-- DURATA VIAGGIO (SEMPRE VISIBILE) -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">📅 Durata</label>
+                        <div class="custom-dropdown">
+                            <button type="button" class="dropdown-btn" id="duration-btn">
+                                <span id="duration-selected">🗓️ Indifferente</span>
+                                <span class="ml-auto">▼</span>
+                            </button>
+                            <div class="dropdown-menu hidden" id="duration-menu">
+                                <div class="dropdown-item" data-duration="any">🗓️ Indifferente</div>
+                                <div class="dropdown-item" data-duration="weekend">⚡ Weekend (2-3 giorni)</div>
+                                <div class="dropdown-item" data-duration="week">📅 Una settimana</div>
+                                <div class="dropdown-item" data-duration="two-weeks">🏖️ Due settimane</div>
+                                <div class="dropdown-item" data-duration="month">🌴 Un mese</div>
+                                <div class="dropdown-item" data-duration="custom">📆 Date specifiche</div>
+                            </div>
+                        </div>
+                        <div id="date-picker" class="hidden mt-2">
+                            <input type="date" id="start-date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white mr-2" placeholder="Partenza">
+                            <input type="date" id="end-date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white" placeholder="Ritorno">
+                        </div>
+                    </div>
+                    <!-- JOYSTICK PRINCIPALE -->
+                    <div class="mb-8" style="margin-top: 20px;">
+                        <label class="block text-sm font-medium mb-4 text-center text-lg">🎮 Choose your vibe</label>
+                        <div style="position: relative; width: 280px; margin: 0 auto;">
+                            <div class="joystick-label" style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%);">🎒 AVVENTURA</div>
+                            <div class="joystick-label" style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%);">😌 RELAX</div>
+                            <div class="joystick-label" style="position: absolute; left: -45px; top: 50%; transform: translateY(-50%);">🏖️ MARE</div>
+                            <div class="joystick-label" style="position: absolute; right: -65px; top: 50%; transform: translateY(-50%);">🏔️ MONTAGNA</div>
+                            
+                            <div class="joystick-4d" id="main-joystick" style="margin: 40px auto;">
+                                <div class="joystick-grid"></div>
+                                <div class="joystick-center"></div>
+                                <div class="joystick-dot" id="main-dot"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTROLLI AVANZATI -->
+                    <div id="advanced-controls" class="advanced-controls hidden">
+                        
+                        <!-- BUDGET TYPE TOGGLE -->
+                        <div class="mb-6 text-center">
+                            <label class="block text-sm font-medium mb-3">💰 Package</label>
+                            <div class="budget-toggle justify-center">
+                                <button id="budget-type-essential" onclick="toggleBudgetType('essential')">💡 Basic</button>
+                                <button id="budget-type-complete" class="active" onclick="toggleBudgetType('complete')">🎯 All inclusive</button>
+                            </div>
+                            <p id="budget-description" class="text-xs text-gray-400 mt-2">Flight + Hotel + Meals + Activities</p>
+                        </div>
+                        
+                        <!-- 4D SLIDER: STILE & POPOLARITÀ -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-4 text-center">✨ Style</label>
+                            <div style="position: relative; width: 200px; margin: 0 auto;">
+                                <div class="slider-4d-label" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">🌟 FAMOSA</div>
+                                <div class="slider-4d-label" style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">💎 NASCOSTA</div>
+                                <div class="slider-4d-label" style="position: absolute; left: -55px; top: 50%; transform: translateY(-50%); font-size: 11px;">💚 ECONOMICO</div>
+                                <div class="slider-4d-label" style="position: absolute; right: -40px; top: 50%; transform: translateY(-50%); font-size: 11px;">💜 LUSSO</div>
+                                
+                                <div class="slider-4d" id="style-slider" style="margin: 30px auto;">
+                                    <div class="slider-4d-grid"></div>
+                                    <div class="slider-4d-center"></div>
+                                    <div class="slider-4d-dot" id="style-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TERZO SLIDER: CULTURA & SOCIAL -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-4 text-center">🎭 Experience Type</label>
+                            <div style="position: relative; width: 200px; margin: 0 auto;">
+                                <div class="slider-4d-label" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">🏛️ CULTURA</div>
+                                <div class="slider-4d-label" style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 11px;">🍝 FOOD</div>
+                                <div class="slider-4d-label" style="position: absolute; left: -60px; top: 50%; transform: translateY(-50%); font-size: 11px;">💑 ROMANTICO</div>
+                                <div class="slider-4d-label" style="position: absolute; right: -35px; top: 50%; transform: translateY(-50%); font-size: 11px;">🎉 FESTA</div>
+                                
+                                <div class="slider-4d" id="culture-slider" style="margin: 30px auto;">
+                                    <div class="slider-4d-grid"></div>
+                                    <div class="slider-4d-center"></div>
+                                    <div class="slider-4d-dot" id="culture-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TRANSPORT DROPDOWN -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">🚀 Transport</label>
+                            <div class="custom-dropdown">
+                                <button type="button" class="dropdown-btn" id="transport-btn">
+                                    <span id="transport-selected">✈️ Aereo</span>
+                                    <span class="ml-auto">▼</span>
+                                </button>
+                                <div class="dropdown-menu hidden" id="transport-menu">
+                                    <div class="dropdown-item" data-transport="plane">✈️ Aereo</div>
+                                    <div class="dropdown-item" data-transport="train">🚆 Treno</div>
+                                    <div class="dropdown-item" data-transport="car">🚗 Auto (noleggio)</div>
+                                    <div class="dropdown-item" data-transport="own-car">🚙 Auto propria</div>
+                                    <div class="dropdown-item" data-transport="bus">🚌 Bus</div>
+                                    <div class="dropdown-item" data-transport="ferry">⛴️ Nave/Traghetto</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button id="gloob-btn" class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
+                        🌍 GLOOB IT!
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-center">
+                    <div class="globe-container">
+                        <div id="globe" class="globe">
+                            <div class="continent europa"></div>
+                            <div class="continent africa"></div>
+                            <div class="continent asia"></div>
+                            <div class="continent america"></div>
+                            <div class="continent oceania"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spinning -->
+        <div id="spin-step" class="hidden min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="globe-container mb-6">
+                    <div id="spinning-globe" class="globe">
+                        <div class="continent europa"></div>
+                        <div class="continent africa"></div>
+                        <div class="continent asia"></div>
+                        <div class="continent america"></div>
+                        <div class="continent oceania"></div>
+                    </div>
+                </div>
+                <h2 class="text-4xl font-bold mb-2">Gloobing...</h2>
+                <p class="text-lg text-gray-300" id="search-text">Finding your perfect match...</p>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div id="result-step" class="hidden container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-6">
+                    <h1 class="text-4xl font-bold mb-2">Gloobed! 🎉</h1>
+                </div>
+
+                <div id="result-content">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="text-center mt-6">
+                    <button id="guide-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-xl mr-4 hover:bg-blue-700 transition-colors">
+                        📋 Travel Guide
+                    </button>
+                    <button id="regloob-btn" class="bg-gray-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-700 transition-colors">
+                        🎲 Re-Gloob
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Travel Guide Modal -->
+        <div id="guide-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">📋 Your Gloob Guide</h2>
+                    <button id="close-guide" class="text-2xl hover:text-red-400">✕</button>
+                </div>
+                <div id="guide-content">
+                    <!-- Generated by AI -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const GEMINI_API_KEY = 'AIzaSyB3FtGA9NJ8FB5GNCPrAWwAzUkhy4kTZwo';
+        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+
+        // App state
+        let selectedTransport = 'plane';
+        let selectedDuration = 'any';
+        let departureCity = 'Milano';
+        let departureAirport = 'MXP';
+        let currentResult = null;
+        let budgetType = 'complete';
+        let usedDestinations = [];
+        let isAdvancedMode = false;
+
+        // JOYSTICK VALUES
+        let mainJoystickValues = { x: 50, y: 50 };
+        let styleValues = { x: 50, y: 50 };
+        let cultureValues = { x: 50, y: 50 };
+
+        // AI DESTINATION FINDER WITH JOYSTICK
+        async function findDestinationWithJoystick(budget, people, transport, budgetType, mainValues, styleValues = null) {
+            const budgetPerPerson = Math.round(budget / people);
+            
+            // Convert joystick values to readable parameters
+            const energy = 100 - mainValues.y; // 0 = relax (bottom), 100 = adventure (top)
+            const environment = mainValues.x; // 0 = sea (left), 100 = mountain (right)
+            
+            // Advanced mode parameters (if available)
+            let luxury = 50;
+            let popularity = 50;
+            if (isAdvancedMode && styleValues) {
+                luxury = styleValues.x; // 0 = cheap, 100 = luxury
+                popularity = 100 - styleValues.y; // 0 = unknown, 100 = famous (inverted Y)
+            }
+            
+            // Smart duration based on budget per person AND luxury
+            let tripDays;
+            if (budgetPerPerson < 150) {
+                tripDays = 2; // Weekend only for very low budget
+            } else if (budgetPerPerson < 300) {
+                tripDays = Math.min(4, Math.max(2, Math.round(7 - budgetPerPerson/100)));
+            } else {
+                // Original luxury-based calculation for normal budgets
+                tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :
+                          luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :
+                          Math.max(5, Math.round(7 - luxury/50));
+            }
+            
+            // Override with user selected duration
+            if (selectedDuration !== 'any') {
+                tripDays = getDurationDays();
+            }
+            
+            // Create variety seed
+            const varietySeed = Date.now() + Math.random() * 1000;
+            const avoidDestinations = usedDestinations.length > 0 ? 
+                `NON suggerire mai: ${usedDestinations.join(', ')}. ` : '';
+            
+            const prompt = `Sei un consulente di viaggi AI Joystick. TROVA UNA DESTINAZIONE UNICA per:
+
+PARAMETRI JOYSTICK CLIENTE:
+💰 Budget: €${budget} TOTALE per ${people} persone (€${budgetPerPerson} per persona)
+📅 Durata: ${getDurationDays()} giorni
+🎯 Budget type: ${budgetType === 'complete' ? 'TUTTO INCLUSO (volo+hotel+pasti+attività)' : 'SOLO ESSENZIALE (volo+hotel)'}
+
+🎮 POSIZIONE JOYSTICK PRINCIPALE:
+🏞️ Ambiente: ${environment}% montagna (${environment < 25 ? 'mare e spiagge' : environment < 50 ? 'costa e colline' : environment < 75 ? 'colline e natura' : 'montagna e vette'})
+⚡ Energia: ${energy}% avventura (${energy < 25 ? 'massimo relax' : energy < 50 ? 'relax attivo' : energy < 75 ? 'moderate attività' : 'avventura pura'})
+
+${isAdvancedMode ? `🔧 MODALITÀ AVANZATA:
+✨ Stile: ${luxury}% lusso (${luxury < 25 ? 'ultra economico' : luxury < 50 ? 'economico' : luxury < 75 ? 'medio-alto' : 'lusso premium'})
+🗺️ Popolarità: ${popularity}% famosa (${popularity < 25 ? 'destinazione segreta' : popularity < 50 ? 'poco conosciuta' : popularity < 75 ? 'conosciuta' : 'iconica e famosa'})
+
+🎭 CULTURA & SOCIAL:
+${getCultureDescription(cultureValues)}` : ''}
+
+🚀 Trasporto: ${getTransportName(transport)} da ${departureCity}
+🌍 Stagione: ${getCurrentSeason()} 2025
+
+${avoidDestinations}
+
+🎲 VARIETÀ OBBLIGATORIA: Seed ${varietySeed} - trova destinazione UNICA e sorprendente!
+
+COMPITO: Trova LA destinazione perfetta che:
+✅ Rientra ESATTAMENTE nel budget €${budget} ${budgetType}
+✅ Rispecchia PERFETTAMENTE la posizione joystick (ambiente ${environment}%, energia ${energy}%)
+✅ È ottimizzata per ${tripDays} giorni
+✅ È DIVERSA da tutte le ricerche precedenti
+✅ Ha prezzi REALI aggiornati ${getCurrentSeason()} 2025
+
+RISPOSTA JSON (PULITA, NO MARKDOWN):
+{
+  "destination": "Nome Città Specifica",
+  "country": "Paese", 
+  "emoji": "🌅",
+  "description": "Breve descrizione",
+  "whyPerfectJoystick": "Match: ${environment}% montagna, ${energy}% avventura",
+  "tripDays": ${tripDays},
+  "budgetPerDay": ${Math.round(budget / tripDays)},
+  "hotel": {
+    "name": "Hotel Reale Della Città",
+    "stars": ${Math.max(2, Math.min(5, Math.round(luxury / 20)))},
+    "pricePerNight": ${Math.round(budget * 0.4 / tripDays)},
+    "totalPrice": ${Math.round(budget * 0.4)},
+    "photo": "https://images.unsplash.com/photo-${getRandomUnsplashId()}?w=500&h=300&fit=crop"
+  },
+  "transport": {
+    "type": "${transport}",
+    "airline": "${getRandomAirlineName()}",
+    "logo": "${getRandomAirlineLogo()}",
+    "route": "${departureAirport} → ${getRandomAirportCode()}",
+    "totalPrice": ${Math.round(budget * 0.3)},
+    "duration": "${getFlightDuration(50)}"
+  },
+  "costs": {
+    "hotel": ${Math.round(budget * 0.4)},
+    "transport": ${Math.round(budget * 0.3)},
+    ${budgetType === 'complete' ? `"meals": ${Math.round(budget * 0.2)}, "activities": ${Math.round(budget * 0.08)}, "extras": ${Math.round(budget * 0.02)},` : ''}
+    "total": ${budget}
+  }
+}`;
+
+            try {
+                console.log('🎮 Gloobing...', { energy, environment, luxury, popularity, isAdvancedMode });
+                
+                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }]
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    console.log('🎯 Gloobed!', aiResponse);
+                    
+                    const cleanResponse = aiResponse.replace(/```json\n?|\n?```/g, '').trim();
+                    const result = JSON.parse(cleanResponse);
+                    
+                    // Add to used destinations
+                    if (result.destination && !usedDestinations.includes(result.destination)) {
+                        usedDestinations.push(result.destination);
+                        if (usedDestinations.length > 10) {
+                            usedDestinations.shift();
+                        }
+                    }
+                    
+                    result.travelDates = generateTravelDates();
+                    return result;
+                } else {
+                    throw new Error('API Error: ' + response.status);
+                }
+            } catch (error) {
+                console.log('🔄 Using fallback gloob:', error);
+                return generateJoystickFallback(budget, people, transport, budgetType, mainValues, styleValues);
+            }
+        }
+
+        // Joystick Smart Fallback
+        function generateJoystickFallback(budget, people, transport, budgetType, mainValues, styleValues) {
+            const budgetPerPerson = budget / people;
+            const energy = 100 - mainValues.y;
+            const environment = mainValues.x;
+            
+            // Advanced mode parameters
+            let luxury = 50;
+            let popularity = 50;
+            if (isAdvancedMode && styleValues) {
+                luxury = styleValues.x;
+                popularity = 100 - styleValues.y;
+            }
+            
+            const tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :
+                           luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :
+                           Math.max(5, Math.round(7 - luxury/50));
+            
+            // Joystick destination pools with REALISTIC budgets
+            const destinationsJoystick = [
+                // BUDGET SUPER LOW (under 200€/person) - Only nearby
+                { name: 'Lago di Como', country: 'Italia', emoji: '🏞️', match: [50, 30], costPerPerson: 80 },
+                { name: 'Cinque Terre', country: 'Italia', emoji: '🌊', match: [20, 40], costPerPerson: 120 },
+                { name: 'Verona', country: 'Italia', emoji: '💑', match: [50, 20], costPerPerson: 100 },
+                
+                // LOW BUDGET (200-400€/person)
+                { name: 'Ljubljana', country: 'Slovenia', emoji: '🏞️', match: [70, 50], costPerPerson: 250 },
+                { name: 'Trieste', country: 'Italia', emoji: '🌊', match: [30, 30], costPerPerson: 180 },
+                { name: 'Innsbruck', country: 'Austria', emoji: '🏔️', match: [90, 60], costPerPerson: 280 },
+                
+                // MEDIUM BUDGET (400-600€/person)
+                { name: 'Budapest', country: 'Ungheria', emoji: '🏰', match: [50, 50], costPerPerson: 380 },
+                { name: 'Praga', country: 'Repubblica Ceca', emoji: '🍺', match: [60, 60], costPerPerson: 420 },
+                { name: 'Cracovia', country: 'Polonia', emoji: '🏰', match: [55, 45], costPerPerson: 350 },
+                
+                // HIGHER BUDGET (600-800€/person)
+                { name: 'Amsterdam', country: 'Paesi Bassi', emoji: '🚲', match: [40, 70], costPerPerson: 650 },
+                { name: 'Barcellona', country: 'Spagna', emoji: '🏖️', match: [25, 75], costPerPerson: 580 },
+                { name: 'Vienna', country: 'Austria', emoji: '🎭', match: [65, 40], costPerPerson: 550 },
+                
+                // HIGH BUDGET (800+€/person)
+                { name: 'Santorini', country: 'Grecia', emoji: '🌅', match: [20, 20], costPerPerson: 850 },
+                { name: 'Reykjavik', country: 'Islanda', emoji: '🔥', match: [85, 90], costPerPerson: 1200 },
+                { name: 'Londra', country: 'Regno Unito', emoji: '🏰', match: [50, 65], costPerPerson: 900 }
+            ];
+            
+            // Find best match using joystick distance
+            let bestMatch = destinationsJoystick[0];
+            let bestScore = Infinity;
+            
+            destinationsJoystick.forEach(dest => {
+                if (usedDestinations.includes(dest.name)) return;
+                
+                const score = Math.sqrt(
+                    Math.pow(environment - dest.match[0], 2) +
+                    Math.pow(energy - dest.match[1], 2)
+                );
+                
+                if (score < bestScore && dest.costPerPerson <= budgetPerPerson) {
+                    bestScore = score;
+                    bestMatch = dest;
+                }
+            });
+            
+            // Add randomness if no perfect match
+            if (bestScore > 40) {
+                const availableDests = destinationsJoystick.filter(d => !usedDestinations.includes(d.name));
+                bestMatch = availableDests[Math.floor(Math.random() * availableDests.length)] || bestMatch;
+            }
+            
+            // Add to used destinations
+            if (!usedDestinations.includes(bestMatch.name)) {
+                usedDestinations.push(bestMatch.name);
+                if (usedDestinations.length > 10) usedDestinations.shift();
+            }
+            
+            const hotelPrice = Math.round(budget * 0.4);
+            const transportPrice = Math.round(budget * 0.3);
+            
+            const result = {
+                destination: bestMatch.name,
+                country: bestMatch.country,
+                emoji: bestMatch.emoji,
+                description: `Perfect gloob destination`,
+                whyPerfectJoystick: `Match: ${environment > 50 ? 'Montagna' : 'Mare'} ${energy > 50 ? 'avventura' : 'relax'}`,
+                tripDays: tripDays,
+                budgetPerDay: Math.round(budget / tripDays),
+                travelDates: generateTravelDates(),
+                hotel: {
+                    name: `${bestMatch.name} ${luxury > 70 ? 'Luxury' : luxury > 40 ? 'Grand' : 'Central'} Hotel`,
+                    stars: Math.min(5, Math.max(2, Math.round(luxury / 20))),
+                    pricePerNight: Math.round(hotelPrice / tripDays),
+                    totalPrice: hotelPrice,
+                    photo: `https://images.unsplash.com/photo-${getRandomUnsplashId()}?w=500&h=300&fit=crop`
+                },
+                transport: {
+                    type: transport,
+                    airline: getRandomAirlineName(),
+                    logo: getRandomAirlineLogo(),
+                    route: `${departureAirport} → ${bestMatch.name.substring(0, 3).toUpperCase()}`,
+                    totalPrice: transportPrice,
+                    duration: getFlightDuration(50)
+                },
+                costs: {
+                    hotel: hotelPrice,
+                    transport: transportPrice,
+                    total: budget
+                }
+            };
+            
+            if (budgetType === 'complete') {
+                const meals = Math.round(budget * 0.2);
+                const activities = Math.round(budget * 0.08);
+                const extras = Math.round(budget * 0.02);
+                
+                result.costs.meals = meals;
+                result.costs.activities = activities;
+                result.costs.extras = extras;
+            }
+            
+            return result;
+        }
+
+        // Helper functions
+        function getRandomUnsplashId() {
+            const hotelPhotos = [
+                '1566073771259-6a8506099945', '1564501049229-d2b0fcdc539e', '1445019980597-93fa8acb246c',
+                '1571003123894-1f0594d2b5d9', '1582719478250-c89cae4dc85b', '1590490360182-c33d57733427',
+                '1551882547-ff40c63fe5fa', '1578944032637-2dc181a10c62', '1529290130-aab3f92beb12', '1542314831-068cd1dbfeeb'
+            ];
+            return hotelPhotos[Math.floor(Math.random() * hotelPhotos.length)];
+        }
+
+        function getRandomAirlineName() {
+            const airlines = [
+                'Lufthansa', 'ITA Airways', 'Austrian Airlines', 'KLM', 'Air France', 
+                'Swiss International', 'Brussels Airlines', 'Iberia', 'TAP Portugal',
+                'Turkish Airlines', 'Wizz Air', 'Ryanair', 'EasyJet'
+            ];
+            return airlines[Math.floor(Math.random() * airlines.length)];
+        }
+
+        function getRandomAirlineLogo() {
+            const airlines = {
+                'LH': '✈️',
+                'AZ': '🇮🇹',
+                'OS': '🇦🇹',
+                'KL': '🇳🇱',
+                'AF': '🇫🇷',
+                'LX': '🇨🇭',
+                'IB': '🇪🇸',
+                'TP': '🇵🇹',
+                'TK': '🇹🇷',
+                'W6': '💜',
+                'FR': '💙',
+                'U2': '🧡'
+            };
+            const keys = Object.keys(airlines);
+            const key = keys[Math.floor(Math.random() * keys.length)];
+            return airlines[key];
+        }
+
+        function getRandomAirportCode() {
+            const codes = ['PRG', 'VIE', 'BUD', 'WAW', 'ZAG', 'BEG', 'SOF', 'OTP', 'ATH', 'IST', 'TLV', 'REK'];
+            return codes[Math.floor(Math.random() * codes.length)];
+        }
+
+        function getFlightDuration(distance) {
+            const durations = ['1h 45m', '2h 15m', '2h 30m', '2h 45m', '3h 15m', '3h 45m'];
+            return durations[Math.floor(Math.random() * durations.length)];
+        }
+
+        function getTransportName(transport) {
+            const names = {
+                'plane': 'Aereo', 'train': 'Treno', 'car': 'Auto noleggio',
+                'own-car': 'Auto propria', 'bus': 'Bus', 'ferry': 'Nave/Traghetto'
+            };
+            return names[transport] || 'Trasporto';
+        }
+
+        function getCurrentSeason() {
+            const month = new Date().getMonth();
+            if (month >= 2 && month <= 4) return 'Primavera';
+            if (month >= 5 && month <= 7) return 'Estate'; 
+            if (month >= 8 && month <= 10) return 'Autunno';
+            return 'Inverno';
+        }
+
+        function generateTravelDates() {
+            const start = new Date();
+            start.setDate(start.getDate() + Math.floor(Math.random() * 60) + 14);
+            const end = new Date(start);
+            end.setDate(end.getDate() + 7);
+            
+            return {
+                start: start.toLocaleDateString('it-IT'),
+                end: end.toLocaleDateString('it-IT'),
+                startDate: start,
+                endDate: end
+            };
+        }
+
+        // JOYSTICK FUNCTIONALITY
+        function setupJoystick(joystickId, dotId, valuesObj) {
+            const joystick = document.getElementById(joystickId);
+            const dot = document.getElementById(dotId);
+            
+            // Initialize dot position (center)
+            dot.style.left = '50%';
+            dot.style.top = '50%';
+            
+            let isDragging = false;
+            
+            function updatePosition(clientX, clientY) {
+                const joystickRect = joystick.getBoundingClientRect();
+                const x = Math.max(0, Math.min(100, ((clientX - joystickRect.left) / joystickRect.width) * 100));
+                const y = Math.max(0, Math.min(100, ((clientY - joystickRect.top) / joystickRect.height) * 100));
+                
+                dot.style.left = x + '%';
+                dot.style.top = y + '%';
+                
+                valuesObj.x = Math.round(x);
+                valuesObj.y = Math.round(y);
+                
+                // Trigger live search
+                triggerLiveSearch();
+            }
+            
+            // Mouse events
+            dot.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            joystick.addEventListener('click', (e) => {
+                if (!isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+            
+            // Touch events for mobile
+            dot.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    const touch = e.touches[0];
+                    updatePosition(touch.clientX, touch.clientY);
+                }
+            });
+            
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        // Setup 4D slider (for advanced mode)
+        function setup4DSlider(sliderId, dotId, valuesObj) {
+            const slider = document.getElementById(sliderId);
+            const dot = document.getElementById(dotId);
+            
+            if (!slider || !dot) return; // Skip if elements don't exist
+            
+            // Initialize dot position (center)
+            dot.style.left = '50%';
+            dot.style.top = '50%';
+            
+            let isDragging = false;
+            
+            function updatePosition(clientX, clientY) {
+                const sliderRect = slider.getBoundingClientRect();
+                const x = Math.max(0, Math.min(100, ((clientX - sliderRect.left) / sliderRect.width) * 100));
+                const y = Math.max(0, Math.min(100, ((clientY - sliderRect.top) / sliderRect.height) * 100));
+                
+                dot.style.left = x + '%';
+                dot.style.top = y + '%';
+                
+                valuesObj.x = Math.round(x);
+                valuesObj.y = Math.round(y);
+                
+                triggerLiveSearch();
+            }
+            
+            // Mouse events
+            dot.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            slider.addEventListener('click', (e) => {
+                if (!isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+            
+            // Touch events
+            dot.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    const touch = e.touches[0];
+                    updatePosition(touch.clientX, touch.clientY);
+                }
+            });
+            
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        // App initialization
+        function init() {
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('form-step').classList.remove('hidden');
+                setupEvents();
+                setupJoysticks();
+            }, 800);
+        }
+
+        function setupJoysticks() {
+            setupJoystick('main-joystick', 'main-dot', mainJoystickValues);
+            // Advanced sliders will be set up when mode is toggled
+        }
+
+        function setupEvents() {
+            // Duration dropdown
+            const durationBtn = document.getElementById('duration-btn');
+            const durationMenu = document.getElementById('duration-menu');
+            const durationSelected = document.getElementById('duration-selected');
+            const datePicker = document.getElementById('date-picker');
+            
+            if (durationBtn) {
+                durationBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    durationMenu.classList.toggle('hidden');
+                });
+                
+                document.querySelectorAll('[data-duration]').forEach(item => {
+                    item.addEventListener('click', () => {
+                        selectedDuration = item.dataset.duration;
+                        durationSelected.textContent = item.textContent;
+                        durationMenu.classList.add('hidden');
+                        
+                        // Show/hide date picker
+                        if (selectedDuration === 'custom') {
+                            datePicker.classList.remove('hidden');
+                        } else {
+                            datePicker.classList.add('hidden');
+                        }
+                        
+                        triggerLiveSearch();
+                    });
+                });
+            }
+
+            // Transport dropdown (only for advanced mode)
+            const transportBtn = document.getElementById('transport-btn');
+            const transportMenu = document.getElementById('transport-menu');
+            const transportSelected = document.getElementById('transport-selected');
+            
+            if (transportBtn) {
+                transportBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    transportMenu.classList.toggle('hidden');
+                });
+                
+                document.querySelectorAll('[data-transport]').forEach(item => {
+                    item.addEventListener('click', () => {
+                        selectedTransport = item.dataset.transport;
+                        transportSelected.textContent = item.textContent;
+                        transportMenu.classList.add('hidden');
+                        triggerLiveSearch();
+                    });
+                });
+                
+                document.addEventListener('click', () => {
+                    transportMenu.classList.add('hidden');
+                    durationMenu.classList.add('hidden');
+                });
+            }
+
+            // Departure city change
+            document.getElementById('departure-city').addEventListener('input', debounce(() => {
+                updateDepartureCity();
+            }, 500));
+
+            // Budget and people changes
+            document.getElementById('budget').addEventListener('input', debounce(() => {
+                triggerLiveSearch();
+            }, 1000));
+            
+            document.getElementById('people').addEventListener('change', () => {
+                triggerLiveSearch();
+            });
+
+            // Main buttons
+            document.getElementById('gloob-btn').addEventListener('click', startGloob);
+            document.getElementById('regloob-btn').addEventListener('click', () => {
+                usedDestinations = [];
+                showStep('form');
+            });
+
+            // Guide modal
+            document.getElementById('guide-btn').addEventListener('click', showGuide);
+            document.getElementById('close-guide').addEventListener('click', () => {
+                document.getElementById('guide-modal').classList.add('hidden');
+            });
+        }
+
+        // Live search functionality
+        let liveSearchTimeout;
+        let isLiveSearching = false;
+
+        function triggerLiveSearch() {
+            const budget = parseInt(document.getElementById('budget').value);
+            if (budget < 300) return;
+
+            clearTimeout(liveSearchTimeout);
+            
+            liveSearchTimeout = setTimeout(async () => {
+                if (isLiveSearching) return;
+                
+                isLiveSearching = true;
+                console.log('🔥 Live gloobing...');
+                
+                try {
+                    const globe = document.getElementById('globe');
+                    globe.style.transform = 'scale(0.95)';
+                    globe.style.opacity = '0.7';
+                    
+                    const people = parseInt(document.getElementById('people').value);
+                    
+                    const advancedStyleValues = isAdvancedMode ? styleValues : null;
+                    
+                    currentResult = await findDestinationWithJoystick(
+                        budget, people, selectedTransport, budgetType, mainJoystickValues, advancedStyleValues
+                    );
+                    
+                    // Remove any existing hints first
+                    const existingHints = globe.querySelectorAll('.destination-hint');
+                    existingHints.forEach(hint => hint.remove());
+                    
+                    const hintElement = document.createElement('div');
+                    hintElement.className = 'destination-hint absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded';
+                    hintElement.textContent = `${currentResult.emoji} ${currentResult.destination}`;
+                    
+                    globe.appendChild(hintElement);
+                    
+                    globe.style.transform = 'scale(1)';
+                    globe.style.opacity = '1';
+                    
+                } catch (error) {
+                    console.log('Live gloob error:', error);
+                } finally {
+                    isLiveSearching = false;
+                }
+            }, 300);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function showStep(step) {
+            document.getElementById('form-step').classList.add('hidden');
+            document.getElementById('spin-step').classList.add('hidden');
+            document.getElementById('result-step').classList.add('hidden');
+            document.getElementById(step + '-step').classList.remove('hidden');
+        }
+
+        async function startGloob() {
+            const budget = parseInt(document.getElementById('budget').value);
+            const people = parseInt(document.getElementById('people').value);
+            
+            if (budget < 300) {
+                alert('Budget minimo: €300');
+                return;
+            }
+            
+            showStep('spin');
+            
+            const environment = mainJoystickValues.x;
+            const energy = 100 - mainJoystickValues.y;
+            
+            const searchTexts = [
+                `🎮 Gloobing...`,
+                `🏞️ ${environment > 50 ? 'Mountain' : 'Sea'} + ${energy > 50 ? 'Adventure' : 'Relax'}...`,
+                `💰 €${budget} for ${people} ${people === 1 ? 'person' : 'people'}...`,
+                `${isAdvancedMode ? '🔧 Advanced gloob mode...' : '🎯 Simple gloob...'}`,
+                `🌍 Perfect match found!`
+            ];
+            
+            let textIndex = 0;
+            const searchTextElement = document.getElementById('search-text');
+            
+            const textInterval = setInterval(() => {
+                searchTextElement.textContent = searchTexts[textIndex];
+                textIndex = (textIndex + 1) % searchTexts.length;
+            }, 1000);
+            
+            document.getElementById('spinning-globe').classList.add('spinning');
+            
+            try {
+                const advancedStyleValues = isAdvancedMode ? styleValues : null;
+                
+                currentResult = await findDestinationWithJoystick(
+                    budget, people, selectedTransport, budgetType, mainJoystickValues, advancedStyleValues
+                );
+                
+                clearInterval(textInterval);
+                document.getElementById('spinning-globe').classList.remove('spinning');
+                displayResult();
+                setTimeout(() => showStep('result'), 300);
+            } catch (error) {
+                console.error('Gloob Error:', error);
+                clearInterval(textInterval);
+                alert('Gloob error! Try again.');
+                showStep('form');
+            }
+        }
+
+        function displayResult() {
+            const result = currentResult;
+            const people = parseInt(document.getElementById('people').value);
+            const stars = '⭐'.repeat(result.hotel.stars || 4);
+            
+            const html = `
+                <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                    <div class="text-6xl mb-4">${result.emoji}</div>
+                    <h2 class="text-3xl font-bold text-yellow-400 mb-2">${result.destination}</h2>
+                    <p class="text-xl text-gray-300 mb-4">${result.country}</p>
+                    
+                    ${result.whyPerfectJoystick ? `
+                    <div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg p-3 mx-auto max-w-md mb-3">
+                        <p class="text-sm font-medium text-yellow-200">🎮 ${result.whyPerfectJoystick}</p>
+                    </div>
+                    ` : ''}
+                    
+                    ${result.travelDates ? `
+                    <div class="mt-4 text-sm text-yellow-200">
+                        📅 ${result.travelDates.start} - ${result.travelDates.end}
+                        ${result.tripDays ? ` • ${result.tripDays} days` : ''}
+                        ${result.budgetPerDay ? ` • €${result.budgetPerDay}/day` : ''}
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <!-- Hotel -->
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="hotel-photo rounded-lg mb-4 h-48 bg-cover bg-center" style="background-image: url('${result.hotel.photo}')"></div>
+                        <h3 class="text-xl font-bold mb-2">${result.hotel.name}</h3>
+                        <div class="text-yellow-500 text-lg mb-2">${stars}</div>
+                        <div class="text-sm text-gray-600 mb-4">
+                            <div><strong>Per night (${people} ${people === 1 ? 'person' : 'people'}):</strong> €${result.hotel.pricePerNight}</div>
+                            <div><strong>Total ${result.tripDays || 7} nights:</strong> €${result.hotel.totalPrice}</div>
+                        </div>
+                        <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(result.destination + ', ' + result.country)}&checkin=${result.travelDates ? result.travelDates.startDate.toISOString().split('T')[0] : ''}&checkout=${result.travelDates ? result.travelDates.endDate.toISOString().split('T')[0] : ''}&group_adults=${people}&no_rooms=1" target="_blank" class="book-btn w-full">
+                            🏨 BOOK HOTEL
+                        </a>
+                    </div>
+
+                    <!-- Transport -->
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="text-4xl">
+                                ${result.transport.logo}
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">${result.transport.airline}</h3>
+                                <p class="text-gray-600">${result.transport.route}</p>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600 mb-4">
+                            <div><strong>Duration:</strong> ${result.transport.duration}</div>
+                            <div><strong>Round trip for ${people} ${people === 1 ? 'person' : 'people'}</strong></div>
+                        </div>
+                        <p class="text-lg font-bold text-green-600 mb-4">€${result.transport.totalPrice}</p>
+                        <a href="https://www.skyscanner.it/transport/flights/${departureAirport.toLowerCase()}/${result.destination.toLowerCase().replace(/\s+/g, '').substring(0,4)}/?adults=${people}" target="_blank" class="book-btn w-full">
+                            ✈️ BOOK FLIGHT
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Budget Summary -->
+                <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                    <h3 class="text-xl font-bold mb-4">🎮 Your Gloob Budget</h3>
+                    <div class="space-y-2 mb-4 text-left max-w-md mx-auto">
+                        <div class="flex justify-between">
+                            <span>🏨 Hotel:</span>
+                            <span class="font-bold">€${result.costs.hotel}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>✈️ Transport:</span>
+                            <span class="font-bold">€${result.costs.transport}</span>
+                        </div>
+                        ${budgetType === 'complete' && result.costs.meals ? `
+                        <div class="flex justify-between">
+                            <span>🍽️ Meals:</span>
+                            <span class="font-bold">€${result.costs.meals}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>🎫 Activities:</span>
+                            <span class="font-bold">€${result.costs.activities}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>🎁 Extras:</span>
+                            <span class="font-bold">€${result.costs.extras}</span>
+                        </div>
+                        ` : ''}
+                        <div class="border-t border-white/30 pt-2 flex justify-between text-lg">
+                            <span>TOTAL:</span>
+                            <span class="font-bold text-yellow-400">€${result.costs.total}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('result-content').innerHTML = html;
+        }
+
+        function toggleBudgetType(type) {
+            budgetType = type;
+            
+            document.getElementById('budget-type-essential').classList.toggle('active', type === 'essential');
+            document.getElementById('budget-type-complete').classList.toggle('active', type === 'complete');
+            
+            const description = document.getElementById('budget-description');
+            if (type === 'essential') {
+                description.textContent = 'Flight + Hotel only';
+            } else {
+                description.textContent = 'Flight + Hotel + Meals + Activities';
+            }
+            
+            triggerLiveSearch();
+        }
+
+        async function showGuide() {
+            if (!currentResult) return;
+            
+            const modal = document.getElementById('guide-modal');
+            const content = document.getElementById('guide-content');
+            
+            content.innerHTML = '<div class="text-center"><div class="text-4xl mb-4">🎮</div><p>Gloobing your travel guide...</p></div>';
+            modal.classList.remove('hidden');
+            
+            try {
+                const guide = await generateTravelGuide(currentResult, parseInt(document.getElementById('people').value));
+                
+                content.innerHTML = `
+                    <div class="bg-white/10 rounded-lg p-4 mb-4">
+                        <h3 class="text-lg font-bold mb-2">📍 ${currentResult.destination}, ${currentResult.country}</h3>
+                        <p class="text-sm text-gray-300">Gloobed for ${document.getElementById('people').value} ${document.getElementById('people').value === '1' ? 'person' : 'people'}</p>
+                    </div>
+                    <div class="space-y-4 text-sm whitespace-pre-line leading-relaxed">
+                        ${guide}
+                    </div>
+                    <div class="mt-6 p-4 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
+                        <p class="text-sm text-yellow-200">
+                            💡 <strong>Pro tip:</strong> This guide is optimized for your gloob style!
+                        </p>
+                    </div>
+                `;
+            } catch (error) {
+                content.innerHTML = '<p class="text-red-400">Gloob guide error. Try again!</p>';
+            }
+        }
+
+        async function generateTravelGuide(destination, people, days = 7) {
+                const budgetPerPersonGuide = Math.round(budget / people);
+                const guide = `📅 DAY 1 - Arrival
+• 10:00 - Hotel check-in (€${Math.round(25 * people)} total)
+• 12:00 - City tour (€${Math.round(30 * people)} total)  
+• 15:00 - Local lunch (€${Math.round(35 * people)} total)
+• 17:30 - Main attraction (€${Math.round(20 * people)} total)
+• 20:00 - Traditional dinner (€${Math.round(45 * people)} total)
+💰 Day budget: €${Math.round(155 * people)} (€${155}/person)
+
+📅 DAY 2 - Culture
+• 09:30 - Panoramic breakfast (€${Math.round(20 * people)} total)
+• 11:00 - Museums (€${Math.round(25 * people)} total)
+• 14:00 - Traditional lunch (€${Math.round(30 * people)} total)
+• 16:30 - Shopping (€${Math.round(40 * people)} total)  
+• 19:00 - Aperitivo (€${Math.round(18 * people)} total)
+• 21:00 - Local show (€${Math.round(35 * people)} total)
+💰 Day budget: €${Math.round(168 * people)} (€${168}/person)
+
+📅 DAY 3 - Nature
+• 09:00 - Nature excursion (€${Math.round(40 * people)} total)
+• 12:30 - Panoramic picnic (€${Math.round(25 * people)} total)
+• 15:00 - Outdoor activities (€${Math.round(30 * people)} total)
+• 18:00 - Rest (€0)
+• 20:30 - Special dinner (€${Math.round(50 * people)} total)
+💰 Day budget: €${Math.round(145 * people)} (€${145}/person)`;
+            
+            return guide;
+        }
+
+        // MODE TOGGLE FUNCTIONALITY
+        function toggleMode() {
+            isAdvancedMode = !isAdvancedMode;
+            const advancedControls = document.getElementById('advanced-controls');
+            const modeText = document.getElementById('mode-text');
+            
+            if (isAdvancedMode) {
+                advancedControls.classList.remove('hidden');
+                advancedControls.classList.add('visible');
+                modeText.textContent = '🎮 Simple Mode';
+                
+                // Setup advanced sliders when mode is activated
+                setTimeout(() => {
+                    setup4DSlider('style-slider', 'style-dot', styleValues);
+                    setup4DSlider('culture-slider', 'culture-dot', cultureValues);
+                }, 100);
+            } else {
+                advancedControls.classList.remove('visible');
+                advancedControls.classList.add('hidden');
+                modeText.textContent = '🔧 Advanced Mode';
+            }
+            
+            // Trigger search after mode change
+            setTimeout(() => {
+                triggerLiveSearch();
+            }, 300);
+        }
+
+        // Make functions globally accessible  
+        window.toggleMode = toggleMode;
+        window.toggleBudgetType = toggleBudgetType;
+        window.getLocation = getLocation;
+
+        // New helper functions
+        function getDurationDays() {
+            switch(selectedDuration) {
+                case 'weekend': return 3;
+                case 'week': return 7;
+                case 'two-weeks': return 14;
+                case 'month': return 30;
+                case 'custom':
+                    const start = document.getElementById('start-date').value;
+                    const end = document.getElementById('end-date').value;
+                    if (start && end) {
+                        const diff = new Date(end) - new Date(start);
+                        return Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
+                    }
+                    return 7;
+                default: return 7;
+            }
+        }
+
+        function getCultureDescription(values) {
+            const x = values.x; // romantico-festa
+            const y = 100 - values.y; // cultura-food
+            
+            let desc = '';
+            if (y > 50) desc += `🏛️ Focus culturale (${y}%)`;
+            else desc += `🍝 Focus gastronomico (${100-y}%)`;
+            
+            if (x < 50) desc += ` con atmosfera romantica (${100-x}%)`;
+            else desc += ` con atmosfera festosa (${x}%)`;
+            
+            return desc;
+        }
+
+        // Geolocation function
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    // Here you would call a reverse geocoding API
+                    // For now, we'll use a simple mapping
+                    const city = await getCityFromCoords(lat, lon);
+                    document.getElementById('departure-city').value = city.name;
+                    departureCity = city.name;
+                    departureAirport = city.airport;
+                    
+                    triggerLiveSearch();
+                }, (error) => {
+                    console.log('Geolocation error:', error);
+                    alert('Non riesco a trovare la tua posizione. Inserisci manualmente la città.');
+                });
+            } else {
+                alert('Geolocalizzazione non supportata dal browser.');
+            }
+        }
+
+        async function getCityFromCoords(lat, lon) {
+            // Simple mapping for major Italian cities
+            const cities = [
+                { name: 'Milano', lat: 45.46, lon: 9.19, airport: 'MXP' },
+                { name: 'Roma', lat: 41.90, lon: 12.49, airport: 'FCO' },
+                { name: 'Venezia', lat: 45.44, lon: 12.31, airport: 'VCE' },
+                { name: 'Napoli', lat: 40.85, lon: 14.26, airport: 'NAP' },
+                { name: 'Torino', lat: 45.07, lon: 7.68, airport: 'TRN' },
+                { name: 'Bologna', lat: 44.49, lon: 11.34, airport: 'BLQ' },
+                { name: 'Firenze', lat: 43.77, lon: 11.25, airport: 'FLR' }
+            ];
+            
+            // Find nearest city
+            let nearest = cities[0];
+            let minDistance = Infinity;
+            
+            cities.forEach(city => {
+                const distance = Math.sqrt(
+                    Math.pow(lat - city.lat, 2) + 
+                    Math.pow(lon - city.lon, 2)
+                );
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearest = city;
+                }
+            });
+            
+            return nearest;
+        }
+
+        // Update city on input change
+        function updateDepartureCity() {
+            const input = document.getElementById('departure-city');
+            departureCity = input.value;
+            
+            // Map city to airport code
+            const airportMap = {
+                'Milano': 'MXP',
+                'Roma': 'FCO',
+                'Venezia': 'VCE',
+                'Napoli': 'NAP',
+                'Torino': 'TRN',
+                'Bologna': 'BLQ',
+                'Firenze': 'FLR',
+                'Bergamo': 'BGY',
+                'Verona': 'VRN'
+            };
+            
+            departureAirport = airportMap[departureCity] || 'MXP';
+            triggerLiveSearch();
+        }
+
+        // JOYSTICK FUNCTIONALITY
+        function setupJoystick(joystickId, dotId, valuesObj) {
+            const joystick = document.getElementById(joystickId);
+            const dot = document.getElementById(dotId);
+            
+            // Initialize dot position (center)
+            dot.style.left = '50%';
+            dot.style.top = '50%';
+            
+            let isDragging = false;
+            
+            function updatePosition(clientX, clientY) {
+                const joystickRect = joystick.getBoundingClientRect();
+                const x = Math.max(0, Math.min(100, ((clientX - joystickRect.left) / joystickRect.width) * 100));
+                const y = Math.max(0, Math.min(100, ((clientY - joystickRect.top) / joystickRect.height) * 100));
+                
+                dot.style.left = x + '%';
+                dot.style.top = y + '%';
+                
+                valuesObj.x = Math.round(x);
+                valuesObj.y = Math.round(y);
+                
+                // Trigger live search
+                triggerLiveSearch();
+            }
+            
+            // Mouse events
+            dot.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            joystick.addEventListener('click', (e) => {
+                if (!isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+            
+            // Touch events for mobile
+            dot.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    const touch = e.touches[0];
+                    updatePosition(touch.clientX, touch.clientY);
+                }
+            });
+            
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        // Setup 4D slider (for advanced mode)
+        function setup4DSlider(sliderId, dotId, valuesObj) {
+            const slider = document.getElementById(sliderId);
+            const dot = document.getElementById(dotId);
+            
+            if (!slider || !dot) return; // Skip if elements don't exist
+            
+            // Initialize dot position (center)
+            dot.style.left = '50%';
+            dot.style.top = '50%';
+            
+            let isDragging = false;
+            
+            function updatePosition(clientX, clientY) {
+                const sliderRect = slider.getBoundingClientRect();
+                const x = Math.max(0, Math.min(100, ((clientX - sliderRect.left) / sliderRect.width) * 100));
+                const y = Math.max(0, Math.min(100, ((clientY - sliderRect.top) / sliderRect.height) * 100));
+                
+                dot.style.left = x + '%';
+                dot.style.top = y + '%';
+                
+                valuesObj.x = Math.round(x);
+                valuesObj.y = Math.round(y);
+                
+                triggerLiveSearch();
+            }
+            
+            // Mouse events
+            dot.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            slider.addEventListener('click', (e) => {
+                if (!isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+            
+            // Touch events
+            dot.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    const touch = e.touches[0];
+                    updatePosition(touch.clientX, touch.clientY);
+                }
+            });
+            
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        // App initialization
+        function init() {
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('form-step').classList.remove('hidden');
+                setupEvents();
+                setupJoysticks();
+            }, 800);
+        }
+
+        function setupJoysticks() {
+            setupJoystick('main-joystick', 'main-dot', mainJoystickValues);
+            // Advanced sliders will be set up when mode is toggled
+        }
+
+        function setupEvents() {
+            // Currency change
+            document.getElementById('currency').addEventListener('change', (e) => {
+                selectedCurrency = e.target.value;
+                triggerLiveSearch();
+            });
+
+            // Departure city change
+            document.getElementById('departure-city').addEventListener('input', debounce(() => {
+                updateDepartureCity();
+            }, 500));
+
+            // Duration dropdown
+            const durationBtn = document.getElementById('duration-btn');
+            const durationMenu = document.getElementById('duration-menu');
+            const durationSelected = document.getElementById('duration-selected');
+            const datePicker = document.getElementById('date-picker');
+            
+            if (durationBtn) {
+                durationBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    durationMenu.classList.toggle('hidden');
+                });
+                
+                document.querySelectorAll('[data-duration]').forEach(item => {
+                    item.addEventListener('click', () => {
+                        selectedDuration = item.dataset.duration;
+                        durationSelected.innerHTML = item.innerHTML;
+                        durationMenu.classList.add('hidden');
+                        
+                        // Show/hide date picker
+                        if (selectedDuration === 'custom') {
+                            datePicker.classList.remove('hidden');
+                        } else {
+                            datePicker.classList.add('hidden');
+                        }
+                        
+                        triggerLiveSearch();
+                    });
+                });
+            }
+
+            // Transport dropdown (only for advanced mode)
+            const transportBtn = document.getElementById('transport-btn');
+            const transportMenu = document.getElementById('transport-menu');
+            const transportSelected = document.getElementById('transport-selected');
+            
+            if (transportBtn) {
+                transportBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    transportMenu.classList.toggle('hidden');
+                });
+                
+                document.querySelectorAll('[data-transport]').forEach(item => {
+                    item.addEventListener('click', () => {
+                        selectedTransport = item.dataset.transport;
+                        transportSelected.innerHTML = item.innerHTML;
+                        transportMenu.classList.add('hidden');
+                        triggerLiveSearch();
+                    });
+                });
+                
+                document.addEventListener('click', () => {
+                    transportMenu.classList.add('hidden');
+                    durationMenu.classList.add('hidden');
+                });
+            }
+
+            // Budget and people changes
+            document.getElementById('budget').addEventListener('input', debounce(() => {
+                triggerLiveSearch();
+            }, 1000));
+            
+            document.getElementById('people').addEventListener('change', () => {
+                triggerLiveSearch();
+            });
+
+            // Main buttons
+            document.getElementById('gloob-btn').addEventListener('click', startGloob);
+            document.getElementById('regloob-btn').addEventListener('click', () => {
+                usedDestinations = [];
+                showStep('form');
+            });
+
+            // Guide modal
+            document.getElementById('guide-btn').addEventListener('click', showGuide);
+            document.getElementById('close-guide').addEventListener('click', () => {
+                document.getElementById('guide-modal').classList.add('hidden');
+            });
+        }
+
+        // Live search functionality
+        let liveSearchTimeout;
+        let isLiveSearching = false;
+
+        function triggerLiveSearch() {
+            const budget = parseInt(document.getElementById('budget').value);
+            if (budget < 300) return;
+
+            clearTimeout(liveSearchTimeout);
+            
+            liveSearchTimeout = setTimeout(async () => {
+                if (isLiveSearching) return;
+                
+                isLiveSearching = true;
+                console.log('🔥 Live gloobing...');
+                
+                try {
+                    const globe = document.getElementById('globe');
+                    globe.style.transform = 'scale(0.95)';
+                    globe.style.opacity = '0.7';
+                    
+                    const people = parseInt(document.getElementById('people').value);
+                    
+                    const advancedStyleValues = isAdvancedMode ? styleValues : null;
+                    
+                    currentResult = await findDestinationWithJoystick(
+                        budget, people, selectedTransport, budgetType, mainJoystickValues, advancedStyleValues
+                    );
+                    
+                    // Remove any existing hints first
+                    const existingHints = globe.querySelectorAll('.destination-hint');
+                    existingHints.forEach(hint => hint.remove());
+                    
+                    const hintElement = document.createElement('div');
+                    hintElement.className = 'destination-hint absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded';
+                    hintElement.textContent = `${currentResult.emoji} ${currentResult.destination}`;
+                    
+                    globe.appendChild(hintElement);
+                    
+                    globe.style.transform = 'scale(1)';
+                    globe.style.opacity = '1';
+                    
+                } catch (error) {
+                    console.log('Live gloob error:', error);
+                } finally {
+                    isLiveSearching = false;
+                }
+            }, 300);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function showStep(step) {
+            document.getElementById('form-step').classList.add('hidden');
+            document.getElementById('spin-step').classList.add('hidden');
+            document.getElementById('result-step').classList.add('hidden');
+            document.getElementById(step + '-step').classList.remove('hidden');
+        }
+
+        async function startGloob() {
+            const budget = parseInt(document.getElementById('budget').value);
+            const people = parseInt(document.getElementById('people').value);
+            
+            if (budget < 300) {
+                alert('Budget minimo: ' + getCurrencySymbol(selectedCurrency) + '300');
+                return;
+            }
+            
+            showStep('spin');
+            
+            const environment = mainJoystickValues.x;
+            const energy = 100 - mainJoystickValues.y;
+            
+            const searchTexts = [
+                `🎮 Gloobing...`,
+                `🏞️ ${environment > 50 ? 'Mountain' : 'Sea'} + ${energy > 50 ? 'Adventure' : 'Relax'}...`,
+                `💰 ${getCurrencySymbol(selectedCurrency)}${budget} for ${people} ${people === 1 ? 'person' : 'people'}...`,
+                `${isAdvancedMode ? '🔧 Advanced gloob mode...' : '🎯 Simple gloob...'}`,
+                `🌍 Perfect match found!`
+            ];
+            
+            let textIndex = 0;
+            const searchTextElement = document.getElementById('search-text');
+            
+            const textInterval = setInterval(() => {
+                searchTextElement.textContent = searchTexts[textIndex];
+                textIndex = (textIndex + 1) % searchTexts.length;
+            }, 1000);
+            
+            document.getElementById('spinning-globe').classList.add('spinning');
+            
+            try {
+                const advancedStyleValues = isAdvancedMode ? styleValues : null;
+                
+                currentResult = await findDestinationWithJoystick(
+                    budget, people, selectedTransport, budgetType, mainJoystickValues, advancedStyleValues
+                );
+                
+                clearInterval(textInterval);
+                document.getElementById('spinning-globe').classList.remove('spinning');
+                displayResult();
+                setTimeout(() => showStep('result'), 300);
+            } catch (error) {
+                console.error('Gloob Error:', error);
+                clearInterval(textInterval);
+                alert('Gloob error! Try again.');
+                showStep('form');
+            }
+        }
+
+        function displayResult() {
+            const result = currentResult;
+            const people = parseInt(document.getElementById('people').value);
+            const stars = '⭐'.repeat(result.hotel.stars || 4);
+            const currencySymbol = getCurrencySymbol(selectedCurrency);
+            
+            // Convert costs to selected currency
+            const hotelCost = convertCurrency(result.costs.hotel, 'EUR', selectedCurrency);
+            const transportCost = convertCurrency(result.costs.transport, 'EUR', selectedCurrency);
+            const totalCost = convertCurrency(result.costs.total, 'EUR', selectedCurrency);
+            const hotelPerNight = convertCurrency(result.hotel.pricePerNight, 'EUR', selectedCurrency);
+            
+            const html = `
+                <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                    <div class="text-6xl mb-4">${result.emoji}</div>
+                    <h2 class="text-3xl font-bold text-yellow-400 mb-2">${result.destination}</h2>
+                    <p class="text-xl text-gray-300 mb-4">${result.country}</p>
+                    
+                    ${result.whyPerfectJoystick ? `
+                    <div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg p-3 mx-auto max-w-md mb-3">
+                        <p class="text-sm font-medium text-yellow-200">🎮 ${result.whyPerfectJoystick}</p>
+                    </div>
+                    ` : ''}
+                    
+                    ${result.travelDates ? `
+                    <div class="mt-4 text-sm text-yellow-200">
+                        📅 ${result.travelDates.start} - ${result.travelDates.end}
+                        ${result.tripDays ? ` • ${result.tripDays} days` : ''}
+                        ${result.budgetPerDay ? ` • ${currencySymbol}${convertCurrency(result.budgetPerDay, 'EUR', selectedCurrency)}/day` : ''}
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <!-- Hotel -->
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="hotel-photo rounded-lg mb-4 h-48 bg-cover bg-center" style="background-image: url('${result.hotel.photo}')"></div>
+                        <h3 class="text-xl font-bold mb-2">${result.hotel.name}</h3>
+                        <div class="text-yellow-500 text-lg mb-2">${stars}</div>
+                        <div class="text-sm text-gray-600 mb-4">
+                            <div><strong>Per night (${people} ${people === 1 ? 'person' : 'people'}):</strong> ${currencySymbol}${hotelPerNight}</div>
+                            <div><strong>Total ${result.tripDays || 7} nights:</strong> ${currencySymbol}${hotelCost}</div>
+                        </div>
+                        <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(result.destination + ', ' + result.country)}&checkin=${result.travelDates ? result.travelDates.startDate.toISOString().split('T')[0] : ''}&checkout=${result.travelDates ? result.travelDates.endDate.toISOString().split('T')[0] : ''}&group_adults=${people}&no_rooms=1" target="_blank" class="book-btn w-full">
+                            🏨 BOOK HOTEL
+                        </a>
+                    </div>
+
+                    <!-- Transport -->
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="text-4xl">
+                                ${result.transport.logo}
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">${result.transport.airline}</h3>
+                                <p class="text-gray-600">${result.transport.route}</p>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600 mb-4">
+                            <div><strong>Duration:</strong> ${result.transport.duration}</div>
+                            <div><strong>Round trip for ${people} ${people === 1 ? 'person' : 'people'}</strong></div>
+                        </div>
+                        <p class="text-lg font-bold text-green-600 mb-4">${currencySymbol}${transportCost}</p>
+                        <a href="https://www.skyscanner.it/transport/flights/${departureAirport.toLowerCase()}/${result.destination.toLowerCase().replace(/\s+/g, '').substring(0,4)}/?adults=${people}" target="_blank" class="book-btn w-full">
+                            ✈️ BOOK FLIGHT
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Budget Summary -->
+                <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                    <h3 class="text-xl font-bold mb-4">🎮 Your Gloob Budget</h3>
+                    <div class="space-y-2 mb-4 text-left max-w-md mx-auto">
+                        <div class="flex justify-between">
+                            <span>🏨 Hotel:</span>
+                            <span class="font-bold">${currencySymbol}${hotelCost}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>✈️ Transport:</span>
+                            <span class="font-bold">${currencySymbol}${transportCost}</span>
+                        </div>
+                        ${budgetType === 'complete' && result.costs.meals ? `
+                        <div class="flex justify-between">
+                            <span>🍽️ Meals:</span>
+                            <span class="font-bold">${currencySymbol}${convertCurrency(result.costs.meals, 'EUR', selectedCurrency)}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>🎫 Activities:</span>
+                            <span class="font-bold">${currencySymbol}${convertCurrency(result.costs.activities, 'EUR', selectedCurrency)}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>🎁 Extras:</span>
+                            <span class="font-bold">${currencySymbol}${convertCurrency(result.costs.extras, 'EUR', selectedCurrency)}</span>
+                        </div>
+                        ` : ''}
+                        <div class="border-t border-white/30 pt-2 flex justify-between text-lg">
+                            <span>TOTAL:</span>
+                            <span class="font-bold text-yellow-400">${currencySymbol}${totalCost}</span>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-300 space-y-1">
+                        <p>🎮 Gloobed for ${people} ${people === 1 ? 'person' : 'people'} • ${result.tripDays || 7} days</p>
+                        <p>📊 ${currencySymbol}${Math.round(totalCost / (result.tripDays || 7))}/day total • ${currencySymbol}${Math.round(totalCost / (result.tripDays || 7) / people)}/day per person</p>
+                        ${isAdvancedMode ? '<p>🔧 Advanced mode</p>' : '<p>🎯 Simple mode</p>'}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('result-content').innerHTML = html;
+        }
+
+        function toggleBudgetType(type) {
+            budgetType = type;
+            
+            document.getElementById('budget-type-essential').classList.toggle('active', type === 'essential');
+            document.getElementById('budget-type-complete').classList.toggle('active', type === 'complete');
+            
+            const description = document.getElementById('budget-description');
+            if (type === 'essential') {
+                description.textContent = 'Flight + Hotel only';
+            } else {
+                description.textContent = 'Flight + Hotel + Meals + Activities';
+            }
+            
+            triggerLiveSearch();
+        }
+
+        async function showGuide() {
+            if (!currentResult) return;
+            
+            const modal = document.getElementById('guide-modal');
+            const content = document.getElementById('guide-content');
+            
+            content.innerHTML = '<div class="text-center"><div class="text-4xl mb-4">🎮</div><p>Gloobing your travel guide...</p></div>';
+            modal.classList.remove('hidden');
+            
+            try {
+                const people = parseInt(document.getElementById('people').value);
+                const guide = await generateTravelGuide(currentResult, people);
+                
+                content.innerHTML = `
+                    <div class="bg-white/10 rounded-lg p-4 mb-4">
+                        <h3 class="text-lg font-bold mb-2">📍 ${currentResult.destination}, ${currentResult.country}</h3>
+                        <p class="text-sm text-gray-300">Gloobed for ${people} ${people === 1 ? 'person' : 'people'}</p>
+                    </div>
+                    <div class="space-y-4 text-sm whitespace-pre-line leading-relaxed">
+                        ${guide}
+                    </div>
+                    <div class="mt-6 p-4 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
+                        <p class="text-sm text-yellow-200">
+                            💡 <strong>Pro tip:</strong> This guide is optimized for your gloob style!
+                        </p>
+                    </div>
+                `;
+            } catch (error) {
+                content.innerHTML = '<p class="text-red-400">Gloob guide error. Try again!</p>';
+            }
+        }
+
+        async function generateTravelGuide(destination, people, days = 7) {
+            const currencySymbol = getCurrencySymbol(selectedCurrency);
+            const mealCostPerPerson = selectedCurrency === 'CHF' ? 50 : 30;
+            const activityCostPerPerson = selectedCurrency === 'CHF' ? 60 : 40;
+            
+            const guide = `📅 DAY 1 - Arrival
+• 10:00 - Hotel check-in (${currencySymbol}${25 * people} total)
+• 12:00 - City tour (${currencySymbol}${30 * people} total)  
+• 15:00 - Local lunch (${currencySymbol}${35 * people} total)
+• 17:30 - Main attraction (${currencySymbol}${20 * people} total)
+• 20:00 - Traditional dinner (${currencySymbol}${45 * people} total)
+💰 Day budget: ${currencySymbol}${155 * people} (${currencySymbol}${155}/person)
+
+📅 DAY 2 - Culture
+• 09:30 - Panoramic breakfast (${currencySymbol}${20 * people} total)
+• 11:00 - Museums (${currencySymbol}${25 * people} total)
+• 14:00 - Traditional lunch (${currencySymbol}${30 * people} total)
+• 16:30 - Shopping (${currencySymbol}${40 * people} total)  
+• 19:00 - Aperitivo (${currencySymbol}${18 * people} total)
+• 21:00 - Local show (${currencySymbol}${35 * people} total)
+💰 Day budget: ${currencySymbol}${168 * people} (${currencySymbol}${168}/person)
+
+📅 DAY 3 - Nature
+• 09:00 - Nature excursion (${currencySymbol}${40 * people} total)
+• 12:30 - Panoramic picnic (${currencySymbol}${25 * people} total)
+• 15:00 - Outdoor activities (${currencySymbol}${30 * people} total)
+• 18:00 - Rest (${currencySymbol}0)
+• 20:30 - Special dinner (${currencySymbol}${50 * people} total)
+💰 Day budget: ${currencySymbol}${145 * people} (${currencySymbol}${145}/person)`;
+            
+            return guide;
+        }
+
+        // MODE TOGGLE FUNCTIONALITY
+        function toggleMode() {
+            isAdvancedMode = !isAdvancedMode;
+            const advancedControls = document.getElementById('advanced-controls');
+            const modeText = document.getElementById('mode-text');
+            
+            if (isAdvancedMode) {
+                advancedControls.classList.remove('hidden');
+                advancedControls.classList.add('visible');
+                modeText.textContent = '🎮 Simple Mode';
+                
+                // Setup advanced sliders when mode is activated
+                setTimeout(() => {
+                    setup4DSlider('style-slider', 'style-dot', styleValues);
+                    setup4DSlider('culture-slider', 'culture-dot', cultureValues);
+                }, 100);
+            } else {
+                advancedControls.classList.remove('visible');
+                advancedControls.classList.add('hidden');
+                modeText.textContent = '🔧 Advanced Mode';
+            }
+            
+            // Trigger search after mode change
+            setTimeout(() => {
+                triggerLiveSearch();
+            }, 300);
+        }
+
+        // Make functions globally accessible  
+        window.toggleMode = toggleMode;
+        window.toggleBudgetType = toggleBudgetType;
+        window.getLocation = getLocation;
+        window.setLanguage = setLanguage;
+
+        // Start app
+        init();
+    </script>
+
+</body>
+</html>
+            }
+        }
+
+        function getCultureDescription(values) {
+            const x = values.x; // romantico-festa
+            const y = 100 - values.y; // cultura-food
+            
+            let desc = '';
+            if (y > 50) desc += `🏛️ Focus culturale (${y}%)`;
+            else desc += `🍝 Focus gastronomico (${100-y}%)`;
+            
+            if (x < 50) desc += ` con atmosfera romantica (${100-x}%)`;
+            else desc += ` con atmosfera festosa (${x}%)`;
+            
+            return desc;
+        }
+
+        // Geolocation function
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    // Here you would call a reverse geocoding API
+                    // For now, we'll use a simple mapping
+                    const city = await getCityFromCoords(lat, lon);
+                    document.getElementById('departure-city').value = city.name;
+                    departureCity = city.name;
+                    departureAirport = city.airport;
+                    
+                    triggerLiveSearch();
+                }, (error) => {
+                    console.log('Geolocation error:', error);
+                    alert('Non riesco a trovare la tua posizione. Inserisci manualmente la città.');
+                });
+            } else {
+                alert('Geolocalizzazione non supportata dal browser.');
+            }
+        }
+
+        async function getCityFromCoords(lat, lon) {
+            // Simple mapping for major Italian cities
+            const cities = [
+                { name: 'Milano', lat: 45.46, lon: 9.19, airport: 'MXP' },
+                { name: 'Roma', lat: 41.90, lon: 12.49, airport: 'FCO' },
+                { name: 'Venezia', lat: 45.44, lon: 12.31, airport: 'VCE' },
+                { name: 'Napoli', lat: 40.85, lon: 14.26, airport: 'NAP' },
+                { name: 'Torino', lat: 45.07, lon: 7.68, airport: 'TRN' },
+                { name: 'Bologna', lat: 44.49, lon: 11.34, airport: 'BLQ' },
+                { name: 'Firenze', lat: 43.77, lon: 11.25, airport: 'FLR' }
+            ];
+            
+            // Find nearest city
+            let nearest = cities[0];
+            let minDistance = Infinity;
+            
+            cities.forEach(city => {
+                const distance = Math.sqrt(
+                    Math.pow(lat - city.lat, 2) + 
+                    Math.pow(lon - city.lon, 2)
+                );
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearest = city;
+                }
+            });
+            
+            return nearest;
+        }
+
+        // Update city on input change
+        function updateDepartureCity() {
+            const input = document.getElementById('departure-city');
+            departureCity = input.value;
+            
+            // Map city to airport code
+            const airportMap = {
+                'Milano': 'MXP',
+                'Roma': 'FCO',
+                'Venezia': 'VCE',
+                'Napoli': 'NAP',
+                'Torino': 'TRN',
+                'Bologna': 'BLQ',
+                'Firenze': 'FLR',
+                'Bergamo': 'BGY',
+                'Verona': 'VRN'
+            };
+            
+            departureAirport = airportMap[departureCity] || 'MXP';
+            triggerLiveSearch();
+        }
+
+        // Start app
+        init();
+    </script>
+
+</body>
+</html>, GBP: '£' };
+            return symbols[currency] || '€';
+        }
+
+        // AI DESTINATION FINDER WITH JOYSTICK
+        async function findDestinationWithJoystick(budget, people, transport, budgetType, mainValues, styleValues = null) {
+            // Convert budget to EUR for calculations
+            const budgetInEUR = convertCurrency(budget, selectedCurrency, 'EUR');
+            const budgetPerPerson = Math.round(budgetInEUR / people);
+            
+            // Convert joystick values to readable parameters
+            const energy = 100 - mainValues.y;
+            const environment = mainValues.x;
+            
+            // Advanced mode parameters (if available)
+            let luxury = 50;
+            let popularity = 50;
+            if (isAdvancedMode && styleValues) {
+                luxury = styleValues.x;
+                popularity = 100 - styleValues.y;
+            }
+            
+            // Smart duration based on budget per person AND luxury
+            let tripDays;
+            if (budgetPerPerson < 150) {
+                tripDays = 2;
+            } else if (budgetPerPerson < 300) {
+                tripDays = Math.min(4, Math.max(2, Math.round(7 - budgetPerPerson/100)));
+            } else {
+                tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :
+                          luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :
+                          Math.max(5, Math.round(7 - luxury/50));
+            }
+            
+            // Override with user selected duration
+            if (selectedDuration !== 'any') {
+                tripDays = getDurationDays();
+            }
+            
+            // Create variety seed
+            const varietySeed = Date.now() + Math.random() * 1000;
+            const avoidDestinations = usedDestinations.length > 0 ? 
+                `NON suggerire mai: ${usedDestinations.join(', ')}. ` : '';
+            
+            const prompt = `Sei un consulente di viaggi AI Joystick. TROVA UNA DESTINAZIONE UNICA per:
+
+PARAMETRI JOYSTICK CLIENTE:
+💰 Budget: ${getCurrencySymbol(selectedCurrency)}${budget} ${selectedCurrency} TOTALE per ${people} persone (€${budgetPerPerson} per persona in EUR)
+📅 Durata: ${tripDays} giorni
+🎯 Budget type: ${budgetType === 'complete' ? 'TUTTO INCLUSO (volo+hotel+pasti+attività)' : 'SOLO ESSENZIALE (volo+hotel)'}
+📍 Partenza da: ${departureCity} (${departureAirport})
+
+🎮 POSIZIONE JOYSTICK PRINCIPALE:
+🏞️ Ambiente: ${environment}% montagna (${environment < 25 ? 'mare e spiagge' : environment < 50 ? 'costa e colline' : environment < 75 ? 'colline e natura' : 'montagna e vette'})
+⚡ Energia: ${energy}% avventura (${energy < 25 ? 'massimo relax' : energy < 50 ? 'relax attivo' : energy < 75 ? 'moderate attività' : 'avventura pura'})
+
+${isAdvancedMode ? `🔧 MODALITÀ AVANZATA:
+✨ Stile: ${luxury}% lusso (${luxury < 25 ? 'ultra economico' : luxury < 50 ? 'economico' : luxury < 75 ? 'medio-alto' : 'lusso premium'})
+🗺️ Popolarità: ${popularity}% famosa (${popularity < 25 ? 'destinazione segreta' : popularity < 50 ? 'poco conosciuta' : popularity < 75 ? 'conosciuta' : 'iconica e famosa'})
+
+🎭 CULTURA & SOCIAL:
+${getCultureDescription(cultureValues)}` : ''}
+
+🚀 Trasporto: ${getTransportName(transport)} da ${departureCity}
+🌍 Stagione: ${getCurrentSeason()} 2025
+
+${avoidDestinations}
+
+🎲 VARIETÀ OBBLIGATORIA: Seed ${varietySeed} - trova destinazione UNICA e sorprendente!
+
+IMPORTANTE: I costi devono essere REALISTICI per ${people} persone TOTALI, non per persona!
+- Se budget basso (< €300/persona): solo destinazioni VICINE raggiungibili in auto/treno
+- I pasti per ${people} persone per ${tripDays} giorni devono essere calcolati correttamente
+- L'hotel deve costare per TUTTE le ${people} persone per ${tripDays} notti
+
+COMPITO: Trova LA destinazione perfetta che:
+✅ Rientra ESATTAMENTE nel budget ${getCurrencySymbol(selectedCurrency)}${budget} ${selectedCurrency} ${budgetType}
+✅ Rispecchia PERFETTAMENTE la posizione joystick (ambiente ${environment}%, energia ${energy}%)
+✅ È ottimizzata per ${tripDays} giorni
+✅ È DIVERSA da tutte le ricerche precedenti
+✅ Ha prezzi REALI aggiornati ${getCurrentSeason()} 2025
+✅ È raggiungibile da ${departureCity} con il budget disponibile
+
+RISPOSTA JSON (PULITA, NO MARKDOWN):
+{
+  "destination": "Nome Città Specifica",
+  "country": "Paese", 
+  "emoji": "🌅",
+  "description": "Breve descrizione",
+  "whyPerfectJoystick": "Match: ${environment}% montagna, ${energy}% avventura",
+  "tripDays": ${tripDays},
+  "budgetPerDay": ${Math.round(budgetInEUR / tripDays)},
+  "hotel": {
+    "name": "Hotel Reale Della Città",
+    "stars": ${Math.max(2, Math.min(5, Math.round(luxury / 20)))},
+    "pricePerNight": ${Math.round(budgetInEUR * 0.4 / tripDays)},
+    "totalPrice": ${Math.round(budgetInEUR * 0.4)},
+    "photo": "https://images.unsplash.com/photo-${getRandomUnsplashId()}?w=500&h=300&fit=crop"
+  },
+  "transport": {
+    "type": "${transport}",
+    "airline": "${getRandomAirlineName()}",
+    "logo": "${getRandomAirlineLogo()}",
+    "route": "${departureAirport} → ${getRandomAirportCode()}",
+    "totalPrice": ${Math.round(budgetInEUR * 0.3)},
+    "duration": "${getFlightDuration(50)}"
+  },
+  "costs": {
+    "hotel": ${Math.round(budgetInEUR * 0.4)},
+    "transport": ${Math.round(budgetInEUR * 0.3)},
+    ${budgetType === 'complete' ? `"meals": ${Math.round(budgetInEUR * 0.2)}, "activities": ${Math.round(budgetInEUR * 0.08)}, "extras": ${Math.round(budgetInEUR * 0.02)},` : ''}
+    "total": ${budgetInEUR}
+  }
+}`;
+
+            try {
+                console.log('🎮 Gloobing...', { energy, environment, luxury, popularity, isAdvancedMode });
+                
+                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }]
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    console.log('🎯 Gloobed!', aiResponse);
+                    
+                    const cleanResponse = aiResponse.replace(/```json\n?|\n?```/g, '').trim();
+                    const result = JSON.parse(cleanResponse);
+                    
+                    // Add to used destinations
+                    if (result.destination && !usedDestinations.includes(result.destination)) {
+                        usedDestinations.push(result.destination);
+                        if (usedDestinations.length > 10) {
+                            usedDestinations.shift();
+                        }
+                    }
+                    
+                    result.travelDates = generateTravelDates();
+                    return result;
+                } else {
+                    throw new Error('API Error: ' + response.status);
+                }
+            } catch (error) {
+                console.log('🔄 Using fallback gloob:', error);
+                return generateJoystickFallback(budgetInEUR, people, transport, budgetType, mainValues, styleValues);
+            }
+        }
+
+        // Joystick Smart Fallback
+        function generateJoystickFallback(budget, people, transport, budgetType, mainValues, styleValues) {
+            const budgetPerPerson = budget / people;
+            const energy = 100 - mainValues.y;
+            const environment = mainValues.x;
+            
+            // Advanced mode parameters
+            let luxury = 50;
+            let popularity = 50;
+            if (isAdvancedMode && styleValues) {
+                luxury = styleValues.x;
+                popularity = 100 - styleValues.y;
+            }
+            
+            // Smart duration based on budget
+            let tripDays;
+            if (budgetPerPerson < 150) {
+                tripDays = 2;
+            } else if (budgetPerPerson < 300) {
+                tripDays = 3;
+            } else {
+                tripDays = 7;
+            }
+            
+            // Joystick destination pools with REALISTIC budgets
+            const destinationsJoystick = [
+                // BUDGET SUPER LOW (under 200€/person) - Only nearby
+                { name: 'Lago di Como', country: 'Italia', emoji: '🏞️', match: [50, 30], costPerPerson: 80 },
+                { name: 'Cinque Terre', country: 'Italia', emoji: '🌊', match: [20, 40], costPerPerson: 120 },
+                { name: 'Verona', country: 'Italia', emoji: '💑', match: [50, 20], costPerPerson: 100 },
+                
+                // LOW BUDGET (200-400€/person)
+                { name: 'Ljubljana', country: 'Slovenia', emoji: '🏞️', match: [70, 50], costPerPerson: 250 },
+                { name: 'Trieste', country: 'Italia', emoji: '🌊', match: [30, 30], costPerPerson: 180 },
+                { name: 'Innsbruck', country: 'Austria', emoji: '🏔️', match: [90, 60], costPerPerson: 280 },
+                
+                // MEDIUM BUDGET (400-600€/person)
+                { name: 'Budapest', country: 'Ungheria', emoji: '🏰', match: [50, 50], costPerPerson: 380 },
+                { name: 'Praga', country: 'Repubblica Ceca', emoji: '🍺', match: [60, 60], costPerPerson: 420 },
+                { name: 'Cracovia', country: 'Polonia', emoji: '🏰', match: [55, 45], costPerPerson: 350 },
+                
+                // HIGHER BUDGET (600-800€/person)
+                { name: 'Amsterdam', country: 'Paesi Bassi', emoji: '🚲', match: [40, 70], costPerPerson: 650 },
+                { name: 'Barcellona', country: 'Spagna', emoji: '🏖️', match: [25, 75], costPerPerson: 580 },
+                { name: 'Vienna', country: 'Austria', emoji: '🎭', match: [65, 40], costPerPerson: 550 },
+                
+                // HIGH BUDGET (800+€/person)
+                { name: 'Santorini', country: 'Grecia', emoji: '🌅', match: [20, 20], costPerPerson: 850 },
+                { name: 'Reykjavik', country: 'Islanda', emoji: '🔥', match: [85, 90], costPerPerson: 1200 },
+                { name: 'Londra', country: 'Regno Unito', emoji: '🏰', match: [50, 65], costPerPerson: 900 }
+            ];
+            
+            // Find best match using joystick distance
+            let bestMatch = destinationsJoystick[0];
+            let bestScore = Infinity;
+            
+            destinationsJoystick.forEach(dest => {
+                if (usedDestinations.includes(dest.name)) return;
+                
+                const score = Math.sqrt(
+                    Math.pow(environment - dest.match[0], 2) +
+                    Math.pow(energy - dest.match[1], 2)
+                );
+                
+                if (score < bestScore && dest.costPerPerson <= budgetPerPerson) {
+                    bestScore = score;
+                    bestMatch = dest;
+                }
+            });
+            
+            // Add randomness if no perfect match
+            if (bestScore > 40) {
+                const availableDests = destinationsJoystick.filter(d => 
+                    !usedDestinations.includes(d.name) && d.costPerPerson <= budgetPerPerson
+                );
+                if (availableDests.length > 0) {
+                    bestMatch = availableDests[Math.floor(Math.random() * availableDests.length)];
+                }
+            }
+            
+            // Add to used destinations
+            if (!usedDestinations.includes(bestMatch.name)) {
+                usedDestinations.push(bestMatch.name);
+                if (usedDestinations.length > 10) usedDestinations.shift();
+            }
+            
+            const hotelPrice = Math.round(budget * 0.4);
+            const transportPrice = Math.round(budget * 0.3);
+            
+            const result = {
+                destination: bestMatch.name,
+                country: bestMatch.country,
+                emoji: bestMatch.emoji,
+                description: `Perfect gloob destination`,
+                whyPerfectJoystick: `Match: ${environment > 50 ? 'Montagna' : 'Mare'} ${energy > 50 ? 'avventura' : 'relax'}`,
+                tripDays: tripDays,
+                budgetPerDay: Math.round(budget / tripDays),
+                travelDates: generateTravelDates(),
+                hotel: {
+                    name: `${bestMatch.name} ${luxury > 70 ? 'Luxury' : luxury > 40 ? 'Grand' : 'Central'} Hotel`,
+                    stars: Math.min(5, Math.max(2, Math.round(luxury / 20))),
+                    pricePerNight: Math.round(hotelPrice / tripDays),
+                    totalPrice: hotelPrice,
+                    photo: `https://images.unsplash.com/photo-${getRandomUnsplashId()}?w=500&h=300&fit=crop`
+                },
+                transport: {
+                    type: transport,
+                    airline: getRandomAirlineName(),
+                    logo: getRandomAirlineLogo(),
+                    route: `${departureAirport} → ${bestMatch.name.substring(0, 3).toUpperCase()}`,
+                    totalPrice: transportPrice,
+                    duration: getFlightDuration(50)
+                },
+                costs: {
+                    hotel: hotelPrice,
+                    transport: transportPrice,
+                    total: budget
+                }
+            };
+            
+            if (budgetType === 'complete') {
+                const meals = Math.round(budget * 0.2);
+                const activities = Math.round(budget * 0.08);
+                const extras = Math.round(budget * 0.02);
+                
+                result.costs.meals = meals;
+                result.costs.activities = activities;
+                result.costs.extras = extras;
+            }
+            
+            return result;
+        }
+
+        // Helper functions
+        function getRandomUnsplashId() {
+            const hotelPhotos = [
+                '1566073771259-6a8506099945', '1564501049229-d2b0fcdc539e', '1445019980597-93fa8acb246c',
+                '1571003123894-1f0594d2b5d9', '1582719478250-c89cae4dc85b', '1590490360182-c33d57733427',
+                '1551882547-ff40c63fe5fa', '1578944032637-2dc181a10c62', '1529290130-aab3f92beb12', '1542314831-068cd1dbfeeb'
+            ];
+            return hotelPhotos[Math.floor(Math.random() * hotelPhotos.length)];
+        }
+
+        function getRandomAirlineName() {
+            const airlines = [
+                'Lufthansa', 'ITA Airways', 'Austrian Airlines', 'KLM', 'Air France', 
+                'Swiss International', 'Brussels Airlines', 'Iberia', 'TAP Portugal',
+                'Turkish Airlines', 'Wizz Air', 'Ryanair', 'EasyJet'
+            ];
+            return airlines[Math.floor(Math.random() * airlines.length)];
+        }
+
+        function getRandomAirlineLogo() {
+            const airlines = {
+                'LH': '✈️',
+                'AZ': '🇮🇹',
+                'OS': '🇦🇹',
+                'KL': '🇳🇱',
+                'AF': '🇫🇷',
+                'LX': '🇨🇭',
+                'IB': '🇪🇸',
+                'TP': '🇵🇹',
+                'TK': '🇹🇷',
+                'W6': '💜',
+                'FR': '💙',
+                'U2': '🧡'
+            };
+            const keys = Object.keys(airlines);
+            const key = keys[Math.floor(Math.random() * keys.length)];
+            return airlines[key];
+        }
+
+        function getRandomAirportCode() {
+            const codes = ['PRG', 'VIE', 'BUD', 'WAW', 'ZAG', 'BEG', 'SOF', 'OTP', 'ATH', 'IST', 'TLV', 'REK'];
+            return codes[Math.floor(Math.random() * codes.length)];
+        }
+
+        function getFlightDuration(distance) {
+            const durations = ['1h 45m', '2h 15m', '2h 30m', '2h 45m', '3h 15m', '3h 45m'];
+            return durations[Math.floor(Math.random() * durations.length)];
+        }
+
+        function getTransportName(transport) {
+            const names = {
+                'plane': 'Aereo', 'train': 'Treno', 'car': 'Auto noleggio',
+                'own-car': 'Auto propria', 'bus': 'Bus', 'ferry': 'Nave/Traghetto'
+            };
+            return names[transport] || 'Trasporto';
+        }
+
+        function getCurrentSeason() {
+            const month = new Date().getMonth();
+            if (month >= 2 && month <= 4) return 'Primavera';
+            if (month >= 5 && month <= 7) return 'Estate'; 
+            if (month >= 8 && month <= 10) return 'Autunno';
+            return 'Inverno';
+        }
+
+        function generateTravelDates() {
+            const start = new Date();
+            start.setDate(start.getDate() + Math.floor(Math.random() * 60) + 14);
+            const end = new Date(start);
+            end.setDate(end.getDate() + 7);
+            
+            return {
+                start: start.toLocaleDateString('it-IT'),
+                end: end.toLocaleDateString('it-IT'),
+                startDate: start,
+                endDate: end
+            };
+        }
+
+        // New helper functions
+        function getDurationDays() {
+            switch(selectedDuration) {
+                case 'weekend': return 3;
+                case 'week': return 7;
+                case<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gloober - Zero Stress Travel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f766e, #065f46, #064e3b);
+            min-height: 100vh;
+        }
+
+        .globe-container {
+            position: relative;
             width: 280px;
             height: 280px;
             margin: 0 auto;
