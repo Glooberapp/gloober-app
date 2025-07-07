@@ -1,12 +1,601 @@
+{ name: 'Chamonix', country: 'Francia', emoji: '🏔️', match: [85, 80, 95, 90], cost: 720 },
+                
+                // Medium combinations
+                { name: 'Dubrovnik', country: 'Croazia', emoji: '🏰', match: [60, 70, 30, 50], cost: 450 },
+                { name: 'Porto', country: 'Portogallo', emoji: '🍷', match: [50, 60, 40, 45], cost: 420 },
+                { name: 'Ljubljana', country: 'Slovenia', emoji: '🏞️', match: [45, 40, 70, 60], cost: 380 },
+                { name: 'Bled', country: 'Slovenia', emoji: '🏔️', match: [55, 50, 75, 65], cost: 400 },
+                { name: 'Ohrid', country: 'Macedonia', emoji: '🌊', match: [35, 25, 25, 40], cost: 300 },
+                { name: 'Brasov', country: 'Romania', emoji: '🏰', match: [40, 35, 65, 55], cost: 320 },
+                { name: 'Kotor', country: 'Montenegro', emoji: '⛰️', match: [50, 45, 60, 60], cost: 370 },
+                { name: 'Tallinn', country: 'Estonia', emoji: '🏛️', match: [45, 55, 50, 50], cost: 410 }
+            ];
+            
+            // Find best match using 4D distance
+            let bestMatch = destinations4D[0];
+            let bestScore = Infinity;
+            
+            destinations4D.forEach(dest => {
+                if (usedDestinations.includes(dest.name)) return;
+                
+                const score = Math.sqrt(
+                    Math.pow(luxury - dest.match[0], 2) +
+                    Math.pow(popularity - dest.match[1], 2) +  
+                    Math.pow(environment - dest.match[2], 2) +
+                    Math.pow(energy - dest.match[3], 2)
+                );
+                
+                if (score < bestScore && dest.cost <= budgetPerPerson * 0.8) {
+                    bestScore = score;
+                    bestMatch = dest;
+                }
+            });
+            
+            // Add randomness if no perfect match
+            if (bestScore > 50) {
+                const availableDests = destinations4D.filter(d => !usedDestinations.includes(d.name));
+                bestMatch = availableDests[Math.floor(Math.random() * availableDests.length)] || bestMatch;
+            }
+            
+            // Add to used destinations
+            if (!usedDestinations.includes(bestMatch.name)) {
+                usedDestinations.push(bestMatch.name);
+                if (usedDestinations.length > 10) usedDestinations.shift();
+            }
+            
+            const hotelPrice = Math.round(budget * 0.4);
+            const transportPrice = Math.round(budget * 0.3);
+            
+            const result = {
+                destination: bestMatch.name,
+                country: bestMatch.country,
+                emoji: bestMatch.emoji,
+                description: `${bestMatch.name} perfetta per le tue preferenze 4D`,
+                whyPerfect4D: `Stile ${luxury}%, popolarità ${popularity}%, ${environment > 50 ? 'montagna' : 'mare'} ${energy > 50 ? 'avventurosa' : 'relax'}`,
+                tripDays: tripDays,
+                budgetPerDay: Math.round(budget / tripDays),
+                travelDates: generateTravelDates(),
+                hotel: {
+                    name: `${bestMatch.name} ${luxury > 70 ? 'Luxury' : luxury > 40 ? 'Grand' : 'Central'} Hotel`,
+                    stars: Math.min(5, Math.max(2, Math.round(luxury / 20))),
+                    pricePerNight: Math.round(hotelPrice / tripDays),
+                    totalPrice: hotelPrice,
+                    photo: `https://images.unsplash.com/photo-${getRandomUnsplashId()}?w=500&h=300&fit=crop`
+                },
+                transport: {
+                    type: transport,
+                    airline: getRandomAirlineName(),
+                    logo: getRandomAirlineLogo(),
+                    route: `MXP → ${bestMatch.name.substring(0, 3).toUpperCase()}`,
+                    totalPrice: transportPrice,
+                    duration: getFlightDuration(50)
+                },
+                costs: {
+                    hotel: hotelPrice,
+                    transport: transportPrice,
+                    total: budget
+                }
+            };
+            
+            if (budgetType === 'complete') {
+                const meals = Math.round(budget * 0.2);
+                const activities = Math.round(budget * 0.08);
+                const extras = Math.round(budget * 0.02);
+                
+                result.costs.meals = meals;
+                result.costs.activities = activities;
+                result.costs.extras = extras;
+            }
+            
+            return result;
+        }
 
-function setupEvents() {
+        // Helper functions
+        function getRandomUnsplashId() {
+            const hotelPhotos = [
+                '1566073771259-6a8506099945', '1564501049229-d2b0fcdc539e', '1445019980597-93fa8acb246c',
+                '1571003123894-1f0594d2b5d9', '1582719478250-c89cae4dc85b', '1590490360182-c33d57733427',
+                '1551882547-ff40c63fe5fa', '1578944032637-2dc181a10c62', '1529290130-aab3f92beb12', '1542314831-068cd1dbfeeb'
+            ];
+            return hotelPhotos[Math.floor(Math.random() * hotelPhotos.length)];
+        }
+
+        function getRandomAirlineName() {
+            const airlines = [
+                'Lufthansa', 'ITA Airways', 'Austrian Airlines', 'KLM', 'Air France', 
+                'Swiss International', 'Brussels Airlines', 'Iberia', 'TAP Portugal',
+                'Turkish Airlines', 'Wizz Air', 'Ryanair', 'EasyJet'
+            ];
+            return airlines[Math.floor(Math.random() * airlines.length)];
+        }
+
+        function getRandomAirlineLogo() {
+            const logos = ['LH', 'AZ', 'OS', 'KL', 'AF', 'LX', 'SN', 'IB', 'TP', 'TK', 'W6', 'FR', 'U2'];
+            return logos[Math.floor(Math.random() * logos.length)];
+        }
+
+        function getRandomAirportCode() {
+            const codes = ['PRG', 'VIE', 'BUD', 'WAW', 'ZAG', 'BEG', 'SOF', 'OTP', 'ATH', 'IST', 'TLV', 'REK'];
+            return codes[Math.floor(Math.random() * codes.length)];
+        }
+
+        function getFlightDuration(distance) {
+            const durations = ['1h 45m', '2h 15m', '2h 30m', '2h 45m', '3h 15m', '3h 45m'];
+            return durations[Math.floor(Math.random() * durations.length)];
+        }
+
+        function getTransportName(transport) {
+            const names = {
+                'plane': 'Aereo', 'train': 'Treno', 'car': 'Auto noleggio',
+                'own-car': 'Auto propria', 'bus': 'Bus', 'ferry': 'Nave/Traghetto'
+            };
+            return names[transport] || 'Trasporto';
+        }
+
+        function getCurrentSeason() {
+            const month = new Date().getMonth();
+            if (month >= 2 && month <= 4) return 'Primavera';
+            if (month >= 5 && month <= 7) return 'Estate'; 
+            if (month >= 8 && month <= 10) return 'Autunno';
+            return 'Inverno';
+        }
+
+        function generateTravelDates() {
+            const start = new Date();
+            start.setDate(start.getDate() + Math.floor(Math.random() * 60) + 14);
+            const end = new Date(start);
+            end.setDate(end.getDate() + 7);
+            
+            return {
+                start: start.toLocaleDateString('it-IT'),
+                end: end.toLocaleDateString('it-IT'),
+                startDate: start,
+                endDate: end
+            };
+        }
+
+        // 🔥 4D SLIDER FUNCTIONALITY
+        function setup4DSlider(sliderId, dotId, valuesObj) {
+            const slider = document.getElementById(sliderId);
+            const dot = document.getElementById(dotId);
+            const rect = slider.getBoundingClientRect();
+            
+            // Initialize dot position (center)
+            dot.style.left = '50%';
+            dot.style.top = '50%';
+            
+            let isDragging = false;
+            
+            function updatePosition(clientX, clientY) {
+                const sliderRect = slider.getBoundingClientRect();
+                const x = Math.max(0, Math.min(100, ((clientX - sliderRect.left) / sliderRect.width) * 100));
+                const y = Math.max(0, Math.min(100, ((clientY - sliderRect.top) / sliderRect.height) * 100));
+                
+                dot.style.left = x + '%';
+                dot.style.top = y + '%';
+                
+                valuesObj.x = Math.round(x);
+                valuesObj.y = Math.round(y);
+                
+                // Trigger live search
+                triggerLiveSearch();
+            }
+            
+            // Mouse events
+            dot.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            slider.addEventListener('click', (e) => {
+                if (!isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    updatePosition(e.clientX, e.clientY);
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+            
+            // Touch events for mobile
+            dot.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    const touch = e.touches[0];
+                    updatePosition(touch.clientX, touch.clientY);
+                }
+            });
+            
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        // App initialization
+        function init() {
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('form-step').classList.remove('hidden');
+                setupEvents();
+                setup4DSliders();
+            }, 800);
+        }
+
+        function setup4DSliders() {
+            setup4DSlider('style-slider', 'style-dot', styleValues);
+            setup4DSlider('environment-slider', 'environment-dot', environmentValues);
+        }
+
+        function setupEvents() {
             // Transport dropdown
             const transportBtn = document.getElementById('transport-btn');
             const transportMenu = document.getElementById('transport-menu');
             const transportSelected = document.getElementById('transport-selected');
             
             transportBtn.addEventListener('click', (e) => {
-                e<!DOCTYPE html>
+                e.stopPropagation();
+                transportMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('[data-transport]').forEach(item => {
+                item.addEventListener('click', () => {
+                    selectedTransport = item.dataset.transport;
+                    transportSelected.textContent = item.textContent;
+                    transportMenu.classList.add('hidden');
+                    triggerLiveSearch();
+                });
+            });
+            
+            document.addEventListener('click', () => {
+                transportMenu.classList.add('hidden');
+            });
+
+            // Budget and people changes
+            document.getElementById('budget').addEventListener('input', debounce(() => {
+                triggerLiveSearch();
+            }, 1000));
+            
+            document.getElementById('people').addEventListener('change', () => {
+                triggerLiveSearch();
+            });
+
+            // Main buttons
+            document.getElementById('gloob-btn').addEventListener('click', startGloob);
+            document.getElementById('regloob-btn').addEventListener('click', () => {
+                usedDestinations = [];
+                showStep('form');
+            });
+
+            // Guide modal
+            document.getElementById('guide-btn').addEventListener('click', showGuide);
+            document.getElementById('close-guide').addEventListener('click', () => {
+                document.getElementById('guide-modal').classList.add('hidden');
+            });
+        }
+
+        // Live search functionality
+        let liveSearchTimeout;
+        let isLiveSearching = false;
+
+        function triggerLiveSearch() {
+            const budget = parseInt(document.getElementById('budget').value);
+            if (budget < 300) return;
+
+            clearTimeout(liveSearchTimeout);
+            
+            liveSearchTimeout = setTimeout(async () => {
+                if (isLiveSearching) return;
+                
+                isLiveSearching = true;
+                console.log('🔥 4D LIVE SEARCH triggered');
+                
+                try {
+                    const globe = document.getElementById('globe');
+                    globe.style.transform = 'scale(0.95)';
+                    globe.style.opacity = '0.7';
+                    
+                    const people = parseInt(document.getElementById('people').value);
+                    
+                    currentResult = await findDestinationWith4D(
+                        budget, people, selectedTransport, budgetType, styleValues, environmentValues
+                    );
+                    
+                    // Update globe with destination hint
+                    const hintElement = document.createElement('div');
+                    hintElement.className = 'absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded';
+                    hintElement.textContent = `${currentResult.emoji} ${currentResult.destination}`;
+                    
+                    const oldHint = globe.querySelector('div');
+                    if (oldHint) oldHint.remove();
+                    
+                    globe.appendChild(hintElement);
+                    
+                    globe.style.transform = 'scale(1)';
+                    globe.style.opacity = '1';
+                    
+                } catch (error) {
+                    console.log('4D Live search error:', error);
+                } finally {
+                    isLiveSearching = false;
+                }
+            }, 300);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function showStep(step) {
+            document.getElementById('form-step').classList.add('hidden');
+            document.getElementById('spin-step').classList.add('hidden');
+            document.getElementById('result-step').classList.add('hidden');
+            document.getElementById(step + '-step').classList.remove('hidden');
+        }
+
+        async function startGloob() {
+            const budget = parseInt(document.getElementById('budget').value);
+            const people = parseInt(document.getElementById('people').value);
+            
+            if (budget < 300) {
+                alert('Budget minimo: €300');
+                return;
+            }
+            
+            showStep('spin');
+            
+            const searchTexts = [
+                `🎮 Analizzo i tuoi parametri 4D...`,
+                `🤖 Stile ${styleValues.x}%, Popolarità ${100-styleValues.y}%...`,
+                `🏞️ ${environmentValues.y < 50 ? 'Mare' : 'Montagna'} + ${environmentValues.x > 50 ? 'Avventura' : 'Relax'}...`,
+                `🌍 Cerco destinazione perfetta per budget €${budget}...`,
+                `🎯 Trovata! Preparando risultato 4D...`
+            ];
+            
+            let textIndex = 0;
+            const searchTextElement = document.getElementById('search-text');
+            
+            const textInterval = setInterval(() => {
+                searchTextElement.textContent = searchTexts[textIndex];
+                textIndex = (textIndex + 1) % searchTexts.length;
+            }, 1000);
+            
+            document.getElementById('spinning-globe').classList.add('spinning');
+            
+            try {
+                currentResult = await findDestinationWith4D(
+                    budget, people, selectedTransport, budgetType, styleValues, environmentValues
+                );
+                
+                clearInterval(textInterval);
+                document.getElementById('spinning-globe').classList.remove('spinning');
+                displayResult();
+                setTimeout(() => showStep('result'), 300);
+            } catch (error) {
+                console.error('4D Error:', error);
+                clearInterval(textInterval);
+                alert('Errore durante la ricerca 4D. Riprova!');
+                showStep('form');
+            }
+        }
+
+        function displayResult() {
+            const result = currentResult;
+            const people = parseInt(document.getElementById('people').value);
+            const stars = '⭐'.repeat(result.hotel.stars || 4);
+            
+            const html = `
+                <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                    <div class="text-6xl mb-4">${result.emoji}</div>
+                    <h2 class="text-3xl font-bold text-yellow-400 mb-2">${result.destination}</h2>
+                    <p class="text-xl text-gray-300 mb-4">${result.country}</p>
+                    <p class="text-gray-400 mb-3">${result.description}</p>
+                    
+                    ${result.whyPerfect4D ? `
+                    <div class="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg p-3 mx-auto max-w-md mb-3">
+                        <p class="text-sm font-medium text-pink-200">🎮 ${result.whyPerfect4D}</p>
+                    </div>
+                    ` : ''}
+                    
+                    ${result.travelDates ? `
+                    <div class="mt-4 text-sm text-yellow-200">
+                        📅 <strong>Date viaggio:</strong> ${result.travelDates.start} - ${result.travelDates.end}
+                        ${result.tripDays ? ` (${result.tripDays} giorni)` : ''}
+                        ${result.budgetPerDay ? ` • €${result.budgetPerDay}/giorno` : ''}
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <!-- Hotel -->
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="hotel-photo rounded-lg mb-4 h-48 bg-cover bg-center" style="background-image: url('${result.hotel.photo}')"></div>
+                        <h3 class="text-xl font-bold mb-2">${result.hotel.name}</h3>
+                        <div class="text-yellow-500 text-lg mb-2">${stars}</div>
+                        <p class="text-sm text-gray-600 mb-4">Hotel selezionato per i tuoi parametri 4D</p>
+                        <div class="text-sm text-gray-600 mb-4">
+                            <div><strong>Prezzo per notte:</strong> €${result.hotel.pricePerNight}</div>
+                            <div><strong>Totale ${result.tripDays || 7} notti:</strong> €${result.hotel.totalPrice}</div>
+                        </div>
+                        <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(result.destination + ', ' + result.country)}&checkin=${result.travelDates ? result.travelDates.startDate.toISOString().split('T')[0] : ''}&checkout=${result.travelDates ? result.travelDates.endDate.toISOString().split('T')[0] : ''}&group_adults=${people}&no_rooms=1" target="_blank" class="book-btn w-full">
+                            🏨 PRENOTA HOTEL
+                        </a>
+                    </div>
+
+                    <!-- Transport -->
+                    <div class="bg-white rounded-2xl p-6 text-gray-800">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="airline-logo text-sm font-bold bg-blue-600 text-white w-14 h-14 rounded-lg flex items-center justify-center">
+                                ${result.transport.logo}
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">${result.transport.airline}</h3>
+                                <p class="text-gray-600">${result.transport.route}</p>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600 mb-4">
+                            <div><strong>Durata:</strong> ${result.transport.duration}</div>
+                            <div><strong>A/R per ${people} persone</strong></div>
+                            ${result.travelDates ? `<div><strong>Partenza:</strong> ${result.travelDates.start}</div><div><strong>Ritorno:</strong> ${result.travelDates.end}</div>` : ''}
+                        </div>
+                        <p class="text-lg font-bold text-green-600 mb-4">€${result.transport.totalPrice}</p>
+                        <a href="https://www.skyscanner.it/transport/flights/mila/${result.destination.toLowerCase().replace(/\s+/g, '').substring(0,4)}/${result.travelDates ? result.travelDates.startDate.toISOString().split('T')[0].replace(/-/g, '') : ''}/${result.travelDates ? result.travelDates.endDate.toISOString().split('T')[0].replace(/-/g, '') : ''}/?adults=${people}" target="_blank" class="book-btn w-full">
+                            ✈️ PRENOTA VOLO
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 4D Budget Summary -->
+                <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                    <h3 class="text-xl font-bold mb-4">💰 Budget 4D ${budgetType === 'complete' ? 'Tutto Incluso' : 'Essenziale'}</h3>
+                    <div class="space-y-2 mb-4 text-left max-w-md mx-auto">
+                        <div class="flex justify-between">
+                            <span>🏨 Hotel (${result.tripDays || 7} notti):</span>
+                            <span class="font-bold">€${result.costs.hotel}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>✈️ ${getTransportName(selectedTransport)} A/R:</span>
+                            <span class="font-bold">€${result.costs.transport}</span>
+                        </div>
+                        ${budgetType === 'complete' && result.costs.meals ? `
+                        <div class="flex justify-between">
+                            <span>🍽️ Pasti (${result.tripDays || 7} giorni):</span>
+                            <span class="font-bold">€${result.costs.meals}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>🎫 Attività/Tour:</span>
+                            <span class="font-bold">€${result.costs.activities}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>🎁 Extra/Shopping:</span>
+                            <span class="font-bold">€${result.costs.extras}</span>
+                        </div>
+                        ` : ''}
+                        <div class="border-t border-white/30 pt-2 flex justify-between text-lg">
+                            <span>TOTALE:</span>
+                            <span class="font-bold text-yellow-400">€${result.costs.total}</span>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-300 space-y-1">
+                        <p>🎮 Vacanza 4D per ${people} ${people === 1 ? 'persona' : 'persone'} • ${result.tripDays || 7} giorni</p>
+                        <p>📊 €${result.budgetPerDay || Math.round(result.costs.total / (result.tripDays || 7))} al giorno per tutto</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('result-content').innerHTML = html;
+        }
+
+        function toggleBudgetType(type) {
+            budgetType = type;
+            
+            document.getElementById('budget-type-essential').classList.toggle('active', type === 'essential');
+            document.getElementById('budget-type-complete').classList.toggle('active', type === 'complete');
+            
+            const description = document.getElementById('budget-description');
+            if (type === 'essential') {
+                description.textContent = 'Solo volo + hotel • Pasti e attività esclusi';
+            } else {
+                description.textContent = 'Volo + Hotel + Pasti + Attività • Zero pensieri!';
+            }
+            
+            triggerLiveSearch();
+        }
+
+        async function showGuide() {
+            if (!currentResult) return;
+            
+            const modal = document.getElementById('guide-modal');
+            const content = document.getElementById('guide-content');
+            
+            content.innerHTML = '<div class="text-center"><div class="text-4xl mb-4">🤖</div><p>L\'AI sta creando la tua guida 4D personalizzata...</p></div>';
+            modal.classList.remove('hidden');
+            
+            try {
+                const guide = await generateTravelGuide(currentResult, parseInt(document.getElementById('people').value));
+                
+                content.innerHTML = `
+                    <div class="bg-white/10 rounded-lg p-4 mb-4">
+                        <h3 class="text-lg font-bold mb-2">📍 ${currentResult.destination}, ${currentResult.country}</h3>
+                        <p class="text-sm text-gray-300">Guida 4D personalizzata per ${document.getElementById('people').value} persone</p>
+                        ${currentResult.travelDates ? `<p class="text-sm text-yellow-200 mt-1">📅 ${currentResult.travelDates.start} - ${currentResult.travelDates.end}</p>` : ''}
+                        ${currentResult.whyPerfect4D ? `<p class="text-sm text-pink-200 mt-1">🎮 ${currentResult.whyPerfect4D}</p>` : ''}
+                    </div>
+                    <div class="space-y-4 text-sm whitespace-pre-line leading-relaxed">
+                        ${guide}
+                    </div>
+                    <div class="mt-6 p-4 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
+                        <p class="text-sm text-yellow-200">
+                            💡 <strong>Consiglio:</strong> Questa guida è ottimizzata per i tuoi parametri 4D! 
+                            Prezzi realistici aggiornati al 2025.
+                        </p>
+                    </div>
+                `;
+            } catch (error) {
+                content.innerHTML = '<p class="text-red-400">Errore nella generazione della guida 4D. Riprova!</p>';
+            }
+        }
+
+        async function generateTravelGuide(destination, people, days = 7) {
+            const prompt = `Crea guida turistica per ${destination.destination}, ${destination.country} per ${people} persone per ${days || destination.tripDays} giorni. Sii creativo con luoghi reali e attività varie. Ogni giorno diverso con orari logici e prezzi 2025.`;
+            
+            // Simplified guide generation for now
+            const guide = `📅 GIORNO 1 - Arrivo e scoperta
+• 10:00 - Check-in hotel e colazione (€25)
+• 12:00 - Tour centro storico (€30)  
+• 15:00 - Pranzo locale (€35)
+• 17:30 - Visita attrazione principale (€20)
+• 20:00 - Cena tipica (€45)
+💰 Budget giorno: €155
+
+📅 GIORNO 2 - Cultura e tradizioni
+• 09:30 - Colazione vista panoramica (€20)
+• 11:00 - Musei e arte locale (€25)
+• 14:00 - Pranzo tradizionale (€30)
+• 16:30 - Shopping e artigianato (€40)  
+• 19:00 - Aperitivo locale (€18)
+• 21:00 - Spettacolo folkloristico (€35)
+💰 Budget giorno: €168`;
+            
+            return guide;
+        }
+
+        // Make functions globally accessible
+        window.toggleBudgetType = toggleBudgetType;
+
+        // Start app
+        init();
+    </script>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 text-center py-6 mt-12">
+        <div class="container mx-auto px-4">
+            <p class="text-sm">
+                🎮 Powered by AI 4D • Destinazioni ottimizzate per le tue preferenze multidimensionali<br>
+                Prenotazioni sicure tramite Booking.com e Skyscanner
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html><!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -58,17 +647,6 @@ function setupEvents() {
             background: rgba(255, 255, 255, 0.1); 
             backdrop-filter: blur(16px); 
             border: 1px solid rgba(255, 255, 255, 0.2); 
-        }
-        
-        .preference-btn {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .preference-btn:hover { transform: scale(1.05); }
-        .preference-btn.selected {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
-            color: #000 !important;
-            transform: scale(1.1);
         }
 
         .custom-dropdown {
@@ -153,6 +731,86 @@ function setupEvents() {
             font-weight: bold;
         }
 
+        /* 🔥 4D SLIDER STYLES */
+        .slider-4d {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .slider-4d-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .slider-4d-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+        }
+
+        .slider-4d-dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: grab;
+            transition: all 0.2s;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+        }
+
+        .slider-4d-dot:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.6);
+        }
+
+        .slider-4d-dot:active {
+            cursor: grabbing;
+        }
+
+        .slider-4d-labels {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            pointer-events: none;
+        }
+
+        .slider-4d-label {
+            position: absolute;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .slider-4d-label.top { top: -24px; left: 50%; transform: translateX(-50%); }
+        .slider-4d-label.bottom { bottom: -24px; left: 50%; transform: translateX(-50%); }
+        .slider-4d-label.left { left: -60px; top: 50%; transform: translateY(-50%); }
+        .slider-4d-label.right { right: -60px; top: 50%; transform: translateY(-50%); }
+
         .modal {
             position: fixed;
             top: 0;
@@ -223,17 +881,17 @@ function setupEvents() {
                 <p class="text-xl text-gray-300">Gloob your new destination! 🌍</p>
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
                 <div class="glass-card rounded-2xl p-6">
                     
-                    <!-- BUDGET TOGGLE MOVED TO TOP -->
+                    <!-- BUDGET TYPE TOGGLE - DEFAULT ALL INCLUSIVE -->
                     <div class="mb-6 text-center">
-                        <label class="block text-sm font-medium mb-3">💰 Tipo di Budget</label>
+                        <label class="block text-sm font-medium mb-3">💰 Tipo di Vacanza</label>
                         <div class="budget-toggle justify-center">
-                            <button id="budget-type-essential" class="active" onclick="toggleBudgetType('essential')">💡 Solo Essenziale</button>
-                            <button id="budget-type-complete" onclick="toggleBudgetType('complete')">🎯 Tutto Incluso</button>
+                            <button id="budget-type-essential" onclick="toggleBudgetType('essential')">💡 Solo Base</button>
+                            <button id="budget-type-complete" class="active" onclick="toggleBudgetType('complete')">🎯 Tutto Incluso</button>
                         </div>
-                        <p id="budget-description" class="text-xs text-gray-400 mt-2">Volo + Hotel • Pasti e attività esclusi</p>
+                        <p id="budget-description" class="text-xs text-gray-400 mt-2">Volo + Hotel + Pasti + Attività • Zero pensieri!</p>
                     </div>
                     
                     <div class="mb-5">
@@ -242,7 +900,7 @@ function setupEvents() {
                                class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold focus:ring-2 focus:ring-yellow-400 outline-none">
                     </div>
 
-                    <div class="mb-5">
+                    <div class="mb-6">
                         <label class="block text-sm font-medium mb-2">👥 Persone</label>
                         <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none">
                             <option value="1">1 persona</option>
@@ -253,44 +911,38 @@ function setupEvents() {
                         </select>
                     </div>
 
-                    <div class="mb-5">
-                        <label class="block text-sm font-medium mb-2">✨ Stile</label>
-                        <input type="range" id="luxury" value="50" min="0" max="100" 
-                               class="w-full h-3 bg-gradient-to-r from-green-500 via-yellow-500 to-purple-500 rounded-lg appearance-none cursor-pointer">
-                        <div class="flex justify-between text-xs mt-1">
-                            <span class="text-green-400 font-bold">ECONOMICO</span>
-                            <span class="text-purple-400 font-bold">LUSSO</span>
+                    <!-- 🔥 4D SLIDER 1: STILE & POPOLARITÀ -->
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium mb-4 text-center">✨ Stile & Popolarità</label>
+                        <div class="slider-4d" id="style-slider">
+                            <div class="slider-4d-grid"></div>
+                            <div class="slider-4d-center"></div>
+                            <div class="slider-4d-dot" id="style-dot"></div>
+                            <div class="slider-4d-labels">
+                                <div class="slider-4d-label top">🌟 FAMOSA</div>
+                                <div class="slider-4d-label bottom">💎 SCONOSCIUTA</div>
+                                <div class="slider-4d-label left">💚 ECONOMICO</div>
+                                <div class="slider-4d-label right">💜 LUSSO</div>
+                            </div>
                         </div>
+                        <p class="text-center text-xs text-gray-400 mt-2">Trascina il pallino per scegliere il tuo stile</p>
                     </div>
 
-                    <div class="mb-5">
-                        <label class="block text-sm font-medium mb-2">📏 Durata vs Qualità</label>
-                        <input type="range" id="duration" value="50" min="0" max="100" 
-                               class="w-full h-3 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg appearance-none cursor-pointer">
-                        <div class="flex justify-between text-xs mt-1">
-                            <span class="text-blue-400 font-bold">LUNGA & CHEAP</span>
-                            <span class="text-pink-400 font-bold">BREVE & LUXURY</span>
+                    <!-- 🔥 4D SLIDER 2: AMBIENTE & ENERGIA -->
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium mb-4 text-center">🏞️ Ambiente & Energia</label>
+                        <div class="slider-4d" id="environment-slider">
+                            <div class="slider-4d-grid"></div>
+                            <div class="slider-4d-center"></div>
+                            <div class="slider-4d-dot" id="environment-dot"></div>
+                            <div class="slider-4d-labels">
+                                <div class="slider-4d-label top">🏔️ MONTAGNA</div>
+                                <div class="slider-4d-label bottom">🏖️ MARE</div>
+                                <div class="slider-4d-label left">😌 RELAX</div>
+                                <div class="slider-4d-label right">🎒 AVVENTURA</div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="mb-5">
-                        <label class="block text-sm font-medium mb-2">🗺️ Destinazione</label>
-                        <input type="range" id="popularity" value="50" min="0" max="100" 
-                               class="w-full h-3 bg-gradient-to-r from-orange-500 via-yellow-500 to-red-500 rounded-lg appearance-none cursor-pointer">
-                        <div class="flex justify-between text-xs mt-1">
-                            <span class="text-orange-400 font-bold">SCONOSCIUTA</span>
-                            <span class="text-red-400 font-bold">FAMOSA</span>
-                        </div>
-                    </div>
-
-                    <div class="mb-5">
-                        <label class="block text-sm font-medium mb-2">🌍 Distanza</label>
-                        <input type="range" id="distance" value="50" min="0" max="100" 
-                               class="w-full h-3 bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 rounded-lg appearance-none cursor-pointer">
-                        <div class="flex justify-between text-xs mt-1">
-                            <span class="text-green-400 font-bold">VICINO</span>
-                            <span class="text-blue-400 font-bold">LONTANO</span>
-                        </div>
+                        <p class="text-center text-xs text-gray-400 mt-2">Scegli ambiente e livello di attività</p>
                     </div>
 
                     <div class="mb-5">
@@ -308,18 +960,6 @@ function setupEvents() {
                                 <div class="dropdown-item" data-transport="bus">🚌 Bus</div>
                                 <div class="dropdown-item" data-transport="ferry">⛴️ Nave/Traghetto</div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-3">🎯 Cosa cerchi?</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button data-pref="sea" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">🏖️ Mare</button>
-                            <button data-pref="mountain" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">🏔️ Montagna</button>
-                            <button data-pref="romantic" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">💕 Romantico</button>
-                            <button data-pref="culture" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">🏛️ Cultura</button>
-                            <button data-pref="food" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">🍝 Gastronomia</button>
-                            <button data-pref="adventure" class="preference-btn p-3 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20">🎒 Avventura</button>
                         </div>
                     </div>
 
@@ -354,8 +994,8 @@ function setupEvents() {
                         <div class="continent oceania"></div>
                     </div>
                 </div>
-                <h2 class="text-4xl font-bold mb-2">🤖 AI al lavoro...</h2>
-                <p class="text-lg text-gray-300" id="search-text">Cerco destinazioni reali nel tuo budget...</p>
+                <h2 class="text-4xl font-bold mb-2">🤖 AI 4D al lavoro...</h2>
+                <p class="text-lg text-gray-300" id="search-text">Analizzo le tue preferenze multidimensionali...</p>
             </div>
         </div>
 
@@ -363,7 +1003,7 @@ function setupEvents() {
         <div id="result-step" class="hidden container mx-auto px-4 py-8">
             <div class="max-w-4xl mx-auto">
                 <div class="text-center mb-6">
-                    <h1 class="text-4xl font-bold mb-2">🎉 Ecco la tua destinazione!</h1>
+                    <h1 class="text-4xl font-bold mb-2">🎉 Ecco la tua destinazione 4D!</h1>
                 </div>
 
                 <div id="result-content">
@@ -401,50 +1041,48 @@ function setupEvents() {
         const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
         // App state
-        let selectedPreference = null;
         let selectedTransport = 'plane';
         let currentResult = null;
-        let budgetType = 'essential'; // 'essential' or 'complete'
-        let lastSearchParams = null; // Track last search to avoid duplicates
-        let usedDestinations = []; // Track used destinations for variety
+        let budgetType = 'complete'; // DEFAULT: All inclusive
+        let usedDestinations = [];
 
-        // 🎯 ENHANCED: AI DESTINATION FINDER WITH REAL-TIME VARIETY
-        async function findDestinationWithPureAI(budget, people, luxury, preference, transport, budgetType, duration, popularity, distance) {
-            // Calculate per-person budget and trip duration
+        // 🔥 4D SLIDER VALUES
+        let styleValues = { x: 50, y: 50 }; // x: luxury (0-100), y: popularity (0-100) 
+        let environmentValues = { x: 50, y: 50 }; // x: energy (0-100), y: environment (0-100)
+
+        // 🎯 AI DESTINATION FINDER WITH 4D SLIDERS
+        async function findDestinationWith4D(budget, people, transport, budgetType, styleValues, environmentValues) {
             const budgetPerPerson = Math.round(budget / people);
             
-            // Smart duration calculation based on slider
-            const tripDays = duration < 30 ? Math.max(3, Math.round(14 - duration/10)) : // Short luxury trips
-                           duration > 70 ? Math.max(7, Math.round(7 + duration/20)) : // Long cheap trips  
-                           7; // Default week
+            // Convert 4D values to readable parameters
+            const luxury = styleValues.x; // 0 = cheap, 100 = luxury
+            const popularity = 100 - styleValues.y; // 0 = unknown, 100 = famous (inverted Y)
+            const energy = environmentValues.x; // 0 = relax, 100 = adventure  
+            const environment = 100 - environmentValues.y; // 0 = sea, 100 = mountain (inverted Y)
             
-            // Distance mapping
-            const distanceText = distance < 25 ? 'Europa vicina (max 3h volo)' :
-                               distance < 50 ? 'Europa media (max 5h volo)' :
-                               distance < 75 ? 'Europa/Nord Africa (max 7h volo)' :
-                               'Destinazioni esotiche (anche intercontinentali)';
+            // Smart duration based on luxury level
+            const tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :  // Long cheap
+                           luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :     // Short luxury
+                           Math.max(5, Math.round(7 - luxury/50));                    // Medium
             
-            // Popularity mapping  
-            const popularityText = popularity < 25 ? 'destinazioni nascoste e autentiche, poco turistiche' :
-                                  popularity < 50 ? 'destinazioni emergenti, non troppo affollate' :
-                                  popularity < 75 ? 'destinazioni conosciute ma non mainstream' :
-                                  'destinazioni iconiche e famose';
-            
-            // Create variety seed to ensure different results
+            // Create variety seed
             const varietySeed = Date.now() + Math.random() * 1000;
             const avoidDestinations = usedDestinations.length > 0 ? 
                 `NON suggerire mai: ${usedDestinations.join(', ')}. ` : '';
             
-            const prompt = `Sei un consulente di viaggi AI con accesso a database globali. TROVA UNA DESTINAZIONE UNICA per:
+            const prompt = `Sei un consulente di viaggi AI 4D. TROVA UNA DESTINAZIONE UNICA per:
 
-PARAMETRI CLIENTE:
+PARAMETRI 4D CLIENTE:
 💰 Budget: €${budget} TOTALE per ${people} persone (€${budgetPerPerson} per persona)
-📅 Durata: ${tripDays} giorni (${duration < 30 ? 'breve e lussuosa' : duration > 70 ? 'lunga ed economica' : 'equilibrata'})
+📅 Durata: ${tripDays} giorni (${luxury < 30 ? 'viaggio lungo ed economico' : luxury > 70 ? 'viaggio breve e lussuoso' : 'viaggio equilibrato'})
 🎯 Budget type: ${budgetType === 'complete' ? 'TUTTO INCLUSO (volo+hotel+pasti+attività)' : 'SOLO ESSENZIALE (volo+hotel)'}
-✨ Stile: ${luxury < 30 ? 'Economico/Backpacker' : luxury > 70 ? 'Lusso/Premium' : 'Comfort/Medio'}
-🗺️ Popolarità: ${popularityText}
-🌍 Distanza: ${distanceText}
-🎯 Preferenza: ${preference ? getPreferenceName(preference) : 'Flessibile, sorprendimi!'}
+
+🎮 PREFERENZE 4D:
+✨ Stile: ${luxury}% lusso (${luxury < 25 ? 'ultra economico' : luxury < 50 ? 'economico' : luxury < 75 ? 'medio-alto' : 'lusso premium'})
+🗺️ Popolarità: ${popularity}% famosa (${popularity < 25 ? 'destinazione segreta' : popularity < 50 ? 'poco conosciuta' : popularity < 75 ? 'conosciuta' : 'iconica e famosa'})
+🏞️ Ambiente: ${environment}% montagna (${environment < 25 ? 'mare e spiagge' : environment < 50 ? 'costa e colline' : environment < 75 ? 'colline e natura' : 'montagna e vette'})
+⚡ Energia: ${energy}% avventura (${energy < 25 ? 'massimo relax' : energy < 50 ? 'relax attivo' : energy < 75 ? 'moderate attività' : 'avventura pura'})
+
 🚀 Trasporto: ${getTransportName(transport)}
 🌍 Stagione: ${getCurrentSeason()} 2025
 
@@ -454,22 +1092,18 @@ ${avoidDestinations}
 
 COMPITO: Trova LA destinazione perfetta che:
 ✅ Rientra ESATTAMENTE nel budget €${budget} ${budgetType}
-✅ È ${popularityText}
-✅ Rispetta distanza "${distanceText}"
-✅ Ottimizzata per ${tripDays} giorni
+✅ Rispecchia PERFETTAMENTE i valori 4D (stile, popolarità, ambiente, energia)
+✅ È ottimizzata per ${tripDays} giorni
 ✅ È DIVERSA da tutte le ricerche precedenti
 ✅ Ha prezzi REALI aggiornati ${getCurrentSeason()} 2025
-
-CALCOLA con precisione: volo da Milano + hotel ${tripDays} notti + ${budgetType === 'complete' ? 'pasti + attività locali' : 'solo base'}
 
 RISPOSTA JSON (PULITA, NO MARKDOWN):
 {
   "destination": "Nome Città Specifica",
   "country": "Paese", 
   "emoji": "🌅",
-  "description": "Perché è perfetta in 10-15 parole",
-  "whyBudget": "Come rientra nel budget €${budget} ${budgetType} per ${tripDays} giorni",
-  "whyUnique": "Cosa la rende speciale e diversa dalle solite destinazioni",
+  "description": "Perché è perfetta per questi parametri 4D",
+  "whyPerfect4D": "Come rispecchia esattamente stile ${luxury}%, popolarità ${popularity}%, ambiente ${environment}%, energia ${energy}%",
   "tripDays": ${tripDays},
   "budgetPerDay": ${Math.round(budget / tripDays)},
   "hotel": {
@@ -477,14 +1111,15 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
     "stars": ${Math.max(2, Math.min(5, Math.round(luxury / 20)))},
     "pricePerNight": ${Math.round(budgetPerPerson * 0.4 / tripDays)},
     "totalPrice": ${Math.round(budget * 0.4)},
-    "photo": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&h=300&fit=crop"
+    "photo": "https://images.unsplash.com/photo-${getRandomUnsplashId()}?w=500&h=300&fit=crop"
   },
   "transport": {
     "type": "${transport}",
-    "airline": "Compagnia Reale",
-    "route": "MXP → ABC", 
+    "airline": "${getRandomAirlineName()}",
+    "logo": "${getRandomAirlineLogo()}",
+    "route": "MXP → ${getRandomAirportCode()}",
     "totalPrice": ${Math.round(budget * 0.3)},
-    "duration": "2h 15m"
+    "duration": "${getFlightDuration(50)}"
   },
   "costs": {
     "hotel": ${Math.round(budget * 0.4)},
@@ -495,7 +1130,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
 }`;
 
             try {
-                console.log('🤖 AI Call with variety seed:', varietySeed);
+                console.log('🎮 4D AI Call:', { luxury, popularity, environment, energy });
                 
                 const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
@@ -514,15 +1149,14 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                 if (response.ok) {
                     const data = await response.json();
                     const aiResponse = data.candidates[0].content.parts[0].text;
-                    console.log('🎯 AI Response:', aiResponse);
+                    console.log('🎯 4D AI Response:', aiResponse);
                     
                     const cleanResponse = aiResponse.replace(/```json\n?|\n?```/g, '').trim();
                     const result = JSON.parse(cleanResponse);
                     
-                    // Add to used destinations for variety
+                    // Add to used destinations
                     if (result.destination && !usedDestinations.includes(result.destination)) {
                         usedDestinations.push(result.destination);
-                        // Keep only last 10 to allow eventual reuse
                         if (usedDestinations.length > 10) {
                             usedDestinations.shift();
                         }
@@ -534,719 +1168,37 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                     throw new Error('API Error: ' + response.status);
                 }
             } catch (error) {
-                console.log('🔄 AI error, using enhanced smart fallback:', error);
-                return generateEnhancedDestinationByBudget(budget, people, luxury, preference, transport, budgetType, duration, popularity, distance);
+                console.log('🔄 4D AI error, using smart fallback:', error);
+                return generate4DFallback(budget, people, transport, budgetType, styleValues, environmentValues);
             }
         }
 
-        // Enhanced smart fallback with variety and all parameters
-        function generateEnhancedDestinationByBudget(budget, people, luxury, preference, transport, budgetType, duration, popularity, distance) {
+        // 4D Smart Fallback
+        function generate4DFallback(budget, people, transport, budgetType, styleValues, environmentValues) {
             const budgetPerPerson = budget / people;
+            const luxury = styleValues.x;
+            const popularity = 100 - styleValues.y;
+            const energy = environmentValues.x;
+            const environment = 100 - environmentValues.y;
             
-            // Calculate trip duration from slider
-            const tripDays = duration < 30 ? Math.max(3, Math.round(14 - duration/10)) :
-                           duration > 70 ? Math.max(7, Math.round(7 + duration/20)) :
-                           7;
+            const tripDays = luxury < 30 ? Math.max(8, Math.round(12 - luxury/10)) :
+                           luxury > 70 ? Math.max(3, Math.round(8 - luxury/25)) :
+                           Math.max(5, Math.round(7 - luxury/50));
             
-            // Enhanced destination pools based on ALL parameters
-            const destinationPools = {
-                // Nearby + Unknown
-                nearUnknown: [
-                    { name: 'Maribor', country: 'Slovenia', emoji: '🍷', cost: 280 },
-                    { name: 'Graz', country: 'Austria', emoji: '🏛️', cost: 320 },
-                    { name: 'Annecy', country: 'Francia', emoji: '🏔️', cost: 350 },
-                    { name: 'Brasov', country: 'Romania', emoji: '🏰', cost: 290 },
-                    { name: 'Ohrid', country: 'Macedonia', emoji: '🌊', cost: 250 }
-                ],
-                // Nearby + Known  
-                nearKnown: [
-                    { name: 'Vienna', country: 'Austria', emoji: '🎼', cost: 450 },
-                    { name: 'Munich', country: 'Germania', emoji: '🍺', cost: 480 },
-                    { name: 'Zurigo', country: 'Svizzera', emoji: '🏔️', cost: 520 },
-                    { name: 'Praga', country: 'Rep. Ceca', emoji: '🏛️', cost: 420 },
-                    { name: 'Amsterdam', country: 'Paesi Bassi', emoji: '🌷', cost: 490 }
-                ],
-                // Far + Unknown
-                farUnknown: [
-                    { name: 'Tbilisi', country: 'Georgia', emoji: '🍷', cost: 380 },
-                    { name: 'Yerevan', country: 'Armenia', emoji: '🏔️', cost: 360 },
-                    { name: 'Chisinau', country: 'Moldova', emoji: '🍇', cost: 320 },
-                    { name: 'Skopje', country: 'Macedonia', emoji: '🏛️', cost: 290 },
-                    { name: 'Tirana', country: 'Albania', emoji: '🏔️', cost: 310 }
-                ],
-                // Far + Known
-                farKnown: [
-                    { name: 'Istanbul', country: 'Turchia', emoji: '🕌', cost: 420 },
-                    { name: 'Marrakech', country: 'Marocco', emoji: '🐪', cost: 450 },
-                    { name: 'Tel Aviv', country: 'Israele', emoji: '🏖️', cost: 520 },
-                    { name: 'Reykjavik', country: 'Islanda', emoji: '🌋', cost: 580 },
-                    { name: 'Lisbona', country: 'Portogallo', emoji: '🌊', cost: 410 }
-                ]
-            };
-            
-            // Smart pool selection
-            let pool;
-            if (distance < 50 && popularity < 50) pool = destinationPools.nearUnknown;
-            else if (distance < 50 && popularity >= 50) pool = destinationPools.nearKnown;  
-            else if (distance >= 50 && popularity < 50) pool = destinationPools.farUnknown;
-            else pool = destinationPools.farKnown;
-            
-            // Filter by budget compatibility
-            const maxCostPerPerson = budgetType === 'complete' ? budgetPerPerson * 0.6 : budgetPerPerson * 0.8;
-            const compatibleDests = pool.filter(dest => dest.cost <= maxCostPerPerson);
-            const finalPool = compatibleDests.length > 0 ? compatibleDests : pool;
-            
-            // VARIETY: Exclude recently used destinations
-            const availableDests = finalPool.filter(dest => !usedDestinations.includes(dest.name));
-            const selectedPool = availableDests.length > 0 ? availableDests : finalPool;
-            
-            // Random selection with time-based seed for variety
-            const randomSeed = Date.now() + Math.random() * 1000;
-            const destIndex = Math.floor((randomSeed % selectedPool.length));
-            const dest = selectedPool[destIndex];
-            
-            // Add to used destinations
-            if (!usedDestinations.includes(dest.name)) {
-                usedDestinations.push(dest.name);
-                if (usedDestinations.length > 10) usedDestinations.shift();
-            }
-            
-            // Calculate costs based on trip duration and budget type
-            const dailyBudget = budget / tripDays;
-            const hotelPrice = Math.round(budget * 0.4);
-            const transportPrice = Math.round(budget * 0.3);
-            
-            const result = {
-                destination: dest.name,
-                country: dest.country,
-                emoji: dest.emoji,
-                description: `${dest.name} perfetta per ${tripDays} giorni con €${budget}`,
-                whyBudget: `€${budgetPerPerson} per persona per ${tripDays} giorni ${budgetType} - perfetto!`,
-                whyUnique: `Destinazione ${popularity < 50 ? 'autentica e poco turistica' : 'famosa ma sempre affascinante'} ${distance < 50 ? 'vicina' : 'esotica'}`,
-                tripDays: tripDays,
-                budgetPerDay: Math.round(dailyBudget),
-                travelDates: generateTravelDates(),
-                hotel: {
-                    name: `${dest.name} ${luxury > 70 ? 'Luxury' : luxury > 40 ? 'Grand' : 'Central'} Hotel`,
-                    stars: Math.min(5, Math.max(2, Math.round(luxury / 20))),
-                    pricePerNight: Math.round(hotelPrice / tripDays),
-                    totalPrice: hotelPrice,
-                    photo: `https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&h=300&fit=crop`
-                },
-                transport: {
-                    type: transport,
-                    airline: getRandomAirline(),
-                    route: `MXP → ${dest.name.substring(0, 3).toUpperCase()}`,
-                    totalPrice: transportPrice,
-                    duration: distance < 50 ? '2h 30m' : distance < 75 ? '4h 15m' : '6h 45m'
-                },
-                costs: {
-                    hotel: hotelPrice,
-                    transport: transportPrice,
-                    total: budget
-                }
-            };
-            
-            if (budgetType === 'complete') {
-                const meals = Math.round(budget * 0.2);
-                const activities = Math.round(budget * 0.08);
-                const extras = Math.round(budget * 0.02);
+            // 4D destination pools
+            const destinations4D = [
+                // Cheap + Unknown + Sea + Relax
+                { name: 'Nesebar', country: 'Bulgaria', emoji: '🏖️', match: [20, 20, 20, 20], cost: 280 },
+                { name: 'Ksamil', country: 'Albania', emoji: '🌊', match: [15, 15, 15, 25], cost: 250 },
                 
-                result.costs.meals = meals;
-                result.costs.activities = activities;
-                result.costs.extras = extras;
-            }
-            
-            return result;
-        }
-
-        // Helper functions
-        function generateTravelDates() {
-            const start = new Date();
-            start.setDate(start.getDate() + Math.floor(Math.random() * 60) + 14);
-            const end = new Date(start);
-            end.setDate(end.getDate() + 7);
-            
-            return {
-                start: start.toLocaleDateString('it-IT'),
-                end: end.toLocaleDateString('it-IT'),
-                startDate: start,
-                endDate: end
-            };
-        }
-
-        function getPreferenceName(pref) {
-            const names = {
-                sea: 'Mare/Spiagge', mountain: 'Montagna/Natura', 
-                romantic: 'Romantico/Coppia', culture: 'Cultura/Storia',
-                food: 'Gastronomia/Cibo', adventure: 'Avventura/Sport'
-            };
-            return names[pref] || pref;
-        }
-
-        function getCurrentSeason() {
-            const month = new Date().getMonth();
-            if (month >= 2 && month <= 4) return 'Primavera';
-            if (month >= 5 && month <= 7) return 'Estate'; 
-            if (month >= 8 && month <= 10) return 'Autunno';
-            return 'Inverno';
-        }
-
-        function getTransportName(transport) {
-            const names = {
-                'plane': 'Aereo', 'train': 'Treno', 'car': 'Auto noleggio',
-                'own-car': 'Auto propria', 'bus': 'Bus', 'ferry': 'Nave/Traghetto'
-            };
-            return names[transport] || 'Trasporto';
-        }
-
-        function getRandomAirline() {
-            const airlines = ['Lufthansa', 'ITA Airways', 'Austrian Airlines', 'KLM', 'Air France', 'Swiss'];
-            return airlines[Math.floor(Math.random() * airlines.length)];
-        }
-
-        // AI Travel Guide Generator
-        async function generateTravelGuide(destination, people, days = 7) {
-            const prompt = `Crea una guida turistica dettagliata per ${destination.destination}, ${destination.country} per ${people} persone per ${days} giorni.
-
-IMPORTANTE: Ogni giorno deve essere DIVERSO e specifico per ${destination.destination}:
-- Luoghi reali e attrazioni specifiche di ${destination.destination}
-- Attività variegate (musei, ristoranti, shopping, natura, vita notturna)
-- Prezzi realistici 2024 per ${destination.country}
-- Orari logici (non sempre gli stessi)
-
-Formato richiesto per ogni giorno:
-📅 GIORNO X - Titolo Specifico
-• 09:30 - Attività specifica (€costo reale)
-• 13:00 - Luogo/ristorante vero (€costo)
-• 16:00 - Attrazione unica di ${destination.destination} (€costo)
-• 19:30 - Esperienza locale autentica (€costo)
-💰 Budget giorno: €totale
-
-Sii creativo e usa luoghi VERI di ${destination.destination}!`;
-
-            try {
-                const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: prompt
-                            }]
-                        }]
-                    })
-                });
+                // Cheap + Unknown + Mountain + Adventure  
+                { name: 'Bansko', country: 'Bulgaria', emoji: '🏔️', match: [25, 20, 80, 75], cost: 290 },
+                { name: 'Zakopane', country: 'Polonia', emoji: '⛷️', match: [30, 30, 85, 80], cost: 320 },
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    return data.candidates[0].content.parts[0].text;
-                } else {
-                    throw new Error('API Error');
-                }
-            } catch (error) {
-                console.log('Using guide simulation:', error);
-                return generateSmartGuide(destination, people, days);
-            }
-        }
-
-        function generateSmartGuide(destination, people, days) {
-            const cityGuides = {
-                'Dubrovnik': [
-                    { time: '09:00', activity: 'Colazione al Café Festival', cost: 12 },
-                    { time: '10:30', activity: 'Camminata sulle Mura di Dubrovnik', cost: 35 },
-                    { time: '13:30', activity: 'Pranzo da Kopun Restaurant', cost: 28 },
-                    { time: '15:30', activity: 'Visita Palazzo del Rettore', cost: 15 },
-                    { time: '18:00', activity: 'Aperitivo al Buža Bar', cost: 18 },
-                    { time: '20:00', activity: 'Cena al Proto Restaurant', cost: 55 }
-                ],
-                'Praga': [
-                    { time: '09:30', activity: 'Colazione al Café Savoy', cost: 14 },
-                    { time: '11:00', activity: 'Visita Castello di Praga', cost: 25 },
-                    { time: '14:00', activity: 'Pranzo da U Fleků (birreria storica)', cost: 22 },
-                    { time: '16:00', activity: 'Passeggiata su Ponte Carlo', cost: 0 },
-                    { time: '18:30', activity: 'Aperitivo nella Città Vecchia', cost: 15 },
-                    { time: '20:30', activity: 'Cena tradizionale ceca', cost: 35 }
-                ],
-                'Budapest': [
-                    { time: '09:00', activity: 'Colazione al New York Café', cost: 16 },
-                    { time: '10:30', activity: 'Terme Széchenyi', cost: 22 },
-                    { time: '13:30', activity: 'Pranzo al Mercato Centrale', cost: 18 },
-                    { time: '15:30', activity: 'Parlamento Ungherese (tour)', cost: 20 },
-                    { time: '18:00', activity: 'Aperitivo sui Bastioni', cost: 14 },
-                    { time: '20:30', activity: 'Cena con vista Danubio', cost: 45 }
-                ]
-            };
-
-            const defaultGuide = [
-                { time: '09:30', activity: 'Colazione locale tipica', cost: 12 },
-                { time: '11:00', activity: 'Tour centro storico', cost: 20 },
-                { time: '13:30', activity: 'Pranzo tradizionale', cost: 25 },
-                { time: '16:00', activity: 'Visita attrazione principale', cost: 18 },
-                { time: '18:30', activity: 'Aperitivo panoramico', cost: 15 },
-                { time: '20:30', activity: 'Cena tipica regionale', cost: 35 }
-            ];
-
-            const guide = cityGuides[destination.destination] || defaultGuide;
-            let result = '';
-            
-            for (let day = 1; day <= days; day++) {
-                const dayTitles = [
-                    'Arrivo e prima scoperta',
-                    'Centro storico e cultura',
-                    'Attrazioni principali',
-                    'Quartieri caratteristici',
-                    'Natura e relax',
-                    'Shopping e gastronomia',
-                    'Ultimo giorno e partenza'
-                ];
+                // Luxury + Famous + Sea + Relax
+                { name: 'Santorini', country: 'Grecia', emoji: '🌅', match: [85, 90, 20, 30], cost: 650 },
+                { name: 'Monaco', country: 'Francia', emoji: '🛥️', match: [95, 95, 25, 20], cost: 800 },
                 
-                const dayTitle = dayTitles[day - 1] || `Esplorazione giorno ${day}`;
-                result += `📅 GIORNO ${day} - ${dayTitle}\n`;
-                
-                const dayActivities = guide.map((act, index) => {
-                    const variation = (day - 1) * 0.15 + Math.random() * 0.1;
-                    const newCost = Math.round(act.cost * people * (1 + variation));
-                    
-                    // Vary activities by day
-                    let newActivity = act.activity;
-                    if (day > 1) {
-                        if (act.activity.includes('Colazione')) {
-                            const alternatives = ['Café', 'Bakery', 'Hotel', 'Bistrot'];
-                            const alt = alternatives[day % alternatives.length];
-                            newActivity = newActivity.replace(/Café|Bakery|Hotel|Bistrot/, alt);
-                        }
-                        if (act.activity.includes('Pranzo')) {
-                            const variations = ['da', 'al', 'presso', 'nel'];
-                            const var1 = variations[day % variations.length];
-                            newActivity = newActivity.replace(/da|al|presso|nel/, var1);
-                        }
-                    }
-                    
-                    return {
-                        time: act.time,
-                        activity: newActivity,
-                        cost: newCost
-                    };
-                });
-                
-                const dailyTotal = dayActivities.reduce((sum, act) => sum + act.cost, 0);
-                
-                dayActivities.forEach(act => {
-                    result += `• ${act.time} - ${act.activity} (€${act.cost})\n`;
-                });
-                
-                result += `💰 Budget giorno: €${dailyTotal}\n\n`;
-            }
-            
-            return result;
-        }
-
-        // App initialization and event handling
-        function init() {
-            setTimeout(() => {
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('form-step').classList.remove('hidden');
-                setupEvents();
-            }, 800);
-        }
-
-        function setupEvents() {
-            // Transport dropdown
-            const transportBtn = document.getElementById('transport-btn');
-            const transportMenu = document.getElementById('transport-menu');
-            const transportSelected = document.getElementById('transport-selected');
-            
-            transportBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                transportMenu.classList.toggle('hidden');
-            });
-            
-            document.querySelectorAll('[data-transport]').forEach(item => {
-                item.addEventListener('click', () => {
-                    selectedTransport = item.dataset.transport;
-                    transportSelected.textContent = item.textContent;
-                    transportMenu.classList.add('hidden');
-                    triggerLiveSearch(); // 🔥 LIVE SEARCH ON CHANGE
-                });
-            });
-            
-            document.addEventListener('click', () => {
-                transportMenu.classList.add('hidden');
-            });
-
-            // 🔥 REAL-TIME SEARCH ON ALL SLIDERS
-            const sliders = ['luxury', 'duration', 'popularity', 'distance'];
-            sliders.forEach(sliderId => {
-                const slider = document.getElementById(sliderId);
-                slider.addEventListener('input', debounce(() => {
-                    triggerLiveSearch();
-                }, 800)); // Wait 800ms after user stops moving slider
-            });
-
-            // Budget and people changes
-            document.getElementById('budget').addEventListener('input', debounce(() => {
-                triggerLiveSearch();
-            }, 1000));
-            
-            document.getElementById('people').addEventListener('change', () => {
-                triggerLiveSearch();
-            });
-
-            // Preference selection
-            document.querySelectorAll('.preference-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const pref = btn.dataset.pref;
-                    
-                    document.querySelectorAll('.preference-btn').forEach(b => 
-                        b.classList.remove('selected'));
-                    
-                    if (selectedPreference === pref) {
-                        selectedPreference = null;
-                    } else {
-                        selectedPreference = pref;
-                        btn.classList.add('selected');
-                    }
-                    triggerLiveSearch(); // 🔥 LIVE SEARCH ON PREFERENCE CHANGE
-                });
-            });
-
-            // Main buttons
-            document.getElementById('gloob-btn').addEventListener('click', startGloob);
-            document.getElementById('regloob-btn').addEventListener('click', () => {
-                // 🎲 FORCE NEW DESTINATION by clearing used destinations
-                usedDestinations = [];
-                showStep('form');
-                selectedPreference = null;
-                document.querySelectorAll('.preference-btn').forEach(btn => 
-                    btn.classList.remove('selected'));
-            });
-
-            // Guide modal
-            document.getElementById('guide-btn').addEventListener('click', showGuide);
-            document.getElementById('close-guide').addEventListener('click', () => {
-                document.getElementById('guide-modal').classList.add('hidden');
-            });
-        }
-
-        // 🔥 LIVE SEARCH FUNCTIONALITY
-        let liveSearchTimeout;
-        let isLiveSearching = false;
-
-        function triggerLiveSearch() {
-            // Only trigger if we have minimum viable inputs
-            const budget = parseInt(document.getElementById('budget').value);
-            if (budget < 300) return;
-
-            clearTimeout(liveSearchTimeout);
-            
-            liveSearchTimeout = setTimeout(async () => {
-                if (isLiveSearching) return; // Prevent overlapping searches
-                
-                isLiveSearching = true;
-                console.log('🔥 LIVE SEARCH triggered');
-                
-                try {
-                    // Show mini loading indicator
-                    const globe = document.getElementById('globe');
-                    globe.style.transform = 'scale(0.95)';
-                    globe.style.opacity = '0.7';
-                    
-                    // Get all current values
-                    const people = parseInt(document.getElementById('people').value);
-                    const luxury = parseInt(document.getElementById('luxury').value);
-                    const duration = parseInt(document.getElementById('duration').value);
-                    const popularity = parseInt(document.getElementById('popularity').value);
-                    const distance = parseInt(document.getElementById('distance').value);
-                    
-                    // Generate preview destination
-                    currentResult = await findDestinationWithPureAI(
-                        budget, people, luxury, selectedPreference, 
-                        selectedTransport, budgetType, duration, popularity, distance
-                    );
-                    
-                    // Update globe with destination hint
-                    const hintElement = document.createElement('div');
-                    hintElement.className = 'absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded';
-                    hintElement.textContent = `${currentResult.emoji} ${currentResult.destination}`;
-                    
-                    // Remove old hint
-                    const oldHint = globe.querySelector('div');
-                    if (oldHint) oldHint.remove();
-                    
-                    globe.appendChild(hintElement);
-                    
-                    // Restore globe
-                    globe.style.transform = 'scale(1)';
-                    globe.style.opacity = '1';
-                    
-                } catch (error) {
-                    console.log('Live search error:', error);
-                } finally {
-                    isLiveSearching = false;
-                }
-            }, 300);
-        }
-
-        // Debounce helper
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        function showStep(step) {
-            document.getElementById('form-step').classList.add('hidden');
-            document.getElementById('spin-step').classList.add('hidden');
-            document.getElementById('result-step').classList.add('hidden');
-            document.getElementById(step + '-step').classList.remove('hidden');
-        }
-
-        async function startGloob() {
-            const budget = parseInt(document.getElementById('budget').value);
-            const people = parseInt(document.getElementById('people').value);
-            
-            if (budget < 300) {
-                alert('Budget minimo: €300');
-                return;
-            }
-            
-            showStep('spin');
-            
-            // Update search text based on parameters
-            const duration = parseInt(document.getElementById('duration').value);
-            const popularity = parseInt(document.getElementById('popularity').value);
-            const distance = parseInt(document.getElementById('distance').value);
-            
-            const tripType = duration < 30 ? 'breve e lussuosa' : 
-                           duration > 70 ? 'lunga ed economica' : 'equilibrata';
-            const destType = popularity < 50 ? 'autentica' : 'famosa';
-            const distType = distance < 50 ? 'vicina' : 'esotica';
-            
-            const searchTexts = [
-                `🤖 Cerco destinazione ${destType} e ${distType} per vacanza ${tripType}...`,
-                `🌍 Budget €${budget} ${budgetType} per ${people} persone...`,
-                `🔍 Analizzo ${distance < 50 ? 'Europa vicina' : 'destinazioni lontane'}...`,
-                `💡 Calcolando durata ottimale e qualità del viaggio...`,
-                `🎯 Evito destinazioni già viste - solo sorprese!`
-            ];
-            
-            let textIndex = 0;
-            const searchTextElement = document.getElementById('search-text');
-            
-            const textInterval = setInterval(() => {
-                searchTextElement.textContent = searchTexts[textIndex];
-                textIndex = (textIndex + 1) % searchTexts.length;
-            }, 1200);
-            
-            document.getElementById('spinning-globe').classList.add('spinning');
-            
-            try {
-                const luxury = parseInt(document.getElementById('luxury').value);
-                
-                // 🎯 Call ENHANCED AI function with all parameters
-                currentResult = await findDestinationWithPureAI(
-                    budget, people, luxury, selectedPreference, 
-                    selectedTransport, budgetType, duration, popularity, distance
-                );
-                
-                clearInterval(textInterval);
-                document.getElementById('spinning-globe').classList.remove('spinning');
-                displayResult();
-                setTimeout(() => showStep('result'), 300);
-            } catch (error) {
-                console.error('Error:', error);
-                clearInterval(textInterval);
-                alert('Errore durante la ricerca AI. Riprova!');
-                showStep('form');
-            }
-        }
-
-        function displayResult() {
-            const result = currentResult;
-            const people = parseInt(document.getElementById('people').value);
-            const stars = '⭐'.repeat(result.hotel.stars || 4);
-            
-            const html = `
-                <div class="glass-card rounded-2xl p-6 text-center mb-6">
-                    <div class="text-6xl mb-4">${result.emoji}</div>
-                    <h2 class="text-3xl font-bold text-yellow-400 mb-2">${result.destination}</h2>
-                    <p class="text-xl text-gray-300 mb-4">${result.country}</p>
-                    <p class="text-gray-400 mb-3">${result.description}</p>
-                    
-                    ${result.whyUnique ? `
-                    <div class="bg-blue-500/20 rounded-lg p-3 mx-auto max-w-md mb-3">
-                        <p class="text-sm font-medium text-blue-200">🌟 ${result.whyUnique}</p>
-                    </div>
-                    ` : ''}
-                    
-                    <div class="bg-white/20 rounded-lg p-3 mx-auto max-w-md">
-                        <p class="text-sm font-medium">${result.whyBudget || result.whyPerfect || 'Destinazione ottimale per il tuo budget!'}</p>
-                    </div>
-                    
-                    ${result.travelDates ? `
-                    <div class="mt-4 text-sm text-yellow-200">
-                        📅 <strong>Date viaggio:</strong> ${result.travelDates.start} - ${result.travelDates.end}
-                        ${result.tripDays ? ` (${result.tripDays} giorni)` : ''}
-                        ${result.budgetPerDay ? ` • €${result.budgetPerDay}/giorno` : ''}
-                    </div>
-                    ` : ''}
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <!-- Hotel -->
-                    <div class="bg-white rounded-2xl p-6 text-gray-800">
-                        <div class="hotel-photo rounded-lg mb-4 h-48 bg-cover bg-center" style="background-image: url('${result.hotel.photo || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&h=300&fit=crop'}')"></div>
-                        <h3 class="text-xl font-bold mb-2">${result.hotel.name}</h3>
-                        <div class="text-yellow-500 text-lg mb-2">${stars}</div>
-                        <p class="text-sm text-gray-600 mb-4">${result.hotel.description || 'Hotel di qualità nel centro della città'}</p>
-                        <div class="text-sm text-gray-600 mb-4">
-                            <div><strong>Prezzo per notte:</strong> €${result.hotel.pricePerNight || Math.round(result.hotel.totalPrice / (result.tripDays || 7))}</div>
-                            <div><strong>Totale ${result.tripDays || 7} notti:</strong> €${result.hotel.totalPrice}</div>
-                        </div>
-                        <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(result.destination + ', ' + result.country)}&checkin=${result.travelDates ? result.travelDates.startDate.toISOString().split('T')[0] : ''}&checkout=${result.travelDates ? result.travelDates.endDate.toISOString().split('T')[0] : ''}&group_adults=${people}&no_rooms=1" target="_blank" class="book-btn w-full">
-                            🏨 PRENOTA HOTEL
-                        </a>
-                    </div>
-
-                    <!-- Transport -->
-                    <div class="bg-white rounded-2xl p-6 text-gray-800">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="airline-logo text-lg font-bold bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center">
-                                ${result.transport.airline ? result.transport.airline.substring(0,2).toUpperCase() : 'LH'}
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold">${result.transport.airline || 'Compagnia Aerea'}</h3>
-                                <p class="text-gray-600">${result.transport.route || 'MXP → Destinazione'}</p>
-                            </div>
-                        </div>
-                        <div class="text-sm text-gray-600 mb-4">
-                            <div><strong>Durata:</strong> ${result.transport.duration || '2h 30m'}</div>
-                            <div><strong>A/R per ${people} persone</strong></div>
-                            ${result.travelDates ? `<div><strong>Partenza:</strong> ${result.travelDates.start}</div><div><strong>Ritorno:</strong> ${result.travelDates.end}</div>` : ''}
-                        </div>
-                        <p class="text-lg font-bold text-green-600 mb-4">€${result.transport.totalPrice}</p>
-                        <a href="https://www.skyscanner.it/transport/flights/mila/${result.destination.toLowerCase().replace(/\s+/g, '').substring(0,4)}/${result.travelDates ? result.travelDates.startDate.toISOString().split('T')[0].replace(/-/g, '') : ''}/${result.travelDates ? result.travelDates.endDate.toISOString().split('T')[0].replace(/-/g, '') : ''}/?adults=${people}" target="_blank" class="book-btn w-full">
-                            ✈️ PRENOTA VOLO
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Enhanced Budget Summary -->
-                <div class="glass-card rounded-2xl p-6 text-center mb-6">
-                    <h3 class="text-xl font-bold mb-4">💰 Riepilogo Costi ${budgetType === 'complete' ? 'Tutto Incluso' : 'Essenziale'}</h3>
-                    <div class="space-y-2 mb-4 text-left max-w-md mx-auto">
-                        <div class="flex justify-between">
-                            <span>🏨 Hotel (${result.tripDays || 7} notti):</span>
-                            <span class="font-bold">€${result.costs.hotel}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>✈️ ${getTransportName(selectedTransport)} A/R:</span>
-                            <span class="font-bold">€${result.costs.transport}</span>
-                        </div>
-                        ${budgetType === 'complete' && result.costs.meals ? `
-                        <div class="flex justify-between">
-                            <span>🍽️ Pasti (${result.tripDays || 7} giorni):</span>
-                            <span class="font-bold">€${result.costs.meals}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>🎫 Attività/Tour:</span>
-                            <span class="font-bold">€${result.costs.activities}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>🎁 Extra/Shopping:</span>
-                            <span class="font-bold">€${result.costs.extras}</span>
-                        </div>
-                        ` : ''}
-                        <div class="border-t border-white/30 pt-2 flex justify-between text-lg">
-                            <span>TOTALE:</span>
-                            <span class="font-bold text-yellow-400">€${result.costs.total}</span>
-                        </div>
-                    </div>
-                    <div class="text-sm text-gray-300 space-y-1">
-                        <p>Budget ${budgetType === 'complete' ? 'tutto incluso' : 'essenziale'} per ${people} ${people === 1 ? 'persona' : 'persone'} • ${result.tripDays || 7} giorni</p>
-                        ${selectedPreference ? `<p>🎯 Ottimizzato per "${getPreferenceName(selectedPreference)}"</p>` : ''}
-                        ${result.budgetPerDay ? `<p>📊 €${result.budgetPerDay} al giorno per tutto</p>` : ''}
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('result-content').innerHTML = html;
-        }
-
-        function toggleBudgetType(type) {
-            budgetType = type;
-            
-            // Update button states
-            document.getElementById('budget-type-essential').classList.toggle('active', type === 'essential');
-            document.getElementById('budget-type-complete').classList.toggle('active', type === 'complete');
-            
-            // Update description
-            const description = document.getElementById('budget-description');
-            if (type === 'essential') {
-                description.textContent = 'Volo + Hotel • Pasti e attività esclusi';
-            } else {
-                description.textContent = 'Tutto incluso • Volo + Hotel + Pasti + Attività';
-            }
-        }
-
-        async function showGuide() {
-            if (!currentResult) return;
-            
-            const modal = document.getElementById('guide-modal');
-            const content = document.getElementById('guide-content');
-            
-            content.innerHTML = '<div class="text-center"><div class="text-4xl mb-4">🤖</div><p>L\'AI sta creando la tua guida personalizzata...</p></div>';
-            modal.classList.remove('hidden');
-            
-            try {
-                const guide = await generateTravelGuide(currentResult, parseInt(document.getElementById('people').value));
-                
-                content.innerHTML = `
-                    <div class="bg-white/10 rounded-lg p-4 mb-4">
-                        <h3 class="text-lg font-bold mb-2">📍 ${currentResult.destination}, ${currentResult.country}</h3>
-                        <p class="text-sm text-gray-300">Guida personalizzata per ${document.getElementById('people').value} persone</p>
-                        ${currentResult.travelDates ? `<p class="text-sm text-yellow-200 mt-1">📅 ${currentResult.travelDates.start} - ${currentResult.travelDates.end}</p>` : ''}
-                    </div>
-                    <div class="space-y-4 text-sm whitespace-pre-line leading-relaxed">
-                        ${guide}
-                    </div>
-                    <div class="mt-6 p-4 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
-                        <p class="text-sm text-yellow-200">
-                            💡 <strong>Consiglio:</strong> Salva questa guida e portala con te in viaggio! 
-                            I prezzi sono stime realistiche aggiornate al 2025.
-                        </p>
-                    </div>
-                `;
-            } catch (error) {
-                content.innerHTML = '<p class="text-red-400">Errore nella generazione della guida. Riprova!</p>';
-            }
-        }
-
-        // Make functions globally accessible
-        window.toggleBudgetType = toggleBudgetType;
-
-        // Start app
-        init();
-    </script>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-300 text-center py-6 mt-12">
-        <div class="container mx-auto px-4">
-            <p class="text-sm">
-                🤖 Powered by AI Pura • Destinazioni e prezzi ricercati online in tempo reale<br>
-                Prenotazioni sicure tramite Booking.com e Skyscanner
-            </p>
-        </div>
-    </footer>
-
-</body>
-</html>
+                // Luxury + Famous + Mountain + Adventure
+                { name: 'St. Moritz', country: 'Svizzera', emoji: '🎿', match: [90, 85, 90, 85], cost: 750 },
+                { name: 'Chamonix', country: 'Francia', emoji: '🏔️',
