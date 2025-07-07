@@ -215,27 +215,30 @@
 
         .joystick-labels {
             position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             pointer-events: none;
         }
 
         .joystick-label {
             position: absolute;
             color: white;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
             text-align: center;
             white-space: nowrap;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
         }
 
-        .joystick-label.top { top: -30px; left: 50%; transform: translateX(-50%); }
-        .joystick-label.bottom { bottom: -30px; left: 50%; transform: translateX(-50%); }
-        .joystick-label.left { left: -70px; top: 50%; transform: translateY(-50%); }
-        .joystick-label.right { right: -70px; top: 50%; transform: translateY(-50%); }
+        .joystick-label.top { top: -35px; left: 50%; transform: translateX(-50%); }
+        .joystick-label.bottom { bottom: -35px; left: 50%; transform: translateX(-50%); }
+        .joystick-label.left { left: -80px; top: 50%; transform: translateY(-50%); }
+        .joystick-label.right { right: -80px; top: 50%; transform: translateY(-50%); }
 
         /* ADVANCED CONTROLS */
         .advanced-controls {
@@ -310,26 +313,30 @@
 
         .slider-4d-labels {
             position: absolute;
-            top: -8px;
-            left: -8px;
-            right: -8px;
-            bottom: -8px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             pointer-events: none;
         }
 
         .slider-4d-label {
             position: absolute;
             color: white;
-            font-size: 9px;
+            font-size: 11px;
             font-weight: bold;
             text-align: center;
             white-space: nowrap;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         }
 
-        .slider-4d-label.top { top: -20px; left: 50%; transform: translateX(-50%); }
-        .slider-4d-label.bottom { bottom: -20px; left: 50%; transform: translateX(-50%); }
-        .slider-4d-label.left { left: -50px; top: 50%; transform: translateY(-50%); }
-        .slider-4d-label.right { right: -50px; top: 50%; transform: translateY(-50%); }
+        .slider-4d-label.top { top: -25px; left: 50%; transform: translateX(-50%); }
+        .slider-4d-label.bottom { bottom: -25px; left: 50%; transform: translateX(-50%); }
+        .slider-4d-label.left { left: -60px; top: 50%; transform: translateY(-50%); }
+        .slider-4d-label.right { right: -60px; top: 50%; transform: translateY(-50%); }
 
         .modal {
             position: fixed;
@@ -436,10 +443,10 @@
                             <div class="joystick-center"></div>
                             <div class="joystick-dot" id="main-dot"></div>
                             <div class="joystick-labels">
-                                <div class="joystick-label top">🏔️ MONTAGNA</div>
-                                <div class="joystick-label bottom">🏖️ MARE</div>
-                                <div class="joystick-label left">😌 RELAX</div>
-                                <div class="joystick-label right">🎒 AVVENTURA</div>
+                                <div class="joystick-label top">🎒 AVVENTURA</div>
+                                <div class="joystick-label bottom">😌 RELAX</div>
+                                <div class="joystick-label left">🏖️ MARE</div>
+                                <div class="joystick-label right">🏔️ MONTAGNA</div>
                             </div>
                         </div>
                         <p class="text-center text-xs text-gray-400 mt-4">Trascina il joystick per scegliere il tuo stile di vacanza</p>
@@ -588,8 +595,8 @@
             const budgetPerPerson = Math.round(budget / people);
             
             // Convert joystick values to readable parameters
-            const energy = mainValues.x; // 0 = relax, 100 = adventure  
-            const environment = 100 - mainValues.y; // 0 = sea, 100 = mountain (inverted Y)
+            const energy = 100 - mainValues.y; // 0 = relax (bottom), 100 = adventure (top)
+            const environment = mainValues.x; // 0 = sea (left), 100 = mountain (right)
             
             // Advanced mode parameters (if available)
             let luxury = 50;
@@ -717,8 +724,8 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
         // Joystick Smart Fallback
         function generateJoystickFallback(budget, people, transport, budgetType, mainValues, styleValues) {
             const budgetPerPerson = budget / people;
-            const energy = mainValues.x;
-            const environment = 100 - mainValues.y;
+            const energy = 100 - mainValues.y;
+            const environment = mainValues.x;
             
             // Advanced mode parameters
             let luxury = 50;
@@ -1411,8 +1418,8 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
             return guide;
         }
 
-        // Enhanced mode toggle with advanced slider setup
-        window.toggleMode = function() {
+        // MODE TOGGLE FUNCTIONALITY
+        function toggleMode() {
             isAdvancedMode = !isAdvancedMode;
             const advancedControls = document.getElementById('advanced-controls');
             const modeText = document.getElementById('mode-text');
@@ -1436,9 +1443,10 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
             setTimeout(() => {
                 triggerLiveSearch();
             }, 300);
-        };
+        }
 
         // Make functions globally accessible  
+        window.toggleMode = toggleMode;
         window.toggleBudgetType = toggleBudgetType;
 
         // Start app
