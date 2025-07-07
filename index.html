@@ -158,56 +158,49 @@
         /* JOYSTICK STYLES */
         .joystick-4d {
             position: relative;
-            width: 250px;
-            height: 250px;
+            width: 200px;
+            height: 200px;
             margin: 0 auto;
-            border: 3px solid rgba(255, 255, 255, 0.4);
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1), rgba(16,185,129,0.05));
             cursor: pointer;
             overflow: visible;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
         .joystick-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
+            display: none; /* Rimossa la griglia */
         }
 
         .joystick-center {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 3px;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.6);
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
             border-radius: 50%;
             transform: translate(-50%, -50%);
         }
 
         .joystick-dot {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             background: linear-gradient(135deg, #fbbf24, #f59e0b);
             border: 3px solid white;
             border-radius: 50%;
             cursor: grab;
             transition: all 0.2s;
             transform: translate(-50%, -50%);
-            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5);
+            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.6);
             z-index: 10;
         }
 
         .joystick-dot:hover {
-            transform: translate(-50%, -50%) scale(1.2);
-            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.7);
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.8);
         }
 
         .joystick-dot:active {
@@ -216,34 +209,31 @@
 
         .joystick-label {
             position: absolute;
-            color: white;
-            font-size: 13px;
-            font-weight: bold;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+            font-weight: 600;
             text-align: center;
             white-space: nowrap;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 4px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(4px);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
         .joystick-label.top { 
-            top: -40px; 
+            top: -28px; 
             left: 50%; 
             transform: translateX(-50%);
         }
         .joystick-label.bottom { 
-            bottom: -40px; 
+            bottom: -28px; 
             left: 50%; 
             transform: translateX(-50%);
         }
         .joystick-label.left { 
-            left: -80px; 
+            left: -55px; 
             top: 50%; 
             transform: translateY(-50%);
         }
         .joystick-label.right { 
-            right: -80px; 
+            right: -55px; 
             top: 50%; 
             transform: translateY(-50%);
         }
@@ -269,87 +259,78 @@
         /* 4D SLIDER STYLES */
         .slider-4d {
             position: relative;
-            width: 180px;
-            height: 180px;
+            width: 140px;
+            height: 140px;
             margin: 0 auto;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
+            background: radial-gradient(circle at center, rgba(139,92,246,0.1), rgba(168,85,247,0.05));
             cursor: pointer;
             overflow: visible;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
         }
 
         .slider-4d-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 45px 45px;
+            display: none; /* Rimossa la griglia */
         }
 
         .slider-4d-center {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 2px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.5);
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
             transform: translate(-50%, -50%);
         }
 
         .slider-4d-dot {
             position: absolute;
-            width: 14px;
-            height: 14px;
+            width: 18px;
+            height: 18px;
             background: linear-gradient(135deg, #8b5cf6, #a855f7);
             border: 2px solid white;
             border-radius: 50%;
             cursor: grab;
             transition: all 0.2s;
             transform: translate(-50%, -50%);
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 3px 10px rgba(139, 92, 246, 0.5);
             z-index: 10;
         }
 
         .slider-4d-dot:hover {
-            transform: translate(-50%, -50%) scale(1.2);
-            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.7);
         }
 
         .slider-4d-label {
             position: absolute;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 10px;
+            font-weight: 600;
             text-align: center;
             white-space: nowrap;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 2px 8px;
-            border-radius: 15px;
-            backdrop-filter: blur(4px);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
         }
 
         .slider-4d-label.top { 
-            top: -35px; 
+            top: -22px; 
             left: 50%; 
             transform: translateX(-50%);
         }
         .slider-4d-label.bottom { 
-            bottom: -35px; 
+            bottom: -22px; 
             left: 50%; 
             transform: translateX(-50%);
         }
         .slider-4d-label.left { 
-            left: -70px; 
+            left: -50px; 
             top: 50%; 
             transform: translateY(-50%);
         }
         .slider-4d-label.right { 
-            right: -70px; 
+            right: -50px; 
             top: 50%; 
             transform: translateY(-50%);
         }
@@ -464,6 +445,29 @@
                         </select>
                     </div>
 
+                    <!-- DURATA VIAGGIO (SEMPRE VISIBILE) -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">📅 Durata</label>
+                        <div class="custom-dropdown">
+                            <button type="button" class="dropdown-btn" id="duration-btn">
+                                <span id="duration-selected">🗓️ Indifferente</span>
+                                <span class="ml-auto">▼</span>
+                            </button>
+                            <div class="dropdown-menu hidden" id="duration-menu">
+                                <div class="dropdown-item" data-duration="any">🗓️ Indifferente</div>
+                                <div class="dropdown-item" data-duration="weekend">⚡ Weekend (2-3 giorni)</div>
+                                <div class="dropdown-item" data-duration="week">📅 Una settimana</div>
+                                <div class="dropdown-item" data-duration="two-weeks">🏖️ Due settimane</div>
+                                <div class="dropdown-item" data-duration="month">🌴 Un mese</div>
+                                <div class="dropdown-item" data-duration="custom">📆 Date specifiche</div>
+                            </div>
+                        </div>
+                        <div id="date-picker" class="hidden mt-2">
+                            <input type="date" id="start-date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white mr-2">
+                            <input type="date" id="end-date" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white">
+                        </div>
+                    </div>
+
                     <!-- JOYSTICK PRINCIPALE -->
                     <div class="mb-8">
                         <label class="block text-sm font-medium mb-6 text-center text-lg">🎮 Choose your vibe</label>
@@ -471,6 +475,8 @@
                             <div class="joystick-grid"></div>
                             <div class="joystick-center"></div>
                             <div class="joystick-dot" id="main-dot"></div>
+                        </div>
+                        <div style="position: relative; width: 200px; margin: 0 auto;">
                             <div class="joystick-label top">🎒 AVVENTURA</div>
                             <div class="joystick-label bottom">😌 RELAX</div>
                             <div class="joystick-label left">🏖️ MARE</div>
@@ -498,10 +504,28 @@
                                 <div class="slider-4d-grid"></div>
                                 <div class="slider-4d-center"></div>
                                 <div class="slider-4d-dot" id="style-dot"></div>
+                            </div>
+                            <div style="position: relative; width: 140px; margin: 0 auto;">
                                 <div class="slider-4d-label top">🌟 FAMOSA</div>
                                 <div class="slider-4d-label bottom">💎 NASCOSTA</div>
                                 <div class="slider-4d-label left">💚 ECONOMICO</div>
                                 <div class="slider-4d-label right">💜 LUSSO</div>
+                            </div>
+                        </div>
+
+                        <!-- TERZO SLIDER: CULTURA & SOCIAL -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-4 text-center">🎭 Experience Type</label>
+                            <div class="slider-4d" id="culture-slider">
+                                <div class="slider-4d-grid"></div>
+                                <div class="slider-4d-center"></div>
+                                <div class="slider-4d-dot" id="culture-dot"></div>
+                            </div>
+                            <div style="position: relative; width: 140px; margin: 0 auto;">
+                                <div class="slider-4d-label top">🏛️ CULTURA</div>
+                                <div class="slider-4d-label bottom">🍝 FOOD</div>
+                                <div class="slider-4d-label left">💑 ROMANTICO</div>
+                                <div class="slider-4d-label right">🎉 FESTA</div>
                             </div>
                         </div>
 
@@ -605,6 +629,7 @@
 
         // App state
         let selectedTransport = 'plane';
+        let selectedDuration = 'any';
         let currentResult = null;
         let budgetType = 'complete';
         let usedDestinations = [];
@@ -613,6 +638,7 @@
         // JOYSTICK VALUES
         let mainJoystickValues = { x: 50, y: 50 };
         let styleValues = { x: 50, y: 50 };
+        let cultureValues = { x: 50, y: 50 };
 
         // AI DESTINATION FINDER WITH JOYSTICK
         async function findDestinationWithJoystick(budget, people, transport, budgetType, mainValues, styleValues = null) {
@@ -644,16 +670,19 @@
 
 PARAMETRI JOYSTICK CLIENTE:
 💰 Budget: €${budget} TOTALE per ${people} persone (€${budgetPerPerson} per persona)
-📅 Durata: ${tripDays} giorni
+📅 Durata: ${getDurationDays()} giorni
 🎯 Budget type: ${budgetType === 'complete' ? 'TUTTO INCLUSO (volo+hotel+pasti+attività)' : 'SOLO ESSENZIALE (volo+hotel)'}
 
-🎮 POSIZIONE JOYSTICK:
+🎮 POSIZIONE JOYSTICK PRINCIPALE:
 🏞️ Ambiente: ${environment}% montagna (${environment < 25 ? 'mare e spiagge' : environment < 50 ? 'costa e colline' : environment < 75 ? 'colline e natura' : 'montagna e vette'})
 ⚡ Energia: ${energy}% avventura (${energy < 25 ? 'massimo relax' : energy < 50 ? 'relax attivo' : energy < 75 ? 'moderate attività' : 'avventura pura'})
 
 ${isAdvancedMode ? `🔧 MODALITÀ AVANZATA:
 ✨ Stile: ${luxury}% lusso (${luxury < 25 ? 'ultra economico' : luxury < 50 ? 'economico' : luxury < 75 ? 'medio-alto' : 'lusso premium'})
-🗺️ Popolarità: ${popularity}% famosa (${popularity < 25 ? 'destinazione segreta' : popularity < 50 ? 'poco conosciuta' : popularity < 75 ? 'conosciuta' : 'iconica e famosa'})` : ''}
+🗺️ Popolarità: ${popularity}% famosa (${popularity < 25 ? 'destinazione segreta' : popularity < 50 ? 'poco conosciuta' : popularity < 75 ? 'conosciuta' : 'iconica e famosa'})
+
+🎭 CULTURA & SOCIAL:
+${getCultureDescription(cultureValues)}` : ''}
 
 🚀 Trasporto: ${getTransportName(transport)}
 🌍 Stagione: ${getCurrentSeason()} 2025
@@ -891,8 +920,23 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
         }
 
         function getRandomAirlineLogo() {
-            const logos = ['LH', 'AZ', 'OS', 'KL', 'AF', 'LX', 'SN', 'IB', 'TP', 'TK', 'W6', 'FR', 'U2'];
-            return logos[Math.floor(Math.random() * logos.length)];
+            const airlines = {
+                'LH': '✈️',
+                'AZ': '🇮🇹',
+                'OS': '🇦🇹',
+                'KL': '🇳🇱',
+                'AF': '🇫🇷',
+                'LX': '🇨🇭',
+                'IB': '🇪🇸',
+                'TP': '🇵🇹',
+                'TK': '🇹🇷',
+                'W6': '💜',
+                'FR': '💙',
+                'U2': '🧡'
+            };
+            const keys = Object.keys(airlines);
+            const key = keys[Math.floor(Math.random() * keys.length)];
+            return airlines[key];
         }
 
         function getRandomAirportCode() {
@@ -1084,6 +1128,36 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
         }
 
         function setupEvents() {
+            // Duration dropdown
+            const durationBtn = document.getElementById('duration-btn');
+            const durationMenu = document.getElementById('duration-menu');
+            const durationSelected = document.getElementById('duration-selected');
+            const datePicker = document.getElementById('date-picker');
+            
+            if (durationBtn) {
+                durationBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    durationMenu.classList.toggle('hidden');
+                });
+                
+                document.querySelectorAll('[data-duration]').forEach(item => {
+                    item.addEventListener('click', () => {
+                        selectedDuration = item.dataset.duration;
+                        durationSelected.textContent = item.textContent;
+                        durationMenu.classList.add('hidden');
+                        
+                        // Show/hide date picker
+                        if (selectedDuration === 'custom') {
+                            datePicker.classList.remove('hidden');
+                        } else {
+                            datePicker.classList.add('hidden');
+                        }
+                        
+                        triggerLiveSearch();
+                    });
+                });
+            }
+
             // Transport dropdown (only for advanced mode)
             const transportBtn = document.getElementById('transport-btn');
             const transportMenu = document.getElementById('transport-menu');
@@ -1106,6 +1180,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                 
                 document.addEventListener('click', () => {
                     transportMenu.classList.add('hidden');
+                    durationMenu.classList.add('hidden');
                 });
             }
 
@@ -1296,7 +1371,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                     <!-- Transport -->
                     <div class="bg-white rounded-2xl p-6 text-gray-800">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="airline-logo text-sm font-bold bg-blue-600 text-white w-14 h-14 rounded-lg flex items-center justify-center">
+                            <div class="text-4xl">
                                 ${result.transport.logo}
                             </div>
                             <div>
@@ -1443,6 +1518,7 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
                 // Setup advanced sliders when mode is activated
                 setTimeout(() => {
                     setup4DSlider('style-slider', 'style-dot', styleValues);
+                    setup4DSlider('culture-slider', 'culture-dot', cultureValues);
                 }, 100);
             } else {
                 advancedControls.classList.remove('visible');
@@ -1459,6 +1535,39 @@ RISPOSTA JSON (PULITA, NO MARKDOWN):
         // Make functions globally accessible  
         window.toggleMode = toggleMode;
         window.toggleBudgetType = toggleBudgetType;
+
+        // New helper functions
+        function getDurationDays() {
+            switch(selectedDuration) {
+                case 'weekend': return 3;
+                case 'week': return 7;
+                case 'two-weeks': return 14;
+                case 'month': return 30;
+                case 'custom':
+                    const start = document.getElementById('start-date').value;
+                    const end = document.getElementById('end-date').value;
+                    if (start && end) {
+                        const diff = new Date(end) - new Date(start);
+                        return Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
+                    }
+                    return 7;
+                default: return 7;
+            }
+        }
+
+        function getCultureDescription(values) {
+            const x = values.x; // romantico-festa
+            const y = 100 - values.y; // cultura-food
+            
+            let desc = '';
+            if (y > 50) desc += `🏛️ Focus culturale (${y}%)`;
+            else desc += `🍝 Focus gastronomico (${100-y}%)`;
+            
+            if (x < 50) desc += ` con atmosfera romantica (${100-x}%)`;
+            else desc += ` con atmosfera festosa (${x}%)`;
+            
+            return desc;
+        }
 
         // Start app
         init();
