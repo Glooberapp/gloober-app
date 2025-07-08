@@ -422,40 +422,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Departure City -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">✈️ <span data-translate="departure-city">Da quale città prendi il volo?</span></label>
-                        <div class="relative">
-                            <input type="text" 
-                                   id="departure-city" 
-                                   placeholder="Milano, Roma, Zurigo..." 
-                                   class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:ring-2 focus:ring-yellow-400 outline-none"
-                                   autocomplete="off">
-                            <div id="airport-suggestions" class="absolute top-full left-0 right-0 mt-1 bg-gray-800 rounded-lg shadow-lg hidden max-h-48 overflow-y-auto z-50"></div>
-                        </div>
-                    </div>
-
-                    <!-- Gloob Type -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-3">🌍 <span>Gloob Type</span></label>
-                        <div class="budget-toggle mb-3">
-                            <button id="budget-type-flight-hotel" class="active" onclick="toggleBudgetType('flight-hotel')">
-                                ✈️🏨 <span data-translate="flight-hotel">Essential Gloob</span>
-                            </button>
-                            <button id="budget-type-complete" onclick="toggleBudgetType('complete')">
-                                🎯 <span data-translate="all-inclusive">Full Gloob Experience</span>
-                            </button>
-                        </div>
-                        <div class="budget-toggle">
-                            <button id="accommodation-hotel" class="active" onclick="toggleAccommodationType('hotel')">
-                                🏨 Hotel
-                            </button>
-                            <button id="accommodation-bnb" onclick="toggleAccommodationType('bnb')">
-                                🏠 B&B
-                            </button>
-                        </div>
-                    </div>
 
                     <!-- Vibes Slider -->
                     <div class="mb-8" style="margin-top: 20px;">
@@ -533,14 +499,15 @@
         const appState = {
             selectedCurrency: 'CHF',
             selectedLanguage: 'it',
-            budgetType: 'flight-hotel',
+            budgetType: 'flight-hotel', // Always Essential
             accommodationType: 'hotel',
             vibesPosition: { x: 50, y: 50 },
             currentResult: null,
             departureCity: null,
             departureAirport: null,
             selectedDepartureDate: new Date(),
-            selectedDuration: 2
+            selectedDuration: 2,
+            userLocation: null
         };
 
         // Data
@@ -551,13 +518,16 @@
             GBP: 0.86
         };
 
-        const airports = [
-            { city: 'Milano', code: 'MXP', name: 'Milano Malpensa', country: 'Italia' },
-            { city: 'Milano', code: 'LIN', name: 'Milano Linate', country: 'Italia' },
-            { city: 'Roma', code: 'FCO', name: 'Roma Fiumicino', country: 'Italia' },
-            { city: 'Venezia', code: 'VCE', name: 'Venezia Marco Polo', country: 'Italia' },
-            { city: 'Zurigo', code: 'ZRH', name: 'Zurigo', country: 'Svizzera' },
-            { city: 'Ginevra', code: 'GVA', name: 'Ginevra', country: 'Svizzera' }
+        // EasyJet airports
+        const easyJetAirports = [
+            { city: 'Milano', code: 'MXP', name: 'Milano Malpensa', country: 'Italia', lat: 45.6301, lon: 8.7231 },
+            { city: 'Milano', code: 'LIN', name: 'Milano Linate', country: 'Italia', lat: 45.4484, lon: 9.2788 },
+            { city: 'Roma', code: 'FCO', name: 'Roma Fiumicino', country: 'Italia', lat: 41.8003, lon: 12.2389 },
+            { city: 'Venezia', code: 'VCE', name: 'Venezia Marco Polo', country: 'Italia', lat: 45.5053, lon: 12.3519 },
+            { city: 'Napoli', code: 'NAP', name: 'Napoli', country: 'Italia', lat: 40.8830, lon: 14.2866 },
+            { city: 'Ginevra', code: 'GVA', name: 'Ginevra', country: 'Svizzera', lat: 46.2382, lon: 6.1090 },
+            { city: 'Basilea', code: 'BSL', name: 'Basilea', country: 'Svizzera', lat: 47.5896, lon: 7.5299 },
+            { city: 'Zurigo', code: 'ZRH', name: 'Zurigo', country: 'Svizzera', lat: 47.4647, lon: 8.5492 }
         ];
 
         const translations = {
@@ -627,13 +597,58 @@
 
         // Initialize app
         function init() {
+            // Try to get user location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        appState.userLocation = {
+                            lat: position.coords.latitude,
+                            lon: position.coords.longitude
+                        };
+                        const nearest = findNearestAirport(appState.userLocation.lat, appState.userLocation.lon);
+                        appState.departureAirport = nearest.code;
+                        appState.departureCity = nearest.city;
+                    },
+                    (error) => {
+                        console.log('Location not available');
+                    }
+                );
+            }
+
             setTimeout(() => {
                 document.getElementById('loading').classList.add('hidden');
                 document.getElementById('form-step').classList.remove('hidden');
                 setupEventListeners();
                 setupVibesSlider();
-                setupAirportAutocomplete();
             }, 800);
+        }
+
+        // Find nearest airport
+        function findNearestAirport(lat, lon) {
+            let nearest = easyJetAirports[0];
+            let minDistance = Number.MAX_VALUE;
+
+            easyJetAirports.forEach(airport => {
+                const distance = calculateDistance(lat, lon, airport.lat, airport.lon);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearest = airport;
+                }
+            });
+
+            return nearest;
+        }
+
+        // Calculate distance between two points
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
         }
 
         // Setup event listeners
@@ -848,14 +863,10 @@
 
         // Start Gloob
         async function startGloob() {
-            const departureCityInput = document.getElementById('departure-city').value;
-            if (!departureCityInput) {
-                showError('error-departure');
+            // If no location and no airport selected, show airport selection
+            if (!appState.departureAirport) {
+                showAirportSelection();
                 return;
-            }
-            
-            if (!appState.departureCity) {
-                appState.departureCity = departureCityInput;
             }
             
             showStep('spin');
@@ -866,6 +877,42 @@
                 displayResult(result);
                 showStep('result');
             }, 2000);
+        }
+
+        // Show airport selection modal
+        function showAirportSelection() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl p-6 max-w-md mx-4 text-gray-800">
+                    <h3 class="text-xl font-bold mb-4">✈️ Da dove vuoi partire?</h3>
+                    <div class="space-y-2">
+                        ${easyJetAirports.map(airport => `
+                            <button onclick="selectDepartureAirport('${airport.code}', '${airport.city}')" 
+                                    class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors">
+                                <div class="font-medium">${airport.city}</div>
+                                <div class="text-sm text-gray-600">${airport.name} (${airport.code})</div>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        // Select departure airport from modal
+        function selectDepartureAirport(code, city) {
+            appState.departureAirport = code;
+            appState.departureCity = city;
+            document.querySelector('.fixed').remove(); // Remove modal
+            startGloob(); // Continue with gloob
         }
 
         // Show error
@@ -881,61 +928,113 @@
         // Generate mock result
         function generateMockResult() {
             const destinations = [
-                { name: 'Parigi', country: 'Francia', emoji: '🗼', 
-                  tagline: 'Due giorni nella Ville Lumière per fare il pieno di romanticismo e baguette croccanti' },
                 { name: 'Barcellona', country: 'Spagna', emoji: '🏖️', 
-                  tagline: 'Weekend catalano tra Gaudì e tapas, dove l\'arte incontra il mare' }
+                  tagline: 'Weekend catalano tra Gaudì e tapas, dove l\'arte incontra il mare', code: 'BCN' },
+                { name: 'Lisbona', country: 'Portogallo', emoji: '🚋', 
+                  tagline: 'Due giorni tra tram gialli e pastéis de nata, dove il fado incontra l\'oceano', code: 'LIS' },
+                { name: 'Amsterdam', country: 'Olanda', emoji: '🚲', 
+                  tagline: 'Pedalando tra canali e tulipani, dove la libertà ha il profumo di stroopwafel', code: 'AMS' },
+                { name: 'Praga', country: 'Repubblica Ceca', emoji: '🏰', 
+                  tagline: 'Fiaba boema tra birra e castelli, dove ogni ponte racconta una leggenda', code: 'PRG' },
+                { name: 'Budapest', country: 'Ungheria', emoji: '♨️', 
+                  tagline: 'Terme e paprika sul Danubio blu, dove l\'Est incontra l\'Ovest', code: 'BUD' }
             ];
             
             const dest = destinations[Math.floor(Math.random() * destinations.length)];
             const budget = parseInt(document.getElementById('budget').value) || 1000;
             const people = parseInt(document.getElementById('people').value) || 2;
+            const budgetPerPerson = Math.round(budget / people);
+            
+            // Calculate costs per person
+            const transportPerPerson = Math.round(budgetPerPerson * 0.35);
+            const accommodationPerPerson = Math.round(budgetPerPerson * 0.65);
+            
+            // Total costs for all people
+            const transportTotal = transportPerPerson * people;
+            const accommodationTotal = accommodationPerPerson * people;
             
             return {
                 destination: dest.name,
                 country: dest.country,
                 emoji: dest.emoji,
                 tagline: dest.tagline,
-                quote: { text: 'Il vero viaggio di scoperta non consiste nel cercare nuove terre', author: 'Marcel Proust' },
-                distance: '620 km',
+                quote: { text: 'Il vero viaggio di scoperta non consiste nel cercare nuove terre, ma nell\'avere nuovi occhi', author: 'Marcel Proust' },
+                distance: '850 km',
                 duration: `${appState.selectedDuration} giorni`,
                 dates: `${appState.selectedDepartureDate.toLocaleDateString('it-IT')} - ${new Date(appState.selectedDepartureDate.getTime() + appState.selectedDuration * 24 * 60 * 60 * 1000).toLocaleDateString('it-IT')}`,
                 transport: {
                     details: 'Volo diretto EasyJet',
-                    airports: { from: appState.departureAirport || 'MXP', to: 'CDG' },
-                    duration: '2h 15min',
-                    cost: Math.round(budget * 0.3),
+                    airports: { from: appState.departureAirport || 'MXP', to: dest.code },
+                    duration: '2h 30min',
+                    cost: transportTotal,
                     link: 'https://www.easyjet.com'
                 },
                 accommodation: {
-                    name: 'Hotel Gloober Centro',
+                    name: 'Hotel Gloober Centro 3★',
                     type: 'Hotel 3 stelle',
-                    cost: Math.round(budget * 0.4),
+                    cost: accommodationTotal,
                     photo: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=200&fit=crop',
                     link: 'https://www.booking.com'
                 },
-                dailyProgram: [
-                    {
-                        day: 1,
-                        title: 'Giorno 1 - Arrivo',
-                        activities: [
-                            '08:00 - Volo da Milano',
-                            '10:30 - Arrivo e check-in',
-                            '12:00 - Pranzo in bistrot',
-                            '15:00 - Tour Eiffel',
-                            '20:00 - Cena sulla Senna'
-                        ]
-                    }
-                ],
+                dailyProgram: generateDailyProgram(dest.name, appState.selectedDuration),
                 costs: {
-                    transport: Math.round(budget * 0.3),
-                    accommodation: Math.round(budget * 0.4),
-                    meals: Math.round(budget * 0.2),
-                    activities: Math.round(budget * 0.1),
+                    transport: transportTotal,
+                    accommodation: accommodationTotal,
+                    meals: 0, // Essential package
+                    activities: 0, // Essential package
                     total: budget,
                     currency: appState.selectedCurrency
                 }
             };
+        }
+
+        // Generate daily program
+        function generateDailyProgram(destination, days) {
+            const programs = [];
+            
+            for (let i = 1; i <= days; i++) {
+                if (i === 1) {
+                    programs.push({
+                        day: i,
+                        title: 'Giorno 1 - Arrivo',
+                        activities: [
+                            `08:00 - Volo da ${appState.departureCity || 'Milano'} (incluso)`,
+                            '10:30 - Arrivo e transfer in centro',
+                            '12:00 - Check-in hotel (incluso)',
+                            '13:00 - Pranzo libero',
+                            '15:00 - Esplorazione centro storico',
+                            '20:00 - Cena libera'
+                        ]
+                    });
+                } else if (i === days) {
+                    programs.push({
+                        day: i,
+                        title: `Giorno ${i} - Partenza`,
+                        activities: [
+                            '09:00 - Colazione in hotel (inclusa)',
+                            '10:00 - Check-out',
+                            '11:00 - Tempo libero per shopping',
+                            '15:00 - Transfer all\'aeroporto',
+                            `18:00 - Volo di ritorno per ${appState.departureCity || 'Milano'} (incluso)`
+                        ]
+                    });
+                } else {
+                    programs.push({
+                        day: i,
+                        title: `Giorno ${i} - Esplorazione`,
+                        activities: [
+                            '09:00 - Colazione in hotel (inclusa)',
+                            '10:00 - Visita attrazione principale',
+                            '13:00 - Pranzo libero',
+                            '15:00 - Attività pomeridiana',
+                            '19:00 - Aperitivo',
+                            '20:30 - Cena libera'
+                        ]
+                    });
+                }
+            }
+            
+            return programs;
         }
 
         // Display result
@@ -961,6 +1060,7 @@
                         <h3 class="text-xl font-bold mb-3">✈️ Volo</h3>
                         <p class="font-medium mb-1">${result.transport.details}</p>
                         <p class="text-sm text-gray-600 mb-2">${result.transport.airports.from} → ${result.transport.airports.to}</p>
+                        <p class="text-sm text-gray-600 mb-3">Durata: ${result.transport.duration}</p>
                         <p class="text-2xl font-bold text-green-600 mb-4">${symbol}${result.transport.cost}</p>
                         <a href="${result.transport.link}" target="_blank" class="book-btn w-full">
                             ✈️ PRENOTA VOLO
@@ -971,6 +1071,7 @@
                         <div class="rounded-lg mb-4 h-32 bg-cover bg-center" style="background-image: url('${result.accommodation.photo}')"></div>
                         <h3 class="text-xl font-bold mb-3">🏨 Alloggio</h3>
                         <p class="font-medium mb-2">${result.accommodation.name}</p>
+                        <p class="text-sm text-gray-600 mb-3">${result.accommodation.type}</p>
                         <p class="text-2xl font-bold text-green-600 mb-4">${symbol}${result.accommodation.cost}</p>
                         <a href="${result.accommodation.link}" target="_blank" class="book-btn w-full">
                             🏨 PRENOTA HOTEL
@@ -978,8 +1079,32 @@
                     </div>
                 </div>
 
+                <div class="glass-card rounded-2xl p-6 mb-6">
+                    <h3 class="text-2xl font-bold mb-4 text-yellow-400">📅 Il tuo programma Gloob</h3>
+                    <div class="text-center mb-4">
+                        <button onclick="toggleProgram()" class="bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-200 px-4 py-2 rounded-lg transition-colors">
+                            <span id="program-toggle-text">Mostra programma dettagliato</span> ▼
+                        </button>
+                    </div>
+                    <div id="daily-program" class="hidden">
+                        ${result.dailyProgram.map(day => `
+                            <div class="mb-6 text-left bg-white/5 rounded-lg p-4">
+                                <h4 class="text-lg font-bold mb-3 text-yellow-300">${day.title}</h4>
+                                <ul class="space-y-2">
+                                    ${day.activities.map(activity => `
+                                        <li class="flex items-start gap-2">
+                                            <span class="text-yellow-400 mt-0.5">•</span>
+                                            <span class="text-gray-100">${activity}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
                 <div class="glass-card rounded-2xl p-6 text-center">
-                    <h3 class="text-xl font-bold mb-4">💰 Riepilogo costi</h3>
+                    <h3 class="text-xl font-bold mb-4">💰 Riepilogo costi (${people} ${people === 1 ? 'persona' : 'persone'})</h3>
                     <div class="space-y-2 text-left max-w-md mx-auto">
                         <div class="flex justify-between">
                             <span>✈️ Volo:</span>
@@ -994,6 +1119,10 @@
                             <span class="font-bold text-yellow-400">${symbol}${result.costs.total}</span>
                         </div>
                     </div>
+                    <p class="text-sm text-gray-300 mt-4 italic">
+                        💡 Essential Gloob: il budget copre solo volo e hotel. 
+                        Pasti e attività sono a tuo carico!
+                    </p>
                 </div>
             `;
         }
