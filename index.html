@@ -22,11 +22,41 @@
             position: relative;
             width: 100%;
             height: 60px;
-            margin: 20px auto 50px;
+            margin: 20px auto 20px;
             border-radius: 30px;
             background: linear-gradient(to right, #fbbf24 0%, #f59e0b 50%, #fbbf24 100%);
             cursor: pointer;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Etichette dentro lo slider */
+        .slider-inner-labels {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            pointer-events: none;
+        }
+        
+        .slider-inner-labels span {
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 14px;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.3);
+        }
+        
+        .slider-inner-labels .label-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity 0.3s ease;
+        }
+        
+        .slider-inner-labels .label-center.hidden {
+            opacity: 0;
         }
         
         .vibes-dot {
@@ -109,7 +139,7 @@
         .vibes-labels {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-top: 10px;
             padding: 0 10px;
             position: relative;
         }
@@ -164,6 +194,47 @@
             to { transform: rotateZ(360deg); }
         }
         
+        /* Stelle Hotel */
+        .stars-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        
+        .stars-selector {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0.3;
+            filter: grayscale(1);
+        }
+        
+        .star.active {
+            opacity: 1;
+            filter: grayscale(0);
+            transform: scale(1.1);
+        }
+        
+        .star:hover {
+            transform: scale(1.2);
+        }
+        
+        .stars-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
         .hidden { display: none; }
     </style>
 </head>
@@ -188,6 +259,14 @@
                                    class="col-span-2 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold">
                             <select id="currency" class="px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
                                 <option value="EUR">€ EUR</option>
+                                <option value="GBP">£ GBP</option>
+                                <option value="CHF">CHF</option>
+                                <option value="DKK">DKK</option>
+                                <option value="SEK">SEK</option>
+                                <option value="NOK">NOK</option>
+                                <option value="CZK">CZK</option>
+                                <option value="PLN">PLN</option>
+                                <option value="HUF">HUF</option>
                             </select>
                         </div>
                     </div>
@@ -228,6 +307,21 @@
                             <div id="duration-menu" class="dropdown-menu hidden"></div>
                         </div>
                     </div>
+                    
+                    <!-- Stelle Hotel -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">🏨 Categoria hotel</label>
+                        <div class="stars-container">
+                            <div class="stars-selector" id="stars-selector">
+                                <span class="star" data-stars="1" onclick="selectStars(1)">⭐</span>
+                                <span class="star" data-stars="2" onclick="selectStars(2)">⭐</span>
+                                <span class="star" data-stars="3" onclick="selectStars(3)">⭐</span>
+                                <span class="star" data-stars="4" onclick="selectStars(4)">⭐</span>
+                                <span class="star" data-stars="5" onclick="selectStars(5)">⭐</span>
+                            </div>
+                            <span class="stars-label" id="stars-label">3 stelle</span>
+                        </div>
+                    </div>
 
                     <!-- Città partenza - NASCOSTO, si mostra dopo -->
                     <div class="mb-6 hidden" id="departure-section">
@@ -246,14 +340,14 @@
                     <div class="mb-8">
                         <label class="block text-sm font-medium mb-4 text-center">✨ Travel vibes</label>
                         <div class="vibes-slider-horizontal" id="vibes-slider" onclick="moveVibesDot(event)" ontouchmove="moveVibesDot(event)" ontouchstart="moveVibesDot(event)">
+                            <div class="slider-inner-labels">
+                                <span>🏖️ MARE</span>
+                                <span class="label-center hidden">🎨 CITTÀ D'ARTE</span>
+                                <span>🏔️ MONTAGNA</span>
+                            </div>
                             <div class="vibes-dot" id="vibes-dot" onclick="handleGlobeClick(event)">
                                 <span class="gloob-text">JUST GLOOB IT</span>
                             </div>
-                        </div>
-                        <div class="vibes-labels">
-                            <span class="vibes-label">🏖️ MARE</span>
-                            <span class="vibes-label-center">🎨 CITTÀ D'ARTE</span>
-                            <span class="vibes-label">🏔️ MONTAGNA</span>
                         </div>
                     </div>
                 </div>
@@ -359,7 +453,7 @@
                     
                     <button onclick="confirmAirport()" 
                             class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
-                        Conferma e Glooba! 🌍
+                        Voliamo! 🛫
                     </button>
                 </div>
             </div>
@@ -384,8 +478,81 @@
 
     <!-- STEP 3: RISULTATI -->
     <div id="result-step" class="hidden container mx-auto px-4 py-8">
-        <div id="result-content" class="max-w-4xl mx-auto">
-            <!-- Popolato da JS -->
+        <div id="result-content" class="max-w-6xl mx-auto">
+            <!-- Header con descrizione AI -->
+            <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                <h2 class="text-3xl font-bold text-yellow-400 mb-3" id="destination-name">Caricamento...</h2>
+                <p class="text-xl text-white italic" id="ai-description">L'AI sta creando la tua esperienza perfetta...</p>
+            </div>
+            
+            <!-- Cards Volo e Hotel -->
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Card Volo -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">✈️ Il tuo volo</h3>
+                    <div id="flight-details" class="text-white">
+                        <div class="mb-3">
+                            <span class="text-gray-400">Andata:</span>
+                            <div class="font-semibold" id="flight-outbound">-</div>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-gray-400">Ritorno:</span>
+                            <div class="font-semibold" id="flight-return">-</div>
+                        </div>
+                        <div class="mb-4">
+                            <span class="text-gray-400">Compagnia:</span>
+                            <div class="font-semibold" id="flight-airline">-</div>
+                        </div>
+                        <div class="text-2xl font-bold text-yellow-400 mb-4" id="flight-price">-</div>
+                        <button class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all" id="book-flight">
+                            Prenota Volo →
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Card Hotel -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">🏨 Il tuo hotel</h3>
+                    <div id="hotel-details" class="text-white">
+                        <div class="mb-3">
+                            <div class="font-semibold text-lg" id="hotel-name">-</div>
+                            <div class="text-yellow-400" id="hotel-stars">-</div>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-gray-400">Valutazione:</span>
+                            <div class="font-semibold" id="hotel-rating">-</div>
+                        </div>
+                        <div class="mb-3">
+                            <span class="text-gray-400">Tipo camera:</span>
+                            <div class="font-semibold" id="hotel-room">-</div>
+                        </div>
+                        <div class="text-2xl font-bold text-yellow-400 mb-4" id="hotel-price">-</div>
+                        <button class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all" id="book-hotel">
+                            Prenota Hotel →
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Totale -->
+            <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                <h3 class="text-2xl font-bold text-white mb-2">💰 Totale per <span id="total-people">2</span> persone</h3>
+                <div class="text-4xl font-bold text-yellow-400" id="total-price">-</div>
+            </div>
+            
+            <!-- Citazione -->
+            <div class="glass-card rounded-2xl p-6 text-center">
+                <p class="text-lg text-white italic mb-2" id="quote-text">"..."</p>
+                <p class="text-gray-400" id="quote-author">- ...</p>
+            </div>
+            
+            <!-- Bottone Nuova Ricerca -->
+            <div class="text-center mt-8">
+                <button onclick="location.reload()" 
+                        class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl">
+                    🎲 Re-Gloob!
+                </button>
+            </div>
         </div>
     </div>
 
@@ -398,6 +565,35 @@
         let selectedDuration = 2;
         let userLocation = null;
         let selectedAirport = null;
+        let hasMovedSlider = false; // Per tracciare se lo slider è stato mosso
+        let selectedStars = 3; // Default 3 stelle
+        
+        // Mappa aeroporti -> valuta
+        const airportCurrencies = {
+            // Italia - EUR
+            'MXP': 'EUR', 'LIN': 'EUR', 'BGY': 'EUR', 'FCO': 'EUR', 'CIA': 'EUR',
+            'VCE': 'EUR', 'TSF': 'EUR', 'NAP': 'EUR', 'BLQ': 'EUR', 'FLR': 'EUR',
+            'TRN': 'EUR', 'CTA': 'EUR', 'PMO': 'EUR', 'BRI': 'EUR', 'VRN': 'EUR',
+            // Francia - EUR
+            'CDG': 'EUR', 'ORY': 'EUR', 'NCE': 'EUR', 'LYS': 'EUR', 'MRS': 'EUR',
+            // Germania - EUR
+            'FRA': 'EUR', 'MUC': 'EUR', 'BER': 'EUR', 'HAM': 'EUR', 'DUS': 'EUR',
+            'CGN': 'EUR', 'STR': 'EUR',
+            // Spagna - EUR
+            'MAD': 'EUR', 'BCN': 'EUR', 'VLC': 'EUR', 'AGP': 'EUR', 'PMI': 'EUR',
+            'SVQ': 'EUR', 'BIO': 'EUR',
+            // Altri EUR
+            'AMS': 'EUR', 'VIE': 'EUR', 'BRU': 'EUR', 'HEL': 'EUR', 'ATH': 'EUR',
+            'LIS': 'EUR', 'OPO': 'EUR', 'DUB': 'EUR',
+            // Regno Unito - GBP
+            'LHR': 'GBP', 'LGW': 'GBP', 'STN': 'GBP', 'LTN': 'GBP', 
+            'MAN': 'GBP', 'EDI': 'GBP', 'BHX': 'GBP',
+            // Svizzera - CHF
+            'ZRH': 'CHF', 'GVA': 'CHF',
+            // Altri
+            'CPH': 'DKK', 'STO': 'SEK', 'OSL': 'NOK', 'PRG': 'CZK',
+            'WAW': 'PLN', 'BUD': 'HUF'
+        };
 
         // INIZIALIZZA DATE MENU
         function initDateMenu() {
@@ -510,6 +706,11 @@
             const select = document.getElementById('airport-select');
             if (select.value) {
                 selectedAirport = select.value;
+                
+                // Imposta automaticamente la valuta
+                const currency = airportCurrencies[selectedAirport] || 'EUR';
+                document.getElementById('currency').value = currency;
+                
                 document.getElementById('airport-step').classList.add('hidden');
                 document.getElementById('loading-step').classList.remove('hidden');
                 
@@ -552,6 +753,21 @@
             
             dot.style.left = vibePosition + '%';
             
+            // Nascondi/mostra CITTÀ D'ARTE in base alla posizione
+            const centerLabel = document.querySelector('.label-center');
+            
+            // Se è la prima volta che muovi lo slider
+            if (!hasMovedSlider) {
+                hasMovedSlider = true;
+                // Mostra CITTÀ D'ARTE solo se non sei nella zona centrale
+                if (vibePosition < 35 || vibePosition > 65) {
+                    centerLabel.classList.remove('hidden');
+                }
+            } else {
+                // Dopo il primo movimento, mostra sempre CITTÀ D'ARTE
+                centerLabel.classList.remove('hidden');
+            }
+            
             // Start timer to make clickable after 1 second
             clickTimer = setTimeout(() => {
                 isDragging = false;
@@ -593,49 +809,215 @@
         }
 
         // MOSTRA RISULTATI
-        function showResults() {
-            // Sceglie destinazione in base alla posizione dello slider
+        async function showResults() {
+            document.getElementById('loading-step').classList.add('hidden');
+            document.getElementById('result-step').classList.remove('hidden');
+            
+            // Prepara i dati per le API
+            const budget = parseInt(document.getElementById('budget').value);
+            const people = parseInt(document.getElementById('people').value);
+            const currency = document.getElementById('currency').value;
+            
+            // Determina la destinazione in base alla vibe
             let destination = 'Firenze';
-            let country = 'Italia';
-            let tagline = '"Dove il Rinascimento vive ancora"';
+            let destCode = 'FLR';
+            let searchQuery = 'art museums';
             
             if (vibePosition < 33) {
                 // Mare
-                destination = 'Santorini';
-                country = 'Grecia';
-                tagline = '"Tramonti che non dimenticherai mai"';
+                destination = 'Palma di Maiorca';
+                destCode = 'PMI';
+                searchQuery = 'beach resort';
             } else if (vibePosition > 66) {
                 // Montagna
-                destination = 'Chamonix';
-                country = 'Francia';
-                tagline = '"Il tetto d\'Europa ti aspetta"';
+                destination = 'Innsbruck';
+                destCode = 'INN';
+                searchQuery = 'mountain hotel';
             }
             
-            const html = `
-                <div class="glass-card rounded-2xl p-6 text-center mb-6">
-                    <h2 class="text-4xl font-bold text-yellow-400 mb-2">${destination}</h2>
-                    <p class="text-xl text-gray-300">${country}</p>
-                    <p class="text-gray-200 italic mt-4">${tagline}</p>
-                </div>
-                
-                <div class="text-center mt-8">
-                    <button onclick="location.reload()" 
-                            class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl">
-                        🎲 Re-Gloob!
-                    </button>
-                </div>
-            `;
+            // Aggiorna UI con destinazione
+            document.getElementById('destination-name').textContent = destination;
+            document.getElementById('total-people').textContent = people;
             
-            document.getElementById('result-content').innerHTML = html;
-            document.getElementById('loading-step').classList.add('hidden');
-            document.getElementById('result-step').classList.remove('hidden');
+            // 1. Chiama Gemini per descrizione personalizzata
+            try {
+                const prompt = `Descrivi in una frase poetica e coinvolgente (max 30 parole) una vacanza ${
+                    vibePosition < 33 ? 'al mare' : vibePosition > 66 ? 'in montagna' : "d'arte"
+                } a ${destination} per ${people} persone con budget ${budget}${currency}. Deve far venire voglia di partire subito!`;
+                
+                const geminiResponse = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyB3FtGA9NJ8FB5GNCPrAWwAzUkhy4kTZwo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+                
+                if (geminiResponse.ok) {
+                    const geminiData = await geminiResponse.json();
+                    const aiDescription = geminiData.candidates[0].content.parts[0].text;
+                    document.getElementById('ai-description').textContent = aiDescription;
+                }
+            } catch (error) {
+                console.error('Errore Gemini:', error);
+                document.getElementById('ai-description').textContent = 'La tua avventura perfetta ti aspetta!';
+            }
+            
+            // 2. Cerca Hotel con Booking.com API
+            try {
+                const checkIn = new Date(selectedDate);
+                const checkOut = new Date(selectedDate);
+                checkOut.setDate(checkOut.getDate() + selectedDuration);
+                
+                const bookingResponse = await fetch(`https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotels?dest=${destination}&search_type=city&arrival_date=${checkIn.toISOString().split('T')[0]}&departure_date=${checkOut.toISOString().split('T')[0]}&adults=${people}&room_qty=1&languagecode=it`, {
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': '3ce68a2aa9msh4f091334cd7dd49p1bba08jsn29bf6874508c',
+                        'X-RapidAPI-Host': 'booking-com15.p.rapidapi.com'
+                    }
+                });
+                
+                if (bookingResponse.ok) {
+                    const bookingData = await bookingResponse.json();
+                    if (bookingData.data && bookingData.data.hotels && bookingData.data.hotels.length > 0) {
+                        // Filtra per stelle e rating
+                        const filteredHotels = bookingData.data.hotels.filter(h => 
+                            h.property.reviewScore >= 8.5 && 
+                            h.property.propertyClass >= selectedStars
+                        );
+                        
+                        if (filteredHotels.length > 0) {
+                            const hotel = filteredHotels[0];
+                            document.getElementById('hotel-name').textContent = hotel.property.name;
+                            document.getElementById('hotel-stars').textContent = '⭐'.repeat(hotel.property.propertyClass || selectedStars);
+                            document.getElementById('hotel-rating').textContent = `${hotel.property.reviewScore}/10 (${hotel.property.reviewCount} recensioni)`;
+                            document.getElementById('hotel-room').textContent = 'Camera doppia superior';
+                            document.getElementById('hotel-price').textContent = `€${Math.round(hotel.property.priceBreakdown.grossPrice.value)} totale`;
+                            
+                            // Link precompilato Booking
+                            document.getElementById('book-hotel').onclick = () => {
+                                window.open(`https://www.booking.com/hotel/${hotel.property.countryCode}/${hotel.property.pageName}.html?checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}`, '_blank');
+                            };
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Errore Booking:', error);
+                // Dati di fallback
+                document.getElementById('hotel-name').textContent = 'Grand Hotel ' + destination;
+                document.getElementById('hotel-stars').textContent = '⭐'.repeat(selectedStars);
+                document.getElementById('hotel-rating').textContent = '9.0/10 (1250 recensioni)';
+                document.getElementById('hotel-room').textContent = 'Camera doppia vista mare';
+                document.getElementById('hotel-price').textContent = `€${Math.round(budget * 0.6)} totale`;
+            }
+            
+            // 3. Cerca Voli con Kiwi.com API
+            try {
+                const checkIn = new Date(selectedDate);
+                const checkOut = new Date(selectedDate);
+                checkOut.setDate(checkOut.getDate() + selectedDuration);
+                
+                // Prepara parametri per Kiwi
+                const flyFrom = selectedAirport;
+                const flyTo = destCode;
+                const dateFrom = checkIn.toLocaleDateString('en-GB').replace(/\//g, '%2F');
+                const dateTo = dateFrom; // stesso giorno per andata
+                const returnFrom = checkOut.toLocaleDateString('en-GB').replace(/\//g, '%2F');
+                const returnTo = returnFrom; // stesso giorno per ritorno
+                
+                const kiwiUrl = `https://kiwi-com-cheap-flights.p.rapidapi.com/round-trip?source=${flyFrom}&destination=${flyTo}&departureDate=${checkIn.toISOString().split('T')[0]}&returnDate=${checkOut.toISOString().split('T')[0]}&adults=${people}&currency=${currency.toLowerCase()}&limit=20`;
+                
+                const kiwiResponse = await fetch(kiwiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': '3ce68a2aa9msh4f091334cd7dd49p1bba08jsn29bf6874508c',
+                        'X-RapidAPI-Host': 'kiwi-com-cheap-flights.p.rapidapi.com'
+                    }
+                });
+                
+                if (kiwiResponse.ok) {
+                    const kiwiData = await kiwiResponse.json();
+                    if (kiwiData && kiwiData.data && kiwiData.data.length > 0) {
+                        // Prendi il volo più economico
+                        const flight = kiwiData.data[0];
+                        const outbound = flight.route[0];
+                        const returnFlight = flight.route[flight.route.length - 1];
+                        
+                        document.getElementById('flight-outbound').textContent = 
+                            `${outbound.cityFrom} → ${outbound.cityTo} | ${new Date(outbound.local_departure).toLocaleString('it-IT', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'})}`;
+                        
+                        document.getElementById('flight-return').textContent = 
+                            `${returnFlight.cityFrom} → ${returnFlight.cityTo} | ${new Date(returnFlight.local_departure).toLocaleString('it-IT', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'})}`;
+                        
+                        document.getElementById('flight-airline').textContent = 
+                            flight.airlines.join(', ');
+                        
+                        document.getElementById('flight-price').textContent = 
+                            `${currency === 'EUR' ? '€' : currency} ${flight.price} totale`;
+                        
+                        // Link diretto Kiwi per prenotare
+                        document.getElementById('book-flight').onclick = () => {
+                            window.open(flight.deep_link, '_blank');
+                        };
+                        
+                        // Aggiorna totale reale
+                        const hotelPrice = parseInt(document.getElementById('hotel-price').textContent.match(/\d+/)[0]);
+                        const totalReal = flight.price + hotelPrice;
+                        document.getElementById('total-price').textContent = `${currency === 'EUR' ? '€' : currency} ${totalReal}`;
+                    }
+                }
+            } catch (error) {
+                console.error('Errore Kiwi:', error);
+                // Fallback ai dati simulati
+                const flightPrice = Math.round(budget * 0.4);
+                document.getElementById('flight-outbound').textContent = `${selectedAirport} → ${destCode} | ${selectedDate.toLocaleDateString('it-IT')} 08:30-10:45`;
+                document.getElementById('flight-return').textContent = `${destCode} → ${selectedAirport} | Ritorno dopo ${selectedDuration} giorni`;
+                document.getElementById('flight-airline').textContent = 'EasyJet / Ryanair';
+                document.getElementById('flight-price').textContent = `€${flightPrice} totale`;
+                
+                document.getElementById('book-flight').onclick = () => {
+                    window.open(`https://www.skyscanner.it/trasporti/voli/${selectedAirport}/${destCode}/${selectedDate.toISOString().split('T')[0]}/?adults=${people}`, '_blank');
+                };
+                
+                document.getElementById('total-price').textContent = `€${budget}`;
+            }
+            
+            // 5. Citazione (potresti generarla con Gemini)
+            const quotes = {
+                'Palma di Maiorca': '"Il Mediterraneo non è solo un mare, è una filosofia di vita" - Albert Camus',
+                'Firenze': '"Ogni blocco di pietra ha una statua dentro di sé" - Michelangelo',
+                'Innsbruck': '"Le montagne non sono stadi dove soddisfo la mia ambizione, sono cattedrali dove pratico la mia religione" - Anatoli Boukreev'
+            };
+            
+            document.getElementById('quote-text').textContent = quotes[destination]?.split(' - ')[0] || '"Il viaggio è l\'unica cosa che compri e ti rende più ricco"';
+            document.getElementById('quote-author').textContent = quotes[destination]?.split(' - ')[1] ? '- ' + quotes[destination].split(' - ')[1] : '- Anonimo';
         }
 
+        // SELECT STARS
+        function selectStars(stars) {
+            selectedStars = stars;
+            const starElements = document.querySelectorAll('.star');
+            
+            starElements.forEach((star, index) => {
+                if (index < stars) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+            
+            const labels = ['1 stella', '2 stelle', '3 stelle', '4 stelle', '5 stelle'];
+            document.getElementById('stars-label').textContent = labels[stars - 1];
+        }
+        
         // INIT AL CARICAMENTO
         window.onload = function() {
             initDateMenu();
             initDurationMenu();
             checkGeolocation();
+            
+            // Inizializza stelle a 3
+            selectStars(3);
             
             // Make globe clickable initially
             setTimeout(() => {
