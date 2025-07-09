@@ -219,19 +219,18 @@
                     <!-- Durata -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium mb-2">⏱️ Per quanto tempo</label>
-                        <select id="duration" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
-                            <option value="2">Due giorni</option>
-                            <option value="3">Tre giorni</option>
-                            <option value="4">Quattro giorni</option>
-                            <option value="5">Cinque giorni</option>
-                            <option value="7">Una settimana</option>
-                            <option value="10">Dieci giorni</option>
-                            <option value="14">Due settimane</option>
-                        </select>
+                        <div class="relative">
+                            <button type="button" onclick="toggleDurationMenu()" 
+                                    class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white flex justify-between items-center">
+                                <span id="duration-selected">Due giorni</span>
+                                <span>▼</span>
+                            </button>
+                            <div id="duration-menu" class="dropdown-menu hidden"></div>
+                        </div>
                     </div>
 
-                    <!-- Città partenza -->
-                    <div class="mb-6">
+                    <!-- Città partenza - NASCOSTO, si mostra dopo -->
+                    <div class="mb-6 hidden" id="departure-section">
                         <label class="block text-sm font-medium mb-2">✈️ Da quale città parti</label>
                         <select id="departure" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
                             <option value="MXP">Milano Malpensa</option>
@@ -262,7 +261,110 @@
         </div>
     </div>
 
-    <!-- STEP 2: LOADING -->
+    <!-- STEP 1.5: SELEZIONE AEROPORTO -->
+    <div id="airport-step" class="hidden">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center mb-8">
+                <div style="font-size: 80px; margin-bottom: 20px;">✈️</div>
+                <h2 class="text-3xl font-bold mb-4 text-white">
+                    Da dove decolliamo?
+                </h2>
+            </div>
+
+            <div class="max-w-2xl mx-auto">
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="mb-6">
+                        <input type="text" 
+                               id="airport-search" 
+                               placeholder="Cerca il tuo aeroporto..." 
+                               class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50"
+                               onkeyup="filterAirports()">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <select id="airport-select" size="10" 
+                                class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white"
+                                style="min-height: 300px;">
+                            <optgroup label="Italia">
+                                <option value="MXP">Milano Malpensa</option>
+                                <option value="LIN">Milano Linate</option>
+                                <option value="BGY">Milano Bergamo</option>
+                                <option value="FCO">Roma Fiumicino</option>
+                                <option value="CIA">Roma Ciampino</option>
+                                <option value="VCE">Venezia Marco Polo</option>
+                                <option value="TSF">Venezia Treviso</option>
+                                <option value="NAP">Napoli</option>
+                                <option value="BLQ">Bologna</option>
+                                <option value="FLR">Firenze</option>
+                                <option value="TRN">Torino</option>
+                                <option value="CTA">Catania</option>
+                                <option value="PMO">Palermo</option>
+                                <option value="BRI">Bari</option>
+                                <option value="VRN">Verona</option>
+                            </optgroup>
+                            <optgroup label="Francia">
+                                <option value="CDG">Parigi Charles de Gaulle</option>
+                                <option value="ORY">Parigi Orly</option>
+                                <option value="NCE">Nizza</option>
+                                <option value="LYS">Lione</option>
+                                <option value="MRS">Marsiglia</option>
+                            </optgroup>
+                            <optgroup label="Germania">
+                                <option value="FRA">Francoforte</option>
+                                <option value="MUC">Monaco</option>
+                                <option value="BER">Berlino</option>
+                                <option value="HAM">Amburgo</option>
+                                <option value="DUS">Düsseldorf</option>
+                                <option value="CGN">Colonia</option>
+                                <option value="STR">Stoccarda</option>
+                            </optgroup>
+                            <optgroup label="Spagna">
+                                <option value="MAD">Madrid</option>
+                                <option value="BCN">Barcellona</option>
+                                <option value="VLC">Valencia</option>
+                                <option value="AGP">Malaga</option>
+                                <option value="PMI">Palma di Maiorca</option>
+                                <option value="SVQ">Siviglia</option>
+                                <option value="BIO">Bilbao</option>
+                            </optgroup>
+                            <optgroup label="Regno Unito">
+                                <option value="LHR">Londra Heathrow</option>
+                                <option value="LGW">Londra Gatwick</option>
+                                <option value="STN">Londra Stansted</option>
+                                <option value="LTN">Londra Luton</option>
+                                <option value="MAN">Manchester</option>
+                                <option value="EDI">Edimburgo</option>
+                                <option value="BHX">Birmingham</option>
+                            </optgroup>
+                            <optgroup label="Altri">
+                                <option value="AMS">Amsterdam</option>
+                                <option value="ZRH">Zurigo</option>
+                                <option value="GVA">Ginevra</option>
+                                <option value="VIE">Vienna</option>
+                                <option value="PRG">Praga</option>
+                                <option value="BRU">Bruxelles</option>
+                                <option value="CPH">Copenhagen</option>
+                                <option value="STO">Stoccolma</option>
+                                <option value="OSL">Oslo</option>
+                                <option value="HEL">Helsinki</option>
+                                <option value="DUB">Dublino</option>
+                                <option value="LIS">Lisbona</option>
+                                <option value="OPO">Porto</option>
+                                <option value="ATH">Atene</option>
+                                <option value="WAW">Varsavia</option>
+                                <option value="BUD">Budapest</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    
+                    <button onclick="confirmAirport()" 
+                            class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
+                        Conferma e Glooba! 🌍
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="loading-step" class="hidden min-h-screen flex items-center justify-center">
         <div class="text-center">
             <div style="width: 300px; height: 300px; margin: 0 auto;">
@@ -293,6 +395,9 @@
         let vibePosition = 50; // 0 = montagna, 100 = mare
         let isDragging = false;
         let clickTimer = null;
+        let selectedDuration = 2;
+        let userLocation = null;
+        let selectedAirport = null;
 
         // INIZIALIZZA DATE MENU
         function initDateMenu() {
@@ -319,10 +424,39 @@
                 menu.appendChild(item);
             }
         }
+        
+        // INIZIALIZZA DURATION MENU
+        function initDurationMenu() {
+            const menu = document.getElementById('duration-menu');
+            const durations = [
+                {value: 2, text: 'Due giorni'},
+                {value: 3, text: 'Tre giorni'},
+                {value: 4, text: 'Quattro giorni'},
+                {value: 5, text: 'Cinque giorni'},
+                {value: 7, text: 'Una settimana'},
+                {value: 10, text: 'Dieci giorni'},
+                {value: 14, text: 'Due settimane'}
+            ];
+            
+            durations.forEach(dur => {
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.textContent = dur.text;
+                item.onclick = () => selectDuration(dur.value, dur.text);
+                menu.appendChild(item);
+            });
+        }
 
         // TOGGLE DATE MENU
         function toggleDateMenu() {
             document.getElementById('date-menu').classList.toggle('hidden');
+            document.getElementById('duration-menu').classList.add('hidden');
+        }
+        
+        // TOGGLE DURATION MENU
+        function toggleDurationMenu() {
+            document.getElementById('duration-menu').classList.toggle('hidden');
+            document.getElementById('date-menu').classList.add('hidden');
         }
 
         // SELECT DATE
@@ -330,6 +464,61 @@
             selectedDate = date;
             document.getElementById('when-selected').textContent = text;
             document.getElementById('date-menu').classList.add('hidden');
+        }
+        
+        // SELECT DURATION
+        function selectDuration(value, text) {
+            selectedDuration = value;
+            document.getElementById('duration-selected').textContent = text;
+            document.getElementById('duration-menu').classList.add('hidden');
+        }
+        
+        // CHECK GEOLOCATION
+        function checkGeolocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        // Trova aeroporto più vicino basato su lat/lon
+                        // Per ora simulo con Milano
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lon: position.coords.longitude
+                        };
+                        selectedAirport = 'MXP'; // In produzione calcolerai quello più vicino
+                    },
+                    (error) => {
+                        console.log('Geolocalizzazione non disponibile');
+                    }
+                );
+            }
+        }
+        
+        // FILTER AIRPORTS
+        function filterAirports() {
+            const search = document.getElementById('airport-search').value.toLowerCase();
+            const select = document.getElementById('airport-select');
+            const options = select.getElementsByTagName('option');
+            
+            for (let option of options) {
+                const text = option.textContent.toLowerCase();
+                option.style.display = text.includes(search) ? '' : 'none';
+            }
+        }
+        
+        // CONFIRM AIRPORT
+        function confirmAirport() {
+            const select = document.getElementById('airport-select');
+            if (select.value) {
+                selectedAirport = select.value;
+                document.getElementById('airport-step').classList.add('hidden');
+                document.getElementById('loading-step').classList.remove('hidden');
+                
+                setTimeout(() => {
+                    showResults();
+                }, 3000);
+            } else {
+                alert('Seleziona un aeroporto!');
+            }
         }
 
         // MUOVI VIBES DOT - NUOVO per slider orizzontale
@@ -388,14 +577,19 @@
                 return;
             }
             
-            // Mostra loading
-            document.getElementById('form-step').classList.add('hidden');
-            document.getElementById('loading-step').classList.remove('hidden');
-            
-            // Simula ricerca (in produzione chiamerai le API)
-            setTimeout(() => {
-                showResults();
-            }, 3000);
+            // Se abbiamo già la posizione, vai direttamente al loading
+            if (selectedAirport) {
+                document.getElementById('form-step').classList.add('hidden');
+                document.getElementById('loading-step').classList.remove('hidden');
+                
+                setTimeout(() => {
+                    showResults();
+                }, 3000);
+            } else {
+                // Altrimenti mostra selezione aeroporto
+                document.getElementById('form-step').classList.add('hidden');
+                document.getElementById('airport-step').classList.remove('hidden');
+            }
         }
 
         // MOSTRA RISULTATI
@@ -440,6 +634,8 @@
         // INIT AL CARICAMENTO
         window.onload = function() {
             initDateMenu();
+            initDurationMenu();
+            checkGeolocation();
             
             // Make globe clickable initially
             setTimeout(() => {
@@ -450,6 +646,7 @@
             document.onclick = function(e) {
                 if (!e.target.closest('.relative')) {
                     document.getElementById('date-menu').classList.add('hidden');
+                    document.getElementById('duration-menu').classList.add('hidden');
                 }
             };
         };
