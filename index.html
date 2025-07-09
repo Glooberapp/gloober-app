@@ -30,6 +30,26 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
         
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .globe-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
         h1 {
             text-align: center;
             color: #333;
@@ -57,8 +77,7 @@
         
         input[type="date"],
         input[type="number"],
-        input[type="text"],
-        select {
+        input[type="text"] {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -67,18 +86,56 @@
             transition: border-color 0.3s;
         }
         
-        input:focus,
-        select:focus {
+        input:focus {
             outline: none;
             border-color: #667eea;
         }
         
-        .date-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .date-menu {
+            position: relative;
         }
         
+        .date-display {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.3s;
+        }
+        
+        .date-display:hover {
+            border-color: #667eea;
+        }
+        
+        .date-picker {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 5px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+        
+        .date-picker.show {
+            display: block;
+        }
+        
+        .date-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        /* Nuovo slider semplificato */
         .slider-container {
             margin: 30px 0;
             padding: 0 10px;
@@ -140,38 +197,158 @@
         /* Loading screen */
         .loading-screen {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+            text-align: center;
+            padding: 60px 20px;
         }
         
-        .globe {
+        .loading-globe {
             width: 120px;
             height: 120px;
-            border-radius: 50%;
-            background: white;
+            margin: 0 auto 30px;
             position: relative;
-            animation: rotate 2s linear infinite;
-            box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
         }
         
-        @keyframes rotate {
+        .loading-globe::before {
+            content: '🌍';
+            font-size: 100px;
+            position: absolute;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
         
         .loading-text {
+            font-size: 1.3em;
+            color: #666;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* Results screen */
+        .results-screen {
+            display: none;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .results-title {
+            font-size: 1.8em;
+            color: #333;
+        }
+        
+        .new-search-btn {
+            background: none;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .new-search-btn:hover {
+            background: #667eea;
             color: white;
-            font-size: 1.5em;
-            margin-top: 30px;
+        }
+        
+        .destination-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .destination-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .destination-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .destination-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        
+        .destination-name {
+            font-size: 1.4em;
             font-weight: 600;
+            color: #333;
+        }
+        
+        .destination-price {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        .destination-details {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .destination-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: #e9ecef;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            color: #495057;
+        }
+        
+        .tag.highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .book-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+        
+        .book-btn:hover {
+            transform: scale(1.02);
         }
         
         /* Airport selection screen */
@@ -191,62 +368,51 @@
             gap: 5px;
         }
         
-        /* Results screen */
-        .results-screen {
-            display: none;
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: white;
         }
         
-        .destination-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: transform 0.2s;
-        }
-        
-        .destination-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .destination-name {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .destination-details {
-            color: #666;
-            line-height: 1.6;
-        }
-        
-        .price {
-            font-size: 1.5em;
-            color: #2ecc71;
-            font-weight: 700;
-            margin-top: 10px;
+        select:focus {
+            outline: none;
+            border-color: #667eea;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="mainContainer">
         <!-- Main form screen -->
-        <div id="mainScreen">
-            <h1>Gloober 🌍</h1>
-            <p class="tagline">Trova il tuo viaggio perfetto</p>
+        <div id="formScreen">
+            <div class="logo">
+                <div class="globe-icon"></div>
+                <h1>Gloober 🌍</h1>
+                <p class="tagline">Zero Stress Travel</p>
+            </div>
             
             <div class="form-group">
                 <label>Quando vuoi partire?</label>
-                <div class="date-group">
-                    <input type="date" id="dateFrom" required>
-                    <input type="date" id="dateTo" required>
+                <div class="date-menu">
+                    <div class="date-display" onclick="toggleDatePicker()">
+                        <span id="dateText">Seleziona le date</span>
+                        <span>📅</span>
+                    </div>
+                    <div class="date-picker" id="datePicker">
+                        <div class="date-inputs">
+                            <input type="date" id="dateFrom" placeholder="Dal">
+                            <input type="date" id="dateTo" placeholder="Al">
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <div class="form-group">
                 <label>Quanti siamo?</label>
-                <input type="number" id="travelers" min="1" max="10" value="2" required>
+                <input type="number" id="travelers" min="1" max="10" value="2">
             </div>
             
             <div class="form-group">
@@ -332,25 +498,50 @@
             </div>
         </div>
         
+        <!-- Loading screen -->
+        <div class="loading-screen" id="loadingScreen">
+            <div class="loading-globe"></div>
+            <p class="loading-text">Sto cercando le migliori offerte per te...</p>
+        </div>
+        
         <!-- Results screen -->
-        <div id="resultsScreen" class="results-screen">
-            <button class="back-button" onclick="showMainScreen()">
-                ← Nuova ricerca
-            </button>
-            <h2>Le tue destinazioni perfette! 🎯</h2>
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-header">
+                <h2 class="results-title">Le tue destinazioni 🎯</h2>
+                <button class="new-search-btn" onclick="newSearch()">Nuova ricerca</button>
+            </div>
             <div id="resultsContainer"></div>
         </div>
     </div>
     
-    <!-- Loading screen -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="globe"></div>
-        <p class="loading-text">Sto trovando le migliori offerte...</p>
-    </div>
-    
     <script>
         var currentVibe = 'arte';
+        var selectedDates = { from: null, to: null };
         
+        function toggleDatePicker() {
+            var picker = document.getElementById('datePicker');
+            picker.classList.toggle('show');
+        }
+        
+        // Chiudi date picker quando si selezionano le date
+        document.getElementById('dateFrom').addEventListener('change', updateDateDisplay);
+        document.getElementById('dateTo').addEventListener('change', updateDateDisplay);
+        
+        function updateDateDisplay() {
+            var from = document.getElementById('dateFrom').value;
+            var to = document.getElementById('dateTo').value;
+            var display = document.getElementById('dateText');
+            
+            if (from && to) {
+                var fromDate = new Date(from);
+                var toDate = new Date(to);
+                display.textContent = fromDate.toLocaleDateString('it-IT') + ' - ' + toDate.toLocaleDateString('it-IT');
+                selectedDates = { from: from, to: to };
+                document.getElementById('datePicker').classList.remove('show');
+            }
+        }
+        
+        // Nuovo slider semplificato
         function moveSlider(event) {
             event.preventDefault();
             var track = document.querySelector('.slider-track');
@@ -382,21 +573,19 @@
         }
         
         function showAirportScreen() {
-            var dateFrom = document.getElementById('dateFrom').value;
-            var dateTo = document.getElementById('dateTo').value;
-            
-            if (!dateFrom || !dateTo) {
+            if (!selectedDates.from || !selectedDates.to) {
                 alert('Per favore seleziona le date del viaggio!');
                 return;
             }
             
-            document.getElementById('mainScreen').style.display = 'none';
+            document.getElementById('formScreen').style.display = 'none';
             document.getElementById('airportScreen').style.display = 'block';
         }
         
         function showMainScreen() {
-            document.getElementById('mainScreen').style.display = 'block';
+            document.getElementById('formScreen').style.display = 'block';
             document.getElementById('airportScreen').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'none';
             document.getElementById('resultsScreen').style.display = 'none';
         }
         
@@ -405,50 +594,126 @@
             if (!airport) return;
             
             document.getElementById('airportScreen').style.display = 'none';
-            document.getElementById('loadingScreen').style.display = 'flex';
+            document.getElementById('loadingScreen').style.display = 'block';
             
-            // Simula ricerca
+            // Simula chiamata API
             setTimeout(function() {
-                showResults();
+                searchDestinations();
             }, 3000);
         }
         
-        function showResults() {
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('resultsScreen').style.display = 'block';
-            
-            var destinations = [];
+        function searchDestinations() {
+            // Qui andrebbe la vera chiamata API a Booking.com
+            var mockResults = [];
             
             if (currentVibe === 'mare') {
-                destinations = [
-                    { name: 'Santorini, Grecia', details: 'Volo + Hotel 5 notti', price: '€450' },
-                    { name: 'Ibiza, Spagna', details: 'Volo + Hotel 4 notti', price: '€380' },
-                    { name: 'Algarve, Portogallo', details: 'Volo + Hotel 7 notti', price: '€520' }
+                mockResults = [
+                    {
+                        name: 'Santorini, Grecia',
+                        price: '€450',
+                        details: 'Volo diretto + Hotel 5★ vista mare',
+                        duration: '5 notti',
+                        tags: ['Spiagge paradisiache', 'Tramonti mozzafiato', 'Cucina greca']
+                    },
+                    {
+                        name: 'Ibiza, Spagna',
+                        price: '€380',
+                        details: 'Volo + Resort All Inclusive',
+                        duration: '4 notti',
+                        tags: ['Vita notturna', 'Spiagge cristalline', 'Beach club']
+                    },
+                    {
+                        name: 'Algarve, Portogallo',
+                        price: '€320',
+                        details: 'Volo + Hotel 4★ sulla spiaggia',
+                        duration: '7 notti',
+                        tags: ['Grotte marine', 'Surf', 'Pesce fresco']
+                    }
                 ];
             } else if (currentVibe === 'arte') {
-                destinations = [
-                    { name: 'Firenze, Italia', details: 'Volo + Hotel 3 notti', price: '€280' },
-                    { name: 'Parigi, Francia', details: 'Volo + Hotel 4 notti', price: '€420' },
-                    { name: 'Vienna, Austria', details: 'Volo + Hotel 5 notti', price: '€390' }
+                mockResults = [
+                    {
+                        name: 'Firenze, Italia',
+                        price: '€280',
+                        details: 'Volo + B&B nel centro storico',
+                        duration: '3 notti',
+                        tags: ['Uffizi', 'Duomo', 'Cucina toscana']
+                    },
+                    {
+                        name: 'Parigi, Francia',
+                        price: '€420',
+                        details: 'Volo + Hotel boutique Marais',
+                        duration: '4 notti',
+                        tags: ['Louvre', 'Torre Eiffel', 'Café parigini']
+                    },
+                    {
+                        name: 'Vienna, Austria',
+                        price: '€350',
+                        details: 'Volo + Hotel 4★ centro',
+                        duration: '5 notti',
+                        tags: ['Palazzo Schönbrunn', 'Opera', 'Sachertorte']
+                    }
                 ];
             } else {
-                destinations = [
-                    { name: 'Interlaken, Svizzera', details: 'Volo + Hotel 4 notti', price: '€580' },
-                    { name: 'Innsbruck, Austria', details: 'Volo + Hotel 5 notti', price: '€450' },
-                    { name: 'Chamonix, Francia', details: 'Volo + Hotel 6 notti', price: '€520' }
+                mockResults = [
+                    {
+                        name: 'Interlaken, Svizzera',
+                        price: '€580',
+                        details: 'Volo + Chalet vista montagne',
+                        duration: '4 notti',
+                        tags: ['Jungfrau', 'Sport estremi', 'Fonduta']
+                    },
+                    {
+                        name: 'Innsbruck, Austria',
+                        price: '€450',
+                        details: 'Volo + Hotel spa 4★',
+                        duration: '5 notti',
+                        tags: ['Sci', 'Trekking', 'Tirolo']
+                    },
+                    {
+                        name: 'Chamonix, Francia',
+                        price: '€520',
+                        details: 'Volo + Lodge Monte Bianco',
+                        duration: '6 notti',
+                        tags: ['Monte Bianco', 'Alpinismo', 'Raclette']
+                    }
                 ];
             }
             
+            displayResults(mockResults);
+        }
+        
+        function displayResults(results) {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+            
             var html = '';
-            destinations.forEach(function(dest) {
-                html += '<div class="destination-card">' +
-                    '<div class="destination-name">' + dest.name + '</div>' +
-                    '<div class="destination-details">' + dest.details + '</div>' +
-                    '<div class="price">' + dest.price + ' a persona</div>' +
-                    '</div>';
+            results.forEach(function(dest) {
+                html += '<div class="destination-card" onclick="bookDestination(\'' + dest.name + '\')">';
+                html += '<div class="destination-header">';
+                html += '<div class="destination-name">' + dest.name + '</div>';
+                html += '<div class="destination-price">' + dest.price + '</div>';
+                html += '</div>';
+                html += '<div class="destination-details">' + dest.details + ' • ' + dest.duration + '</div>';
+                html += '<div class="destination-tags">';
+                dest.tags.forEach(function(tag, index) {
+                    html += '<span class="tag' + (index === 0 ? ' highlight' : '') + '">' + tag + '</span>';
+                });
+                html += '</div>';
+                html += '<button class="book-btn">Prenota ora →</button>';
+                html += '</div>';
             });
             
             document.getElementById('resultsContainer').innerHTML = html;
+        }
+        
+        function newSearch() {
+            showMainScreen();
+        }
+        
+        function bookDestination(name) {
+            alert('Reindirizzamento a Booking.com per ' + name + '...');
+            // Qui andrebbe il redirect vero a Booking.com con i parametri
         }
     </script>
 </body>
