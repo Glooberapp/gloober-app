@@ -21,9 +21,9 @@
         .vibes-slider-horizontal {
             position: relative;
             width: 100%;
-            height: 60px;
-            margin: 20px auto;
-            border-radius: 30px;
+            height: 80px;
+            margin: 20px auto 40px;
+            border-radius: 40px;
             background: linear-gradient(to right, #fbbf24 0%, #f59e0b 50%, #fbbf24 100%);
             cursor: pointer;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -37,12 +37,17 @@
             border: 3px solid rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             cursor: grab;
-            top: 2px;
+            top: 12px;
             left: 50%;
             transform: translateX(-50%);
             box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
-            transition: left 0.3s ease;
+            transition: left 0.3s ease, transform 0.2s ease;
             position: relative;
+        }
+        
+        .vibes-dot:hover {
+            transform: translateX(-50%) scale(1.1);
+            cursor: pointer;
         }
         
         /* Mini continenti nel globo */
@@ -68,6 +73,20 @@
             left: 45%;
             border-radius: 50%;
             transform: translateX(-50%);
+        }
+        
+        /* Testo JUST GLOOB IT sotto il globo */
+        .gloob-text {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            white-space: nowrap;
+            pointer-events: none;
         }
         
         .vibes-labels {
@@ -216,14 +235,11 @@
                             <span class="vibes-label">🏔️ MONTAGNA</span>
                         </div>
                         <div class="vibes-slider-horizontal" id="vibes-slider" onclick="moveVibesDot(event)" ontouchmove="moveVibesDot(event)" ontouchstart="moveVibesDot(event)">
-                            <div class="vibes-dot" id="vibes-dot"></div>
+                            <div class="vibes-dot" id="vibes-dot" onclick="handleGlobeClick(event)">
+                                <span class="gloob-text">JUST GLOOB IT</span>
+                            </div>
                         </div>
                     </div>
-
-                    <button onclick="startGloob()" 
-                            class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
-                        🌍 JUST GLOOB IT!
-                    </button>
                 </div>
             </div>
         </div>
@@ -300,6 +316,7 @@
         // MUOVI VIBES DOT - NUOVO per slider orizzontale
         function moveVibesDot(event) {
             event.preventDefault();
+            event.stopPropagation();
             const slider = document.getElementById('vibes-slider');
             const dot = document.getElementById('vibes-dot');
             const rect = slider.getBoundingClientRect();
@@ -315,6 +332,12 @@
             vibePosition = Math.max(0, Math.min(100, percentage));
             
             dot.style.left = vibePosition + '%';
+        }
+        
+        // GESTISCI CLICK SUL GLOBO
+        function handleGlobeClick(event) {
+            event.stopPropagation();
+            startGloob();
         }
 
         // START GLOOB
