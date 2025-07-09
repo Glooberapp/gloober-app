@@ -21,9 +21,9 @@
         .vibes-slider-horizontal {
             position: relative;
             width: 100%;
-            height: 80px;
-            margin: 20px auto 40px;
-            border-radius: 40px;
+            height: 60px;
+            margin: 20px auto 50px;
+            border-radius: 30px;
             background: linear-gradient(to right, #fbbf24 0%, #f59e0b 50%, #fbbf24 100%);
             cursor: pointer;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -37,7 +37,7 @@
             border: 3px solid rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             cursor: grab;
-            top: 12px;
+            top: 2px;
             left: 50%;
             transform: translateX(-50%);
             box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
@@ -45,9 +45,17 @@
             position: relative;
         }
         
-        .vibes-dot:hover {
-            transform: translateX(-50%) scale(1.1);
+        .vibes-dot.dragging {
+            cursor: grabbing;
+        }
+        
+        .vibes-dot.clickable {
+            transform: translateX(-50%) scale(1.05);
             cursor: pointer;
+        }
+        
+        .vibes-dot.clickable:hover {
+            transform: translateX(-50%) scale(1.1);
         }
         
         /* Mini continenti nel globo */
@@ -78,15 +86,24 @@
         /* Testo JUST GLOOB IT sotto il globo */
         .gloob-text {
             position: absolute;
-            bottom: -25px;
+            bottom: -35px;
             left: 50%;
             transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 12px;
-            font-weight: 600;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
             white-space: nowrap;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        
+        .vibes-dot.clickable .gloob-text {
+            opacity: 1;
         }
         
         .vibes-labels {
@@ -274,6 +291,8 @@
         // STATO GLOBALE SEMPLICE
         let selectedDate = new Date();
         let vibePosition = 50; // 0 = montagna, 100 = mare
+        let isDragging = false;
+        let clickTimer = null;
 
         // INIZIALIZZA DATE MENU
         function initDateMenu() {
@@ -317,8 +336,19 @@
         function moveVibesDot(event) {
             event.preventDefault();
             event.stopPropagation();
-            const slider = document.getElementById('vibes-slider');
+            
+            isDragging = true;
             const dot = document.getElementById('vibes-dot');
+            dot.classList.add('dragging');
+            dot.classList.remove('clickable');
+            
+            // Clear any existing timer
+            if (clickTimer) {
+                clearTimeout(clickTimer);
+                clickTimer = null;
+            }
+            
+            const slider = document.getElementById('vibes-slider');
             const rect = slider.getBoundingClientRect();
             
             let x;
@@ -332,12 +362,21 @@
             vibePosition = Math.max(0, Math.min(100, percentage));
             
             dot.style.left = vibePosition + '%';
+            
+            // Start timer to make clickable after 1 second
+            clickTimer = setTimeout(() => {
+                isDragging = false;
+                dot.classList.remove('dragging');
+                dot.classList.add('clickable');
+            }, 1000);
         }
         
         // GESTISCI CLICK SUL GLOBO
         function handleGlobeClick(event) {
             event.stopPropagation();
-            startGloob();
+            if (!isDragging && document.getElementById('vibes-dot').classList.contains('clickable')) {
+                startGloob();
+            }
         }
 
         // START GLOOB
@@ -401,6 +440,11 @@
         // INIT AL CARICAMENTO
         window.onload = function() {
             initDateMenu();
+            
+            // Make globe clickable initially
+            setTimeout(() => {
+                document.getElementById('vibes-dot').classList.add('clickable');
+            }, 500);
             
             // Chiudi menu quando clicchi fuori
             document.onclick = function(e) {
