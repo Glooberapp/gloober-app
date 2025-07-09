@@ -153,6 +153,16 @@
                 height: 150px;
             }
         }
+
+        .hotel-card {
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="text-white min-h-screen">
@@ -259,7 +269,7 @@
                             <div class="vibes-label" style="bottom: -20px; left: 50%; transform: translateX(-50%);">😌 RELAX</div>
                             <div class="vibes-label" style="left: -40px; top: 50%; transform: translateY(-50%);">🏖️ MARE</div>
                             <div class="vibes-label" style="right: -55px; top: 50%; transform: translateY(-50%);">🏔️ MONTAGNA</div>
-                            <div class="vibes-label" style="top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 10px;">🎨 ARTE</div>
+
                             
                             <div class="vibes-slider" id="vibes-slider" style="margin: 30px auto;">
                                 <div class="vibes-dot" id="vibes-dot"></div>
@@ -304,19 +314,17 @@
     </div>
 
     <script>
-        // Configuration - Aggiungi le tue API keys qui quando le ottieni
+        // Configurazione
         const GEMINI_API_KEY = 'AIzaSyB3FtGA9NJ8FB5GNCPrAWwAzUkhy4kTZwo';
         const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
-        
-        // FUTURE API KEYS - da aggiungere quando le ottieni
-        const AMADEUS_CLIENT_ID = ''; // Registrati su developers.amadeus.com
-        const AMADEUS_CLIENT_SECRET = '';
-        const TRAVELPAYOUTS_TOKEN = ''; // Lo trovi nel tuo dashboard Travelpayouts
-        const RAPIDAPI_KEY = ''; // Se scegli RapidAPI
+        const RAPIDAPI_KEY = '3ce68a2aa9msh4f091334cd7dd49p1bba08jsn29bf6874508c';
 
         let vibesPosition = { x: 50, y: 50 };
         let selectedDate = new Date();
         let selectedDuration = 2;
+
+        // Cache per evitare troppe chiamate API
+        const apiCache = new Map();
 
         // Mesi in italiano
         const monthNames = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 
@@ -390,6 +398,7 @@
             
             dot.addEventListener('mousedown', (e) => {
                 isDragging = true;
+                dot.style.cursor = 'grabbing';
                 e.preventDefault();
             });
             
@@ -403,6 +412,7 @@
             
             document.addEventListener('mouseup', () => {
                 isDragging = false;
+                dot.style.cursor = 'grab';
             });
 
             // Touch events
@@ -443,6 +453,104 @@
             }
         }
 
+        // Cerca destinazione su Booking.com per ottenere dest_id
+        async function searchDestination(cityName) {
+            const url = 'https://booking-com15.p.rapidapi.com/api/v1/hotels/searchDestination';
+            const params = new URLSearchParams({
+                query: cityName
+            });
+
+            try {
+                const response = await fetch(`${url}?${params}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': RAPIDAPI_KEY,
+                        'X-RapidAPI-Host': 'booking-com15.p.rapidapi.com'
+                    }
+                });
+
+                if (!response.ok) {
+                    console.error('Destination search error:', response.status);
+                    return null;
+                }
+
+                const data = await response.json();
+                
+                // Prendi il primo risultato città
+                if (data.data && data.data.length > 0) {
+                    const cityResult = data.data.find(d => d.search_type === "CITY" || d.dest_type === "city");
+                    return cityResult ? cityResult.dest_id : null;
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('Error searching destination:', error);
+                return null;
+            }
+        }
+
+        // Cerca hotel con Booking.com API
+        async function searchRealHotels(cityName, checkinDate, checkoutDate, adults) {
+            // Prima cerca il dest_id della città
+            const destId = await searchDestination(cityName);
+            
+            if (!destId) {
+                console.log('Destinazione non trovata:', cityName);
+                return null;
+            }
+
+            console.log(`Trovato dest_id per ${cityName}: ${destId}`);
+
+            const cacheKey = `${destId}-${checkinDate}-${checkoutDate}-${adults}`;
+            
+            // Controlla cache
+            if (apiCache.has(cacheKey)) {
+                console.log('Usando cache per:', cityName);
+                return apiCache.get(cacheKey);
+            }
+
+            const url = 'https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotels';
+            const params = new URLSearchParams({
+                dest_id: destId,
+                search_type: 'CITY',
+                arrival_date: checkinDate,
+                departure_date: checkoutDate,
+                adults: adults.toString(),
+                children_array: JSON.stringify([]),
+                room_qty: Math.ceil(adults / 2).toString(),
+                page_number: '1',
+                units: 'metric',
+                temperature_unit: 'c',
+                languagecode: 'it',
+                currency_code: 'EUR'
+            });
+
+            try {
+                const response = await fetch(`${url}?${params}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': RAPIDAPI_KEY,
+                        'X-RapidAPI-Host': 'booking-com15.p.rapidapi.com'
+                    }
+                });
+
+                if (!response.ok) {
+                    console.error('API Error:', response.status);
+                    return null;
+                }
+
+                const data = await response.json();
+                
+                // Salva in cache
+                apiCache.set(cacheKey, data);
+                
+                return data;
+            } catch (error) {
+                console.error('Error fetching hotels:', error);
+                return null;
+            }
+        }
+
         // Trova destinazione con AI
         async function findDestinationWithAI() {
             const budget = parseInt(document.getElementById('budget').value);
@@ -453,43 +561,38 @@
             const endDate = new Date(selectedDate);
             endDate.setDate(endDate.getDate() + selectedDuration - 1);
             
-            const prompt = `Sei un esperto agente di viaggio. Devi trovare una vacanza REALE per ${people} persone con budget totale di €${budget}.
+            const prompt = `Sei un esperto agente di viaggio creativo. Devi trovare una destinazione UNICA e interessante per ${people} persone con budget totale di €${budget}.
 
-Parametri:
+Parametri del viaggio:
 - Date: dal ${selectedDate.toISOString().split('T')[0]} al ${endDate.toISOString().split('T')[0]} (${selectedDuration} giorni)
 - Aeroporto partenza: ${departure}
-- Tipo di viaggio: ${tripType}
+- Tipo di viaggio desiderato: ${tripType}
 - Budget TOTALE disponibile: €${budget}
 
-IMPORTANTE: Devi cercare prezzi REALISTICI basati su:
-1. Voli EasyJet tipici da ${departure} per questo periodo (andata e ritorno per ${people} persone)
-2. Hotel 3-4 stelle con rating 9+ su Booking per ${selectedDuration-1} notti
-3. Il totale (volo + hotel) NON deve superare €${budget}
-4. Suggerisci orari di volo realistici per EasyJet
+IMPORTANTE - Sii CREATIVO e VARIA le destinazioni:
+1. NON suggerire sempre le solite città (Barcellona, Parigi, Roma)
+2. Considera destinazioni meno ovvie ma affascinanti: Porto, Valencia, Siviglia, Nizza, Marsiglia, Napoli, Palermo, Dubrovnik, Split, Atene, Malta, Edimburgo, Cork, Bergen, Göteborg, Cracovia, Riga, Tallinn, Ljubljana, ecc.
+3. Per mare: pensa a isole greche (Mykonos, Santorini, Creta), Baleari (Maiorca, Ibiza), Canarie, Malta, Corsica, Sardegna
+4. Per montagna: Innsbruck, Interlaken, Chamonix, Bled, Zakopane
+5. Per arte/cultura: Bruges, Gand, Salisburgo, Dresda, San Pietroburgo, Granada, Toledo
+6. Considera la stagione: ${selectedDate.getMonth() >= 10 || selectedDate.getMonth() <= 2 ? 'inverno, quindi preferisci sud Europa o città' : 'estate, quindi tutte le opzioni sono valide'}
 
-Considera che:
-- Voli EasyJet costano mediamente €50-200 a persona per tratta in Europa
-- Hotel 3-4 stelle costano €80-150 a notte per camera doppia
-- EasyJet ha voli mattina (6-10), pomeriggio (14-18) o sera (19-22)
-- Se il budget è troppo basso, suggerisci destinazioni più economiche/vicine
+Calcola prezzi REALISTICI:
+- Voli low cost: €30-80/persona per destinazioni vicine, €80-200/persona per più lontane
+- Moltiplica per andata e ritorno
+- Hotels 3-4 stelle: €60-120/notte per camera doppia in bassa stagione, €80-200 in alta
+
+VARIA LA RISPOSTA - ogni volta suggerisci una destinazione DIVERSA!
 
 Rispondi SOLO con un JSON:
 {
   "destination": "Nome città",
-  "country": "Paese",
-  "airport": "Codice aeroporto IATA di arrivo",
-  "airportName": "Nome completo aeroporto di arrivo",
-  "description": "Una frase poetica in italiano sulla destinazione",
-  "flightPrice": [prezzo realistico totale volo per tutte le persone],
-  "hotelPrice": [prezzo realistico totale hotel per tutto il soggiorno],
-  "flightDuration": "durata volo (es: 2h 15m)",
-  "departureTime": "orario partenza (es: 08:45)",
-  "arrivalTime": "orario arrivo (es: 11:00)",
-  "returnDepartureTime": "orario partenza ritorno (es: 18:30)",
-  "returnArrivalTime": "orario arrivo ritorno (es: 20:45)",
-  "hotelName": "Nome di un vero hotel 3-4 stelle con buone recensioni",
-  "hotelPricePerNight": [prezzo per notte],
-  "warning": "messaggio se il budget è troppo basso"
+  "country": "Paese", 
+  "airport": "Codice IATA aeroporto",
+  "description": "Una frase poetica e accattivante in italiano che faccia venire voglia di partire",
+  "flightPrice": [prezzo realistico totale volo A/R per tutte le persone],
+  "flightDuration": "durata volo stimata",
+  "whyThisPlace": "breve spiegazione del perché hai scelto questa destinazione per le loro vibes"
 }`;
 
             try {
@@ -513,113 +616,102 @@ Rispondi SOLO con un JSON:
                 console.error('AI Error:', error);
             }
             
-            // Fallback con prezzi più realistici
-            const flightPricePerPerson = 120; // Media realistica
-            const hotelPricePerNight = 100; // Media realistica
-            const totalFlight = flightPricePerPerson * people;
-            const totalHotel = hotelPricePerNight * (selectedDuration - 1);
-            
+            // Fallback
             return {
                 destination: "Barcellona",
                 country: "Spagna",
                 airport: "BCN",
                 description: "Dove Gaudí incontra il mare e ogni tapas racconta una storia",
-                flightPrice: totalFlight,
-                hotelPrice: totalHotel,
-                flightDuration: "2h 15m",
-                hotelName: "Hotel Barcelona Center",
-                hotelPricePerNight: hotelPricePerNight,
-                warning: totalFlight + totalHotel > budget ? "Budget insufficiente per questa destinazione" : null
+                flightPrice: 150 * people,
+                flightDuration: "2h 15m"
             };
         }
 
-        // Funzione per ottenere prezzi reali (da implementare con una delle API sopra)
-        async function getRealPrices(city, checkIn, checkOut, guests) {
-            // OPZIONE 1: Travelpayouts (visto che ce l'hai già)
-            if (TRAVELPAYOUTS_TOKEN) {
-                try {
-                    const response = await fetch(`https://engine.hotellook.com/api/v2/lookup.json?query=${city}&lang=it&lookFor=hotel&limit=5&token=${TRAVELPAYOUTS_TOKEN}`);
-                    const hotels = await response.json();
-                    // Poi chiama l'API dei prezzi con gli hotel ID ottenuti
-                    // Documentazione: https://support.travelpayouts.com/hc/en-us/articles/115000343268
-                    return hotels;
-                } catch (error) {
-                    console.error('Errore Travelpayouts:', error);
-                }
-            }
-            
-            // OPZIONE 2: Amadeus (gratis fino a 500 chiamate)
-            if (AMADEUS_CLIENT_ID && AMADEUS_CLIENT_SECRET) {
-                // Prima ottieni il token
-                const tokenResponse = await fetch('https://api.amadeus.com/v1/security/oauth2/token', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `grant_type=client_credentials&client_id=${AMADEUS_CLIENT_ID}&client_secret=${AMADEUS_CLIENT_SECRET}`
-                });
-                const { access_token } = await tokenResponse.json();
-                
-                // Poi cerca hotel con prezzi
-                const hotelsResponse = await fetch(`https://api.amadeus.com/v2/shopping/hotel-offers?cityCode=${city}&checkInDate=${checkIn}&checkOutDate=${checkOut}&adults=${guests}`, {
-                    headers: {
-                        'Authorization': `Bearer ${access_token}`
-                    }
-                });
-                return await hotelsResponse.json();
-            }
-            
-            // OPZIONE 3: RapidAPI Hotels
-            if (RAPIDAPI_KEY) {
-                const response = await fetch(`https://hotels4.p.rapidapi.com/locations/v2/search?query=${city}`, {
-                    headers: {
-                        'X-RapidAPI-Key': RAPIDAPI_KEY,
-                        'X-RapidAPI-Host': 'hotels4.p.rapidapi.com'
-                    }
-                });
-                return await response.json();
-            }
-            
-            return null; // Se nessuna API è configurata
-        }
+        // Genera link EasyJet
         function generateEasyJetLink(from, to, startDate, endDate, people) {
             const start = startDate.toISOString().split('T')[0];
             const end = endDate.toISOString().split('T')[0];
             
-            // URL più specifico per EasyJet con tutti i parametri
             return `https://www.easyjet.com/it/cerca-voli?from=${from}&to=${to}&dd=${start}&rd=${end}&apax=${people}&cpax=0&ipax=0&SearchType=Return`;
         }
 
-        // Genera link Booking con parametri specifici
-        function generateBookingLink(city, startDate, endDate, people, hotelName) {
-            const checkin = startDate.toISOString().split('T')[0];
-            const checkout = endDate.toISOString().split('T')[0];
-            const rooms = Math.ceil(people / 2);
-            
-            // Se abbiamo un nome hotel specifico, cerchiamo quello
-            const searchQuery = hotelName || city;
-            
-            // TODO: Quando sarai approvato da Booking, aggiungi il tuo affiliate ID qui
-            const BOOKING_AFFILIATE_ID = ''; // Inserisci qui il tuo ID quando lo ricevi
-            const affiliateParam = BOOKING_AFFILIATE_ID ? `&aid=${BOOKING_AFFILIATE_ID}` : '';
-            
-            return `https://www.booking.com/searchresults.it.html?ss=${encodeURIComponent(searchQuery)}&checkin=${checkin}&checkout=${checkout}&group_adults=${people}&no_rooms=${rooms}&selected_currency=EUR&review_score=90&order=review_score_and_price&nflt=class%3D3%3Bclass%3D4%3Bclass%3D5${affiliateParam}`;
+        // Genera link Booking per hotel specifico
+        function generateBookingHotelLink(hotelId, checkin, checkout) {
+            return `https://www.booking.com/hotel/it/${hotelId}.it.html?checkin=${checkin}&checkout=${checkout}&selected_currency=EUR`;
         }
 
-        // Mostra risultato
+        // Mostra risultato con prezzi reali
         async function showResult(destination) {
             const people = parseInt(document.getElementById('people').value);
-            const departure = document.getElementById('departure').value;
+            const departure = document.getElementById('departure').value);
             const budget = parseInt(document.getElementById('budget').value);
             
             const endDate = new Date(selectedDate);
             endDate.setDate(endDate.getDate() + selectedDuration - 1);
             
+            const checkinStr = selectedDate.toISOString().split('T')[0];
+            const checkoutStr = endDate.toISOString().split('T')[0];
+            
+            // Cerca hotel reali
+            const hotelData = await searchRealHotels(destination.destination, checkinStr, checkoutStr, people);
+            
             const easyjetLink = generateEasyJetLink(departure, destination.airport, selectedDate, endDate, people);
-            const bookingLink = generateBookingLink(destination.destination, selectedDate, endDate, people, destination.hotelName);
             
             const nights = selectedDuration - 1;
-            const totalCost = destination.flightPrice + destination.hotelPrice;
+            
+            let hotelsHtml = '';
+            let lowestHotelPrice = null;
+            
+            if (hotelData && hotelData.data && hotelData.data.hotels) {
+                // Filtra hotel con rating >= 8
+                const goodHotels = hotelData.data.hotels
+                    .filter(h => h.property.reviewScore >= 8 && h.property.priceBreakdown)
+                    .sort((a, b) => a.property.priceBreakdown.grossPrice.value - b.property.priceBreakdown.grossPrice.value)
+                    .slice(0, 3);
+                
+                if (goodHotels.length > 0) {
+                    lowestHotelPrice = Math.round(goodHotels[0].property.priceBreakdown.grossPrice.value);
+                    
+                    hotelsHtml = `
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-bold mb-4 text-center">🏨 Hotel Disponibili (Prezzi REALI)</h3>
+                            <div class="space-y-4">
+                                ${goodHotels.map(hotel => {
+                                    const hotelPrice = Math.round(hotel.property.priceBreakdown.grossPrice.value);
+                                    const hotelLink = `https://www.booking.com/hotel/${hotel.property.countryCode.toLowerCase()}/${hotel.property.ufi}.it.html?checkin=${checkinStr}&checkout=${checkoutStr}`;
+                                    
+                                    return `
+                                        <div class="bg-white rounded-xl p-4 text-gray-800 hotel-card">
+                                            <div class="flex justify-between items-start mb-2">
+                                                <div class="flex-1">
+                                                    <h4 class="font-bold text-lg">${hotel.property.name}</h4>
+                                                    <div class="flex items-center gap-2 text-sm text-gray-600 mt-1">
+                                                        <span class="bg-blue-600 text-white px-2 py-1 rounded font-bold">${hotel.property.reviewScore}</span>
+                                                        <span>${hotel.property.reviewScoreWord}</span>
+                                                        <span>• ${hotel.property.reviewCount} recensioni</span>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right ml-4">
+                                                    <p class="text-2xl font-bold text-green-600">€${hotelPrice}</p>
+                                                    <p class="text-xs text-gray-500">${nights} ${nights === 1 ? 'notte' : 'notti'}</p>
+                                                </div>
+                                            </div>
+                                            <a href="${hotelLink}" target="_blank" 
+                                               class="block w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg text-center hover:bg-blue-700 transition mt-3">
+                                                Prenota su Booking →
+                                            </a>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Se non abbiamo prezzi reali, usa stime
+            const hotelPrice = lowestHotelPrice || (100 * nights);
+            const totalCost = destination.flightPrice + hotelPrice;
             
             // Warning se il budget non basta
             const budgetWarning = totalCost > budget ? 
@@ -642,72 +734,51 @@ Rispondi SOLO con un JSON:
                     <div class="bg-white rounded-2xl p-6 text-gray-800">
                         <div class="flex items-center gap-3 mb-4">
                             <span class="text-3xl">✈️</span>
-                            <h3 class="text-xl font-bold">Volo EasyJet</h3>
+                            <h3 class="text-xl font-bold">Volo Low Cost</h3>
                         </div>
                         <p class="text-lg font-medium mb-2">${departure} → ${destination.airport}</p>
-                        ${destination.airportName ? `<p class="text-sm text-gray-600 mb-2">${destination.airportName}</p>` : ''}
-                        
-                        <div class="bg-gray-50 rounded-lg p-3 mb-3">
-                            <p class="text-sm font-semibold mb-1">Andata - ${selectedDate.toLocaleDateString('it-IT', {day: 'numeric', month: 'short'})}</p>
-                            <p class="text-sm">${destination.departureTime || '08:00'} → ${destination.arrivalTime || '10:30'}</p>
-                            <p class="text-xs text-gray-500">Durata: ${destination.flightDuration}</p>
-                        </div>
-                        
-                        <div class="bg-gray-50 rounded-lg p-3 mb-4">
-                            <p class="text-sm font-semibold mb-1">Ritorno - ${endDate.toLocaleDateString('it-IT', {day: 'numeric', month: 'short'})}</p>
-                            <p class="text-sm">${destination.returnDepartureTime || '19:00'} → ${destination.returnArrivalTime || '21:30'}</p>
-                            <p class="text-xs text-gray-500">Durata: ${destination.flightDuration}</p>
-                        </div>
-                        
+                        <p class="text-sm text-gray-600 mb-1">Andata e ritorno</p>
+                        <p class="text-sm text-gray-600 mb-4">Durata volo: ${destination.flightDuration}</p>
                         <p class="text-3xl font-bold text-green-600 mb-2">€${destination.flightPrice}</p>
-                        <p class="text-xs text-gray-500 mb-4">Totale per ${people} ${people === 1 ? 'persona' : 'persone'}</p>
+                        <p class="text-xs text-gray-500 mb-4">Stima per ${people} ${people === 1 ? 'persona' : 'persone'}</p>
                         <a href="${easyjetLink}" target="_blank" class="block w-full bg-orange-500 text-white font-bold py-3 px-6 rounded-lg text-center hover:bg-orange-600 transition">
-                            CERCA QUESTO VOLO →
+                            CERCA VOLI →
                         </a>
                     </div>
                     
-                    <!-- Hotel -->
+                    <!-- Riepilogo prezzi hotel -->
                     <div class="bg-white rounded-2xl p-6 text-gray-800">
                         <div class="flex items-center gap-3 mb-4">
-                            <span class="text-3xl">🏨</span>
-                            <h3 class="text-xl font-bold">Hotel su Booking</h3>
+                            <span class="text-3xl">💰</span>
+                            <h3 class="text-xl font-bold">Riepilogo Budget</h3>
                         </div>
-                        <p class="text-lg font-medium mb-2">${nights} ${nights === 1 ? 'notte' : 'notti'} a ${destination.destination}</p>
-                        <p class="text-sm text-gray-600 mb-1">${destination.hotelName}</p>
-                        <p class="text-sm text-gray-600 mb-4">Min. ⭐⭐⭐ • Rating 9.0+</p>
-                        <p class="text-3xl font-bold text-green-600 mb-2">€${destination.hotelPrice}</p>
-                        <p class="text-xs text-gray-500 mb-1">Totale per ${nights} notti</p>
-                        ${destination.hotelPricePerNight ? `<p class="text-xs text-gray-500 mb-4">(~€${destination.hotelPricePerNight}/notte)</p>` : ''}
-                        <a href="${bookingLink}" target="_blank" class="block w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center hover:bg-blue-700 transition">
-                            CERCA QUESTO HOTEL →
-                        </a>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>✈️ Volo (stima):</span>
+                                <span class="font-bold">€${destination.flightPrice}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>🏨 Hotel ${lowestHotelPrice ? '(reale)' : '(stima)'}:</span>
+                                <span class="font-bold">€${hotelPrice}</span>
+                            </div>
+                            <div class="border-t pt-2 flex justify-between text-lg">
+                                <span>TOTALE:</span>
+                                <span class="font-bold ${totalCost > budget ? 'text-red-600' : 'text-green-600'}">€${totalCost}</span>
+                            </div>
+                            <div class="text-center mt-3">
+                                <p class="text-sm text-gray-500">Budget: €${budget}</p>
+                                ${totalCost <= budget ? 
+                                    `<p class="text-sm text-green-600">✅ Rimangono €${budget - totalCost} per extra</p>` : 
+                                    `<p class="text-sm text-red-600">❌ Mancano €${totalCost - budget}</p>`}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Riepilogo -->
-                <div class="glass-card rounded-2xl p-6 text-center">
-                    <h3 class="text-xl font-bold mb-4">💰 Riepilogo Budget</h3>
-                    <div class="max-w-sm mx-auto space-y-2 text-left">
-                        <div class="flex justify-between">
-                            <span>✈️ Volo:</span>
-                            <span class="font-bold">€${destination.flightPrice}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>🏨 Hotel:</span>
-                            <span class="font-bold">€${destination.hotelPrice}</span>
-                        </div>
-                        <div class="border-t border-white/30 pt-2 flex justify-between text-lg">
-                            <span>TOTALE:</span>
-                            <span class="font-bold ${totalCost > budget ? 'text-red-400' : 'text-yellow-400'}">€${totalCost}</span>
-                        </div>
-                        <div class="text-center mt-2">
-                            <p class="text-sm text-gray-400">Budget disponibile: €${budget}</p>
-                            ${totalCost <= budget ? 
-                                `<p class="text-sm text-green-400">✅ Rimangono €${budget - totalCost} per extra</p>` : 
-                                `<p class="text-sm text-red-400">❌ Mancano €${totalCost - budget}</p>`}
-                        </div>
-                    </div>
-                    <button onclick="location.reload()" class="mt-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition">
+                ${hotelsHtml}
+
+                <div class="text-center mt-6">
+                    <button onclick="location.reload()" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-8 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition">
                         🎲 Re-Gloob!
                     </button>
                 </div>
@@ -771,27 +842,34 @@ Rispondi SOLO con un JSON:
             const loadingTexts = [
                 'Sto analizzando le tue vibes...',
                 'Cerco la destinazione perfetta...',
-                'Calcolo i prezzi migliori...',
-                'Preparo il tuo viaggio...'
+                'Controllo prezzi reali su Booking.com...',
+                'Preparo il tuo viaggio zero stress...'
             ];
             
             let textIndex = 0;
             const textInterval = setInterval(() => {
                 document.getElementById('loading-text').textContent = loadingTexts[textIndex % loadingTexts.length];
                 textIndex++;
-            }, 1000);
+            }, 1500);
             
-            // Trova destinazione con AI
-            const destination = await findDestinationWithAI();
-            
-            clearInterval(textInterval);
-            
-            // Mostra risultato
-            setTimeout(async () => {
-                await showResult(destination);
-                document.getElementById('loading-step').classList.add('hidden');
-                document.getElementById('result-step').classList.remove('hidden');
-            }, 500);
+            try {
+                // Trova destinazione con AI
+                const destination = await findDestinationWithAI();
+                
+                clearInterval(textInterval);
+                
+                // Mostra risultato
+                setTimeout(async () => {
+                    await showResult(destination);
+                    document.getElementById('loading-step').classList.add('hidden');
+                    document.getElementById('result-step').classList.remove('hidden');
+                }, 500);
+            } catch (error) {
+                console.error('Error:', error);
+                clearInterval(textInterval);
+                alert('Si è verificato un errore. Riprova!');
+                location.reload();
+            }
         });
 
         // Initialize
