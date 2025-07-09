@@ -24,7 +24,7 @@
             height: 60px;
             margin: 20px auto;
             border-radius: 30px;
-            background: linear-gradient(to right, #374151 0%, #60a5fa 50%, #fbbf24 100%);
+            background: linear-gradient(to right, #fbbf24 0%, #f59e0b 50%, #fbbf24 100%);
             cursor: pointer;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
@@ -33,15 +33,41 @@
             position: absolute;
             width: 56px;
             height: 56px;
-            background: white;
+            background: radial-gradient(circle at 30% 30%, #60a5fa, #3b82f6, #2563eb, #1e40af);
             border: 3px solid rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             cursor: grab;
             top: 2px;
             left: 50%;
             transform: translateX(-50%);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
             transition: left 0.3s ease;
+            position: relative;
+        }
+        
+        /* Mini continenti nel globo */
+        .vibes-dot::before {
+            content: '';
+            position: absolute;
+            background: radial-gradient(ellipse, #10b981, #059669);
+            width: 12px;
+            height: 10px;
+            top: 25%;
+            left: 50%;
+            border-radius: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .vibes-dot::after {
+            content: '';
+            position: absolute;
+            background: radial-gradient(ellipse, #10b981, #059669);
+            width: 15px;
+            height: 8px;
+            bottom: 30%;
+            left: 45%;
+            border-radius: 50%;
+            transform: translateX(-50%);
         }
         
         .vibes-labels {
@@ -49,6 +75,17 @@
             justify-content: space-between;
             margin-bottom: 10px;
             padding: 0 10px;
+            position: relative;
+        }
+        
+        .vibes-label-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
         
         .vibes-label {
@@ -174,8 +211,9 @@
                     <div class="mb-8">
                         <label class="block text-sm font-medium mb-4 text-center">✨ Le tue vibes</label>
                         <div class="vibes-labels">
-                            <span class="vibes-label">🏔️ MONTAGNA</span>
                             <span class="vibes-label">🏖️ MARE</span>
+                            <span class="vibes-label-center">🎨 CITTÀ D'ARTE</span>
+                            <span class="vibes-label">🏔️ MONTAGNA</span>
                         </div>
                         <div class="vibes-slider-horizontal" id="vibes-slider" onclick="moveVibesDot(event)" ontouchmove="moveVibesDot(event)" ontouchstart="moveVibesDot(event)">
                             <div class="vibes-dot" id="vibes-dot"></div>
@@ -301,20 +339,20 @@
         // MOSTRA RISULTATI
         function showResults() {
             // Sceglie destinazione in base alla posizione dello slider
-            let destination = 'Barcellona';
-            let country = 'Spagna';
-            let tagline = '"Dove Gaudí incontra il mare"';
+            let destination = 'Firenze';
+            let country = 'Italia';
+            let tagline = '"Dove il Rinascimento vive ancora"';
             
-            if (vibePosition < 30) {
-                // Montagna
-                destination = 'Chamonix';
-                country = 'Francia';
-                tagline = '"Il tetto d\'Europa ti aspetta"';
-            } else if (vibePosition > 70) {
+            if (vibePosition < 33) {
                 // Mare
                 destination = 'Santorini';
                 country = 'Grecia';
                 tagline = '"Tramonti che non dimenticherai mai"';
+            } else if (vibePosition > 66) {
+                // Montagna
+                destination = 'Chamonix';
+                country = 'Francia';
+                tagline = '"Il tetto d\'Europa ti aspetta"';
             }
             
             const html = `
