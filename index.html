@@ -3,326 +3,453 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gloober - Zero Stress Travel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Gloober - Trova il tuo viaggio perfetto</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            background: linear-gradient(135deg, #0f766e, #065f46, #064e3b);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
         
-        .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
         
-        .vibes-slider {
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .tagline {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input[type="date"],
+        input[type="number"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .date-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .slider-container {
+            margin: 30px 0;
+            padding: 0 10px;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .slider-track {
+            height: 50px;
+            background: linear-gradient(to right, #3498db, #9b59b6, #2ecc71);
+            border-radius: 25px;
             position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.1), rgba(16,185,129,0.05));
             cursor: pointer;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
         }
         
-        .vibes-dot {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            border: 3px solid white;
+        .slider-handle {
+            width: 46px;
+            height: 46px;
+            background: white;
             border-radius: 50%;
-            cursor: grab;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.6);
+            position: absolute;
+            top: 2px;
             left: 50%;
-            top: 50%;
+            transform: translateX(-50%);
+            transition: left 0.3s ease;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.3);
         }
         
-        .vibes-label {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 12px;
-            font-weight: 600;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
-        
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: rgba(6, 95, 70, 0.95);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            margin-top: 4px;
-            z-index: 50;
-            max-height: 200px;
-            overflow-y: auto;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        
-        .dropdown-item {
-            padding: 12px 16px;
+        .gloob-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 30px;
         }
         
-        .dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.15);
+        .gloob-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
         
-        @keyframes spinGlobe {
-            from { transform: rotateZ(0deg); }
-            to { transform: rotateZ(360deg); }
+        .gloob-button:active {
+            transform: translateY(0);
         }
         
-        .hidden { display: none; }
+        /* Loading screen */
+        .loading-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .globe {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            position: relative;
+            animation: rotate 2s linear infinite;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            font-size: 1.5em;
+            margin-top: 30px;
+            font-weight: 600;
+        }
+        
+        /* Airport selection screen */
+        .airport-screen {
+            display: none;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            color: #667eea;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Results screen */
+        .results-screen {
+            display: none;
+        }
+        
+        .destination-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+        
+        .destination-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .destination-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .destination-details {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .price {
+            font-size: 1.5em;
+            color: #2ecc71;
+            font-weight: 700;
+            margin-top: 10px;
+        }
     </style>
 </head>
-<body class="text-white">
-    <!-- STEP 1: FORM -->
-    <div id="form-step">
-        <div class="container mx-auto px-4 py-8">
-            <div class="text-center mb-8">
-                <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                    Gloober
-                </h1>
-                <p class="text-xl text-gray-300">Zero stress travel ✈️</p>
-            </div>
-
-            <div class="max-w-2xl mx-auto">
-                <div class="glass-card rounded-2xl p-6">
-                    <!-- Budget -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">💰 Budget totale</label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <input type="number" id="budget" value="1000" min="100" max="10000" step="100" 
-                                   class="col-span-2 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold">
-                            <select id="currency" class="px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
-                                <option value="EUR">€ EUR</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Persone -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">👥 Quante persone</label>
-                        <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
-                            <option value="1">1 persona</option>
-                            <option value="2" selected>2 persone</option>
-                            <option value="3">3 persone</option>
-                            <option value="4">4 persone</option>
-                        </select>
-                    </div>
-
-                    <!-- Quando -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">📅 Quando partiamo</label>
-                        <div class="relative">
-                            <button type="button" onclick="toggleDateMenu()" 
-                                    class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white flex justify-between items-center">
-                                <span id="when-selected">OGGI</span>
-                                <span>▼</span>
-                            </button>
-                            <div id="date-menu" class="dropdown-menu hidden"></div>
-                        </div>
-                    </div>
-
-                    <!-- Durata -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">⏱️ Per quanto tempo</label>
-                        <select id="duration" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
-                            <option value="2">Due giorni</option>
-                            <option value="3">Tre giorni</option>
-                            <option value="4">Quattro giorni</option>
-                            <option value="5">Cinque giorni</option>
-                            <option value="7">Una settimana</option>
-                            <option value="10">Dieci giorni</option>
-                            <option value="14">Due settimane</option>
-                        </select>
-                    </div>
-
-                    <!-- Città partenza -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">✈️ Da quale città parti</label>
-                        <select id="departure" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
-                            <option value="MXP">Milano Malpensa</option>
-                            <option value="LIN">Milano Linate</option>
-                            <option value="BGY">Milano Bergamo</option>
-                            <option value="FCO">Roma Fiumicino</option>
-                            <option value="VCE">Venezia</option>
-                            <option value="NAP">Napoli</option>
-                        </select>
-                    </div>
-
-                    <!-- Vibes Slider -->
-                    <div class="mb-8">
-                        <label class="block text-sm font-medium mb-4 text-center">✨ Le tue vibes</label>
-                        <div style="position: relative; width: 250px; margin: 0 auto;">
-                            <div class="vibes-label" style="top: -20px; left: 50%; transform: translateX(-50%);">🎒 AVVENTURA</div>
-                            <div class="vibes-label" style="bottom: -20px; left: 50%; transform: translateX(-50%);">😌 RELAX</div>
-                            <div class="vibes-label" style="left: -40px; top: 50%; transform: translateY(-50%);">🏖️ MARE</div>
-                            <div class="vibes-label" style="right: -55px; top: 50%; transform: translateY(-50%);">🏔️ MONTAGNA</div>
-                            
-                            <div class="vibes-slider" id="vibes-slider" onclick="moveVibesDot(event)">
-                                <div class="vibes-dot" id="vibes-dot"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button onclick="startGloob()" 
-                            class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
-                        🌍 JUST GLOOB IT!
-                    </button>
+<body>
+    <div class="container">
+        <!-- Main form screen -->
+        <div id="mainScreen">
+            <h1>Gloober 🌍</h1>
+            <p class="tagline">Trova il tuo viaggio perfetto</p>
+            
+            <div class="form-group">
+                <label>Quando vuoi partire?</label>
+                <div class="date-group">
+                    <input type="date" id="dateFrom" required>
+                    <input type="date" id="dateTo" required>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- STEP 2: LOADING -->
-    <div id="loading-step" class="hidden min-h-screen flex items-center justify-center">
-        <div class="text-center">
-            <div style="width: 300px; height: 300px; margin: 0 auto;">
-                <div style="animation: spinGlobe 3s linear infinite;">
-                    <div style="width: 250px; height: 250px; margin: 0 auto; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #60a5fa, #3b82f6, #2563eb, #1e40af); box-shadow: inset -40px -40px 60px rgba(0, 0, 0, 0.4), 0 0 60px rgba(59, 130, 246, 0.6); position: relative;">
-                        <!-- Continenti -->
-                        <div style="position: absolute; background: radial-gradient(ellipse, #10b981, #059669); width: 50px; height: 40px; top: 15%; left: 48%; border-radius: 50%; transform: rotate(-15deg);"></div>
-                        <div style="position: absolute; background: radial-gradient(ellipse, #10b981, #059669); width: 60px; height: 80px; top: 45%; left: 47%; border-radius: 50%;"></div>
-                        <div style="position: absolute; background: radial-gradient(ellipse, #10b981, #059669); width: 70px; height: 50px; top: 20%; right: 15%; border-radius: 50%;"></div>
+            
+            <div class="form-group">
+                <label>Quanti siamo?</label>
+                <input type="number" id="travelers" min="1" max="10" value="2" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Che vibe cerchi?</label>
+                <div class="slider-container">
+                    <div class="slider-labels">
+                        <span>🏖️ Mare</span>
+                        <span>🎨 Arte</span>
+                        <span>🏔️ Montagna</span>
+                    </div>
+                    <div class="slider-track" onclick="moveSlider(event)" ontouchmove="moveSlider(event)" ontouchstart="moveSlider(event)">
+                        <div class="slider-handle" id="vibeHandle"></div>
                     </div>
                 </div>
             </div>
-            <h2 class="text-3xl font-bold mt-4">Gloobing...</h2>
-            <p class="text-gray-300 mt-2" id="loading-text">Sto trovando la tua prossima avventura</p>
+            
+            <button class="gloob-button" onclick="showAirportScreen()">
+                Just Gloob It! ✈️
+            </button>
+        </div>
+        
+        <!-- Airport selection screen -->
+        <div id="airportScreen" class="airport-screen">
+            <button class="back-button" onclick="showMainScreen()">
+                ← Indietro
+            </button>
+            <h2>Da dove partiamo? 🛫</h2>
+            <div class="form-group">
+                <select id="airportSelect" onchange="startSearch()">
+                    <option value="">Seleziona il tuo aeroporto...</option>
+                    <optgroup label="Italia">
+                        <option value="MXP">Milano Malpensa</option>
+                        <option value="LIN">Milano Linate</option>
+                        <option value="FCO">Roma Fiumicino</option>
+                        <option value="CIA">Roma Ciampino</option>
+                        <option value="VCE">Venezia Marco Polo</option>
+                        <option value="NAP">Napoli</option>
+                        <option value="BLQ">Bologna</option>
+                        <option value="FLR">Firenze</option>
+                        <option value="TRN">Torino</option>
+                        <option value="BGY">Bergamo Orio al Serio</option>
+                    </optgroup>
+                    <optgroup label="Francia">
+                        <option value="CDG">Parigi Charles de Gaulle</option>
+                        <option value="ORY">Parigi Orly</option>
+                        <option value="NCE">Nizza</option>
+                        <option value="LYS">Lione</option>
+                        <option value="MRS">Marsiglia</option>
+                    </optgroup>
+                    <optgroup label="Germania">
+                        <option value="FRA">Francoforte</option>
+                        <option value="MUC">Monaco</option>
+                        <option value="BER">Berlino</option>
+                        <option value="HAM">Amburgo</option>
+                        <option value="DUS">Düsseldorf</option>
+                    </optgroup>
+                    <optgroup label="Spagna">
+                        <option value="MAD">Madrid</option>
+                        <option value="BCN">Barcellona</option>
+                        <option value="VLC">Valencia</option>
+                        <option value="AGP">Malaga</option>
+                        <option value="PMI">Palma di Maiorca</option>
+                    </optgroup>
+                    <optgroup label="Regno Unito">
+                        <option value="LHR">Londra Heathrow</option>
+                        <option value="LGW">Londra Gatwick</option>
+                        <option value="MAN">Manchester</option>
+                        <option value="EDI">Edimburgo</option>
+                    </optgroup>
+                    <optgroup label="Altri">
+                        <option value="AMS">Amsterdam</option>
+                        <option value="ZRH">Zurigo</option>
+                        <option value="VIE">Vienna</option>
+                        <option value="CPH">Copenhagen</option>
+                        <option value="STO">Stoccolma</option>
+                        <option value="OSL">Oslo</option>
+                        <option value="DUB">Dublino</option>
+                        <option value="LIS">Lisbona</option>
+                        <option value="ATH">Atene</option>
+                        <option value="WAW">Varsavia</option>
+                    </optgroup>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Results screen -->
+        <div id="resultsScreen" class="results-screen">
+            <button class="back-button" onclick="showMainScreen()">
+                ← Nuova ricerca
+            </button>
+            <h2>Le tue destinazioni perfette! 🎯</h2>
+            <div id="resultsContainer"></div>
         </div>
     </div>
-
-    <!-- STEP 3: RISULTATI -->
-    <div id="result-step" class="hidden container mx-auto px-4 py-8">
-        <div id="result-content" class="max-w-4xl mx-auto">
-            <!-- Popolato da JS -->
-        </div>
+    
+    <!-- Loading screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="globe"></div>
+        <p class="loading-text">Sto trovando le migliori offerte...</p>
     </div>
-
+    
     <script>
-        // STATO GLOBALE SEMPLICE
-        let selectedDate = new Date();
-        let vibesX = 50;
-        let vibesY = 50;
-
-        // INIZIALIZZA DATE MENU
-        function initDateMenu() {
-            const menu = document.getElementById('date-menu');
-            const monthNames = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
-            const dayNames = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+        var currentVibe = 'arte';
+        
+        function moveSlider(event) {
+            event.preventDefault();
+            var track = document.querySelector('.slider-track');
+            var rect = track.getBoundingClientRect();
             
-            // OGGI
-            const oggi = document.createElement('div');
-            oggi.className = 'dropdown-item';
-            oggi.textContent = 'OGGI';
-            oggi.onclick = () => selectDate(new Date(), 'OGGI');
-            menu.appendChild(oggi);
+            var x;
+            if (event.type.includes('touch')) {
+                x = event.touches[0].clientX - rect.left;
+            } else {
+                x = event.clientX - rect.left;
+            }
             
-            // Prossimi 30 giorni
-            for (let i = 1; i < 30; i++) {
-                const date = new Date();
-                date.setDate(date.getDate() + i);
-                
-                const item = document.createElement('div');
-                item.className = 'dropdown-item';
-                item.textContent = `${dayNames[date.getDay()]} ${date.getDate()} ${monthNames[date.getMonth()]}`;
-                item.onclick = () => selectDate(date, item.textContent);
-                menu.appendChild(item);
+            var percentage = (x / rect.width) * 100;
+            
+            // Limita tra 0 e 100
+            percentage = Math.max(0, Math.min(100, percentage));
+            
+            var handle = document.getElementById('vibeHandle');
+            handle.style.left = percentage + '%';
+            
+            // Determina la vibe in base alla posizione
+            if (percentage < 33) {
+                currentVibe = 'mare';
+            } else if (percentage < 67) {
+                currentVibe = 'arte';
+            } else {
+                currentVibe = 'montagna';
             }
         }
-
-        // TOGGLE DATE MENU
-        function toggleDateMenu() {
-            document.getElementById('date-menu').classList.toggle('hidden');
-        }
-
-        // SELECT DATE
-        function selectDate(date, text) {
-            selectedDate = date;
-            document.getElementById('when-selected').textContent = text;
-            document.getElementById('date-menu').classList.add('hidden');
-        }
-
-        // MUOVI VIBES DOT
-        function moveVibesDot(event) {
-            const slider = document.getElementById('vibes-slider');
-            const dot = document.getElementById('vibes-dot');
-            const rect = slider.getBoundingClientRect();
+        
+        function showAirportScreen() {
+            var dateFrom = document.getElementById('dateFrom').value;
+            var dateTo = document.getElementById('dateTo').value;
             
-            const x = ((event.clientX - rect.left) / rect.width) * 100;
-            const y = ((event.clientY - rect.top) / rect.height) * 100;
-            
-            vibesX = Math.max(0, Math.min(100, x));
-            vibesY = Math.max(0, Math.min(100, y));
-            
-            dot.style.left = vibesX + '%';
-            dot.style.top = vibesY + '%';
-        }
-
-        // START GLOOB
-        async function startGloob() {
-            const budget = parseInt(document.getElementById('budget').value);
-            
-            if (budget < 100) {
-                alert('Budget minimo €100');
+            if (!dateFrom || !dateTo) {
+                alert('Per favore seleziona le date del viaggio!');
                 return;
             }
             
-            // Mostra loading
-            document.getElementById('form-step').classList.add('hidden');
-            document.getElementById('loading-step').classList.remove('hidden');
+            document.getElementById('mainScreen').style.display = 'none';
+            document.getElementById('airportScreen').style.display = 'block';
+        }
+        
+        function showMainScreen() {
+            document.getElementById('mainScreen').style.display = 'block';
+            document.getElementById('airportScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'none';
+        }
+        
+        function startSearch() {
+            var airport = document.getElementById('airportSelect').value;
+            if (!airport) return;
             
-            // Simula ricerca (in produzione chiamerai le API)
-            setTimeout(() => {
+            document.getElementById('airportScreen').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'flex';
+            
+            // Simula ricerca
+            setTimeout(function() {
                 showResults();
             }, 3000);
         }
-
-        // MOSTRA RISULTATI
+        
         function showResults() {
-            const html = `
-                <div class="glass-card rounded-2xl p-6 text-center mb-6">
-                    <h2 class="text-4xl font-bold text-yellow-400 mb-2">Barcellona</h2>
-                    <p class="text-xl text-gray-300">Spagna</p>
-                    <p class="text-gray-200 italic mt-4">"Dove Gaudí incontra il mare"</p>
-                </div>
-                
-                <div class="text-center mt-8">
-                    <button onclick="location.reload()" 
-                            class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl">
-                        🎲 Re-Gloob!
-                    </button>
-                </div>
-            `;
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
             
-            document.getElementById('result-content').innerHTML = html;
-            document.getElementById('loading-step').classList.add('hidden');
-            document.getElementById('result-step').classList.remove('hidden');
+            var destinations = [];
+            
+            if (currentVibe === 'mare') {
+                destinations = [
+                    { name: 'Santorini, Grecia', details: 'Volo + Hotel 5 notti', price: '€450' },
+                    { name: 'Ibiza, Spagna', details: 'Volo + Hotel 4 notti', price: '€380' },
+                    { name: 'Algarve, Portogallo', details: 'Volo + Hotel 7 notti', price: '€520' }
+                ];
+            } else if (currentVibe === 'arte') {
+                destinations = [
+                    { name: 'Firenze, Italia', details: 'Volo + Hotel 3 notti', price: '€280' },
+                    { name: 'Parigi, Francia', details: 'Volo + Hotel 4 notti', price: '€420' },
+                    { name: 'Vienna, Austria', details: 'Volo + Hotel 5 notti', price: '€390' }
+                ];
+            } else {
+                destinations = [
+                    { name: 'Interlaken, Svizzera', details: 'Volo + Hotel 4 notti', price: '€580' },
+                    { name: 'Innsbruck, Austria', details: 'Volo + Hotel 5 notti', price: '€450' },
+                    { name: 'Chamonix, Francia', details: 'Volo + Hotel 6 notti', price: '€520' }
+                ];
+            }
+            
+            var html = '';
+            destinations.forEach(function(dest) {
+                html += '<div class="destination-card">' +
+                    '<div class="destination-name">' + dest.name + '</div>' +
+                    '<div class="destination-details">' + dest.details + '</div>' +
+                    '<div class="price">' + dest.price + ' a persona</div>' +
+                    '</div>';
+            });
+            
+            document.getElementById('resultsContainer').innerHTML = html;
         }
-
-        // INIT AL CARICAMENTO
-        window.onload = function() {
-            initDateMenu();
-            
-            // Chiudi menu quando clicchi fuori
-            document.onclick = function(e) {
-                if (!e.target.closest('.relative')) {
-                    document.getElementById('date-menu').classList.add('hidden');
-                }
-            };
-        };
     </script>
 </body>
 </html>
