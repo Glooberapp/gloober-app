@@ -3,718 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gloober - Trova il tuo viaggio perfetto</title>
+    <title>Gloober - Zero Stress Travel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f766e, #065f46, #064e3b);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
         }
         
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .globe-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            margin: 0 auto 20px;
+        /* Nuovo slider orizzontale */
+        .vibes-slider-horizontal {
             position: relative;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-        }
-        
-        .tagline {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
-        }
-        
-        input[type="date"],
-        input[type="number"],
-        input[type="text"] {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .date-menu {
-            position: relative;
-        }
-        
-        .date-display {
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            height: 60px;
+            margin: 20px auto;
+            border-radius: 30px;
+            background: linear-gradient(to right, #374151 0%, #60a5fa 50%, #fbbf24 100%);
             cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .vibes-dot {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            background: white;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            cursor: grab;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transition: left 0.3s ease;
+        }
+        
+        .vibes-labels {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            transition: border-color 0.3s;
+            margin-bottom: 10px;
+            padding: 0 10px;
         }
         
-        .date-display:hover {
-            border-color: #667eea;
+        .vibes-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
         
-        .date-picker {
-            display: none;
+        .dropdown-menu {
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 5px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            z-index: 10;
+            background: rgba(6, 95, 70, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            margin-top: 4px;
+            z-index: 50;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         
-        .date-picker.show {
-            display: block;
-        }
-        
-        .date-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        
-        /* Nuovo slider semplificato */
-        .slider-container {
-            margin: 30px 0;
-            padding: 0 10px;
-        }
-        
-        .slider-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            font-size: 16px;
-            font-weight: 500;
-        }
-        
-        .slider-track {
-            height: 50px;
-            background: linear-gradient(to right, #3498db, #9b59b6, #2ecc71);
-            border-radius: 25px;
-            position: relative;
-            cursor: pointer;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .slider-handle {
-            width: 46px;
-            height: 46px;
-            background: white;
-            border-radius: 50%;
-            position: absolute;
-            top: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: left 0.3s ease;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.3);
-        }
-        
-        .gloob-button {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .dropdown-item {
+            padding: 12px 16px;
             color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2em;
-            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 30px;
+            transition: all 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .gloob-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.15);
         }
         
-        .gloob-button:active {
-            transform: translateY(0);
+        @keyframes spinGlobe {
+            from { transform: rotateZ(0deg); }
+            to { transform: rotateZ(360deg); }
         }
         
-        /* Loading screen */
-        .loading-screen {
-            display: none;
-            text-align: center;
-            padding: 60px 20px;
-        }
-        
-        .loading-globe {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 30px;
-            position: relative;
-        }
-        
-        .loading-globe::before {
-            content: '🌍';
-            font-size: 100px;
-            position: absolute;
-            animation: spin 2s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .loading-text {
-            font-size: 1.3em;
-            color: #666;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-        
-        /* Results screen */
-        .results-screen {
-            display: none;
-        }
-        
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .results-title {
-            font-size: 1.8em;
-            color: #333;
-        }
-        
-        .new-search-btn {
-            background: none;
-            border: 2px solid #667eea;
-            color: #667eea;
-            padding: 8px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        
-        .new-search-btn:hover {
-            background: #667eea;
-            color: white;
-        }
-        
-        .destination-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .destination-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .destination-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .destination-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 10px;
-        }
-        
-        .destination-name {
-            font-size: 1.4em;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .destination-price {
-            font-size: 1.3em;
-            color: #667eea;
-            font-weight: 700;
-        }
-        
-        .destination-details {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-        
-        .destination-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .tag {
-            background: #e9ecef;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            color: #495057;
-        }
-        
-        .tag.highlight {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .book-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: transform 0.2s;
-        }
-        
-        .book-btn:hover {
-            transform: scale(1.02);
-        }
-        
-        /* Airport selection screen */
-        .airport-screen {
-            display: none;
-        }
-        
-        .back-button {
-            background: none;
-            border: none;
-            color: #667eea;
-            font-size: 1.1em;
-            cursor: pointer;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-            background: white;
-        }
-        
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+        .hidden { display: none; }
     </style>
 </head>
-<body>
-    <div class="container" id="mainContainer">
-        <!-- Main form screen -->
-        <div id="formScreen">
-            <div class="logo">
-                <div class="globe-icon"></div>
-                <h1>Gloober 🌍</h1>
-                <p class="tagline">Zero Stress Travel</p>
+<body class="text-white">
+    <!-- STEP 1: FORM -->
+    <div id="form-step">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center mb-8">
+                <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                    Gloober
+                </h1>
+                <p class="text-xl text-gray-300">Zero stress travel ✈️</p>
             </div>
-            
-            <div class="form-group">
-                <label>Quando vuoi partire?</label>
-                <div class="date-menu">
-                    <div class="date-display" onclick="toggleDatePicker()">
-                        <span id="dateText">Seleziona le date</span>
-                        <span>📅</span>
-                    </div>
-                    <div class="date-picker" id="datePicker">
-                        <div class="date-inputs">
-                            <input type="date" id="dateFrom" placeholder="Dal">
-                            <input type="date" id="dateTo" placeholder="Al">
+
+            <div class="max-w-2xl mx-auto">
+                <div class="glass-card rounded-2xl p-6">
+                    <!-- Budget -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">💰 Budget totale</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <input type="number" id="budget" value="1000" min="100" max="10000" step="100" 
+                                   class="col-span-2 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold">
+                            <select id="currency" class="px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
+                                <option value="EUR">€ EUR</option>
+                            </select>
                         </div>
                     </div>
+
+                    <!-- Persone -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">👥 Quante persone</label>
+                        <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
+                            <option value="1">1 persona</option>
+                            <option value="2" selected>2 persone</option>
+                            <option value="3">3 persone</option>
+                            <option value="4">4 persone</option>
+                        </select>
+                    </div>
+
+                    <!-- Quando -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">📅 Quando partiamo</label>
+                        <div class="relative">
+                            <button type="button" onclick="toggleDateMenu()" 
+                                    class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white flex justify-between items-center">
+                                <span id="when-selected">OGGI</span>
+                                <span>▼</span>
+                            </button>
+                            <div id="date-menu" class="dropdown-menu hidden"></div>
+                        </div>
+                    </div>
+
+                    <!-- Durata -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">⏱️ Per quanto tempo</label>
+                        <select id="duration" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
+                            <option value="2">Due giorni</option>
+                            <option value="3">Tre giorni</option>
+                            <option value="4">Quattro giorni</option>
+                            <option value="5">Cinque giorni</option>
+                            <option value="7">Una settimana</option>
+                            <option value="10">Dieci giorni</option>
+                            <option value="14">Due settimane</option>
+                        </select>
+                    </div>
+
+                    <!-- Città partenza -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2">✈️ Da quale città parti</label>
+                        <select id="departure" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
+                            <option value="MXP">Milano Malpensa</option>
+                            <option value="LIN">Milano Linate</option>
+                            <option value="BGY">Milano Bergamo</option>
+                            <option value="FCO">Roma Fiumicino</option>
+                            <option value="VCE">Venezia</option>
+                            <option value="NAP">Napoli</option>
+                        </select>
+                    </div>
+
+                    <!-- Vibes Slider NUOVO -->
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium mb-4 text-center">✨ Le tue vibes</label>
+                        <div class="vibes-labels">
+                            <span class="vibes-label">🏔️ MONTAGNA</span>
+                            <span class="vibes-label">🏖️ MARE</span>
+                        </div>
+                        <div class="vibes-slider-horizontal" id="vibes-slider" onclick="moveVibesDot(event)" ontouchmove="moveVibesDot(event)" ontouchstart="moveVibesDot(event)">
+                            <div class="vibes-dot" id="vibes-dot"></div>
+                        </div>
+                    </div>
+
+                    <button onclick="startGloob()" 
+                            class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl text-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
+                        🌍 JUST GLOOB IT!
+                    </button>
                 </div>
             </div>
-            
-            <div class="form-group">
-                <label>Quanti siamo?</label>
-                <input type="number" id="travelers" min="1" max="10" value="2">
-            </div>
-            
-            <div class="form-group">
-                <label>Che vibe cerchi?</label>
-                <div class="slider-container">
-                    <div class="slider-labels">
-                        <span>🏖️ Mare</span>
-                        <span>🎨 Arte</span>
-                        <span>🏔️ Montagna</span>
-                    </div>
-                    <div class="slider-track" onclick="moveSlider(event)" ontouchmove="moveSlider(event)" ontouchstart="moveSlider(event)">
-                        <div class="slider-handle" id="vibeHandle"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="gloob-button" onclick="showAirportScreen()">
-                Just Gloob It! ✈️
-            </button>
-        </div>
-        
-        <!-- Airport selection screen -->
-        <div id="airportScreen" class="airport-screen">
-            <button class="back-button" onclick="showMainScreen()">
-                ← Indietro
-            </button>
-            <h2>Da dove partiamo? 🛫</h2>
-            <div class="form-group">
-                <select id="airportSelect" onchange="startSearch()">
-                    <option value="">Seleziona il tuo aeroporto...</option>
-                    <optgroup label="Italia">
-                        <option value="MXP">Milano Malpensa</option>
-                        <option value="LIN">Milano Linate</option>
-                        <option value="FCO">Roma Fiumicino</option>
-                        <option value="CIA">Roma Ciampino</option>
-                        <option value="VCE">Venezia Marco Polo</option>
-                        <option value="NAP">Napoli</option>
-                        <option value="BLQ">Bologna</option>
-                        <option value="FLR">Firenze</option>
-                        <option value="TRN">Torino</option>
-                        <option value="BGY">Bergamo Orio al Serio</option>
-                    </optgroup>
-                    <optgroup label="Francia">
-                        <option value="CDG">Parigi Charles de Gaulle</option>
-                        <option value="ORY">Parigi Orly</option>
-                        <option value="NCE">Nizza</option>
-                        <option value="LYS">Lione</option>
-                        <option value="MRS">Marsiglia</option>
-                    </optgroup>
-                    <optgroup label="Germania">
-                        <option value="FRA">Francoforte</option>
-                        <option value="MUC">Monaco</option>
-                        <option value="BER">Berlino</option>
-                        <option value="HAM">Amburgo</option>
-                        <option value="DUS">Düsseldorf</option>
-                    </optgroup>
-                    <optgroup label="Spagna">
-                        <option value="MAD">Madrid</option>
-                        <option value="BCN">Barcellona</option>
-                        <option value="VLC">Valencia</option>
-                        <option value="AGP">Malaga</option>
-                        <option value="PMI">Palma di Maiorca</option>
-                    </optgroup>
-                    <optgroup label="Regno Unito">
-                        <option value="LHR">Londra Heathrow</option>
-                        <option value="LGW">Londra Gatwick</option>
-                        <option value="MAN">Manchester</option>
-                        <option value="EDI">Edimburgo</option>
-                    </optgroup>
-                    <optgroup label="Altri">
-                        <option value="AMS">Amsterdam</option>
-                        <option value="ZRH">Zurigo</option>
-                        <option value="VIE">Vienna</option>
-                        <option value="CPH">Copenhagen</option>
-                        <option value="STO">Stoccolma</option>
-                        <option value="OSL">Oslo</option>
-                        <option value="DUB">Dublino</option>
-                        <option value="LIS">Lisbona</option>
-                        <option value="ATH">Atene</option>
-                        <option value="WAW">Varsavia</option>
-                    </optgroup>
-                </select>
-            </div>
-        </div>
-        
-        <!-- Loading screen -->
-        <div class="loading-screen" id="loadingScreen">
-            <div class="loading-globe"></div>
-            <p class="loading-text">Sto cercando le migliori offerte per te...</p>
-        </div>
-        
-        <!-- Results screen -->
-        <div class="results-screen" id="resultsScreen">
-            <div class="results-header">
-                <h2 class="results-title">Le tue destinazioni 🎯</h2>
-                <button class="new-search-btn" onclick="newSearch()">Nuova ricerca</button>
-            </div>
-            <div id="resultsContainer"></div>
         </div>
     </div>
-    
+
+    <!-- STEP 2: LOADING -->
+    <div id="loading-step" class="hidden min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <div style="width: 300px; height: 300px; margin: 0 auto;">
+                <div style="animation: spinGlobe 3s linear infinite;">
+                    <div style="width: 250px; height: 250px; margin: 0 auto; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #60a5fa, #3b82f6, #2563eb, #1e40af); box-shadow: inset -40px -40px 60px rgba(0, 0, 0, 0.4), 0 0 60px rgba(59, 130, 246, 0.6); position: relative;">
+                        <!-- Continenti -->
+                        <div style="position: absolute; background: radial-gradient(ellipse, #10b981, #059669); width: 50px; height: 40px; top: 15%; left: 48%; border-radius: 50%; transform: rotate(-15deg);"></div>
+                        <div style="position: absolute; background: radial-gradient(ellipse, #10b981, #059669); width: 60px; height: 80px; top: 45%; left: 47%; border-radius: 50%;"></div>
+                        <div style="position: absolute; background: radial-gradient(ellipse, #10b981, #059669); width: 70px; height: 50px; top: 20%; right: 15%; border-radius: 50%;"></div>
+                    </div>
+                </div>
+            </div>
+            <h2 class="text-3xl font-bold mt-4">Gloobing...</h2>
+            <p class="text-gray-300 mt-2" id="loading-text">Sto trovando la tua prossima avventura</p>
+        </div>
+    </div>
+
+    <!-- STEP 3: RISULTATI -->
+    <div id="result-step" class="hidden container mx-auto px-4 py-8">
+        <div id="result-content" class="max-w-4xl mx-auto">
+            <!-- Popolato da JS -->
+        </div>
+    </div>
+
     <script>
-        var currentVibe = 'arte';
-        var selectedDates = { from: null, to: null };
-        
-        function toggleDatePicker() {
-            var picker = document.getElementById('datePicker');
-            picker.classList.toggle('show');
-        }
-        
-        // Chiudi date picker quando si selezionano le date
-        document.getElementById('dateFrom').addEventListener('change', updateDateDisplay);
-        document.getElementById('dateTo').addEventListener('change', updateDateDisplay);
-        
-        function updateDateDisplay() {
-            var from = document.getElementById('dateFrom').value;
-            var to = document.getElementById('dateTo').value;
-            var display = document.getElementById('dateText');
+        // STATO GLOBALE SEMPLICE
+        let selectedDate = new Date();
+        let vibePosition = 50; // 0 = montagna, 100 = mare
+
+        // INIZIALIZZA DATE MENU
+        function initDateMenu() {
+            const menu = document.getElementById('date-menu');
+            const monthNames = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+            const dayNames = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
             
-            if (from && to) {
-                var fromDate = new Date(from);
-                var toDate = new Date(to);
-                display.textContent = fromDate.toLocaleDateString('it-IT') + ' - ' + toDate.toLocaleDateString('it-IT');
-                selectedDates = { from: from, to: to };
-                document.getElementById('datePicker').classList.remove('show');
+            // OGGI
+            const oggi = document.createElement('div');
+            oggi.className = 'dropdown-item';
+            oggi.textContent = 'OGGI';
+            oggi.onclick = () => selectDate(new Date(), 'OGGI');
+            menu.appendChild(oggi);
+            
+            // Prossimi 30 giorni
+            for (let i = 1; i < 30; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() + i);
+                
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+                item.textContent = `${dayNames[date.getDay()]} ${date.getDate()} ${monthNames[date.getMonth()]}`;
+                item.onclick = () => selectDate(date, item.textContent);
+                menu.appendChild(item);
             }
         }
-        
-        // Nuovo slider semplificato
-        function moveSlider(event) {
+
+        // TOGGLE DATE MENU
+        function toggleDateMenu() {
+            document.getElementById('date-menu').classList.toggle('hidden');
+        }
+
+        // SELECT DATE
+        function selectDate(date, text) {
+            selectedDate = date;
+            document.getElementById('when-selected').textContent = text;
+            document.getElementById('date-menu').classList.add('hidden');
+        }
+
+        // MUOVI VIBES DOT - NUOVO per slider orizzontale
+        function moveVibesDot(event) {
             event.preventDefault();
-            var track = document.querySelector('.slider-track');
-            var rect = track.getBoundingClientRect();
+            const slider = document.getElementById('vibes-slider');
+            const dot = document.getElementById('vibes-dot');
+            const rect = slider.getBoundingClientRect();
             
-            var x;
+            let x;
             if (event.type.includes('touch')) {
                 x = event.touches[0].clientX - rect.left;
             } else {
                 x = event.clientX - rect.left;
             }
             
-            var percentage = (x / rect.width) * 100;
+            const percentage = (x / rect.width) * 100;
+            vibePosition = Math.max(0, Math.min(100, percentage));
             
-            // Limita tra 0 e 100
-            percentage = Math.max(0, Math.min(100, percentage));
-            
-            var handle = document.getElementById('vibeHandle');
-            handle.style.left = percentage + '%';
-            
-            // Determina la vibe in base alla posizione
-            if (percentage < 33) {
-                currentVibe = 'mare';
-            } else if (percentage < 67) {
-                currentVibe = 'arte';
-            } else {
-                currentVibe = 'montagna';
-            }
+            dot.style.left = vibePosition + '%';
         }
-        
-        function showAirportScreen() {
-            if (!selectedDates.from || !selectedDates.to) {
-                alert('Per favore seleziona le date del viaggio!');
+
+        // START GLOOB
+        async function startGloob() {
+            const budget = parseInt(document.getElementById('budget').value);
+            
+            if (budget < 100) {
+                alert('Budget minimo €100');
                 return;
             }
             
-            document.getElementById('formScreen').style.display = 'none';
-            document.getElementById('airportScreen').style.display = 'block';
-        }
-        
-        function showMainScreen() {
-            document.getElementById('formScreen').style.display = 'block';
-            document.getElementById('airportScreen').style.display = 'none';
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('resultsScreen').style.display = 'none';
-        }
-        
-        function startSearch() {
-            var airport = document.getElementById('airportSelect').value;
-            if (!airport) return;
+            // Mostra loading
+            document.getElementById('form-step').classList.add('hidden');
+            document.getElementById('loading-step').classList.remove('hidden');
             
-            document.getElementById('airportScreen').style.display = 'none';
-            document.getElementById('loadingScreen').style.display = 'block';
-            
-            // Simula chiamata API
-            setTimeout(function() {
-                searchDestinations();
+            // Simula ricerca (in produzione chiamerai le API)
+            setTimeout(() => {
+                showResults();
             }, 3000);
         }
-        
-        function searchDestinations() {
-            // Qui andrebbe la vera chiamata API a Booking.com
-            var mockResults = [];
+
+        // MOSTRA RISULTATI
+        function showResults() {
+            // Sceglie destinazione in base alla posizione dello slider
+            let destination = 'Barcellona';
+            let country = 'Spagna';
+            let tagline = '"Dove Gaudí incontra il mare"';
             
-            if (currentVibe === 'mare') {
-                mockResults = [
-                    {
-                        name: 'Santorini, Grecia',
-                        price: '€450',
-                        details: 'Volo diretto + Hotel 5★ vista mare',
-                        duration: '5 notti',
-                        tags: ['Spiagge paradisiache', 'Tramonti mozzafiato', 'Cucina greca']
-                    },
-                    {
-                        name: 'Ibiza, Spagna',
-                        price: '€380',
-                        details: 'Volo + Resort All Inclusive',
-                        duration: '4 notti',
-                        tags: ['Vita notturna', 'Spiagge cristalline', 'Beach club']
-                    },
-                    {
-                        name: 'Algarve, Portogallo',
-                        price: '€320',
-                        details: 'Volo + Hotel 4★ sulla spiaggia',
-                        duration: '7 notti',
-                        tags: ['Grotte marine', 'Surf', 'Pesce fresco']
-                    }
-                ];
-            } else if (currentVibe === 'arte') {
-                mockResults = [
-                    {
-                        name: 'Firenze, Italia',
-                        price: '€280',
-                        details: 'Volo + B&B nel centro storico',
-                        duration: '3 notti',
-                        tags: ['Uffizi', 'Duomo', 'Cucina toscana']
-                    },
-                    {
-                        name: 'Parigi, Francia',
-                        price: '€420',
-                        details: 'Volo + Hotel boutique Marais',
-                        duration: '4 notti',
-                        tags: ['Louvre', 'Torre Eiffel', 'Café parigini']
-                    },
-                    {
-                        name: 'Vienna, Austria',
-                        price: '€350',
-                        details: 'Volo + Hotel 4★ centro',
-                        duration: '5 notti',
-                        tags: ['Palazzo Schönbrunn', 'Opera', 'Sachertorte']
-                    }
-                ];
-            } else {
-                mockResults = [
-                    {
-                        name: 'Interlaken, Svizzera',
-                        price: '€580',
-                        details: 'Volo + Chalet vista montagne',
-                        duration: '4 notti',
-                        tags: ['Jungfrau', 'Sport estremi', 'Fonduta']
-                    },
-                    {
-                        name: 'Innsbruck, Austria',
-                        price: '€450',
-                        details: 'Volo + Hotel spa 4★',
-                        duration: '5 notti',
-                        tags: ['Sci', 'Trekking', 'Tirolo']
-                    },
-                    {
-                        name: 'Chamonix, Francia',
-                        price: '€520',
-                        details: 'Volo + Lodge Monte Bianco',
-                        duration: '6 notti',
-                        tags: ['Monte Bianco', 'Alpinismo', 'Raclette']
-                    }
-                ];
+            if (vibePosition < 30) {
+                // Montagna
+                destination = 'Chamonix';
+                country = 'Francia';
+                tagline = '"Il tetto d\'Europa ti aspetta"';
+            } else if (vibePosition > 70) {
+                // Mare
+                destination = 'Santorini';
+                country = 'Grecia';
+                tagline = '"Tramonti che non dimenticherai mai"';
             }
             
-            displayResults(mockResults);
-        }
-        
-        function displayResults(results) {
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('resultsScreen').style.display = 'block';
+            const html = `
+                <div class="glass-card rounded-2xl p-6 text-center mb-6">
+                    <h2 class="text-4xl font-bold text-yellow-400 mb-2">${destination}</h2>
+                    <p class="text-xl text-gray-300">${country}</p>
+                    <p class="text-gray-200 italic mt-4">${tagline}</p>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button onclick="location.reload()" 
+                            class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl">
+                        🎲 Re-Gloob!
+                    </button>
+                </div>
+            `;
             
-            var html = '';
-            results.forEach(function(dest) {
-                html += '<div class="destination-card" onclick="bookDestination(\'' + dest.name + '\')">';
-                html += '<div class="destination-header">';
-                html += '<div class="destination-name">' + dest.name + '</div>';
-                html += '<div class="destination-price">' + dest.price + '</div>';
-                html += '</div>';
-                html += '<div class="destination-details">' + dest.details + ' • ' + dest.duration + '</div>';
-                html += '<div class="destination-tags">';
-                dest.tags.forEach(function(tag, index) {
-                    html += '<span class="tag' + (index === 0 ? ' highlight' : '') + '">' + tag + '</span>';
-                });
-                html += '</div>';
-                html += '<button class="book-btn">Prenota ora →</button>';
-                html += '</div>';
-            });
+            document.getElementById('result-content').innerHTML = html;
+            document.getElementById('loading-step').classList.add('hidden');
+            document.getElementById('result-step').classList.remove('hidden');
+        }
+
+        // INIT AL CARICAMENTO
+        window.onload = function() {
+            initDateMenu();
             
-            document.getElementById('resultsContainer').innerHTML = html;
-        }
-        
-        function newSearch() {
-            showMainScreen();
-        }
-        
-        function bookDestination(name) {
-            alert('Reindirizzamento a Booking.com per ' + name + '...');
-            // Qui andrebbe il redirect vero a Booking.com con i parametri
-        }
+            // Chiudi menu quando clicchi fuori
+            document.onclick = function(e) {
+                if (!e.target.closest('.relative')) {
+                    document.getElementById('date-menu').classList.add('hidden');
+                }
+            };
+        };
     </script>
 </body>
 </html>
