@@ -1433,10 +1433,16 @@
             document.getElementById('quote-text').textContent = destination.quote.split(' - ')[0];
             document.getElementById('quote-author').textContent = '- ' + destination.quote.split(' - ')[1];
             
-            // Link prenotazione con ricerca destinazione
+            // Link per Hotels.com tramite TravelPayouts
             document.getElementById('book-hotel').onclick = () => {
-                const bookingUrl = `https://www.booking.com/searchresults.html?aid=TUOAFFILIATE&ss=${destination.searchTerm}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}&nflt=${selectedStars};class=${selectedStars}`;
-                window.open(bookingUrl, '_blank');
+                // Codifica il nome destinazione per URL
+                const hotelDest = encodeURIComponent(destination.name + ', ' + destination.country);
+                
+                // Link TravelPayouts per Hotels.com
+                // SOSTITUISCI 123456 con il tuo vero MARKER ID da TravelPayouts!
+                const hotelsUrl = `https://tp.media/r?marker=123456&p=4555&u=https%3A%2F%2Fit.hotels.com%2Fsearch.do%3Fdestination%3D${hotelDest}%26startDate%3D${checkIn.toISOString().split('T')[0]}%26endDate%3D${checkOut.toISOString().split('T')[0]}%26rooms%3D1%26adults%3D${people}`;
+                
+                window.open(hotelsUrl, '_blank');
             };
             
             // Link migliorato per Skyscanner con codici aeroporto corretti
@@ -1480,7 +1486,9 @@
             });
             
             const labels = ['1 stella', '2 stelle', '3 stelle', '4 stelle', '5 stelle'];
-            document.getElementById('stars-label').textContent = labels[stars - 1];
+           document.getElementById('book-hotel').onclick = () => {
+    window.open(`https://it.hotels.com/search.do?destination=${destination.name}`, '_blank');
+};
         }
         
         // INIT AL CARICAMENTO
