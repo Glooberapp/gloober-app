@@ -1433,15 +1433,18 @@
             document.getElementById('quote-text').textContent = destination.quote.split(' - ')[0];
             document.getElementById('quote-author').textContent = '- ' + destination.quote.split(' - ')[1];
             
-            // Link diretto Booking (funziona SICURO)
+            / Link per Trip.com tramite TravelPayouts
 document.getElementById('book-hotel').onclick = () => {
-    window.open(`https://www.booking.com/searchresults.html?ss=${destination.name}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}`, '_blank');
+    // Costruisci URL di ricerca Trip.com
+    const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://www.trip.com/hotels/list?city=${destination.name}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&adult=${people}&starrating=${selectedStars}`;
+    
+    window.open(tripUrl, '_blank');
 };
             
             // Link migliorato per Skyscanner con codici aeroporto corretti
             document.getElementById('book-flight').onclick = () => {
                 const destCode = destination.airportCode || 'anywhere';
-                const skyUrl = `https://www.skyscanner.it/trasporti/voli/${selectedAirport}/${destCode}/${checkIn.toISOString().split('T')[0]}/${checkOut.toISOString().split('T')[0]}/?adults=${people}&cabinclass=economy&rtn=1&preferdirects=false&outboundaltsenabled=false&inboundaltsenabled=false&ref=TUOAFFILIATE`;
+                const skyUrl = `https://www.skyscanner.it
                 
                 window.open(skyUrl, '_blank');
             };
