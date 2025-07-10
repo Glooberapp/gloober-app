@@ -575,7 +575,6 @@
                 position: 0,
                 name: 'Santorini',
                 country: 'Grecia',
-                airportCode: 'JTR',
                 tagline: 'Il sogno greco',
                 description: 'Tramonti che il mondo ci invidia, case bianche e cupole blu che si specchiano nell\'Egeo.',
                 category: 'mare-classico',
@@ -588,8 +587,7 @@
             {
                 position: 5,
                 name: 'Mykonos',
-                country: 'Grecia',
-                airportCode: 'JMK',
+                country: 'Grecia', 
                 tagline: 'L\'isola che non dorme mai',
                 description: 'Mulini a vento, vicoli bianchi e una nightlife leggendaria nel cuore delle Cicladi.',
                 category: 'mare-vitanotturna',
@@ -1433,20 +1431,14 @@
             document.getElementById('quote-text').textContent = destination.quote.split(' - ')[0];
             document.getElementById('quote-author').textContent = '- ' + destination.quote.split(' - ')[1];
             
-            / Link per Trip.com tramite TravelPayouts
-document.getElementById('book-hotel').onclick = () => {
-    // Costruisci URL di ricerca Trip.com
-    const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://www.trip.com/hotels/list?city=${destination.name}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&adult=${people}&starrating=${selectedStars}`;
-    
-    window.open(tripUrl, '_blank');
-};
+            // Link prenotazione con ricerca destinazione
+            document.getElementById('book-hotel').onclick = () => {
+                const bookingUrl = `https://www.booking.com/searchresults.html?aid=TUOAFFILIATE&ss=${destination.searchTerm}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}&nflt=${selectedStars};class=${selectedStars}`;
+                window.open(bookingUrl, '_blank');
+            };
             
-            // Link migliorato per Skyscanner con codici aeroporto corretti
             document.getElementById('book-flight').onclick = () => {
-                const destCode = destination.airportCode || 'anywhere';
-                const skyUrl = `https://www.skyscanner.it
-                
-                window.open(skyUrl, '_blank');
+                window.open(`https://www.skyscanner.it/trasporti/voli/${selectedAirport}/${destination.name.toLowerCase().replace(/ /g, '-')}/${checkIn.toISOString().split('T')[0]}/${checkOut.toISOString().split('T')[0]}/?adults=${people}`, '_blank');
             };
         }
         
