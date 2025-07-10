@@ -1433,10 +1433,18 @@
             document.getElementById('quote-text').textContent = destination.quote.split(' - ')[0];
             document.getElementById('quote-author').textContent = '- ' + destination.quote.split(' - ')[1];
             
-            / Link diretto Booking (funziona SICURO)
-document.getElementById('book-hotel').onclick = () => {
-    window.open(`https://www.booking.com/searchresults.html?ss=${destination.name}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}`, '_blank');
-};
+            // Link per Hotels.com tramite TravelPayouts
+            document.getElementById('book-hotel').onclick = () => {
+                // Codifica il nome destinazione per URL
+                const hotelDest = encodeURIComponent(destination.name + ', ' + destination.country);
+                
+                // Link TravelPayouts per Hotels.com
+                // SOSTITUISCI 123456 con il tuo vero MARKER ID da TravelPayouts!
+                const hotelsUrl = `https://tp.media/r?marker=123456&p=4555&u=https%3A%2F%2Fit.hotels.com%2Fsearch.do%3Fdestination%3D${hotelDest}%26startDate%3D${checkIn.toISOString().split('T')[0]}%26endDate%3D${checkOut.toISOString().split('T')[0]}%26rooms%3D1%26adults%3D${people}`;
+                
+                window.open(hotelsUrl, '_blank');
+            };
+            
             // Link migliorato per Skyscanner con codici aeroporto corretti
             document.getElementById('book-flight').onclick = () => {
                 const destCode = destination.airportCode || 'anywhere';
