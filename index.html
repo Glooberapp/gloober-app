@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -1440,7 +1439,8 @@
                 const hotelDest = encodeURIComponent(destination.name + ', ' + destination.country);
                 
                 // Link TravelPayouts per Hotels.com
-                const hotelsUrl = `https://tp.media/r?marker=649656&p=4555&u=https%3A%2F%2Fit.hotels.com%2Fsearch.do%3Fdestination%3D${hotelDest}%26startDate%3D${checkIn.toISOString().split('T')[0]}%26endDate%3D${checkOut.toISOString().split('T')[0]}%26rooms%3D1%26adults%3D${people}`;
+                // SOSTITUISCI 123456 con il tuo vero MARKER ID da TravelPayouts!
+                const hotelsUrl = `https://tp.media/r?marker=123456&p=4555&u=https%3A%2F%2Fit.hotels.com%2Fsearch.do%3Fdestination%3D${hotelDest}%26startDate%3D${checkIn.toISOString().split('T')[0]}%26endDate%3D${checkOut.toISOString().split('T')[0]}%26rooms%3D1%26adults%3D${people}`;
                 
                 window.open(hotelsUrl, '_blank');
             };
