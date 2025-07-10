@@ -568,6 +568,568 @@
         let hasMovedSlider = false; // Per tracciare se lo slider è stato mosso
         let selectedStars = 3; // Default 3 stelle
         
+        // DATABASE 50 DESTINAZIONI GLOOBER
+        const destinations = [
+            // MARE 0-10% - Classiche e famose
+            {
+                position: 0,
+                name: 'Santorini',
+                country: 'Grecia',
+                tagline: 'Il sogno greco',
+                description: 'Tramonti che il mondo ci invidia, case bianche e cupole blu che si specchiano nell\'Egeo.',
+                category: 'mare-classico',
+                searchTerm: 'Santorini,+Greece',
+                image: 'santorini.jpg',
+                priceIndex: 4, // 1-5 quanto costa
+                bestMonths: [5,6,7,8,9],
+                quote: '"In nessun altro luogo il tramonto ha lo stesso sapore" - Odysseas Elytis'
+            },
+            {
+                position: 5,
+                name: 'Mykonos',
+                country: 'Grecia', 
+                tagline: 'L\'isola che non dorme mai',
+                description: 'Mulini a vento, vicoli bianchi e una nightlife leggendaria nel cuore delle Cicladi.',
+                category: 'mare-vitanotturna',
+                searchTerm: 'Mykonos,+Greece',
+                priceIndex: 5,
+                bestMonths: [6,7,8,9],
+                quote: '"Mykonos è uno stato mentale" - Giorgio Armani'
+            },
+            
+            // MARE 10-20% - Vita notturna
+            {
+                position: 10,
+                name: 'Ibiza',
+                country: 'Spagna',
+                tagline: 'L\'isola della libertà',
+                description: 'Dove il tramonto diventa party e le calette nascondono segreti hippy.',
+                category: 'mare-vitanotturna',
+                searchTerm: 'Ibiza,+Spain',
+                priceIndex: 4,
+                bestMonths: [5,6,7,8,9],
+                quote: '"Ibiza è più di un\'isola, è un\'esperienza" - Carl Cox'
+            },
+            {
+                position: 15,
+                name: 'Hvar',
+                country: 'Croazia',
+                tagline: 'La Saint-Tropez dell\'Adriatico',
+                description: 'Lavanda, yacht e locali esclusivi in un\'isola dalmata dal fascino veneziano.',
+                category: 'mare-vitale',
+                searchTerm: 'Hvar,+Croatia',
+                priceIndex: 3,
+                bestMonths: [6,7,8,9],
+                quote: '"Il paradiso esiste e parla croato" - George Bernard Shaw'
+            },
+            
+            // MARE 20-30% - Vitale/Relax
+            {
+                position: 20,
+                name: 'Taghazout',
+                country: 'Marocco',
+                tagline: 'Il paradiso dei surfisti',
+                description: 'Onde perfette, villaggi berberi e tramonti sull\'Atlantico africano.',
+                category: 'mare-sport',
+                searchTerm: 'Taghazout,+Morocco',
+                priceIndex: 2,
+                bestMonths: [1,2,3,10,11,12],
+                quote: '"Il surf è la poesia del mare" - Proverbio marocchino'
+            },
+            {
+                position: 25,
+                name: 'Comporta',
+                country: 'Portogallo',
+                tagline: 'Gli Hamptons d\'Europa',
+                description: 'Risaie, cicogne e spiagge infinite dove il jet set cerca l\'understatement.',
+                category: 'mare-relax',
+                searchTerm: 'Comporta,+Portugal',
+                priceIndex: 4,
+                bestMonths: [5,6,7,8,9,10],
+                quote: '"La semplicità è il massimo della sofisticazione" - Leonardo da Vinci'
+            },
+            
+            // MARE 30-40% - Romantiche nascoste
+            {
+                position: 30,
+                name: 'Paros',
+                country: 'Grecia',
+                tagline: 'La Grecia autentica',
+                description: 'L\'isola dove i greci vanno in vacanza, lontano dalle folle ma vicino al paradiso.',
+                category: 'mare-romantico',
+                searchTerm: 'Paros,+Greece',
+                priceIndex: 3,
+                bestMonths: [5,6,7,8,9],
+                quote: '"La bellezza salverà il mondo" - Dostoevskij'
+            },
+            {
+                position: 35,
+                name: 'Isola di Holbox',
+                country: 'Messico',
+                tagline: 'Caraibi senza filtri',
+                description: 'Niente auto, tanto plancton luminescente e fenicotteri rosa in un paradiso segreto.',
+                category: 'mare-nascosto',
+                searchTerm: 'Holbox,+Mexico',
+                priceIndex: 2,
+                bestMonths: [1,2,3,4,11,12],
+                quote: '"Il vero viaggio è quello che non lascia tracce" - Lao Tzu'
+            },
+            
+            // MARE 40-50% - Avventura
+            {
+                position: 40,
+                name: 'Faroe Islands',
+                country: 'Danimarca',
+                tagline: 'Il segreto del Nord Atlantico',
+                description: 'Cascate che cadono nell\'oceano, pecore ovunque e una natura che toglie il fiato.',
+                category: 'mare-avventura',
+                searchTerm: 'Faroe+Islands',
+                priceIndex: 3,
+                bestMonths: [6,7,8],
+                quote: '"La natura selvaggia è una necessità" - John Muir'
+            },
+            {
+                position: 45,
+                name: 'Lofoten',
+                country: 'Norvegia',
+                tagline: 'Dove l\'Artico incontra il mare',
+                description: 'Villaggi di pescatori rossi, aurora boreale e il sole di mezzanotte tra i fiordi.',
+                category: 'mare-estremo',
+                searchTerm: 'Lofoten,+Norway',
+                priceIndex: 4,
+                bestMonths: [6,7,8,9],
+                quote: '"Il Nord è uno stato dell\'anima" - Fridtjof Nansen'
+            },
+            
+            // CENTRO 50% - Arte famose
+            {
+                position: 50,
+                name: 'Roma',
+                country: 'Italia',
+                tagline: 'La Città Eterna',
+                description: 'Dove ogni angolo è un museo e la storia si respira tra carbonara e Colosseo.',
+                category: 'arte-iconica',
+                searchTerm: 'Rome,+Italy',
+                priceIndex: 3,
+                bestMonths: [3,4,5,9,10,11],
+                quote: '"Roma è la capitale del mondo" - Goethe'
+            },
+            {
+                position: 50,
+                name: 'Parigi',
+                country: 'Francia',
+                tagline: 'La Ville Lumière',
+                description: 'Torre Eiffel, croissant e l\'arte di vivere francese in ogni boulevard.',
+                category: 'arte-iconica',
+                searchTerm: 'Paris,+France',
+                priceIndex: 4,
+                bestMonths: [4,5,6,9,10],
+                quote: '"Parigi è sempre una buona idea" - Audrey Hepburn'
+            },
+            {
+                position: 50,
+                name: 'Firenze',
+                country: 'Italia',
+                tagline: 'La culla del Rinascimento',
+                description: 'Michelangelo, Botticelli e bistecca alla fiorentina in un museo a cielo aperto.',
+                category: 'arte-iconica',
+                searchTerm: 'Florence,+Italy',
+                priceIndex: 3,
+                bestMonths: [4,5,6,9,10],
+                quote: '"Ogni blocco di pietra ha una statua dentro" - Michelangelo'
+            },
+            
+            // ARTE 45-55% - Romantiche meno note
+            {
+                position: 45,
+                name: 'Bruges',
+                country: 'Belgio',
+                tagline: 'La Venezia del Nord',
+                description: 'Canali medievali, cioccolato e merletti in una fiaba di mattoni.',
+                category: 'arte-romantica',
+                searchTerm: 'Bruges,+Belgium',
+                priceIndex: 3,
+                bestMonths: [4,5,6,7,8,9],
+                quote: '"Bruges è un sogno" - Georges Rodenbach'
+            },
+            {
+                position: 55,
+                name: 'Český Krumlov',
+                country: 'Repubblica Ceca',
+                tagline: 'La perla della Boemia',
+                description: 'Un castello da fiaba, il fiume che abbraccia la città e birra a fiumi.',
+                category: 'arte-romantica',
+                searchTerm: 'Cesky+Krumlov,+Czech+Republic',
+                priceIndex: 2,
+                bestMonths: [5,6,7,8,9],
+                quote: '"Le fiabe esistono, basta sapere dove cercarle" - Proverbio ceco'
+            },
+            
+            // ARTE 40-60% - Da scoprire
+            {
+                position: 40,
+                name: 'Matera',
+                country: 'Italia',
+                tagline: 'La città nella roccia',
+                description: 'Sassi millenari dove il tempo si è fermato e la storia vive nella pietra.',
+                category: 'arte-nascosta',
+                searchTerm: 'Matera,+Italy',
+                priceIndex: 2,
+                bestMonths: [4,5,6,9,10],
+                quote: '"Matera è la città più singolare d\'Italia" - Carlo Levi'
+            },
+            {
+                position: 60,
+                name: 'Guimarães',
+                country: 'Portogallo',
+                tagline: 'Qui è nato il Portogallo',
+                description: 'Castello medievale, azulejos e la culla della nazione portoghese.',
+                category: 'arte-nascosta',
+                searchTerm: 'Guimaraes,+Portugal',
+                priceIndex: 2,
+                bestMonths: [4,5,6,9,10],
+                quote: '"Il Portogallo non è un paese piccolo" - Salazar'
+            },
+            
+            // ARTE-MARE 30-40% - Mix cultura e costa
+            {
+                position: 35,
+                name: 'Essaouira',
+                country: 'Marocco',
+                tagline: 'La perla dell\'Atlantico',
+                description: 'Medina bianca e blu dove Hendrix suonava e il vento non smette mai.',
+                category: 'mare-cultura',
+                searchTerm: 'Essaouira,+Morocco',
+                priceIndex: 2,
+                bestMonths: [4,5,6,9,10,11],
+                quote: '"Il vento di Essaouira porta via i pensieri" - Jimi Hendrix'
+            },
+            {
+                position: 35,
+                name: 'Kotor',
+                country: 'Montenegro',
+                tagline: 'Il fiordo del Mediterraneo',
+                description: 'Mura veneziane che scalano montagne e si specchiano in una baia da sogno.',
+                category: 'mare-cultura',
+                searchTerm: 'Kotor,+Montenegro',
+                priceIndex: 2,
+                bestMonths: [5,6,7,8,9],
+                quote: '"Montenegro, il gioiello nascosto dei Balcani" - Lord Byron'
+            },
+            
+            // MONTAGNA 55-65% - Arte montana
+            {
+                position: 60,
+                name: 'Innsbruck',
+                country: 'Austria',
+                tagline: 'La capitale delle Alpi',
+                description: 'Cristalli Swarovski, tetti d\'oro e piste da sci a 20 minuti dal centro.',
+                category: 'montagna-cultura',
+                searchTerm: 'Innsbruck,+Austria',
+                priceIndex: 3,
+                bestMonths: [1,2,3,6,7,8,12],
+                quote: '"Le montagne sono le grandi cattedrali della terra" - John Ruskin'
+            },
+            {
+                position: 65,
+                name: 'Annecy',
+                country: 'Francia',
+                tagline: 'La Venezia delle Alpi',
+                description: 'Lago cristallino, canali fioriti e montagne che abbracciano la ville.',
+                category: 'montagna-romantica',
+                searchTerm: 'Annecy,+France',
+                priceIndex: 3,
+                bestMonths: [5,6,7,8,9],
+                quote: '"La purezza del lago riflette l\'anima" - Rousseau'
+            },
+            
+            // MONTAGNA 65-75% - Relax e benessere
+            {
+                position: 70,
+                name: 'Bled',
+                country: 'Slovenia',
+                tagline: 'Il lago delle fiabe',
+                description: 'Un\'isola con chiesa, un castello sulla roccia e le Alpi Giulie a corona.',
+                category: 'montagna-relax',
+                searchTerm: 'Bled,+Slovenia',
+                priceIndex: 2,
+                bestMonths: [5,6,7,8,9],
+                quote: '"Bled è poesia pura" - Agatha Christie'
+            },
+            {
+                position: 75,
+                name: 'Hallstatt',
+                country: 'Austria',
+                tagline: 'La cartolina perfetta',
+                description: 'Il villaggio più fotografato d\'Austria tra lago alpino e miniere di sale.',
+                category: 'montagna-romantica',
+                searchTerm: 'Hallstatt,+Austria',
+                priceIndex: 3,
+                bestMonths: [5,6,7,8,9],
+                quote: '"La bellezza di Hallstatt è quasi irreale" - Alexander von Humboldt'
+            },
+            
+            // MONTAGNA 75-85% - Sport e avventura
+            {
+                position: 80,
+                name: 'Chamonix',
+                country: 'Francia',
+                tagline: 'La capitale mondiale dell\'alpinismo',
+                description: 'Ai piedi del Monte Bianco, dove nascono le leggende della montagna.',
+                category: 'montagna-sport',
+                searchTerm: 'Chamonix,+France',
+                priceIndex: 4,
+                bestMonths: [1,2,3,6,7,8,12],
+                quote: '"Le montagne non sono stadi dove soddisfo la mia ambizione" - Anatoli Boukreev'
+            },
+            {
+                position: 85,
+                name: 'Interlaken',
+                country: 'Svizzera',
+                tagline: 'L\'adrenalina tra due laghi',
+                description: 'Base jumping, parapendio e treni per Jungfrau nel cuore delle Alpi.',
+                category: 'montagna-estrema',
+                searchTerm: 'Interlaken,+Switzerland',
+                priceIndex: 5,
+                bestMonths: [1,2,3,6,7,8,12],
+                quote: '"In montagna si trova la libertà" - Friedrich Nietzsche'
+            },
+            
+            // MONTAGNA 85-95% - Esclusive
+            {
+                position: 90,
+                name: 'St. Moritz',
+                country: 'Svizzera',
+                tagline: 'Top of the World',
+                description: 'Champagne climate, neve perfetta e il jet set mondiale dal 1864.',
+                category: 'montagna-lusso',
+                searchTerm: 'St+Moritz,+Switzerland',
+                priceIndex: 5,
+                bestMonths: [1,2,3,7,8,12],
+                quote: '"St. Moritz non è una destinazione, è uno stile di vita" - Coco Chanel'
+            },
+            {
+                position: 92,
+                name: 'Aspen',
+                country: 'USA',
+                tagline: 'Il playground delle star',
+                description: 'Quattro montagne, champagne powder e celebrities in ogni angolo.',
+                category: 'montagna-lusso',
+                searchTerm: 'Aspen,+Colorado',
+                priceIndex: 5,
+                bestMonths: [1,2,3,12],
+                quote: '"Aspen è dove la neve incontra le stelle" - John Denver'
+            },
+            
+            // MONTAGNA 95-100% - Classiche
+            {
+                position: 95,
+                name: 'Zermatt',
+                country: 'Svizzera',
+                tagline: 'All\'ombra del Cervino',
+                description: 'La montagna perfetta, il villaggio senza auto e fonduta con vista.',
+                category: 'montagna-classica',
+                searchTerm: 'Zermatt,+Switzerland',
+                priceIndex: 5,
+                bestMonths: [1,2,3,7,8,12],
+                quote: '"Il Cervino non si conquista, ti permette di salire" - Edward Whymper'
+            },
+            {
+                position: 100,
+                name: 'Cortina',
+                country: 'Italia',
+                tagline: 'La Regina delle Dolomiti',
+                description: 'Glamour italiano, Aperol Spritz e le Tofane rosa al tramonto.',
+                category: 'montagna-classica',
+                searchTerm: 'Cortina+d\'Ampezzo,+Italy',
+                priceIndex: 4,
+                bestMonths: [1,2,3,7,8,12],
+                quote: '"Cortina è un\'emozione vestita di neve" - Alberto Tomba'
+            },
+            
+            // EXTRA - Destinazioni alternative distribuite
+            {
+                position: 15,
+                name: 'Gili Islands',
+                country: 'Indonesia',
+                tagline: 'No cars, no stress',
+                description: 'Tre isole dove le tartarughe sono di casa e la vita scorre in bicicletta.',
+                category: 'mare-alternativo',
+                searchTerm: 'Gili+Islands,+Indonesia',
+                priceIndex: 2,
+                bestMonths: [5,6,7,8,9],
+                quote: '"La semplicità è la vera ricchezza" - Proverbio indonesiano'
+            },
+            {
+                position: 25,
+                name: 'Sète',
+                country: 'Francia',
+                tagline: 'La Venezia del Languedoc',
+                description: 'Porto di pescatori, canali e ostriche dove il Mediterraneo è ancora autentico.',
+                category: 'mare-autentico',
+                searchTerm: 'Sete,+France',
+                priceIndex: 2,
+                bestMonths: [5,6,7,8,9],
+                quote: '"Il mare è tutto" - Georges Brassens'
+            },
+            {
+                position: 45,
+                name: 'Ljubljana',
+                country: 'Slovenia',
+                tagline: 'Il segreto verde d\'Europa',
+                description: 'Draghi, castello e una capitale a misura d\'uomo dove i caffè sono salotti.',
+                category: 'arte-emergente',
+                searchTerm: 'Ljubljana,+Slovenia',
+                priceIndex: 2,
+                bestMonths: [5,6,7,8,9],
+                quote: '"Ljubljana è amore a prima vista" - Le Corbusier'
+            },
+            {
+                position: 55,
+                name: 'Ghent',
+                country: 'Belgio',
+                tagline: 'Il segreto meglio custodito',
+                description: 'Più bella di Bruges ma senza le folle, con birre trappiste e arte fiamminga.',
+                category: 'arte-alternativa',
+                searchTerm: 'Ghent,+Belgium',
+                priceIndex: 2,
+                bestMonths: [4,5,6,7,8,9],
+                quote: '"Gent è la città del futuro" - Carlo V'
+            },
+            {
+                position: 65,
+                name: 'Zakopane',
+                country: 'Polonia',
+                tagline: 'La capitale invernale polacca',
+                description: 'Architettura in legno, formaggi affumicati e i Monti Tatra a portata di funivia.',
+                category: 'montagna-autentica',
+                searchTerm: 'Zakopane,+Poland',
+                priceIndex: 2,
+                bestMonths: [1,2,3,7,8,12],
+                quote: '"Le montagne sono la libertà della Polonia" - Papa Giovanni Paolo II'
+            },
+            {
+                position: 75,
+                name: 'Dolomiti di Brenta',
+                country: 'Italia',
+                tagline: 'Le Dolomiti segrete',
+                description: 'Vie ferrate, rifugi con polenta e il lago di Molveno come specchio.',
+                category: 'montagna-alternativa',
+                searchTerm: 'Madonna+di+Campiglio,+Italy',
+                priceIndex: 3,
+                bestMonths: [1,2,3,6,7,8,12],
+                quote: '"Le Dolomiti sono i monti pallidi che diventano rosa" - Dino Buzzati'
+            },
+            {
+                position: 20,
+                name: 'Porto Santo',
+                country: 'Portogallo',
+                tagline: 'L\'isola dorata',
+                description: '9 km di spiaggia dorata, acque terapeutiche e la pace di Madeira senza le folle.',
+                category: 'mare-relax',
+                searchTerm: 'Porto+Santo,+Madeira',
+                priceIndex: 2,
+                bestMonths: [5,6,7,8,9,10],
+                quote: '"Porto Santo è dove Colombo sognava le Americhe" - José Saramago'
+            },
+            {
+                position: 42,
+                name: 'Tallinn',
+                country: 'Estonia',
+                tagline: 'Il Medioevo digitale',
+                description: 'Torri medievali e startup, dove il passato incontra il futuro baltico.',
+                category: 'arte-tech',
+                searchTerm: 'Tallinn,+Estonia',
+                priceIndex: 2,
+                bestMonths: [5,6,7,8,9],
+                quote: '"Tallinn è dove il digitale ha radici medievali" - Toomas Hendrik'
+            },
+            {
+                position: 58,
+                name: 'Ronda',
+                country: 'Spagna',
+                tagline: 'La città sul precipizio',
+                description: 'Il ponte che sfida la gravità, toreri leggendari e tapas con vista.',
+                category: 'arte-drammatica',
+                searchTerm: 'Ronda,+Spain',
+                priceIndex: 2,
+                bestMonths: [4,5,6,9,10],
+                quote: '"Ronda è un sogno sospeso nel vuoto" - Hemingway'
+            },
+            {
+                position: 72,
+                name: 'Val di Funes',
+                country: 'Italia',
+                tagline: 'La valle delle Odle',
+                description: 'La chiesetta più fotografata, masi tirolesi e le Dolomiti come corona.',
+                category: 'montagna-instagram',
+                searchTerm: 'Val+di+Funes,+Italy',
+                priceIndex: 3,
+                bestMonths: [6,7,8,9,10],
+                quote: '"Le Odle sono le dita di Dio" - Reinhold Messner'
+            },
+            {
+                position: 88,
+                name: 'Verbier',
+                country: 'Svizzera',
+                tagline: 'Il sole delle Alpi',
+                description: '400 km di piste, sole garantito e après-ski leggendario.',
+                category: 'montagna-party',
+                searchTerm: 'Verbier,+Switzerland',
+                priceIndex: 5,
+                bestMonths: [1,2,3,12],
+                quote: '"Verbier è dove la montagna diventa lifestyle" - James Blunt'
+            },
+            {
+                position: 12,
+                name: 'Naxos',
+                country: 'Grecia',
+                tagline: 'L\'isola degli dei',
+                description: 'Spiagge infinite, Portara al tramonto e villaggi dove il tempo si è fermato.',
+                category: 'mare-autentico',
+                searchTerm: 'Naxos,+Greece',
+                priceIndex: 2,
+                bestMonths: [5,6,7,8,9],
+                quote: '"A Naxos Dioniso trovò Arianna" - Mitologia greca'
+            },
+            {
+                position: 48,
+                name: 'Lucca',
+                country: 'Italia',
+                tagline: 'La città delle 100 chiese',
+                description: 'Mura rinascimentali da passeggiare in bici e Puccini in ogni piazza.',
+                category: 'arte-musica',
+                searchTerm: 'Lucca,+Italy',
+                priceIndex: 2,
+                bestMonths: [4,5,6,9,10],
+                quote: '"Lucca è una città da ascoltare" - Giacomo Puccini'
+            },
+            {
+                position: 62,
+                name: 'Sintra',
+                country: 'Portogallo',
+                tagline: 'Il giardino dei palazzi',
+                description: 'Palazzi da fiaba, giardini misteriosi e la nebbia atlantica che tutto avvolge.',
+                category: 'arte-fiabesca',
+                searchTerm: 'Sintra,+Portugal',
+                priceIndex: 2,
+                bestMonths: [4,5,6,9,10],
+                quote: '"Sintra è il luogo dove la terra finisce e il mare comincia" - Camões'
+            },
+            {
+                position: 78,
+                name: 'Courmayeur',
+                country: 'Italia',
+                tagline: 'Ai piedi del Monte Bianco',
+                description: 'Eleganza alpina, terme con vista e il tetto d\'Europa a portata di funivia.',
+                category: 'montagna-chic',
+                searchTerm: 'Courmayeur,+Italy',
+                priceIndex: 4,
+                bestMonths: [1,2,3,7,8,12],
+                quote: '"Il Monte Bianco è il monarca delle montagne" - Byron'
+            }
+        ];
+        
         // Mappa aeroporti -> valuta
         const airportCurrencies = {
             // Italia - EUR
@@ -813,184 +1375,89 @@
             document.getElementById('loading-step').classList.add('hidden');
             document.getElementById('result-step').classList.remove('hidden');
             
-            // Prepara i dati per le API
+            // Prepara i dati
             const budget = parseInt(document.getElementById('budget').value);
             const people = parseInt(document.getElementById('people').value);
             const currency = document.getElementById('currency').value;
+            const currencySymbol = currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : currency + ' ';
             
-            // Determina la destinazione in base alla vibe
-            let destination = 'Firenze';
-            let destCode = 'FLR';
-            let searchQuery = 'art museums';
+            // Trova destinazione basata sulla posizione dello slider
+            const destination = getDestinationByPosition(vibePosition);
             
-            if (vibePosition < 33) {
-                // Mare
-                destination = 'Palma di Maiorca';
-                destCode = 'PMI';
-                searchQuery = 'beach resort';
-            } else if (vibePosition > 66) {
-                // Montagna
-                destination = 'Innsbruck';
-                destCode = 'INN';
-                searchQuery = 'mountain hotel';
-            }
+            // Simula prezzi hotel basati su stelle e price index
+            const basePrice = [40, 60, 90, 150, 280][selectedStars - 1];
+            const hotelPrice = Math.round(basePrice * (destination.priceIndex / 3));
+            const hotelTotal = hotelPrice * selectedDuration;
             
-            // Aggiorna UI con destinazione
-            document.getElementById('destination-name').textContent = destination;
+            // Simula prezzo volo
+            const flightPrice = Math.round(80 + (destination.priceIndex * 20) + (Math.random() * 40));
+            const flightTotal = flightPrice * 2; // Andata e ritorno
+            
+            const total = hotelTotal + flightTotal;
+            
+            // Date
+            const checkIn = new Date(selectedDate);
+            const checkOut = new Date(selectedDate);
+            checkOut.setDate(checkOut.getDate() + selectedDuration);
+            
+            // Aggiorna UI
+            document.getElementById('destination-name').textContent = `${destination.name}, ${destination.country}`;
+            document.getElementById('ai-description').textContent = destination.description;
             document.getElementById('total-people').textContent = people;
             
-            // 1. Chiama Gemini per descrizione personalizzata
-            try {
-                const prompt = `Descrivi in una frase poetica e coinvolgente (max 30 parole) una vacanza ${
-                    vibePosition < 33 ? 'al mare' : vibePosition > 66 ? 'in montagna' : "d'arte"
-                } a ${destination} per ${people} persone con budget ${budget}${currency}. Deve far venire voglia di partire subito!`;
-                
-                const geminiResponse = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyB3FtGA9NJ8FB5GNCPrAWwAzUkhy4kTZwo', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }]
-                    })
-                });
-                
-                if (geminiResponse.ok) {
-                    const geminiData = await geminiResponse.json();
-                    const aiDescription = geminiData.candidates[0].content.parts[0].text;
-                    document.getElementById('ai-description').textContent = aiDescription;
-                }
-            } catch (error) {
-                console.error('Errore Gemini:', error);
-                document.getElementById('ai-description').textContent = 'La tua avventura perfetta ti aspetta!';
-            }
+            // Hotel generico
+            const hotelNames = ['Grand Hotel', 'Boutique Hotel', 'Hotel Central', 'Hotel Vista', 'Luxury Resort'];
+            const hotelName = `${hotelNames[selectedStars-1]} ${destination.name}`;
             
-            // 2. Cerca Hotel con Booking.com API
-            try {
-                const checkIn = new Date(selectedDate);
-                const checkOut = new Date(selectedDate);
-                checkOut.setDate(checkOut.getDate() + selectedDuration);
-                
-                const bookingResponse = await fetch(`https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotels?dest=${destination}&search_type=city&arrival_date=${checkIn.toISOString().split('T')[0]}&departure_date=${checkOut.toISOString().split('T')[0]}&adults=${people}&room_qty=1&languagecode=it`, {
-                    method: 'GET',
-                    headers: {
-                        'X-RapidAPI-Key': '3ce68a2aa9msh4f091334cd7dd49p1bba08jsn29bf6874508c',
-                        'X-RapidAPI-Host': 'booking-com15.p.rapidapi.com'
-                    }
-                });
-                
-                if (bookingResponse.ok) {
-                    const bookingData = await bookingResponse.json();
-                    if (bookingData.data && bookingData.data.hotels && bookingData.data.hotels.length > 0) {
-                        // Filtra per stelle e rating
-                        const filteredHotels = bookingData.data.hotels.filter(h => 
-                            h.property.reviewScore >= 8.5 && 
-                            h.property.propertyClass >= selectedStars
-                        );
-                        
-                        if (filteredHotels.length > 0) {
-                            const hotel = filteredHotels[0];
-                            document.getElementById('hotel-name').textContent = hotel.property.name;
-                            document.getElementById('hotel-stars').textContent = '⭐'.repeat(hotel.property.propertyClass || selectedStars);
-                            document.getElementById('hotel-rating').textContent = `${hotel.property.reviewScore}/10 (${hotel.property.reviewCount} recensioni)`;
-                            document.getElementById('hotel-room').textContent = 'Camera doppia superior';
-                            document.getElementById('hotel-price').textContent = `€${Math.round(hotel.property.priceBreakdown.grossPrice.value)} totale`;
-                            
-                            // Link precompilato Booking
-                            document.getElementById('book-hotel').onclick = () => {
-                                window.open(`https://www.booking.com/hotel/${hotel.property.countryCode}/${hotel.property.pageName}.html?checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}`, '_blank');
-                            };
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Errore Booking:', error);
-                // Dati di fallback
-                document.getElementById('hotel-name').textContent = 'Grand Hotel ' + destination;
-                document.getElementById('hotel-stars').textContent = '⭐'.repeat(selectedStars);
-                document.getElementById('hotel-rating').textContent = '9.0/10 (1250 recensioni)';
-                document.getElementById('hotel-room').textContent = 'Camera doppia vista mare';
-                document.getElementById('hotel-price').textContent = `€${Math.round(budget * 0.6)} totale`;
-            }
+            document.getElementById('hotel-name').textContent = hotelName;
+            document.getElementById('hotel-stars').textContent = '⭐'.repeat(selectedStars);
+            document.getElementById('hotel-rating').textContent = `${8 + (selectedStars * 0.3)}/10`;
+            document.getElementById('hotel-room').textContent = selectedStars <= 2 ? 'Camera standard' : selectedStars <= 4 ? 'Camera superior' : 'Suite';
+            document.getElementById('hotel-price').textContent = `${currencySymbol}${hotelTotal}`;
             
-            // 3. Cerca Voli con Kiwi.com API
-            try {
-                const checkIn = new Date(selectedDate);
-                const checkOut = new Date(selectedDate);
-                checkOut.setDate(checkOut.getDate() + selectedDuration);
-                
-                // Prepara parametri per Kiwi
-                const flyFrom = selectedAirport;
-                const flyTo = destCode;
-                const dateFrom = checkIn.toLocaleDateString('en-GB').replace(/\//g, '%2F');
-                const dateTo = dateFrom; // stesso giorno per andata
-                const returnFrom = checkOut.toLocaleDateString('en-GB').replace(/\//g, '%2F');
-                const returnTo = returnFrom; // stesso giorno per ritorno
-                
-                const kiwiUrl = `https://kiwi-com-cheap-flights.p.rapidapi.com/round-trip?source=${flyFrom}&destination=${flyTo}&departureDate=${checkIn.toISOString().split('T')[0]}&returnDate=${checkOut.toISOString().split('T')[0]}&adults=${people}&currency=${currency.toLowerCase()}&limit=20`;
-                
-                const kiwiResponse = await fetch(kiwiUrl, {
-                    method: 'GET',
-                    headers: {
-                        'X-RapidAPI-Key': '3ce68a2aa9msh4f091334cd7dd49p1bba08jsn29bf6874508c',
-                        'X-RapidAPI-Host': 'kiwi-com-cheap-flights.p.rapidapi.com'
-                    }
-                });
-                
-                if (kiwiResponse.ok) {
-                    const kiwiData = await kiwiResponse.json();
-                    if (kiwiData && kiwiData.data && kiwiData.data.length > 0) {
-                        // Prendi il volo più economico
-                        const flight = kiwiData.data[0];
-                        const outbound = flight.route[0];
-                        const returnFlight = flight.route[flight.route.length - 1];
-                        
-                        document.getElementById('flight-outbound').textContent = 
-                            `${outbound.cityFrom} → ${outbound.cityTo} | ${new Date(outbound.local_departure).toLocaleString('it-IT', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'})}`;
-                        
-                        document.getElementById('flight-return').textContent = 
-                            `${returnFlight.cityFrom} → ${returnFlight.cityTo} | ${new Date(returnFlight.local_departure).toLocaleString('it-IT', {day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'})}`;
-                        
-                        document.getElementById('flight-airline').textContent = 
-                            flight.airlines.join(', ');
-                        
-                        document.getElementById('flight-price').textContent = 
-                            `${currency === 'EUR' ? '€' : currency} ${flight.price} totale`;
-                        
-                        // Link diretto Kiwi per prenotare
-                        document.getElementById('book-flight').onclick = () => {
-                            window.open(flight.deep_link, '_blank');
-                        };
-                        
-                        // Aggiorna totale reale
-                        const hotelPrice = parseInt(document.getElementById('hotel-price').textContent.match(/\d+/)[0]);
-                        const totalReal = flight.price + hotelPrice;
-                        document.getElementById('total-price').textContent = `${currency === 'EUR' ? '€' : currency} ${totalReal}`;
-                    }
-                }
-            } catch (error) {
-                console.error('Errore Kiwi:', error);
-                // Fallback ai dati simulati
-                const flightPrice = Math.round(budget * 0.4);
-                document.getElementById('flight-outbound').textContent = `${selectedAirport} → ${destCode} | ${selectedDate.toLocaleDateString('it-IT')} 08:30-10:45`;
-                document.getElementById('flight-return').textContent = `${destCode} → ${selectedAirport} | Ritorno dopo ${selectedDuration} giorni`;
-                document.getElementById('flight-airline').textContent = 'EasyJet / Ryanair';
-                document.getElementById('flight-price').textContent = `€${flightPrice} totale`;
-                
-                document.getElementById('book-flight').onclick = () => {
-                    window.open(`https://www.skyscanner.it/trasporti/voli/${selectedAirport}/${destCode}/${selectedDate.toISOString().split('T')[0]}/?adults=${people}`, '_blank');
-                };
-                
-                document.getElementById('total-price').textContent = `€${budget}`;
-            }
+            // Volo
+            const airlines = ['Ryanair', 'EasyJet', 'Vueling', 'Wizz Air', 'ITA Airways', 'Lufthansa'];
+            document.getElementById('flight-outbound').textContent = 
+                `${selectedAirport} → ${destination.name} | ${checkIn.toLocaleDateString('it-IT')} ore 08:30`;
+            document.getElementById('flight-return').textContent = 
+                `${destination.name} → ${selectedAirport} | ${checkOut.toLocaleDateString('it-IT')} ore 18:45`;
+            document.getElementById('flight-airline').textContent = airlines[Math.floor(Math.random() * airlines.length)];
+            document.getElementById('flight-price').textContent = `${currencySymbol}${flightTotal}`;
             
-            // 5. Citazione (potresti generarla con Gemini)
-            const quotes = {
-                'Palma di Maiorca': '"Il Mediterraneo non è solo un mare, è una filosofia di vita" - Albert Camus',
-                'Firenze': '"Ogni blocco di pietra ha una statua dentro di sé" - Michelangelo',
-                'Innsbruck': '"Le montagne non sono stadi dove soddisfo la mia ambizione, sono cattedrali dove pratico la mia religione" - Anatoli Boukreev'
+            // Totale
+            document.getElementById('total-price').textContent = `${currencySymbol}${total}`;
+            
+            // Citazione
+            document.getElementById('quote-text').textContent = destination.quote.split(' - ')[0];
+            document.getElementById('quote-author').textContent = '- ' + destination.quote.split(' - ')[1];
+            
+            // Link prenotazione con ricerca destinazione
+            document.getElementById('book-hotel').onclick = () => {
+                const bookingUrl = `https://www.booking.com/searchresults.html?aid=TUOAFFILIATE&ss=${destination.searchTerm}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}&nflt=${selectedStars};class=${selectedStars}`;
+                window.open(bookingUrl, '_blank');
             };
             
-            document.getElementById('quote-text').textContent = quotes[destination]?.split(' - ')[0] || '"Il viaggio è l\'unica cosa che compri e ti rende più ricco"';
-            document.getElementById('quote-author').textContent = quotes[destination]?.split(' - ')[1] ? '- ' + quotes[destination].split(' - ')[1] : '- Anonimo';
+            document.getElementById('book-flight').onclick = () => {
+                window.open(`https://www.skyscanner.it/trasporti/voli/${selectedAirport}/${destination.name.toLowerCase().replace(/ /g, '-')}/${checkIn.toISOString().split('T')[0]}/${checkOut.toISOString().split('T')[0]}/?adults=${people}`, '_blank');
+            };
+        }
+        
+        // NUOVA FUNZIONE: Trova destinazione per posizione
+        function getDestinationByPosition(position) {
+            // Trova destinazioni vicine alla posizione (±5%)
+            let nearbyDestinations = destinations.filter(d => 
+                Math.abs(d.position - position) <= 5
+            );
+            
+            // Se non ci sono destinazioni vicine, prendi la più vicina
+            if (nearbyDestinations.length === 0) {
+                nearbyDestinations = destinations.sort((a, b) => 
+                    Math.abs(a.position - position) - Math.abs(b.position - position)
+                ).slice(0, 3);
+            }
+            
+            // Scegli random tra le vicine per varietà
+            return nearbyDestinations[Math.floor(Math.random() * nearbyDestinations.length)];
         }
 
         // SELECT STARS
