@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find your perfect trip in 10 seconds. Move the slider, click the globe. Zero stress travel planner.">
+    <meta name="keywords" content="travel, viaggio, voyage, viaje, reise, trip planner, vacation, holidays">
     <title>Gloober - Zero Stress Travel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -17,7 +19,46 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        /* Nuovo slider orizzontale */
+        /* Language selector */
+        .lang-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .lang-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .lang-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .lang-btn.active {
+            opacity: 1;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+            border: 2px solid #fbbf24;
+        }
+        
+        /* Slider orizzontale */
         .vibes-slider-horizontal {
             position: relative;
             width: 100%;
@@ -136,31 +177,6 @@
             opacity: 1;
         }
         
-        .vibes-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            padding: 0 10px;
-            position: relative;
-        }
-        
-        .vibes-label-center {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 16px;
-            font-weight: 600;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
-        
-        .vibes-label {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 16px;
-            font-weight: 600;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
-        
         .dropdown-menu {
             position: absolute;
             top: 100%;
@@ -239,6 +255,15 @@
     </style>
 </head>
 <body class="text-white">
+    <!-- Language Selector -->
+    <div class="lang-selector">
+        <div class="lang-btn active" data-lang="it" title="Italiano">🇮🇹</div>
+        <div class="lang-btn" data-lang="en" title="English">🇬🇧</div>
+        <div class="lang-btn" data-lang="es" title="Español">🇪🇸</div>
+        <div class="lang-btn" data-lang="fr" title="Français">🇫🇷</div>
+        <div class="lang-btn" data-lang="de" title="Deutsch">🇩🇪</div>
+    </div>
+
     <!-- STEP 1: FORM -->
     <div id="form-step">
         <div class="container mx-auto px-4 py-8">
@@ -246,14 +271,14 @@
                 <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
                     Gloober
                 </h1>
-                <p class="text-xl text-gray-300">Zero stress, book happiness! ✈️</p>
+                <p class="text-xl text-gray-300" data-translate="subtitle">Zero stress, book happiness! ✈️</p>
             </div>
 
             <div class="max-w-2xl mx-auto">
                 <div class="glass-card rounded-2xl p-6">
                     <!-- Budget -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">💰 Budget totale</label>
+                        <label class="block text-sm font-medium mb-2">💰 <span data-translate="budget">Budget totale</span></label>
                         <div class="grid grid-cols-3 gap-3">
                             <input type="number" id="budget" value="1000" min="100" max="10000" step="100" 
                                    class="col-span-2 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold">
@@ -261,34 +286,34 @@
                                 <option value="EUR">€ EUR</option>
                                 <option value="GBP">£ GBP</option>
                                 <option value="CHF">CHF</option>
+                                <option value="USD">$ USD</option>
                                 <option value="DKK">DKK</option>
                                 <option value="SEK">SEK</option>
                                 <option value="NOK">NOK</option>
                                 <option value="CZK">CZK</option>
                                 <option value="PLN">PLN</option>
-                                <option value="HUF">HUF</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Persone -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">👥 Quante persone</label>
+                        <label class="block text-sm font-medium mb-2">👥 <span data-translate="people">Quante persone</span></label>
                         <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
-                            <option value="1">1 persona</option>
-                            <option value="2" selected>2 persone</option>
-                            <option value="3">3 persone</option>
-                            <option value="4">4 persone</option>
+                            <option value="1" data-translate="person1">1 persona</option>
+                            <option value="2" selected data-translate="person2">2 persone</option>
+                            <option value="3" data-translate="person3">3 persone</option>
+                            <option value="4" data-translate="person4">4 persone</option>
                         </select>
                     </div>
 
                     <!-- Quando -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">📅 Quando partiamo</label>
+                        <label class="block text-sm font-medium mb-2">📅 <span data-translate="when">Quando partiamo</span></label>
                         <div class="relative">
                             <button type="button" onclick="toggleDateMenu()" 
                                     class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white flex justify-between items-center">
-                                <span id="when-selected">OGGI</span>
+                                <span id="when-selected" data-translate="today">OGGI</span>
                                 <span>▼</span>
                             </button>
                             <div id="date-menu" class="dropdown-menu hidden"></div>
@@ -297,11 +322,11 @@
 
                     <!-- Durata -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">⏱️ Per quanto tempo</label>
+                        <label class="block text-sm font-medium mb-2">⏱️ <span data-translate="duration">Per quanto tempo</span></label>
                         <div class="relative">
                             <button type="button" onclick="toggleDurationMenu()" 
                                     class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white flex justify-between items-center">
-                                <span id="duration-selected">Due giorni</span>
+                                <span id="duration-selected" data-translate="twoDays">Due giorni</span>
                                 <span>▼</span>
                             </button>
                             <div id="duration-menu" class="dropdown-menu hidden"></div>
@@ -310,7 +335,7 @@
                     
                     <!-- Stelle Hotel -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">🏨 Categoria hotel</label>
+                        <label class="block text-sm font-medium mb-2">🏨 <span data-translate="hotelCategory">Categoria hotel</span></label>
                         <div class="stars-container">
                             <div class="stars-selector" id="stars-selector">
                                 <span class="star" data-stars="1" onclick="selectStars(1)">⭐</span>
@@ -319,31 +344,18 @@
                                 <span class="star" data-stars="4" onclick="selectStars(4)">⭐</span>
                                 <span class="star" data-stars="5" onclick="selectStars(5)">⭐</span>
                             </div>
-                            <span class="stars-label" id="stars-label">3 stelle</span>
+                            <span class="stars-label" id="stars-label" data-translate="stars3">3 stelle</span>
                         </div>
                     </div>
 
-                    <!-- Città partenza - NASCOSTO, si mostra dopo -->
-                    <div class="mb-6 hidden" id="departure-section">
-                        <label class="block text-sm font-medium mb-2">✈️ Da quale città parti</label>
-                        <select id="departure" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
-                            <option value="MXP">Milano Malpensa</option>
-                            <option value="LIN">Milano Linate</option>
-                            <option value="BGY">Milano Bergamo</option>
-                            <option value="FCO">Roma Fiumicino</option>
-                            <option value="VCE">Venezia</option>
-                            <option value="NAP">Napoli</option>
-                        </select>
-                    </div>
-
-                    <!-- Vibes Slider NUOVO -->
+                    <!-- Vibes Slider -->
                     <div class="mb-8">
-                        <label class="block text-sm font-medium mb-4 text-center">✨ Travel vibes</label>
+                        <label class="block text-sm font-medium mb-4 text-center">✨ <span data-translate="travelVibes">Travel vibes</span></label>
                         <div class="vibes-slider-horizontal" id="vibes-slider" onclick="moveVibesDot(event)" ontouchmove="moveVibesDot(event)" ontouchstart="moveVibesDot(event)">
                             <div class="slider-inner-labels">
-                                <span>🏖️ MARE</span>
-                                <span class="label-center hidden">🎨 CITTÀ D'ARTE</span>
-                                <span>🏔️ MONTAGNA</span>
+                                <span data-translate="sea">🏖️ MARE</span>
+                                <span class="label-center hidden" data-translate="city">🎨 CITTÀ D'ARTE</span>
+                                <span data-translate="mountain">🏔️ MONTAGNA</span>
                             </div>
                             <div class="vibes-dot" id="vibes-dot" onclick="handleGlobeClick(event)">
                                 <span class="gloob-text">JUST GLOOB IT</span>
@@ -360,7 +372,7 @@
         <div class="container mx-auto px-4 py-8">
             <div class="text-center mb-8">
                 <div style="font-size: 80px; margin-bottom: 20px;">✈️</div>
-                <h2 class="text-3xl font-bold mb-4 text-white">
+                <h2 class="text-3xl font-bold mb-4 text-white" data-translate="whereFrom">
                     Da dove decolliamo?
                 </h2>
             </div>
@@ -371,6 +383,7 @@
                         <input type="text" 
                                id="airport-search" 
                                placeholder="Cerca il tuo aeroporto..." 
+                               data-translate-placeholder="searchAirport"
                                class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50"
                                onkeyup="filterAirports()">
                     </div>
@@ -379,86 +392,70 @@
                         <select id="airport-select" size="10" 
                                 class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white"
                                 style="min-height: 300px;">
-                            <optgroup label="Italia">
-                                <option value="MXP">Milano Malpensa</option>
-                                <option value="LIN">Milano Linate</option>
-                                <option value="BGY">Milano Bergamo</option>
-                                <option value="FCO">Roma Fiumicino</option>
-                                <option value="CIA">Roma Ciampino</option>
-                                <option value="VCE">Venezia Marco Polo</option>
-                                <option value="TSF">Venezia Treviso</option>
-                                <option value="NAP">Napoli</option>
-                                <option value="BLQ">Bologna</option>
-                                <option value="FLR">Firenze</option>
-                                <option value="TRN">Torino</option>
-                                <option value="CTA">Catania</option>
-                                <option value="PMO">Palermo</option>
-                                <option value="BRI">Bari</option>
-                                <option value="VRN">Verona</option>
-                            </optgroup>
-                            <optgroup label="Francia">
-                                <option value="CDG">Parigi Charles de Gaulle</option>
-                                <option value="ORY">Parigi Orly</option>
-                                <option value="NCE">Nizza</option>
-                                <option value="LYS">Lione</option>
-                                <option value="MRS">Marsiglia</option>
-                            </optgroup>
-                            <optgroup label="Germania">
-                                <option value="FRA">Francoforte</option>
-                                <option value="MUC">Monaco</option>
-                                <option value="BER">Berlino</option>
-                                <option value="HAM">Amburgo</option>
-                                <option value="DUS">Düsseldorf</option>
-                                <option value="CGN">Colonia</option>
-                                <option value="STR">Stoccarda</option>
-                            </optgroup>
-                            <optgroup label="Spagna">
-                                <option value="MAD">Madrid</option>
-                                <option value="BCN">Barcellona</option>
-                                <option value="VLC">Valencia</option>
-                                <option value="AGP">Malaga</option>
-                                <option value="PMI">Palma di Maiorca</option>
-                                <option value="SVQ">Siviglia</option>
-                                <option value="BIO">Bilbao</option>
-                            </optgroup>
-                            <optgroup label="Regno Unito">
-                                <option value="LHR">Londra Heathrow</option>
-                                <option value="LGW">Londra Gatwick</option>
-                                <option value="STN">Londra Stansted</option>
-                                <option value="LTN">Londra Luton</option>
-                                <option value="MAN">Manchester</option>
-                                <option value="EDI">Edimburgo</option>
-                                <option value="BHX">Birmingham</option>
-                            </optgroup>
-                            <optgroup label="Altri">
+                            <optgroup label="Popular">
+                                <option value="FCO">Rome Fiumicino</option>
+                                <option value="MXP">Milan Malpensa</option>
+                                <option value="LHR">London Heathrow</option>
+                                <option value="CDG">Paris Charles de Gaulle</option>
+                                <option value="MAD">Madrid Barajas</option>
+                                <option value="BCN">Barcelona</option>
                                 <option value="AMS">Amsterdam</option>
-                                <option value="ZRH">Zurigo</option>
-                                <option value="GVA">Ginevra</option>
+                                <option value="FRA">Frankfurt</option>
+                                <option value="JFK">New York JFK</option>
+                                <option value="DXB">Dubai</option>
+                            </optgroup>
+                            <optgroup label="Europe">
+                                <option value="LIN">Milan Linate</option>
+                                <option value="BGY">Milan Bergamo</option>
+                                <option value="VCE">Venice</option>
+                                <option value="NAP">Naples</option>
+                                <option value="BLQ">Bologna</option>
+                                <option value="LGW">London Gatwick</option>
+                                <option value="ORY">Paris Orly</option>
+                                <option value="MUC">Munich</option>
+                                <option value="BER">Berlin</option>
                                 <option value="VIE">Vienna</option>
-                                <option value="PRG">Praga</option>
-                                <option value="BRU">Bruxelles</option>
+                                <option value="ZRH">Zurich</option>
+                                <option value="GVA">Geneva</option>
+                                <option value="BRU">Brussels</option>
                                 <option value="CPH">Copenhagen</option>
-                                <option value="STO">Stoccolma</option>
+                                <option value="STO">Stockholm</option>
                                 <option value="OSL">Oslo</option>
                                 <option value="HEL">Helsinki</option>
-                                <option value="DUB">Dublino</option>
-                                <option value="LIS">Lisbona</option>
-                                <option value="OPO">Porto</option>
-                                <option value="ATH">Atene</option>
-                                <option value="WAW">Varsavia</option>
-                                <option value="BUD">Budapest</option>
+                                <option value="ATH">Athens</option>
+                                <option value="LIS">Lisbon</option>
+                                <option value="DUB">Dublin</option>
+                            </optgroup>
+                            <optgroup label="Americas">
+                                <option value="LAX">Los Angeles</option>
+                                <option value="MIA">Miami</option>
+                                <option value="MEX">Mexico City</option>
+                                <option value="GRU">São Paulo</option>
+                                <option value="EZE">Buenos Aires</option>
+                                <option value="YYZ">Toronto</option>
+                            </optgroup>
+                            <optgroup label="Asia-Pacific">
+                                <option value="NRT">Tokyo Narita</option>
+                                <option value="ICN">Seoul</option>
+                                <option value="SIN">Singapore</option>
+                                <option value="HKG">Hong Kong</option>
+                                <option value="BKK">Bangkok</option>
+                                <option value="SYD">Sydney</option>
                             </optgroup>
                         </select>
                     </div>
                     
                     <button onclick="confirmAirport()" 
-                            class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all">
+                            class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all"
+                            data-translate="letsGo">
                         Voliamo! 🛫
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- STEP 2: LOADING -->
     <div id="loading-step" class="hidden min-h-screen flex items-center justify-center">
         <div class="text-center">
             <div style="width: 300px; height: 300px; margin: 0 auto;">
@@ -472,63 +469,63 @@
                 </div>
             </div>
             <h2 class="text-3xl font-bold mt-4">Gloobing...</h2>
-            <p class="text-gray-300 mt-2" id="loading-text">Sto trovando la tua prossima avventura</p>
+            <p class="text-gray-300 mt-2" id="loading-text" data-translate="findingAdventure">Sto trovando la tua prossima avventura</p>
         </div>
     </div>
 
     <!-- STEP 3: RISULTATI -->
     <div id="result-step" class="hidden container mx-auto px-4 py-8">
         <div id="result-content" class="max-w-6xl mx-auto">
-            <!-- Header con descrizione AI -->
+            <!-- Header con descrizione -->
             <div class="glass-card rounded-2xl p-6 text-center mb-6">
                 <h2 class="text-3xl font-bold text-yellow-400 mb-3" id="destination-name">Caricamento...</h2>
-                <p class="text-xl text-white italic" id="ai-description">L'AI sta creando la tua esperienza perfetta...</p>
+                <p class="text-xl text-white italic" id="ai-description">...</p>
             </div>
             
             <!-- Cards Volo e Hotel -->
             <div class="grid md:grid-cols-2 gap-6 mb-8">
                 <!-- Card Volo -->
                 <div class="glass-card rounded-2xl p-6">
-                    <h3 class="text-xl font-bold mb-4 text-yellow-400">✈️ Il tuo volo</h3>
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">✈️ <span data-translate="yourFlight">Il tuo volo</span></h3>
                     <div id="flight-details" class="text-white">
                         <div class="mb-3">
-                            <span class="text-gray-400">Andata:</span>
+                            <span class="text-gray-400" data-translate="outbound">Andata:</span>
                             <div class="font-semibold" id="flight-outbound">-</div>
                         </div>
                         <div class="mb-3">
-                            <span class="text-gray-400">Ritorno:</span>
+                            <span class="text-gray-400" data-translate="return">Ritorno:</span>
                             <div class="font-semibold" id="flight-return">-</div>
                         </div>
                         <div class="mb-4">
-                            <span class="text-gray-400">Compagnia:</span>
+                            <span class="text-gray-400" data-translate="airline">Compagnia:</span>
                             <div class="font-semibold" id="flight-airline">-</div>
                         </div>
                         <div class="text-2xl font-bold text-yellow-400 mb-4" id="flight-price">-</div>
                         <button class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all" id="book-flight">
-                            Prenota Volo →
+                            <span data-translate="bookFlight">Prenota Volo</span> →
                         </button>
                     </div>
                 </div>
                 
                 <!-- Card Hotel -->
                 <div class="glass-card rounded-2xl p-6">
-                    <h3 class="text-xl font-bold mb-4 text-yellow-400">🏨 Il tuo hotel</h3>
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">🏨 <span data-translate="yourHotel">Il tuo hotel</span></h3>
                     <div id="hotel-details" class="text-white">
                         <div class="mb-3">
                             <div class="font-semibold text-lg" id="hotel-name">-</div>
                             <div class="text-yellow-400" id="hotel-stars">-</div>
                         </div>
                         <div class="mb-3">
-                            <span class="text-gray-400">Valutazione:</span>
+                            <span class="text-gray-400" data-translate="rating">Valutazione:</span>
                             <div class="font-semibold" id="hotel-rating">-</div>
                         </div>
                         <div class="mb-3">
-                            <span class="text-gray-400">Tipo camera:</span>
+                            <span class="text-gray-400" data-translate="roomType">Tipo camera:</span>
                             <div class="font-semibold" id="hotel-room">-</div>
                         </div>
                         <div class="text-2xl font-bold text-yellow-400 mb-4" id="hotel-price">-</div>
                         <button class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all" id="book-hotel">
-                            Prenota Hotel →
+                            <span data-translate="bookHotel">Prenota Hotel</span> →
                         </button>
                     </div>
                 </div>
@@ -536,7 +533,7 @@
             
             <!-- Totale -->
             <div class="glass-card rounded-2xl p-6 text-center mb-6">
-                <h3 class="text-2xl font-bold text-white mb-2">💰 Totale per <span id="total-people">2</span> persone</h3>
+                <h3 class="text-2xl font-bold text-white mb-2">💰 <span data-translate="totalFor">Totale per</span> <span id="total-people">2</span> <span data-translate="persons">persone</span></h3>
                 <div class="text-4xl font-bold text-yellow-400" id="total-price">-</div>
             </div>
             
@@ -557,617 +554,405 @@
     </div>
 
     <script>
-        // STATO GLOBALE SEMPLICE
+        // TRADUZIONI
+        const translations = {
+            it: {
+                subtitle: "Zero stress, book happiness! ✈️",
+                budget: "Budget totale",
+                people: "Quante persone",
+                person1: "1 persona",
+                person2: "2 persone",
+                person3: "3 persone",
+                person4: "4 persone",
+                when: "Quando partiamo",
+                today: "OGGI",
+                duration: "Per quanto tempo",
+                twoDays: "Due giorni",
+                threeDays: "Tre giorni",
+                fourDays: "Quattro giorni",
+                fiveDays: "Cinque giorni",
+                oneWeek: "Una settimana",
+                tenDays: "Dieci giorni",
+                twoWeeks: "Due settimane",
+                hotelCategory: "Categoria hotel",
+                stars1: "1 stella",
+                stars2: "2 stelle",
+                stars3: "3 stelle",
+                stars4: "4 stelle",
+                stars5: "5 stelle",
+                travelVibes: "Travel vibes",
+                sea: "🏖️ MARE",
+                city: "🎨 CITTÀ D'ARTE",
+                mountain: "🏔️ MONTAGNA",
+                whereFrom: "Da dove decolliamo?",
+                searchAirport: "Cerca il tuo aeroporto...",
+                letsGo: "Voliamo! 🛫",
+                findingAdventure: "Sto trovando la tua prossima avventura",
+                yourFlight: "Il tuo volo",
+                yourHotel: "Il tuo hotel",
+                outbound: "Andata:",
+                return: "Ritorno:",
+                airline: "Compagnia:",
+                bookFlight: "Prenota Volo",
+                rating: "Valutazione:",
+                roomType: "Tipo camera:",
+                roomStandard: "Camera standard",
+                roomSuperior: "Camera superior",
+                roomSuite: "Suite",
+                bookHotel: "Prenota Hotel",
+                totalFor: "Totale per",
+                persons: "persone",
+                months: ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"],
+                days: ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"]
+            },
+            en: {
+                subtitle: "Zero stress, book happiness! ✈️",
+                budget: "Total budget",
+                people: "How many people",
+                person1: "1 person",
+                person2: "2 people",
+                person3: "3 people",
+                person4: "4 people",
+                when: "When to go",
+                today: "TODAY",
+                duration: "How long",
+                twoDays: "Two days",
+                threeDays: "Three days",
+                fourDays: "Four days",
+                fiveDays: "Five days",
+                oneWeek: "One week",
+                tenDays: "Ten days",
+                twoWeeks: "Two weeks",
+                hotelCategory: "Hotel category",
+                stars1: "1 star",
+                stars2: "2 stars",
+                stars3: "3 stars",
+                stars4: "4 stars",
+                stars5: "5 stars",
+                travelVibes: "Travel vibes",
+                sea: "🏖️ SEA",
+                city: "🎨 ART CITY",
+                mountain: "🏔️ MOUNTAIN",
+                whereFrom: "Where from?",
+                searchAirport: "Search your airport...",
+                letsGo: "Let's fly! 🛫",
+                findingAdventure: "Finding your next adventure",
+                yourFlight: "Your flight",
+                yourHotel: "Your hotel",
+                outbound: "Outbound:",
+                return: "Return:",
+                airline: "Airline:",
+                bookFlight: "Book Flight",
+                rating: "Rating:",
+                roomType: "Room type:",
+                roomStandard: "Standard room",
+                roomSuperior: "Superior room",
+                roomSuite: "Suite",
+                bookHotel: "Book Hotel",
+                totalFor: "Total for",
+                persons: "people",
+                months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+            },
+            es: {
+                subtitle: "¡Sin estrés, reserva felicidad! ✈️",
+                budget: "Presupuesto total",
+                people: "Cuántas personas",
+                person1: "1 persona",
+                person2: "2 personas",
+                person3: "3 personas",
+                person4: "4 personas",
+                when: "Cuándo salimos",
+                today: "HOY",
+                duration: "Por cuánto tiempo",
+                twoDays: "Dos días",
+                threeDays: "Tres días",
+                fourDays: "Cuatro días",
+                fiveDays: "Cinco días",
+                oneWeek: "Una semana",
+                tenDays: "Diez días",
+                twoWeeks: "Dos semanas",
+                hotelCategory: "Categoría hotel",
+                stars1: "1 estrella",
+                stars2: "2 estrellas",
+                stars3: "3 estrellas",
+                stars4: "4 estrellas",
+                stars5: "5 estrellas",
+                travelVibes: "Travel vibes",
+                sea: "🏖️ MAR",
+                city: "🎨 CIUDAD DE ARTE",
+                mountain: "🏔️ MONTAÑA",
+                whereFrom: "¿Desde dónde?",
+                searchAirport: "Busca tu aeropuerto...",
+                letsGo: "¡Volemos! 🛫",
+                findingAdventure: "Encontrando tu próxima aventura",
+                yourFlight: "Tu vuelo",
+                yourHotel: "Tu hotel",
+                outbound: "Ida:",
+                return: "Vuelta:",
+                airline: "Aerolínea:",
+                bookFlight: "Reservar Vuelo",
+                rating: "Valoración:",
+                roomType: "Tipo habitación:",
+                roomStandard: "Habitación estándar",
+                roomSuperior: "Habitación superior",
+                roomSuite: "Suite",
+                bookHotel: "Reservar Hotel",
+                totalFor: "Total para",
+                persons: "personas",
+                months: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
+                days: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
+            },
+            fr: {
+                subtitle: "Zéro stress, réservez le bonheur! ✈️",
+                budget: "Budget total",
+                people: "Combien de personnes",
+                person1: "1 personne",
+                person2: "2 personnes",
+                person3: "3 personnes",
+                person4: "4 personnes",
+                when: "Quand partir",
+                today: "AUJOURD'HUI",
+                duration: "Pour combien de temps",
+                twoDays: "Deux jours",
+                threeDays: "Trois jours",
+                fourDays: "Quatre jours",
+                fiveDays: "Cinq jours",
+                oneWeek: "Une semaine",
+                tenDays: "Dix jours",
+                twoWeeks: "Deux semaines",
+                hotelCategory: "Catégorie hôtel",
+                stars1: "1 étoile",
+                stars2: "2 étoiles",
+                stars3: "3 étoiles",
+                stars4: "4 étoiles",
+                stars5: "5 étoiles",
+                travelVibes: "Travel vibes",
+                sea: "🏖️ MER",
+                city: "🎨 VILLE D'ART",
+                mountain: "🏔️ MONTAGNE",
+                whereFrom: "D'où partez-vous?",
+                searchAirport: "Cherchez votre aéroport...",
+                letsGo: "Volons! 🛫",
+                findingAdventure: "Je trouve votre prochaine aventure",
+                yourFlight: "Votre vol",
+                yourHotel: "Votre hôtel",
+                outbound: "Aller:",
+                return: "Retour:",
+                airline: "Compagnie:",
+                bookFlight: "Réserver Vol",
+                rating: "Évaluation:",
+                roomType: "Type de chambre:",
+                roomStandard: "Chambre standard",
+                roomSuperior: "Chambre supérieure",
+                roomSuite: "Suite",
+                bookHotel: "Réserver Hôtel",
+                totalFor: "Total pour",
+                persons: "personnes",
+                months: ["jan", "fév", "mar", "avr", "mai", "juin", "juil", "aoû", "sep", "oct", "nov", "déc"],
+                days: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"]
+            },
+            de: {
+                subtitle: "Kein Stress, buche Glück! ✈️",
+                budget: "Gesamtbudget",
+                people: "Wie viele Personen",
+                person1: "1 Person",
+                person2: "2 Personen",
+                person3: "3 Personen",
+                person4: "4 Personen",
+                when: "Wann geht's los",
+                today: "HEUTE",
+                duration: "Wie lange",
+                twoDays: "Zwei Tage",
+                threeDays: "Drei Tage",
+                fourDays: "Vier Tage",
+                fiveDays: "Fünf Tage",
+                oneWeek: "Eine Woche",
+                tenDays: "Zehn Tage",
+                twoWeeks: "Zwei Wochen",
+                hotelCategory: "Hotelkategorie",
+                stars1: "1 Stern",
+                stars2: "2 Sterne",
+                stars3: "3 Sterne",
+                stars4: "4 Sterne",
+                stars5: "5 Sterne",
+                travelVibes: "Travel vibes",
+                sea: "🏖️ MEER",
+                city: "🎨 KUNSTSTADT",
+                mountain: "🏔️ BERGE",
+                whereFrom: "Von wo?",
+                searchAirport: "Flughafen suchen...",
+                letsGo: "Los geht's! 🛫",
+                findingAdventure: "Ich finde dein nächstes Abenteuer",
+                yourFlight: "Dein Flug",
+                yourHotel: "Dein Hotel",
+                outbound: "Hinflug:",
+                return: "Rückflug:",
+                airline: "Fluggesellschaft:",
+                bookFlight: "Flug buchen",
+                rating: "Bewertung:",
+                roomType: "Zimmertyp:",
+                roomStandard: "Standardzimmer",
+                roomSuperior: "Superior Zimmer",
+                roomSuite: "Suite",
+                bookHotel: "Hotel buchen",
+                totalFor: "Gesamt für",
+                persons: "Personen",
+                months: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+                days: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+            }
+        };
+
+        // STATO GLOBALE
+        let currentLang = 'it';
         let selectedDate = new Date();
-        let vibePosition = 50; // 0 = montagna, 100 = mare
+        let vibePosition = 50;
         let isDragging = false;
         let clickTimer = null;
         let selectedDuration = 2;
         let userLocation = null;
         let selectedAirport = null;
-        let hasMovedSlider = false; // Per tracciare se lo slider è stato mosso
-        let selectedStars = 3; // Default 3 stelle
+        let hasMovedSlider = false;
+        let selectedStars = 3;
         
-        // DATABASE 50 DESTINAZIONI GLOOBER
+        // DATABASE DESTINAZIONI (versione ridotta per esempio)
         const destinations = [
-            // MARE 0-10% - Classiche e famose
             {
                 position: 0,
                 name: 'Santorini',
-                country: 'Grecia',
-                tagline: 'Il sogno greco',
-                description: 'Tramonti che il mondo ci invidia, case bianche e cupole blu che si specchiano nell\'Egeo.',
-                category: 'mare-classico',
+                country: 'Greece',
+                tagline: {
+                    it: 'Il sogno greco',
+                    en: 'The Greek dream',
+                    es: 'El sueño griego',
+                    fr: 'Le rêve grec',
+                    de: 'Der griechische Traum'
+                },
+                description: {
+                    it: 'Tramonti che il mondo ci invidia, case bianche e cupole blu che si specchiano nell\'Egeo.',
+                    en: 'Sunsets the world envies, white houses and blue domes reflected in the Aegean.',
+                    es: 'Atardeceres que el mundo envidia, casas blancas y cúpulas azules reflejadas en el Egeo.',
+                    fr: 'Des couchers de soleil que le monde envie, maisons blanches et dômes bleus reflétés dans la mer Égée.',
+                    de: 'Sonnenuntergänge, um die uns die Welt beneidet, weiße Häuser und blaue Kuppeln spiegeln sich in der Ägäis.'
+                },
                 searchTerm: 'Santorini,+Greece',
-                image: 'santorini.jpg',
-                priceIndex: 4, // 1-5 quanto costa
-                bestMonths: [5,6,7,8,9],
-                quote: '"In nessun altro luogo il tramonto ha lo stesso sapore" - Odysseas Elytis'
-            },
-            {
-                position: 5,
-                name: 'Mykonos',
-                country: 'Grecia', 
-                tagline: 'L\'isola che non dorme mai',
-                description: 'Mulini a vento, vicoli bianchi e una nightlife leggendaria nel cuore delle Cicladi.',
-                category: 'mare-vitanotturna',
-                searchTerm: 'Mykonos,+Greece',
-                priceIndex: 5,
-                bestMonths: [6,7,8,9],
-                quote: '"Mykonos è uno stato mentale" - Giorgio Armani'
-            },
-            
-            // MARE 10-20% - Vita notturna
-            {
-                position: 10,
-                name: 'Ibiza',
-                country: 'Spagna',
-                tagline: 'L\'isola della libertà',
-                description: 'Dove il tramonto diventa party e le calette nascondono segreti hippy.',
-                category: 'mare-vitanotturna',
-                searchTerm: 'Ibiza,+Spain',
                 priceIndex: 4,
-                bestMonths: [5,6,7,8,9],
-                quote: '"Ibiza è più di un\'isola, è un\'esperienza" - Carl Cox'
+                quote: {
+                    it: '"In nessun altro luogo il tramonto ha lo stesso sapore" - Odysseas Elytis',
+                    en: '"Nowhere else does the sunset taste the same" - Odysseas Elytis',
+                    es: '"En ningún otro lugar el atardecer tiene el mismo sabor" - Odysseas Elytis',
+                    fr: '"Nulle part ailleurs le coucher de soleil n\'a le même goût" - Odysseas Elytis',
+                    de: '"Nirgendwo sonst schmeckt der Sonnenuntergang gleich" - Odysseas Elytis'
+                }
             },
-            {
-                position: 15,
-                name: 'Hvar',
-                country: 'Croazia',
-                tagline: 'La Saint-Tropez dell\'Adriatico',
-                description: 'Lavanda, yacht e locali esclusivi in un\'isola dalmata dal fascino veneziano.',
-                category: 'mare-vitale',
-                searchTerm: 'Hvar,+Croatia',
-                priceIndex: 3,
-                bestMonths: [6,7,8,9],
-                quote: '"Il paradiso esiste e parla croato" - George Bernard Shaw'
-            },
-            
-            // MARE 20-30% - Vitale/Relax
-            {
-                position: 20,
-                name: 'Taghazout',
-                country: 'Marocco',
-                tagline: 'Il paradiso dei surfisti',
-                description: 'Onde perfette, villaggi berberi e tramonti sull\'Atlantico africano.',
-                category: 'mare-sport',
-                searchTerm: 'Taghazout,+Morocco',
-                priceIndex: 2,
-                bestMonths: [1,2,3,10,11,12],
-                quote: '"Il surf è la poesia del mare" - Proverbio marocchino'
-            },
-            {
-                position: 25,
-                name: 'Comporta',
-                country: 'Portogallo',
-                tagline: 'Gli Hamptons d\'Europa',
-                description: 'Risaie, cicogne e spiagge infinite dove il jet set cerca l\'understatement.',
-                category: 'mare-relax',
-                searchTerm: 'Comporta,+Portugal',
-                priceIndex: 4,
-                bestMonths: [5,6,7,8,9,10],
-                quote: '"La semplicità è il massimo della sofisticazione" - Leonardo da Vinci'
-            },
-            
-            // MARE 30-40% - Romantiche nascoste
-            {
-                position: 30,
-                name: 'Paros',
-                country: 'Grecia',
-                tagline: 'La Grecia autentica',
-                description: 'L\'isola dove i greci vanno in vacanza, lontano dalle folle ma vicino al paradiso.',
-                category: 'mare-romantico',
-                searchTerm: 'Paros,+Greece',
-                priceIndex: 3,
-                bestMonths: [5,6,7,8,9],
-                quote: '"La bellezza salverà il mondo" - Dostoevskij'
-            },
-            {
-                position: 35,
-                name: 'Isola di Holbox',
-                country: 'Messico',
-                tagline: 'Caraibi senza filtri',
-                description: 'Niente auto, tanto plancton luminescente e fenicotteri rosa in un paradiso segreto.',
-                category: 'mare-nascosto',
-                searchTerm: 'Holbox,+Mexico',
-                priceIndex: 2,
-                bestMonths: [1,2,3,4,11,12],
-                quote: '"Il vero viaggio è quello che non lascia tracce" - Lao Tzu'
-            },
-            
-            // MARE 40-50% - Avventura
-            {
-                position: 40,
-                name: 'Faroe Islands',
-                country: 'Danimarca',
-                tagline: 'Il segreto del Nord Atlantico',
-                description: 'Cascate che cadono nell\'oceano, pecore ovunque e una natura che toglie il fiato.',
-                category: 'mare-avventura',
-                searchTerm: 'Faroe+Islands',
-                priceIndex: 3,
-                bestMonths: [6,7,8],
-                quote: '"La natura selvaggia è una necessità" - John Muir'
-            },
-            {
-                position: 45,
-                name: 'Lofoten',
-                country: 'Norvegia',
-                tagline: 'Dove l\'Artico incontra il mare',
-                description: 'Villaggi di pescatori rossi, aurora boreale e il sole di mezzanotte tra i fiordi.',
-                category: 'mare-estremo',
-                searchTerm: 'Lofoten,+Norway',
-                priceIndex: 4,
-                bestMonths: [6,7,8,9],
-                quote: '"Il Nord è uno stato dell\'anima" - Fridtjof Nansen'
-            },
-            
-            // CENTRO 50% - Arte famose
             {
                 position: 50,
-                name: 'Roma',
-                country: 'Italia',
-                tagline: 'La Città Eterna',
-                description: 'Dove ogni angolo è un museo e la storia si respira tra carbonara e Colosseo.',
-                category: 'arte-iconica',
+                name: 'Rome',
+                country: 'Italy',
+                tagline: {
+                    it: 'La Città Eterna',
+                    en: 'The Eternal City',
+                    es: 'La Ciudad Eterna',
+                    fr: 'La Ville Éternelle',
+                    de: 'Die Ewige Stadt'
+                },
+                description: {
+                    it: 'Dove ogni angolo è un museo e la storia si respira tra carbonara e Colosseo.',
+                    en: 'Where every corner is a museum and history breathes between carbonara and Colosseum.',
+                    es: 'Donde cada esquina es un museo y la historia se respira entre carbonara y Coliseo.',
+                    fr: 'Où chaque coin est un musée et l\'histoire respire entre carbonara et Colisée.',
+                    de: 'Wo jede Ecke ein Museum ist und Geschichte zwischen Carbonara und Kolosseum atmet.'
+                },
                 searchTerm: 'Rome,+Italy',
                 priceIndex: 3,
-                bestMonths: [3,4,5,9,10,11],
-                quote: '"Roma è la capitale del mondo" - Goethe'
-            },
-            {
-                position: 50,
-                name: 'Parigi',
-                country: 'Francia',
-                tagline: 'La Ville Lumière',
-                description: 'Torre Eiffel, croissant e l\'arte di vivere francese in ogni boulevard.',
-                category: 'arte-iconica',
-                searchTerm: 'Paris,+France',
-                priceIndex: 4,
-                bestMonths: [4,5,6,9,10],
-                quote: '"Parigi è sempre una buona idea" - Audrey Hepburn'
-            },
-            {
-                position: 50,
-                name: 'Firenze',
-                country: 'Italia',
-                tagline: 'La culla del Rinascimento',
-                description: 'Michelangelo, Botticelli e bistecca alla fiorentina in un museo a cielo aperto.',
-                category: 'arte-iconica',
-                searchTerm: 'Florence,+Italy',
-                priceIndex: 3,
-                bestMonths: [4,5,6,9,10],
-                quote: '"Ogni blocco di pietra ha una statua dentro" - Michelangelo'
-            },
-            
-            // ARTE 45-55% - Romantiche meno note
-            {
-                position: 45,
-                name: 'Bruges',
-                country: 'Belgio',
-                tagline: 'La Venezia del Nord',
-                description: 'Canali medievali, cioccolato e merletti in una fiaba di mattoni.',
-                category: 'arte-romantica',
-                searchTerm: 'Bruges,+Belgium',
-                priceIndex: 3,
-                bestMonths: [4,5,6,7,8,9],
-                quote: '"Bruges è un sogno" - Georges Rodenbach'
-            },
-            {
-                position: 55,
-                name: 'Český Krumlov',
-                country: 'Repubblica Ceca',
-                tagline: 'La perla della Boemia',
-                description: 'Un castello da fiaba, il fiume che abbraccia la città e birra a fiumi.',
-                category: 'arte-romantica',
-                searchTerm: 'Cesky+Krumlov,+Czech+Republic',
-                priceIndex: 2,
-                bestMonths: [5,6,7,8,9],
-                quote: '"Le fiabe esistono, basta sapere dove cercarle" - Proverbio ceco'
-            },
-            
-            // ARTE 40-60% - Da scoprire
-            {
-                position: 40,
-                name: 'Matera',
-                country: 'Italia',
-                tagline: 'La città nella roccia',
-                description: 'Sassi millenari dove il tempo si è fermato e la storia vive nella pietra.',
-                category: 'arte-nascosta',
-                searchTerm: 'Matera,+Italy',
-                priceIndex: 2,
-                bestMonths: [4,5,6,9,10],
-                quote: '"Matera è la città più singolare d\'Italia" - Carlo Levi'
-            },
-            {
-                position: 60,
-                name: 'Guimarães',
-                country: 'Portogallo',
-                tagline: 'Qui è nato il Portogallo',
-                description: 'Castello medievale, azulejos e la culla della nazione portoghese.',
-                category: 'arte-nascosta',
-                searchTerm: 'Guimaraes,+Portugal',
-                priceIndex: 2,
-                bestMonths: [4,5,6,9,10],
-                quote: '"Il Portogallo non è un paese piccolo" - Salazar'
-            },
-            
-            // ARTE-MARE 30-40% - Mix cultura e costa
-            {
-                position: 35,
-                name: 'Essaouira',
-                country: 'Marocco',
-                tagline: 'La perla dell\'Atlantico',
-                description: 'Medina bianca e blu dove Hendrix suonava e il vento non smette mai.',
-                category: 'mare-cultura',
-                searchTerm: 'Essaouira,+Morocco',
-                priceIndex: 2,
-                bestMonths: [4,5,6,9,10,11],
-                quote: '"Il vento di Essaouira porta via i pensieri" - Jimi Hendrix'
-            },
-            {
-                position: 35,
-                name: 'Kotor',
-                country: 'Montenegro',
-                tagline: 'Il fiordo del Mediterraneo',
-                description: 'Mura veneziane che scalano montagne e si specchiano in una baia da sogno.',
-                category: 'mare-cultura',
-                searchTerm: 'Kotor,+Montenegro',
-                priceIndex: 2,
-                bestMonths: [5,6,7,8,9],
-                quote: '"Montenegro, il gioiello nascosto dei Balcani" - Lord Byron'
-            },
-            
-            // MONTAGNA 55-65% - Arte montana
-            {
-                position: 60,
-                name: 'Innsbruck',
-                country: 'Austria',
-                tagline: 'La capitale delle Alpi',
-                description: 'Cristalli Swarovski, tetti d\'oro e piste da sci a 20 minuti dal centro.',
-                category: 'montagna-cultura',
-                searchTerm: 'Innsbruck,+Austria',
-                priceIndex: 3,
-                bestMonths: [1,2,3,6,7,8,12],
-                quote: '"Le montagne sono le grandi cattedrali della terra" - John Ruskin'
-            },
-            {
-                position: 65,
-                name: 'Annecy',
-                country: 'Francia',
-                tagline: 'La Venezia delle Alpi',
-                description: 'Lago cristallino, canali fioriti e montagne che abbracciano la ville.',
-                category: 'montagna-romantica',
-                searchTerm: 'Annecy,+France',
-                priceIndex: 3,
-                bestMonths: [5,6,7,8,9],
-                quote: '"La purezza del lago riflette l\'anima" - Rousseau'
-            },
-            
-            // MONTAGNA 65-75% - Relax e benessere
-            {
-                position: 70,
-                name: 'Bled',
-                country: 'Slovenia',
-                tagline: 'Il lago delle fiabe',
-                description: 'Un\'isola con chiesa, un castello sulla roccia e le Alpi Giulie a corona.',
-                category: 'montagna-relax',
-                searchTerm: 'Bled,+Slovenia',
-                priceIndex: 2,
-                bestMonths: [5,6,7,8,9],
-                quote: '"Bled è poesia pura" - Agatha Christie'
-            },
-            {
-                position: 75,
-                name: 'Hallstatt',
-                country: 'Austria',
-                tagline: 'La cartolina perfetta',
-                description: 'Il villaggio più fotografato d\'Austria tra lago alpino e miniere di sale.',
-                category: 'montagna-romantica',
-                searchTerm: 'Hallstatt,+Austria',
-                priceIndex: 3,
-                bestMonths: [5,6,7,8,9],
-                quote: '"La bellezza di Hallstatt è quasi irreale" - Alexander von Humboldt'
-            },
-            
-            // MONTAGNA 75-85% - Sport e avventura
-            {
-                position: 80,
-                name: 'Chamonix',
-                country: 'Francia',
-                tagline: 'La capitale mondiale dell\'alpinismo',
-                description: 'Ai piedi del Monte Bianco, dove nascono le leggende della montagna.',
-                category: 'montagna-sport',
-                searchTerm: 'Chamonix,+France',
-                priceIndex: 4,
-                bestMonths: [1,2,3,6,7,8,12],
-                quote: '"Le montagne non sono stadi dove soddisfo la mia ambizione" - Anatoli Boukreev'
-            },
-            {
-                position: 85,
-                name: 'Interlaken',
-                country: 'Svizzera',
-                tagline: 'L\'adrenalina tra due laghi',
-                description: 'Base jumping, parapendio e treni per Jungfrau nel cuore delle Alpi.',
-                category: 'montagna-estrema',
-                searchTerm: 'Interlaken,+Switzerland',
-                priceIndex: 5,
-                bestMonths: [1,2,3,6,7,8,12],
-                quote: '"In montagna si trova la libertà" - Friedrich Nietzsche'
-            },
-            
-            // MONTAGNA 85-95% - Esclusive
-            {
-                position: 90,
-                name: 'St. Moritz',
-                country: 'Svizzera',
-                tagline: 'Top of the World',
-                description: 'Champagne climate, neve perfetta e il jet set mondiale dal 1864.',
-                category: 'montagna-lusso',
-                searchTerm: 'St+Moritz,+Switzerland',
-                priceIndex: 5,
-                bestMonths: [1,2,3,7,8,12],
-                quote: '"St. Moritz non è una destinazione, è uno stile di vita" - Coco Chanel'
-            },
-            {
-                position: 92,
-                name: 'Aspen',
-                country: 'USA',
-                tagline: 'Il playground delle star',
-                description: 'Quattro montagne, champagne powder e celebrities in ogni angolo.',
-                category: 'montagna-lusso',
-                searchTerm: 'Aspen,+Colorado',
-                priceIndex: 5,
-                bestMonths: [1,2,3,12],
-                quote: '"Aspen è dove la neve incontra le stelle" - John Denver'
-            },
-            
-            // MONTAGNA 95-100% - Classiche
-            {
-                position: 95,
-                name: 'Zermatt',
-                country: 'Svizzera',
-                tagline: 'All\'ombra del Cervino',
-                description: 'La montagna perfetta, il villaggio senza auto e fonduta con vista.',
-                category: 'montagna-classica',
-                searchTerm: 'Zermatt,+Switzerland',
-                priceIndex: 5,
-                bestMonths: [1,2,3,7,8,12],
-                quote: '"Il Cervino non si conquista, ti permette di salire" - Edward Whymper'
+                quote: {
+                    it: '"Roma è la capitale del mondo" - Goethe',
+                    en: '"Rome is the capital of the world" - Goethe',
+                    es: '"Roma es la capital del mundo" - Goethe',
+                    fr: '"Rome est la capitale du monde" - Goethe',
+                    de: '"Rom ist die Hauptstadt der Welt" - Goethe'
+                }
             },
             {
                 position: 100,
-                name: 'Cortina',
-                country: 'Italia',
-                tagline: 'La Regina delle Dolomiti',
-                description: 'Glamour italiano, Aperol Spritz e le Tofane rosa al tramonto.',
-                category: 'montagna-classica',
-                searchTerm: 'Cortina+d\'Ampezzo,+Italy',
-                priceIndex: 4,
-                bestMonths: [1,2,3,7,8,12],
-                quote: '"Cortina è un\'emozione vestita di neve" - Alberto Tomba'
-            },
-            
-            // EXTRA - Destinazioni alternative distribuite
-            {
-                position: 15,
-                name: 'Gili Islands',
-                country: 'Indonesia',
-                tagline: 'No cars, no stress',
-                description: 'Tre isole dove le tartarughe sono di casa e la vita scorre in bicicletta.',
-                category: 'mare-alternativo',
-                searchTerm: 'Gili+Islands,+Indonesia',
-                priceIndex: 2,
-                bestMonths: [5,6,7,8,9],
-                quote: '"La semplicità è la vera ricchezza" - Proverbio indonesiano'
-            },
-            {
-                position: 25,
-                name: 'Sète',
-                country: 'Francia',
-                tagline: 'La Venezia del Languedoc',
-                description: 'Porto di pescatori, canali e ostriche dove il Mediterraneo è ancora autentico.',
-                category: 'mare-autentico',
-                searchTerm: 'Sete,+France',
-                priceIndex: 2,
-                bestMonths: [5,6,7,8,9],
-                quote: '"Il mare è tutto" - Georges Brassens'
-            },
-            {
-                position: 45,
-                name: 'Ljubljana',
-                country: 'Slovenia',
-                tagline: 'Il segreto verde d\'Europa',
-                description: 'Draghi, castello e una capitale a misura d\'uomo dove i caffè sono salotti.',
-                category: 'arte-emergente',
-                searchTerm: 'Ljubljana,+Slovenia',
-                priceIndex: 2,
-                bestMonths: [5,6,7,8,9],
-                quote: '"Ljubljana è amore a prima vista" - Le Corbusier'
-            },
-            {
-                position: 55,
-                name: 'Ghent',
-                country: 'Belgio',
-                tagline: 'Il segreto meglio custodito',
-                description: 'Più bella di Bruges ma senza le folle, con birre trappiste e arte fiamminga.',
-                category: 'arte-alternativa',
-                searchTerm: 'Ghent,+Belgium',
-                priceIndex: 2,
-                bestMonths: [4,5,6,7,8,9],
-                quote: '"Gent è la città del futuro" - Carlo V'
-            },
-            {
-                position: 65,
-                name: 'Zakopane',
-                country: 'Polonia',
-                tagline: 'La capitale invernale polacca',
-                description: 'Architettura in legno, formaggi affumicati e i Monti Tatra a portata di funivia.',
-                category: 'montagna-autentica',
-                searchTerm: 'Zakopane,+Poland',
-                priceIndex: 2,
-                bestMonths: [1,2,3,7,8,12],
-                quote: '"Le montagne sono la libertà della Polonia" - Papa Giovanni Paolo II'
-            },
-            {
-                position: 75,
-                name: 'Dolomiti di Brenta',
-                country: 'Italia',
-                tagline: 'Le Dolomiti segrete',
-                description: 'Vie ferrate, rifugi con polenta e il lago di Molveno come specchio.',
-                category: 'montagna-alternativa',
-                searchTerm: 'Madonna+di+Campiglio,+Italy',
-                priceIndex: 3,
-                bestMonths: [1,2,3,6,7,8,12],
-                quote: '"Le Dolomiti sono i monti pallidi che diventano rosa" - Dino Buzzati'
-            },
-            {
-                position: 20,
-                name: 'Porto Santo',
-                country: 'Portogallo',
-                tagline: 'L\'isola dorata',
-                description: '9 km di spiaggia dorata, acque terapeutiche e la pace di Madeira senza le folle.',
-                category: 'mare-relax',
-                searchTerm: 'Porto+Santo,+Madeira',
-                priceIndex: 2,
-                bestMonths: [5,6,7,8,9,10],
-                quote: '"Porto Santo è dove Colombo sognava le Americhe" - José Saramago'
-            },
-            {
-                position: 42,
-                name: 'Tallinn',
-                country: 'Estonia',
-                tagline: 'Il Medioevo digitale',
-                description: 'Torri medievali e startup, dove il passato incontra il futuro baltico.',
-                category: 'arte-tech',
-                searchTerm: 'Tallinn,+Estonia',
-                priceIndex: 2,
-                bestMonths: [5,6,7,8,9],
-                quote: '"Tallinn è dove il digitale ha radici medievali" - Toomas Hendrik'
-            },
-            {
-                position: 58,
-                name: 'Ronda',
-                country: 'Spagna',
-                tagline: 'La città sul precipizio',
-                description: 'Il ponte che sfida la gravità, toreri leggendari e tapas con vista.',
-                category: 'arte-drammatica',
-                searchTerm: 'Ronda,+Spain',
-                priceIndex: 2,
-                bestMonths: [4,5,6,9,10],
-                quote: '"Ronda è un sogno sospeso nel vuoto" - Hemingway'
-            },
-            {
-                position: 72,
-                name: 'Val di Funes',
-                country: 'Italia',
-                tagline: 'La valle delle Odle',
-                description: 'La chiesetta più fotografata, masi tirolesi e le Dolomiti come corona.',
-                category: 'montagna-instagram',
-                searchTerm: 'Val+di+Funes,+Italy',
-                priceIndex: 3,
-                bestMonths: [6,7,8,9,10],
-                quote: '"Le Odle sono le dita di Dio" - Reinhold Messner'
-            },
-            {
-                position: 88,
-                name: 'Verbier',
-                country: 'Svizzera',
-                tagline: 'Il sole delle Alpi',
-                description: '400 km di piste, sole garantito e après-ski leggendario.',
-                category: 'montagna-party',
-                searchTerm: 'Verbier,+Switzerland',
+                name: 'Zermatt',
+                country: 'Switzerland',
+                tagline: {
+                    it: 'All\'ombra del Cervino',
+                    en: 'In the shadow of Matterhorn',
+                    es: 'A la sombra del Cervino',
+                    fr: 'À l\'ombre du Cervin',
+                    de: 'Im Schatten des Matterhorns'
+                },
+                description: {
+                    it: 'Il villaggio senza auto dove il Cervino domina ogni panorama e la neve è garantita.',
+                    en: 'The car-free village where Matterhorn dominates every view and snow is guaranteed.',
+                    es: 'El pueblo sin coches donde el Cervino domina cada vista y la nieve está garantizada.',
+                    fr: 'Le village sans voitures où le Cervin domine chaque vue et la neige est garantie.',
+                    de: 'Das autofreie Dorf, wo das Matterhorn jede Aussicht dominiert und Schnee garantiert ist.'
+                },
+                searchTerm: 'Zermatt,+Switzerland',
                 priceIndex: 5,
-                bestMonths: [1,2,3,12],
-                quote: '"Verbier è dove la montagna diventa lifestyle" - James Blunt'
-            },
-            {
-                position: 12,
-                name: 'Naxos',
-                country: 'Grecia',
-                tagline: 'L\'isola degli dei',
-                description: 'Spiagge infinite, Portara al tramonto e villaggi dove il tempo si è fermato.',
-                category: 'mare-autentico',
-                searchTerm: 'Naxos,+Greece',
-                priceIndex: 2,
-                bestMonths: [5,6,7,8,9],
-                quote: '"A Naxos Dioniso trovò Arianna" - Mitologia greca'
-            },
-            {
-                position: 48,
-                name: 'Lucca',
-                country: 'Italia',
-                tagline: 'La città delle 100 chiese',
-                description: 'Mura rinascimentali da passeggiare in bici e Puccini in ogni piazza.',
-                category: 'arte-musica',
-                searchTerm: 'Lucca,+Italy',
-                priceIndex: 2,
-                bestMonths: [4,5,6,9,10],
-                quote: '"Lucca è una città da ascoltare" - Giacomo Puccini'
-            },
-            {
-                position: 62,
-                name: 'Sintra',
-                country: 'Portogallo',
-                tagline: 'Il giardino dei palazzi',
-                description: 'Palazzi da fiaba, giardini misteriosi e la nebbia atlantica che tutto avvolge.',
-                category: 'arte-fiabesca',
-                searchTerm: 'Sintra,+Portugal',
-                priceIndex: 2,
-                bestMonths: [4,5,6,9,10],
-                quote: '"Sintra è il luogo dove la terra finisce e il mare comincia" - Camões'
-            },
-            {
-                position: 78,
-                name: 'Courmayeur',
-                country: 'Italia',
-                tagline: 'Ai piedi del Monte Bianco',
-                description: 'Eleganza alpina, terme con vista e il tetto d\'Europa a portata di funivia.',
-                category: 'montagna-chic',
-                searchTerm: 'Courmayeur,+Italy',
-                priceIndex: 4,
-                bestMonths: [1,2,3,7,8,12],
-                quote: '"Il Monte Bianco è il monarca delle montagne" - Byron'
+                quote: {
+                    it: '"Il Cervino non si conquista, ti permette di salire" - Edward Whymper',
+                    en: '"The Matterhorn is not conquered, it allows you to climb" - Edward Whymper',
+                    es: '"El Cervino no se conquista, te permite subir" - Edward Whymper',
+                    fr: '"Le Cervin ne se conquiert pas, il vous permet de monter" - Edward Whymper',
+                    de: '"Das Matterhorn wird nicht erobert, es erlaubt dir zu steigen" - Edward Whymper'
+                }
             }
         ];
-        
-        // Mappa aeroporti -> valuta
-        const airportCurrencies = {
-            // Italia - EUR
-            'MXP': 'EUR', 'LIN': 'EUR', 'BGY': 'EUR', 'FCO': 'EUR', 'CIA': 'EUR',
-            'VCE': 'EUR', 'TSF': 'EUR', 'NAP': 'EUR', 'BLQ': 'EUR', 'FLR': 'EUR',
-            'TRN': 'EUR', 'CTA': 'EUR', 'PMO': 'EUR', 'BRI': 'EUR', 'VRN': 'EUR',
-            // Francia - EUR
-            'CDG': 'EUR', 'ORY': 'EUR', 'NCE': 'EUR', 'LYS': 'EUR', 'MRS': 'EUR',
-            // Germania - EUR
-            'FRA': 'EUR', 'MUC': 'EUR', 'BER': 'EUR', 'HAM': 'EUR', 'DUS': 'EUR',
-            'CGN': 'EUR', 'STR': 'EUR',
-            // Spagna - EUR
-            'MAD': 'EUR', 'BCN': 'EUR', 'VLC': 'EUR', 'AGP': 'EUR', 'PMI': 'EUR',
-            'SVQ': 'EUR', 'BIO': 'EUR',
-            // Altri EUR
-            'AMS': 'EUR', 'VIE': 'EUR', 'BRU': 'EUR', 'HEL': 'EUR', 'ATH': 'EUR',
-            'LIS': 'EUR', 'OPO': 'EUR', 'DUB': 'EUR',
-            // Regno Unito - GBP
-            'LHR': 'GBP', 'LGW': 'GBP', 'STN': 'GBP', 'LTN': 'GBP', 
-            'MAN': 'GBP', 'EDI': 'GBP', 'BHX': 'GBP',
-            // Svizzera - CHF
-            'ZRH': 'CHF', 'GVA': 'CHF',
-            // Altri
-            'CPH': 'DKK', 'STO': 'SEK', 'OSL': 'NOK', 'PRG': 'CZK',
-            'WAW': 'PLN', 'BUD': 'HUF'
-        };
+
+        // FUNZIONE CAMBIO LINGUA
+        function changeLanguage(lang) {
+            currentLang = lang;
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            
+            // Update all translations
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.dataset.translate;
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update placeholders
+            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+                const key = el.dataset.translatePlaceholder;
+                if (translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+            
+            // Update dropdowns
+            updateDateMenu();
+            updateDurationMenu();
+            updateStarsLabel();
+            
+            // Update HTML lang
+            document.documentElement.lang = lang;
+        }
 
         // INIZIALIZZA DATE MENU
         function initDateMenu() {
+            updateDateMenu();
+        }
+        
+        function updateDateMenu() {
             const menu = document.getElementById('date-menu');
-            const monthNames = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
-            const dayNames = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+            menu.innerHTML = '';
+            
+            const t = translations[currentLang];
             
             // OGGI
             const oggi = document.createElement('div');
             oggi.className = 'dropdown-item';
-            oggi.textContent = 'OGGI';
-            oggi.onclick = () => selectDate(new Date(), 'OGGI');
+            oggi.textContent = t.today;
+            oggi.onclick = () => selectDate(new Date(), t.today);
             menu.appendChild(oggi);
             
             // Prossimi 30 giorni
@@ -1177,7 +962,7 @@
                 
                 const item = document.createElement('div');
                 item.className = 'dropdown-item';
-                item.textContent = `${dayNames[date.getDay()]} ${date.getDate()} ${monthNames[date.getMonth()]}`;
+                item.textContent = `${t.days[date.getDay()]} ${date.getDate()} ${t.months[date.getMonth()]}`;
                 item.onclick = () => selectDate(date, item.textContent);
                 menu.appendChild(item);
             }
@@ -1185,22 +970,29 @@
         
         // INIZIALIZZA DURATION MENU
         function initDurationMenu() {
+            updateDurationMenu();
+        }
+        
+        function updateDurationMenu() {
             const menu = document.getElementById('duration-menu');
+            menu.innerHTML = '';
+            
+            const t = translations[currentLang];
             const durations = [
-                {value: 2, text: 'Due giorni'},
-                {value: 3, text: 'Tre giorni'},
-                {value: 4, text: 'Quattro giorni'},
-                {value: 5, text: 'Cinque giorni'},
-                {value: 7, text: 'Una settimana'},
-                {value: 10, text: 'Dieci giorni'},
-                {value: 14, text: 'Due settimane'}
+                {value: 2, key: 'twoDays'},
+                {value: 3, key: 'threeDays'},
+                {value: 4, key: 'fourDays'},
+                {value: 5, key: 'fiveDays'},
+                {value: 7, key: 'oneWeek'},
+                {value: 10, key: 'tenDays'},
+                {value: 14, key: 'twoWeeks'}
             ];
             
             durations.forEach(dur => {
                 const item = document.createElement('div');
                 item.className = 'dropdown-item';
-                item.textContent = dur.text;
-                item.onclick = () => selectDuration(dur.value, dur.text);
+                item.textContent = t[dur.key];
+                item.onclick = () => selectDuration(dur.value, t[dur.key]);
                 menu.appendChild(item);
             });
         }
@@ -1236,13 +1028,11 @@
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        // Trova aeroporto più vicino basato su lat/lon
-                        // Per ora simulo con Milano
                         userLocation = {
                             lat: position.coords.latitude,
                             lon: position.coords.longitude
                         };
-                        selectedAirport = 'MXP'; // In produzione calcolerai quello più vicino
+                        // In produzione potresti determinare l'aeroporto più vicino
                     },
                     (error) => {
                         console.log('Geolocalizzazione non disponibile');
@@ -1269,10 +1059,6 @@
             if (select.value) {
                 selectedAirport = select.value;
                 
-                // Imposta automaticamente la valuta
-                const currency = airportCurrencies[selectedAirport] || 'EUR';
-                document.getElementById('currency').value = currency;
-                
                 document.getElementById('airport-step').classList.add('hidden');
                 document.getElementById('loading-step').classList.remove('hidden');
                 
@@ -1280,11 +1066,11 @@
                     showResults();
                 }, 3000);
             } else {
-                alert('Seleziona un aeroporto!');
+                alert('Select an airport!');
             }
         }
 
-        // MUOVI VIBES DOT - NUOVO per slider orizzontale
+        // MUOVI VIBES DOT
         function moveVibesDot(event) {
             event.preventDefault();
             event.stopPropagation();
@@ -1294,7 +1080,6 @@
             dot.classList.add('dragging');
             dot.classList.remove('clickable');
             
-            // Clear any existing timer
             if (clickTimer) {
                 clearTimeout(clickTimer);
                 clickTimer = null;
@@ -1315,22 +1100,17 @@
             
             dot.style.left = vibePosition + '%';
             
-            // Nascondi/mostra CITTÀ D'ARTE in base alla posizione
             const centerLabel = document.querySelector('.label-center');
             
-            // Se è la prima volta che muovi lo slider
             if (!hasMovedSlider) {
                 hasMovedSlider = true;
-                // Mostra CITTÀ D'ARTE solo se non sei nella zona centrale
                 if (vibePosition < 35 || vibePosition > 65) {
                     centerLabel.classList.remove('hidden');
                 }
             } else {
-                // Dopo il primo movimento, mostra sempre CITTÀ D'ARTE
                 centerLabel.classList.remove('hidden');
             }
             
-            // Start timer to make clickable after 1 second
             clickTimer = setTimeout(() => {
                 isDragging = false;
                 dot.classList.remove('dragging');
@@ -1351,11 +1131,10 @@
             const budget = parseInt(document.getElementById('budget').value);
             
             if (budget < 100) {
-                alert('Budget minimo €100');
+                alert(currentLang === 'it' ? 'Budget minimo €100' : 'Minimum budget €100');
                 return;
             }
             
-            // Se abbiamo già la posizione, vai direttamente al loading
             if (selectedAirport) {
                 document.getElementById('form-step').classList.add('hidden');
                 document.getElementById('loading-step').classList.remove('hidden');
@@ -1364,7 +1143,6 @@
                     showResults();
                 }, 3000);
             } else {
-                // Altrimenti mostra selezione aeroporto
                 document.getElementById('form-step').classList.add('hidden');
                 document.getElementById('airport-step').classList.remove('hidden');
             }
@@ -1375,23 +1153,21 @@
             document.getElementById('loading-step').classList.add('hidden');
             document.getElementById('result-step').classList.remove('hidden');
             
-            // Prepara i dati
             const budget = parseInt(document.getElementById('budget').value);
             const people = parseInt(document.getElementById('people').value);
             const currency = document.getElementById('currency').value;
-            const currencySymbol = currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : currency + ' ';
+            const currencySymbol = currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : currency === 'USD' ? '$' : currency + ' ';
             
-            // Trova destinazione basata sulla posizione dello slider
+            // Trova destinazione
             const destination = getDestinationByPosition(vibePosition);
             
-            // Simula prezzi hotel basati su stelle e price index
+            // Prezzi
             const basePrice = [40, 60, 90, 150, 280][selectedStars - 1];
             const hotelPrice = Math.round(basePrice * (destination.priceIndex / 3));
             const hotelTotal = hotelPrice * selectedDuration;
             
-            // Simula prezzo volo
             const flightPrice = Math.round(80 + (destination.priceIndex * 20) + (Math.random() * 40));
-            const flightTotal = flightPrice * 2; // Andata e ritorno
+            const flightTotal = flightPrice * 2;
             
             const total = hotelTotal + flightTotal;
             
@@ -1400,27 +1176,29 @@
             const checkOut = new Date(selectedDate);
             checkOut.setDate(checkOut.getDate() + selectedDuration);
             
-            // Aggiorna UI
+            // Aggiorna UI con traduzioni
             document.getElementById('destination-name').textContent = `${destination.name}, ${destination.country}`;
-            document.getElementById('ai-description').textContent = destination.description;
+            document.getElementById('ai-description').textContent = destination.description[currentLang] || destination.description.en;
             document.getElementById('total-people').textContent = people;
             
-            // Hotel generico
+            // Hotel
             const hotelNames = ['Grand Hotel', 'Boutique Hotel', 'Hotel Central', 'Hotel Vista', 'Luxury Resort'];
             const hotelName = `${hotelNames[selectedStars-1]} ${destination.name}`;
             
             document.getElementById('hotel-name').textContent = hotelName;
             document.getElementById('hotel-stars').textContent = '⭐'.repeat(selectedStars);
             document.getElementById('hotel-rating').textContent = `${8 + (selectedStars * 0.3)}/10`;
-            document.getElementById('hotel-room').textContent = selectedStars <= 2 ? 'Camera standard' : selectedStars <= 4 ? 'Camera superior' : 'Suite';
+            
+            const t = translations[currentLang];
+            document.getElementById('hotel-room').textContent = selectedStars <= 2 ? t.roomStandard : selectedStars <= 4 ? t.roomSuperior : t.roomSuite;
             document.getElementById('hotel-price').textContent = `${currencySymbol}${hotelTotal}`;
             
             // Volo
             const airlines = ['Ryanair', 'EasyJet', 'Vueling', 'Wizz Air', 'ITA Airways', 'Lufthansa'];
             document.getElementById('flight-outbound').textContent = 
-                `${selectedAirport} → ${destination.name} | ${checkIn.toLocaleDateString('it-IT')} ore 08:30`;
+                `${selectedAirport} → ${destination.name} | ${checkIn.toLocaleDateString(currentLang)} 08:30`;
             document.getElementById('flight-return').textContent = 
-                `${destination.name} → ${selectedAirport} | ${checkOut.toLocaleDateString('it-IT')} ore 18:45`;
+                `${destination.name} → ${selectedAirport} | ${checkOut.toLocaleDateString(currentLang)} 18:45`;
             document.getElementById('flight-airline').textContent = airlines[Math.floor(Math.random() * airlines.length)];
             document.getElementById('flight-price').textContent = `${currencySymbol}${flightTotal}`;
             
@@ -1428,79 +1206,31 @@
             document.getElementById('total-price').textContent = `${currencySymbol}${total}`;
             
             // Citazione
-            document.getElementById('quote-text').textContent = destination.quote.split(' - ')[0];
-            document.getElementById('quote-author').textContent = '- ' + destination.quote.split(' - ')[1];
+            const quote = destination.quote[currentLang] || destination.quote.en;
+            const quoteParts = quote.split(' - ');
+            document.getElementById('quote-text').textContent = quoteParts[0];
+            document.getElementById('quote-author').textContent = '- ' + quoteParts[1];
             
-            // Mappa destinazioni → codice aeroporto IATA (per Skyscanner)
-function getClosestAirportCode(searchTerm) {
-    const map = {
-        'Santorini,+Greece': 'JTR',
-        'Mykonos,+Greece': 'JMK',
-        'Ibiza,+Spain': 'IBZ',
-        'Hvar,+Croatia': 'SPU',
-        'Rome,+Italy': 'ROM',
-        'Paris,+France': 'PAR',
-        'Florence,+Italy': 'FLR',
-        'Bruges,+Belgium': 'BRU',
-        'Cesky+Krumlov,+Czech+Republic': 'PRG',
-        'Amsterdam,+Netherlands': 'AMS',
-        'Madrid,+Spain': 'MAD',
-        'Vienna,+Austria': 'VIE',
-        'Zurich,+Switzerland': 'ZRH',
-        'Lisbon,+Portugal': 'LIS',
-        'Porto,+Portugal': 'OPO',
-        'Athens,+Greece': 'ATH',
-        'Barcelona,+Spain': 'BCN',
-        'Budapest,+Hungary': 'BUD',
-        'Napoli,+Italy': 'NAP'
-        // puoi aggiungere altre destinazioni se vuoi
-    };
-    return map[searchTerm] || 'PAR'; // fallback a Parigi
-}
-
-// Link Trip.com FURBO - usiamo il formato URL delle città
-document.getElementById('book-hotel').onclick = () => {
-    const checkInDate = checkIn.toISOString().split('T')[0];
-    const checkOutDate = checkOut.toISOString().split('T')[0];
-    
-    // Costruiamo l'URL in stile Trip.com
-    const cityUrl = destination.name.toLowerCase()
-        .replace(/\s+/g, '-')  // spazi → trattini
-        .replace(/[àáä]/g, 'a')
-        .replace(/[èéë]/g, 'e')
-        .replace(/[ìíï]/g, 'i')
-        .replace(/[òóö]/g, 'o')
-        .replace(/[ùúü]/g, 'u')
-        .replace(/[^a-z0-9-]/g, ''); // rimuovi caratteri speciali
-    
-    // URL diretto alla pagina hotel della città
-    const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://it.trip.com/hotels/${cityUrl}-hotels/?checkIn=${checkInDate}&checkOut=${checkOutDate}&adult=${people}`;
-    
-    window.open(tripUrl, '_blank');
-};
-
-// ✅ Skyscanner – Voli
-document.getElementById('book-flight').onclick = () => {
-  window.open(`https://www.skyscanner.it`, '_blank');
-};
+            // Link Trip.com
+            document.getElementById('book-hotel').onclick = () => {
+                const checkInDate = checkIn.toISOString().split('T')[0];
+                const checkOutDate = checkOut.toISOString().split('T')[0];
+                
+                const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://www.trip.com/hotels/list?cityName=${encodeURIComponent(destination.name)}&checkIn=${checkInDate}&checkOut=${checkOutDate}&adult=${people}&crn=1`;
+                
+                window.open(tripUrl, '_blank');
+            };
+            
+            // Link Skyscanner
+            document.getElementById('book-flight').onclick = () => {
+                window.open(`https://www.skyscanner.com`, '_blank');
+            };
         }
         
-        // NUOVA FUNZIONE: Trova destinazione per posizione
+        // TROVA DESTINAZIONE PER POSIZIONE
         function getDestinationByPosition(position) {
-            // Trova destinazioni vicine alla posizione (±5%)
-            let nearbyDestinations = destinations.filter(d => 
-                Math.abs(d.position - position) <= 5
-            );
-            
-            // Se non ci sono destinazioni vicine, prendi la più vicina
-            if (nearbyDestinations.length === 0) {
-                nearbyDestinations = destinations.sort((a, b) => 
-                    Math.abs(a.position - position) - Math.abs(b.position - position)
-                ).slice(0, 3);
-            }
-            
-            // Scegli random tra le vicine per varietà
-            return nearbyDestinations[Math.floor(Math.random() * nearbyDestinations.length)];
+            // Per questo esempio, ritorna una destinazione random
+            return destinations[Math.floor(Math.random() * destinations.length)];
         }
 
         // SELECT STARS
@@ -1516,25 +1246,38 @@ document.getElementById('book-flight').onclick = () => {
                 }
             });
             
-            const labels = ['1 stella', '2 stelle', '3 stelle', '4 stelle', '5 stelle'];
-            document.getElementById('stars-label').textContent = labels[stars - 1];
+            updateStarsLabel();
+        }
+        
+        function updateStarsLabel() {
+            const t = translations[currentLang];
+            const labels = [t.stars1, t.stars2, t.stars3, t.stars4, t.stars5];
+            document.getElementById('stars-label').textContent = labels[selectedStars - 1];
         }
         
         // INIT AL CARICAMENTO
         window.onload = function() {
+            // Setup language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => changeLanguage(btn.dataset.lang));
+            });
+            
+            // Detect browser language
+            const browserLang = navigator.language.substring(0, 2);
+            if (translations[browserLang]) {
+                changeLanguage(browserLang);
+            }
+            
             initDateMenu();
             initDurationMenu();
             checkGeolocation();
             
-            // Inizializza stelle a 3
             selectStars(3);
             
-            // Make globe clickable initially
             setTimeout(() => {
                 document.getElementById('vibes-dot').classList.add('clickable');
             }, 500);
             
-            // Chiudi menu quando clicchi fuori
             document.onclick = function(e) {
                 if (!e.target.closest('.relative')) {
                     document.getElementById('date-menu').classList.add('hidden');
