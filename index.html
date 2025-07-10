@@ -1433,18 +1433,14 @@
             
             // Link prenotazione con ricerca destinazione
             document.getElementById('book-hotel').onclick = () => {
-    const bookingUrl = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(destination.searchTerm)}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}&no_rooms=1`;
-    window.open(bookingUrl, '_blank');
-};
+                const bookingUrl = `https://www.booking.com/searchresults.html?aid=TUOAFFILIATE&ss=${destination.searchTerm}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}&nflt=${selectedStars};class=${selectedStars}`;
+                window.open(bookingUrl, '_blank');
+            };
             
             document.getElementById('book-flight').onclick = () => {
-    const departureIATA = selectedAirport;
-    const destinationIATA = getClosestAirportCode(destination.searchTerm);
-    const departDate = checkIn.toISOString().split('T')[0];
-    const returnDate = checkOut.toISOString().split('T')[0];
-    const flightUrl = `https://www.skyscanner.it/trasporti/voli/${departureIATA}/${destinationIATA}/${departDate}/${returnDate}/?adults=${people}`;
-    window.open(flightUrl, '_blank');
-};
+                window.open(`https://www.skyscanner.it/trasporti/voli/${selectedAirport}/${destination.name.toLowerCase().replace(/ /g, '-')}/${checkIn.toISOString().split('T')[0]}/${checkOut.toISOString().split('T')[0]}/?adults=${people}`, '_blank');
+            };
+        }
         
         // NUOVA FUNZIONE: Trova destinazione per posizione
         function getDestinationByPosition(position) {
