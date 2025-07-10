@@ -1433,19 +1433,13 @@
             document.getElementById('quote-text').textContent = destination.quote.split(' - ')[0];
             document.getElementById('quote-author').textContent = '- ' + destination.quote.split(' - ')[1];
             
-            // Link per Hotels.com tramite TravelPayouts
-            document.getElementById('book-hotel').onclick = () => {
-                // Codifica il nome destinazione per URL
-                const hotelDest = encodeURIComponent(destination.name + ', ' + destination.country);
-                
-                // Link per Trip.com tramite TravelPayouts
+            // Link per Trip.com tramite TravelPayouts
 document.getElementById('book-hotel').onclick = () => {
     // Costruisci URL di ricerca Trip.com
     const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://www.trip.com/hotels/list?city=${destination.name}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&adult=${people}&starrating=${selectedStars}`;
     
     window.open(tripUrl, '_blank');
 };
-            
             // Link migliorato per Skyscanner con codici aeroporto corretti
             document.getElementById('book-flight').onclick = () => {
                 const destCode = destination.airportCode || 'anywhere';
