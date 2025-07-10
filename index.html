@@ -1458,13 +1458,23 @@ function getClosestAirportCode(searchTerm) {
     return map[searchTerm] || 'PAR'; // fallback a Parigi
 }
 
-// Link Trip.com con solo le info base che funzionano
+// Link Trip.com FURBO - usiamo il formato URL delle città
 document.getElementById('book-hotel').onclick = () => {
     const checkInDate = checkIn.toISOString().split('T')[0];
     const checkOutDate = checkOut.toISOString().split('T')[0];
     
-    // URL con parametri che sappiamo funzionare
-    const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://it.trip.com/hotels/list?cityName=${encodeURIComponent(destination.name)}&checkIn=${checkInDate}&checkOut=${checkOutDate}&adult=${people}&crn=1`;
+    // Costruiamo l'URL in stile Trip.com
+    const cityUrl = destination.name.toLowerCase()
+        .replace(/\s+/g, '-')  // spazi → trattini
+        .replace(/[àáä]/g, 'a')
+        .replace(/[èéë]/g, 'e')
+        .replace(/[ìíï]/g, 'i')
+        .replace(/[òóö]/g, 'o')
+        .replace(/[ùúü]/g, 'u')
+        .replace(/[^a-z0-9-]/g, ''); // rimuovi caratteri speciali
+    
+    // URL diretto alla pagina hotel della città
+    const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://it.trip.com/hotels/${cityUrl}-hotels/?checkIn=${checkInDate}&checkOut=${checkOutDate}&adult=${people}`;
     
     window.open(tripUrl, '_blank');
 };
