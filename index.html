@@ -1433,12 +1433,10 @@
             document.getElementById('quote-text').textContent = destination.quote.split(' - ')[0];
             document.getElementById('quote-author').textContent = '- ' + destination.quote.split(' - ')[1];
             
-            // Link per Trip.com tramite TravelPayouts
+            / Link diretto Agoda per test
 document.getElementById('book-hotel').onclick = () => {
-    // Costruisci URL di ricerca Trip.com
-    const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://www.trip.com/hotels/list?city=${destination.name}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&adult=${people}&starrating=${selectedStars}`;
-    
-    window.open(tripUrl, '_blank');
+    const agodaUrl = `https://www.agoda.com/search?city=${destination.name}&checkIn=${checkIn.toISOString().split('T')[0]}&checkOut=${checkOut.toISOString().split('T')[0]}&adults=${people}&rooms=1&locale=it-it`;
+    window.open(agodaUrl, '_blank');
 };
             // Link migliorato per Skyscanner con codici aeroporto corretti
             document.getElementById('book-flight').onclick = () => {
