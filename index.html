@@ -1431,15 +1431,50 @@
             document.getElementById('quote-text').textContent = destination.quote.split(' - ')[0];
             document.getElementById('quote-author').textContent = '- ' + destination.quote.split(' - ')[1];
             
-            // Link prenotazione con ricerca destinazione
-            document.getElementById('book-hotel').onclick = () => {
-                const bookingUrl = `https://www.booking.com/searchresults.html?aid=TUOAFFILIATE&ss=${destination.searchTerm}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}&nflt=${selectedStars};class=${selectedStars}`;
-                window.open(bookingUrl, '_blank');
-            };
-            
-            document.getElementById('book-flight').onclick = () => {
-                window.open(`https://www.skyscanner.it/trasporti/voli/${selectedAirport}/${destination.name.toLowerCase().replace(/ /g, '-')}/${checkIn.toISOString().split('T')[0]}/${checkOut.toISOString().split('T')[0]}/?adults=${people}`, '_blank');
-            };
+            // Mappa destinazioni → codice aeroporto IATA (per Skyscanner)
+function getClosestAirportCode(searchTerm) {
+    const map = {
+        'Santorini,+Greece': 'JTR',
+        'Mykonos,+Greece': 'JMK',
+        'Ibiza,+Spain': 'IBZ',
+        'Hvar,+Croatia': 'SPU',
+        'Rome,+Italy': 'ROM',
+        'Paris,+France': 'PAR',
+        'Florence,+Italy': 'FLR',
+        'Bruges,+Belgium': 'BRU',
+        'Cesky+Krumlov,+Czech+Republic': 'PRG',
+        'Amsterdam,+Netherlands': 'AMS',
+        'Madrid,+Spain': 'MAD',
+        'Vienna,+Austria': 'VIE',
+        'Zurich,+Switzerland': 'ZRH',
+        'Lisbon,+Portugal': 'LIS',
+        'Porto,+Portugal': 'OPO',
+        'Athens,+Greece': 'ATH',
+        'Barcelona,+Spain': 'BCN',
+        'Budapest,+Hungary': 'BUD',
+        'Napoli,+Italy': 'NAP'
+        // puoi aggiungere altre destinazioni se vuoi
+    };
+    return map[searchTerm] || 'PAR'; // fallback a Parigi
+}
+
+// ✅ Booking.com – Hotel
+document.getElementById('book-hotel').onclick = () => {
+    const checkInStr = checkIn.toISOString().split('T')[0];
+    const checkOutStr = checkOut.toISOString().split('T')[0];
+    const bookingUrl = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(destination.searchTerm)}&checkin=${checkInStr}&checkout=${checkOutStr}&group_adults=${people}&no_rooms=1`;
+    window.open(bookingUrl, '_blank');
+};
+
+// ✅ Skyscanner – Voli
+document.getElementById('book-flight').onclick = () => {
+    const departureIATA = selectedAirport;
+    const destinationIATA = getClosestAirportCode(destination.searchTerm);
+    const departDate = checkIn.toISOString().split('T')[0];
+    const returnDate = checkOut.toISOString().split('T')[0];
+    const flightUrl = `https://www.skyscanner.it/trasporti/voli/${departureIATA}/${destinationIATA}/${departDate}/${returnDate}/?adults=${people}`;
+    window.open(flightUrl, '_blank');
+};
         }
         
         // NUOVA FUNZIONE: Trova destinazione per posizione
