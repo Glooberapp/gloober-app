@@ -1458,10 +1458,15 @@ function getClosestAirportCode(searchTerm) {
     return map[searchTerm] || 'PAR'; // fallback a Parigi
 }
 
-// Link Trip.com diretto alla ricerca hotel con città
+// Link Trip.com con solo le info base che funzionano
 document.getElementById('book-hotel').onclick = () => {
-    const cityName = destination.name.toLowerCase().replace(/ /g, '-');
-    window.open(`https://trip.tpk.lu/DCFSQxzu?url=https://it.trip.com/hotels/${cityName}-hotels/`, '_blank');
+    const checkInDate = checkIn.toISOString().split('T')[0];
+    const checkOutDate = checkOut.toISOString().split('T')[0];
+    
+    // URL con parametri che sappiamo funzionare
+    const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://it.trip.com/hotels/list?cityName=${encodeURIComponent(destination.name)}&checkIn=${checkInDate}&checkOut=${checkOutDate}&adult=${people}&crn=1`;
+    
+    window.open(tripUrl, '_blank');
 };
 
 // ✅ Skyscanner – Voli
