@@ -1433,10 +1433,9 @@
             document.getElementById('quote-text').textContent = destination.quote.split(' - ')[0];
             document.getElementById('quote-author').textContent = '- ' + destination.quote.split(' - ')[1];
             
-            / Link diretto Agoda per test
+            / Link diretto Booking (funziona SICURO)
 document.getElementById('book-hotel').onclick = () => {
-    const agodaUrl = `https://www.agoda.com/search?city=${destination.name}&checkIn=${checkIn.toISOString().split('T')[0]}&checkOut=${checkOut.toISOString().split('T')[0]}&adults=${people}&rooms=1&locale=it-it`;
-    window.open(agodaUrl, '_blank');
+    window.open(`https://www.booking.com/searchresults.html?ss=${destination.name}&checkin=${checkIn.toISOString().split('T')[0]}&checkout=${checkOut.toISOString().split('T')[0]}&group_adults=${people}`, '_blank');
 };
             // Link migliorato per Skyscanner con codici aeroporto corretti
             document.getElementById('book-flight').onclick = () => {
