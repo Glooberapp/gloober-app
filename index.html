@@ -1458,10 +1458,11 @@ function getClosestAirportCode(searchTerm) {
     return map[searchTerm] || 'PAR'; // fallback a Parigi
 }
 
-// ✅ Booking.com – Hotel
+// Link per Trip.com con solo città (funziona meglio!)
 document.getElementById('book-hotel').onclick = () => {
-  const bookingUrl = `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(destination.searchTerm)}`;
-  window.open(bookingUrl, '_blank');
+    const cityName = encodeURIComponent(destination.name);
+    const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://it.trip.com/hotels/list?city=${cityName}`;
+    window.open(tripUrl, '_blank');
 };
 
 // ✅ Skyscanner – Voli
