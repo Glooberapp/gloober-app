@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Find your perfect trip in 10 seconds. Move the slider, click the globe. Zero stress travel planner.">
-    <meta name="keywords" content="travel, viaggio, voyage, viaje, reise, trip planner, vacation, holidays">
-    <title>Gloober - Zero Stress Travel</title>
+    <meta name="description" content="Slide your travel vibes and discover your perfect destination">
+    <title>Gloober - Slide Your Travel Vibes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             background: linear-gradient(135deg, #0f766e, #065f46, #064e3b);
             min-height: 100vh;
+            overflow-x: hidden;
         }
         
         .glass-card {
@@ -19,28 +19,54 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
+        /* Container principale responsive */
+        .main-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Glass card responsive */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px 20px;
+        }
+        
+        @media (max-height: 800px) {
+            .glass-card {
+                padding: 20px 15px;
+            }
+            h1 {
+                font-size: 3rem !important;
+            }
+        }
+        
         /* Language selector */
         .lang-selector {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 10px;
+            right: 10px;
             z-index: 100;
             display: flex;
-            gap: 10px;
+            gap: 6px;
             background: rgba(0, 0, 0, 0.3);
-            padding: 10px;
+            padding: 6px;
             border-radius: 25px;
             backdrop-filter: blur(10px);
+            flex-wrap: wrap;
+            max-width: 320px;
         }
         
         .lang-btn {
-            width: 35px;
-            height: 35px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
             opacity: 0.6;
             transition: all 0.3s ease;
-            font-size: 20px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -58,19 +84,29 @@
             border: 2px solid #fbbf24;
         }
         
-        /* Slider orizzontale */
-        .vibes-slider-horizontal {
-            position: relative;
+        /* Stile unificato per tutti gli slider */
+        .slider-container {
             width: 100%;
             height: 60px;
-            margin: 20px auto 20px;
+            margin: 15px auto;
             border-radius: 30px;
-            background: linear-gradient(to right, #fbbf24 0%, #f59e0b 50%, #fbbf24 100%);
             cursor: pointer;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
         }
         
-        /* Etichette dentro lo slider */
+        /* Location slider gradient */
+        .location-slider {
+            background: linear-gradient(to right, #60a5fa 0%, #f97316 50%, #10b981 100%);
+        }
+        
+        /* Distance slider gradient */
+        .distance-slider {
+            background: linear-gradient(to right, #94a3b8 0%, #64748b 50%, #334155 100%);
+        }
+        
+        /* Labels dentro lo slider - STILE UNIFICATO */
         .slider-inner-labels {
             position: absolute;
             width: 100%;
@@ -78,377 +114,293 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 25px;
             pointer-events: none;
+            user-select: none;
         }
         
         .slider-inner-labels span {
-            color: rgba(0, 0, 0, 0.5);
-            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
             font-weight: 600;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.3);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Labels laterali sempre visibili, centrale appare solo quando muovi */
+        .slider-inner-labels span:first-child,
+        .slider-inner-labels span:last-child {
+            opacity: 0;
+        }
+        
+        .slider-inner-labels span.visible {
+            opacity: 1;
         }
         
         .slider-inner-labels .label-center {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            transition: opacity 0.3s ease;
-        }
-        
-        .slider-inner-labels .label-center.hidden {
             opacity: 0;
         }
         
-        .vibes-dot {
+        .slider-inner-labels.active span {
+            opacity: 1;
+        }
+        
+        /* Slider dot generico */
+        .slider-dot {
             position: absolute;
             width: 56px;
             height: 56px;
             background: radial-gradient(circle at 30% 30%, #60a5fa, #3b82f6, #2563eb, #1e40af);
-            border: 3px solid rgba(255, 255, 255, 0.8);
+            border: 3px solid rgba(255, 255, 255, 0.9);
             border-radius: 50%;
-            cursor: grab;
             top: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
-            transition: left 0.3s ease, transform 0.2s ease;
-            position: relative;
+            cursor: grab;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+            transition: left 0.15s ease-out;
+            will-change: left;
+            z-index: 10;
         }
         
-        .vibes-dot.dragging {
+        .slider-dot:active {
             cursor: grabbing;
+            transform: scale(0.95);
+            transition: none;
         }
         
-        .vibes-dot.clickable {
-            transform: translateX(-50%) scale(1.05);
-            cursor: pointer;
-        }
-        
-        .vibes-dot.clickable:hover {
-            transform: translateX(-50%) scale(1.1);
-        }
-        
-        /* Mini continenti nel globo */
-        .vibes-dot::before {
-            content: '';
-            position: absolute;
-            background: radial-gradient(ellipse, #10b981, #059669);
-            width: 12px;
-            height: 10px;
-            top: 25%;
-            left: 50%;
-            border-radius: 50%;
-            transform: translateX(-50%);
-        }
-        
-        .vibes-dot::after {
-            content: '';
-            position: absolute;
-            background: radial-gradient(ellipse, #10b981, #059669);
-            width: 15px;
-            height: 8px;
-            bottom: 30%;
-            left: 45%;
-            border-radius: 50%;
-            transform: translateX(-50%);
-        }
-        
-        /* Testo JUST GLOOB IT sotto il globo */
-        .gloob-text {
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            white-space: nowrap;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 4px 12px;
+        /* Mood selector rettangolare */
+        .mood-selector {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin: 15px auto;
+            background: linear-gradient(135deg, 
+                #ec4899 0%, 
+                #8b5cf6 25%, 
+                #3b82f6 50%, 
+                #10b981 75%, 
+                #f59e0b 100%);
             border-radius: 20px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            overflow: hidden;
         }
         
-        .vibes-dot.clickable .gloob-text {
-            opacity: 1;
+        @media (max-height: 700px) {
+            .mood-selector {
+                height: 150px;
+            }
         }
         
-        .dropdown-menu {
+        .mood-labels {
             position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: rgba(6, 95, 70, 0.95);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            margin-top: 4px;
-            z-index: 50;
-            max-height: 200px;
-            overflow-y: auto;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            user-select: none;
         }
         
-        .dropdown-item {
-            padding: 12px 16px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .mood-label {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
         
-        .dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.15);
+        /* Posizioni etichette mood - tutte dentro */
+        .mood-label.top { 
+            top: 10px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+        }
+        .mood-label.bottom { 
+            bottom: 10px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+        }
+        .mood-label.left { 
+            left: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+        }
+        .mood-label.right { 
+            right: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+        }
+        .mood-label.top-left { 
+            top: 25px; 
+            left: 25px; 
+        }
+        .mood-label.top-right { 
+            top: 25px; 
+            right: 25px; 
+        }
+        .mood-label.bottom-left { 
+            bottom: 25px; 
+            left: 25px; 
+        }
+        .mood-label.bottom-right { 
+            bottom: 25px; 
+            right: 25px; 
         }
         
-        @keyframes spinGlobe {
-            from { transform: rotateZ(0deg); }
-            to { transform: rotateZ(360deg); }
+        /* Mood labels nascosti di default */
+        .mood-label {
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
         
-        /* Stelle Hotel */
-        .stars-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        
-        .stars-selector {
-            display: flex;
-            gap: 5px;
-        }
-        
-        .star {
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.2s;
-            opacity: 0.3;
-            filter: grayscale(1);
-        }
-        
-        .star.active {
+        .mood-label.visible {
             opacity: 1;
-            filter: grayscale(0);
-            transform: scale(1.1);
         }
         
-        .star:hover {
-            transform: scale(1.2);
+        /* Joystick globe */
+        .joystick-globe {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            background: radial-gradient(circle at 30% 30%, #60a5fa, #3b82f6, #2563eb, #1e40af);
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+            transition: left 0.1s ease-out, top 0.1s ease-out;
+            will-change: left, top;
+            z-index: 10;
         }
         
-        .stars-label {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
-            font-weight: 500;
+        .joystick-globe:active {
+            cursor: grabbing;
+            transform: translate(-50%, -50%) scale(0.95);
+            transition: none;
+        }
+        
+        /* Globo loading - versione semplice che gira */
+        @keyframes spinGlobe {
+            from { 
+                transform: rotateY(0deg) rotateX(10deg); 
+            }
+            to { 
+                transform: rotateY(360deg) rotateX(10deg); 
+            }
+        }
+        
+        .loading-globe {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #60a5fa, #3b82f6, #2563eb, #1e40af);
+            border: 9px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+            animation: spinGlobe 2s linear infinite;
+            transform-style: preserve-3d;
+        }
+        
+        /* Risultati */
+        .narrative-text {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #fbbf24;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            font-style: italic;
         }
         
         .hidden { display: none; }
     </style>
 </head>
 <body class="text-white">
-    <!-- Language Selector -->
+    <!-- Language Selector (9 lingue con italiano!) -->
     <div class="lang-selector">
         <div class="lang-btn active" data-lang="it" title="Italiano">🇮🇹</div>
         <div class="lang-btn" data-lang="en" title="English">🇬🇧</div>
+        <div class="lang-btn" data-lang="zh" title="中文">🇨🇳</div>
         <div class="lang-btn" data-lang="es" title="Español">🇪🇸</div>
+        <div class="lang-btn" data-lang="hi" title="हिन्दी">🇮🇳</div>
+        <div class="lang-btn" data-lang="ar" title="العربية">🇦🇪</div>
         <div class="lang-btn" data-lang="fr" title="Français">🇫🇷</div>
-        <div class="lang-btn" data-lang="de" title="Deutsch">🇩🇪</div>
+        <div class="lang-btn" data-lang="pt" title="Português">🇧🇷</div>
+        <div class="lang-btn" data-lang="ru" title="Русский">🇷🇺</div>
     </div>
 
-    <!-- STEP 1: FORM -->
-    <div id="form-step">
-        <div class="container mx-auto px-4 py-8">
-            <div class="text-center mb-8">
-                <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+    <!-- STEP 1: SLIDERS -->
+    <div id="slider-step">
+        <div class="main-container">
+            <div class="text-center mb-6">
+                <h1 class="text-5xl font-bold mb-3 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
                     Gloober
                 </h1>
-                <p class="text-xl text-gray-300" data-translate="subtitle">Zero stress, book happiness! ✈️</p>
+                <p class="text-lg text-gray-300" data-translate="tagline">Slide your travel vibes</p>
             </div>
 
-            <div class="max-w-2xl mx-auto">
-                <div class="glass-card rounded-2xl p-6">
-                    <!-- Budget -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">💰 <span data-translate="budget">Budget totale</span></label>
-                        <div class="grid grid-cols-3 gap-3">
-                            <input type="number" id="budget" value="1000" min="100" max="10000" step="100" 
-                                   class="col-span-2 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white text-xl font-bold">
-                            <select id="currency" class="px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
-                                <option value="EUR">€ EUR</option>
-                                <option value="GBP">£ GBP</option>
-                                <option value="CHF">CHF</option>
-                                <option value="USD">$ USD</option>
-                                <option value="DKK">DKK</option>
-                                <option value="SEK">SEK</option>
-                                <option value="NOK">NOK</option>
-                                <option value="CZK">CZK</option>
-                                <option value="PLN">PLN</option>
-                            </select>
+            <div class="glass-card rounded-2xl">
+                <!-- Location Slider -->
+                <div class="mb-6">
+                    <h3 class="text-md font-semibold mb-2 text-center text-gray-200" data-translate="habitatLabel">Habitat</h3>
+                    <div class="slider-container location-slider" onmousedown="startLocationDrag(event)" onmousemove="dragLocation(event)" onmouseup="stopLocationDrag()" onmouseleave="stopLocationDrag()" ontouchstart="startLocationDrag(event)" ontouchmove="dragLocation(event)" ontouchend="stopLocationDrag()">
+                        <div class="slider-inner-labels" id="location-labels">
+                            <span>🏖️ <span data-translate="sea">MARE</span></span>
+                            <span class="label-center">🎨 <span data-translate="city">CITTÀ</span></span>
+                            <span>🏔️ <span data-translate="mountain">MONTAGNA</span></span>
                         </div>
-                    </div>
-
-                    <!-- Persone -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">👥 <span data-translate="people">Quante persone</span></label>
-                        <select id="people" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white">
-                            <option value="1" data-translate="person1">1 persona</option>
-                            <option value="2" selected data-translate="person2">2 persone</option>
-                            <option value="3" data-translate="person3">3 persone</option>
-                            <option value="4" data-translate="person4">4 persone</option>
-                        </select>
-                    </div>
-
-                    <!-- Quando -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">📅 <span data-translate="when">Quando partiamo</span></label>
-                        <div class="relative">
-                            <button type="button" onclick="toggleDateMenu()" 
-                                    class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white flex justify-between items-center">
-                                <span id="when-selected" data-translate="today">OGGI</span>
-                                <span>▼</span>
-                            </button>
-                            <div id="date-menu" class="dropdown-menu hidden"></div>
-                        </div>
-                    </div>
-
-                    <!-- Durata -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">⏱️ <span data-translate="duration">Per quanto tempo</span></label>
-                        <div class="relative">
-                            <button type="button" onclick="toggleDurationMenu()" 
-                                    class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white flex justify-between items-center">
-                                <span id="duration-selected" data-translate="twoDays">Due giorni</span>
-                                <span>▼</span>
-                            </button>
-                            <div id="duration-menu" class="dropdown-menu hidden"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Stelle Hotel -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">🏨 <span data-translate="hotelCategory">Categoria hotel</span></label>
-                        <div class="stars-container">
-                            <div class="stars-selector" id="stars-selector">
-                                <span class="star" data-stars="1" onclick="selectStars(1)">⭐</span>
-                                <span class="star" data-stars="2" onclick="selectStars(2)">⭐</span>
-                                <span class="star" data-stars="3" onclick="selectStars(3)">⭐</span>
-                                <span class="star" data-stars="4" onclick="selectStars(4)">⭐</span>
-                                <span class="star" data-stars="5" onclick="selectStars(5)">⭐</span>
-                            </div>
-                            <span class="stars-label" id="stars-label" data-translate="stars3">3 stelle</span>
-                        </div>
-                    </div>
-
-                    <!-- Vibes Slider -->
-                    <div class="mb-8">
-                        <label class="block text-sm font-medium mb-4 text-center">✨ <span data-translate="travelVibes">Travel vibes</span></label>
-                        <div class="vibes-slider-horizontal" id="vibes-slider" onclick="moveVibesDot(event)" ontouchmove="moveVibesDot(event)" ontouchstart="moveVibesDot(event)">
-                            <div class="slider-inner-labels">
-                                <span data-translate="sea">🏖️ MARE</span>
-                                <span class="label-center hidden" data-translate="city">🎨 CITTÀ D'ARTE</span>
-                                <span data-translate="mountain">🏔️ MONTAGNA</span>
-                            </div>
-                            <div class="vibes-dot" id="vibes-dot" onclick="handleGlobeClick(event)">
-                                <span class="gloob-text">JUST GLOOB IT</span>
-                            </div>
-                        </div>
+                        <div class="slider-dot" id="location-dot" style="left: 50%;"></div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- STEP 1.5: SELEZIONE AEROPORTO -->
-    <div id="airport-step" class="hidden">
-        <div class="container mx-auto px-4 py-8">
-            <div class="text-center mb-8">
-                <div style="font-size: 80px; margin-bottom: 20px;">✈️</div>
-                <h2 class="text-3xl font-bold mb-4 text-white" data-translate="whereFrom">
-                    Da dove decolliamo?
-                </h2>
-            </div>
+                <!-- Distance Slider -->
+                <div class="mb-6">
+                    <h3 class="text-md font-semibold mb-2 text-center text-gray-200" data-translate="rangeLabel">Range</h3>
+                    <div class="slider-container distance-slider" onmousedown="startDistanceDrag(event)" onmousemove="dragDistance(event)" onmouseup="stopDistanceDrag()" onmouseleave="stopDistanceDrag()" ontouchstart="startDistanceDrag(event)" ontouchmove="dragDistance(event)" ontouchend="stopDistanceDrag()">
+                        <div class="slider-inner-labels" id="distance-labels">
+                            <span>🏠 <span data-translate="comfort">COMFORT</span></span>
+                            <span class="label-center">🌍 <span data-translate="curious">CURIOUS</span></span>
+                            <span>✈️ <span data-translate="bloom">BLOOM</span></span>
+                        </div>
+                        <div class="slider-dot" id="distance-dot" style="left: 50%;"></div>
+                    </div>
+                </div>
 
-            <div class="max-w-2xl mx-auto">
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="mb-6">
-                        <input type="text" 
-                               id="airport-search" 
-                               placeholder="Cerca il tuo aeroporto..." 
-                               data-translate-placeholder="searchAirport"
-                               class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50"
-                               onkeyup="filterAirports()">
+                <!-- Mood Selector -->
+                <div class="mb-6">
+                    <h3 class="text-md font-semibold mb-2 text-center text-gray-200" data-translate="vibesLabel">Vibes</h3>
+                    <div class="mood-selector" id="mood-selector" 
+                         onmousedown="startDragging(event)" 
+                         onmousemove="dragGlobe(event)"
+                         onmouseup="stopDragging()"
+                         onmouseleave="stopDragging()"
+                         ontouchstart="startDragging(event)"
+                         ontouchmove="dragGlobe(event)"
+                         ontouchend="stopDragging()">
+                        <div class="mood-labels">
+                            <span class="mood-label top" data-translate="movida">MOVIDA</span>
+                            <span class="mood-label bottom" data-translate="zen">ZEN</span>
+                            <span class="mood-label left" data-translate="gourmet">GOURMET</span>
+                            <span class="mood-label right" data-translate="wild">WILD</span>
+                            <span class="mood-label top-left" data-translate="design">DESIGN</span>
+                            <span class="mood-label top-right" data-translate="glamour">GLAMOUR</span>
+                            <span class="mood-label bottom-left" data-translate="culture">CULTURE</span>
+                            <span class="mood-label bottom-right" data-translate="romantic">ROMANTIC</span>
+                        </div>
+                        <div class="joystick-globe" id="mood-globe"></div>
                     </div>
-                    
-                    <div class="mb-6">
-                        <select id="airport-select" size="10" 
-                                class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white"
-                                style="min-height: 300px;">
-                            <optgroup label="Popular">
-                                <option value="FCO">Rome Fiumicino</option>
-                                <option value="MXP">Milan Malpensa</option>
-                                <option value="LHR">London Heathrow</option>
-                                <option value="CDG">Paris Charles de Gaulle</option>
-                                <option value="MAD">Madrid Barajas</option>
-                                <option value="BCN">Barcelona</option>
-                                <option value="AMS">Amsterdam</option>
-                                <option value="FRA">Frankfurt</option>
-                                <option value="JFK">New York JFK</option>
-                                <option value="DXB">Dubai</option>
-                            </optgroup>
-                            <optgroup label="Europe">
-                                <option value="LIN">Milan Linate</option>
-                                <option value="BGY">Milan Bergamo</option>
-                                <option value="VCE">Venice</option>
-                                <option value="NAP">Naples</option>
-                                <option value="BLQ">Bologna</option>
-                                <option value="LGW">London Gatwick</option>
-                                <option value="ORY">Paris Orly</option>
-                                <option value="MUC">Munich</option>
-                                <option value="BER">Berlin</option>
-                                <option value="VIE">Vienna</option>
-                                <option value="ZRH">Zurich</option>
-                                <option value="GVA">Geneva</option>
-                                <option value="BRU">Brussels</option>
-                                <option value="CPH">Copenhagen</option>
-                                <option value="STO">Stockholm</option>
-                                <option value="OSL">Oslo</option>
-                                <option value="HEL">Helsinki</option>
-                                <option value="ATH">Athens</option>
-                                <option value="LIS">Lisbon</option>
-                                <option value="DUB">Dublin</option>
-                            </optgroup>
-                            <optgroup label="Americas">
-                                <option value="LAX">Los Angeles</option>
-                                <option value="MIA">Miami</option>
-                                <option value="MEX">Mexico City</option>
-                                <option value="GRU">São Paulo</option>
-                                <option value="EZE">Buenos Aires</option>
-                                <option value="YYZ">Toronto</option>
-                            </optgroup>
-                            <optgroup label="Asia-Pacific">
-                                <option value="NRT">Tokyo Narita</option>
-                                <option value="ICN">Seoul</option>
-                                <option value="SIN">Singapore</option>
-                                <option value="HKG">Hong Kong</option>
-                                <option value="BKK">Bangkok</option>
-                                <option value="SYD">Sydney</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    
-                    <button onclick="confirmAirport()" 
-                            class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all"
-                            data-translate="letsGo">
-                        Voliamo! 🛫
+                </div>
+
+                <!-- Gloob Button -->
+                <div class="text-center">
+                    <button onclick="gloobIt()" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-full text-lg hover:from-yellow-300 hover:to-orange-400 transition-all transform hover:scale-105">
+                        <span data-translate="gloobIt">GLOOB IT!</span> 🌍
                     </button>
                 </div>
             </div>
@@ -458,804 +410,521 @@
     <!-- STEP 2: LOADING -->
     <div id="loading-step" class="hidden min-h-screen flex items-center justify-center">
         <div class="text-center">
-            <div style="width: 300px; height: 300px; margin: 0 auto;">
-                <div style="animation: spinGlobe 3s linear infinite;">
-                    <div style="width: 250px; height: 250px; margin: 0 auto; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #60a5fa, #3b82f6, #2563eb, #1e40af); box-shadow: inset -40px -40px 60px rgba(0, 0, 0, 0.4), 0 0 60px rgba(59, 130, 246, 0.6); position: relative;">
-                        <!-- Continenti -->
-                        <div style="position: absolute; background: radial-gradient(ellipse, #10b981, #059669); width: 50px; height: 40px; top: 15%; left: 48%; border-radius: 50%; transform: rotate(-15deg);"></div>
-                        <div style="position: absolute; background: radial-gradient(ellipse, #10b981, #059669); width: 60px; height: 80px; top: 45%; left: 47%; border-radius: 50%;"></div>
-                        <div style="position: absolute; background: radial-gradient(ellipse, #10b981, #059669); width: 70px; height: 50px; top: 20%; right: 15%; border-radius: 50%;"></div>
-                    </div>
-                </div>
+            <div style="width: 200px; height: 200px; margin: 0 auto; display: flex; align-items: center; justify-content: center; perspective: 1000px;">
+                <div class="loading-globe"></div>
             </div>
-            <h2 class="text-3xl font-bold mt-4">Gloobing...</h2>
-            <p class="text-gray-300 mt-2" id="loading-text" data-translate="findingAdventure">Sto trovando la tua prossima avventura</p>
+            <h2 class="text-3xl font-bold mt-6" data-translate="gloobing">Gloobing...</h2>
         </div>
     </div>
 
-    <!-- STEP 3: RISULTATI -->
-    <div id="result-step" class="hidden container mx-auto px-4 py-8">
-        <div id="result-content" class="max-w-6xl mx-auto">
-            <!-- Header con descrizione -->
-            <div class="glass-card rounded-2xl p-6 text-center mb-6">
-                <h2 class="text-3xl font-bold text-yellow-400 mb-3" id="destination-name">Caricamento...</h2>
-                <p class="text-xl text-white italic" id="ai-description">...</p>
-            </div>
-            
-            <!-- Cards Volo e Hotel -->
-            <div class="grid md:grid-cols-2 gap-6 mb-8">
-                <!-- Card Volo -->
-                <div class="glass-card rounded-2xl p-6">
-                    <h3 class="text-xl font-bold mb-4 text-yellow-400">✈️ <span data-translate="yourFlight">Il tuo volo</span></h3>
-                    <div id="flight-details" class="text-white">
-                        <div class="mb-3">
-                            <span class="text-gray-400" data-translate="outbound">Andata:</span>
-                            <div class="font-semibold" id="flight-outbound">-</div>
-                        </div>
-                        <div class="mb-3">
-                            <span class="text-gray-400" data-translate="return">Ritorno:</span>
-                            <div class="font-semibold" id="flight-return">-</div>
-                        </div>
-                        <div class="mb-4">
-                            <span class="text-gray-400" data-translate="airline">Compagnia:</span>
-                            <div class="font-semibold" id="flight-airline">-</div>
-                        </div>
-                        <div class="text-2xl font-bold text-yellow-400 mb-4" id="flight-price">-</div>
-                        <button class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all" id="book-flight">
-                            <span data-translate="bookFlight">Prenota Volo</span> →
-                        </button>
+    <!-- STEP 3: RESULTS -->
+    <div id="result-step" class="hidden">
+        <div class="container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <!-- Destination Header -->
+                <div class="glass-card rounded-2xl p-8 text-center mb-8">
+                    <h2 class="text-4xl font-bold text-yellow-400 mb-3" id="destination-name">Loading...</h2>
+                    <p class="text-xl italic mb-2" id="destination-tagline">...</p>
+                    <p class="text-gray-300" id="destination-country">...</p>
+                </div>
+
+                <!-- Narrative -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold mb-6 text-center" data-translate="yourJourney">Il tuo viaggio</h3>
+                    <div class="narrative-text glass-card rounded-xl" id="narrative-text">
+                        <!-- La narrativa verrà inserita qui -->
                     </div>
                 </div>
-                
-                <!-- Card Hotel -->
-                <div class="glass-card rounded-2xl p-6">
-                    <h3 class="text-xl font-bold mb-4 text-yellow-400">🏨 <span data-translate="yourHotel">Il tuo hotel</span></h3>
-                    <div id="hotel-details" class="text-white">
-                        <div class="mb-3">
-                            <div class="font-semibold text-lg" id="hotel-name">-</div>
-                            <div class="text-yellow-400" id="hotel-stars">-</div>
-                        </div>
-                        <div class="mb-3">
-                            <span class="text-gray-400" data-translate="rating">Valutazione:</span>
-                            <div class="font-semibold" id="hotel-rating">-</div>
-                        </div>
-                        <div class="mb-3">
-                            <span class="text-gray-400" data-translate="roomType">Tipo camera:</span>
-                            <div class="font-semibold" id="hotel-room">-</div>
-                        </div>
-                        <div class="text-2xl font-bold text-yellow-400 mb-4" id="hotel-price">-</div>
-                        <button class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-300 hover:to-orange-400 transition-all" id="book-hotel">
-                            <span data-translate="bookHotel">Prenota Hotel</span> →
-                        </button>
-                    </div>
+
+                <!-- Immagine destinazione -->
+                <div class="mb-8 text-center">
+                    <img id="destination-image" class="rounded-xl shadow-2xl mx-auto max-w-full" style="max-height: 400px;" alt="Destination">
                 </div>
-            </div>
-            
-            <!-- Totale -->
-            <div class="glass-card rounded-2xl p-6 text-center mb-6">
-                <h3 class="text-2xl font-bold text-white mb-2">💰 <span data-translate="totalFor">Totale per</span> <span id="total-people">2</span> <span data-translate="persons">persone</span></h3>
-                <div class="text-4xl font-bold text-yellow-400" id="total-price">-</div>
-            </div>
-            
-            <!-- Citazione -->
-            <div class="glass-card rounded-2xl p-6 text-center">
-                <p class="text-lg text-white italic mb-2" id="quote-text">"..."</p>
-                <p class="text-gray-400" id="quote-author">- ...</p>
-            </div>
-            
-            <!-- Bottone Nuova Ricerca -->
-            <div class="text-center mt-8">
-                <button onclick="location.reload()" 
-                        class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl">
-                    🎲 Re-Gloob!
-                </button>
+
+                <!-- Citazione -->
+                <div class="mb-8">
+                    <blockquote class="text-center italic text-lg text-gray-300">
+                        <p id="travel-quote" class="mb-2"></p>
+                        <cite class="text-sm text-gray-400">— <span id="quote-author"></span></cite>
+                    </blockquote>
+                </div>
+
+                <!-- Book Button -->
+                <div class="text-center">
+                    <button onclick="bookTrip()" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-full text-xl hover:from-yellow-300 hover:to-orange-400 transition-all transform hover:scale-105 mb-4">
+                        <span data-translate="bookNow">Prenota</span> →
+                    </button>
+                    <br>
+                    <button onclick="location.reload()" class="text-gray-400 hover:text-white transition-all">
+                        <span data-translate="tryAgain">Regloob</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // TRADUZIONI
+        // Traduzioni
         const translations = {
             it: {
-                subtitle: "Zero stress, book happiness! ✈️",
-                budget: "Budget totale",
-                people: "Quante persone",
-                person1: "1 persona",
-                person2: "2 persone",
-                person3: "3 persone",
-                person4: "4 persone",
-                when: "Quando partiamo",
-                today: "OGGI",
-                duration: "Per quanto tempo",
-                twoDays: "Due giorni",
-                threeDays: "Tre giorni",
-                fourDays: "Quattro giorni",
-                fiveDays: "Cinque giorni",
-                oneWeek: "Una settimana",
-                tenDays: "Dieci giorni",
-                twoWeeks: "Due settimane",
-                hotelCategory: "Categoria hotel",
-                stars1: "1 stella",
-                stars2: "2 stelle",
-                stars3: "3 stelle",
-                stars4: "4 stelle",
-                stars5: "5 stelle",
-                travelVibes: "Travel vibes",
-                sea: "🏖️ MARE",
-                city: "🎨 CITTÀ D'ARTE",
-                mountain: "🏔️ MONTAGNA",
-                whereFrom: "Da dove decolliamo?",
-                searchAirport: "Cerca il tuo aeroporto...",
-                letsGo: "Voliamo! 🛫",
-                findingAdventure: "Sto trovando la tua prossima avventura",
-                yourFlight: "Il tuo volo",
-                yourHotel: "Il tuo hotel",
-                outbound: "Andata:",
-                return: "Ritorno:",
-                airline: "Compagnia:",
-                bookFlight: "Prenota Volo",
-                rating: "Valutazione:",
-                roomType: "Tipo camera:",
-                roomStandard: "Camera standard",
-                roomSuperior: "Camera superior",
-                roomSuite: "Suite",
-                bookHotel: "Prenota Hotel",
-                totalFor: "Totale per",
-                persons: "persone",
-                months: ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"],
-                days: ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"]
+                tagline: "Slide your travel vibes",
+                habitatLabel: "Habitat",
+                rangeLabel: "Range", 
+                vibesLabel: "Vibes",
+                sea: "MARE",
+                city: "CITTÀ",
+                mountain: "MONTAGNA",
+                comfort: "COMFORT",
+                curious: "CURIOUS",
+                bloom: "BLOOM",
+                movida: "MOVIDA",
+                zen: "ZEN",
+                gourmet: "GOURMET",
+                wild: "WILD",
+                design: "DESIGN",
+                romantic: "ROMANTIC",
+                culture: "CULTURE",
+                glamour: "GLAMOUR",
+                gloobIt: "GLOOB IT!",
+                gloobing: "Gloobing...",
+                yourJourney: "Il tuo viaggio",
+                bookNow: "Prenota",
+                tryAgain: "Regloob"
             },
             en: {
-                subtitle: "Zero stress, book happiness! ✈️",
-                budget: "Total budget",
-                people: "How many people",
-                person1: "1 person",
-                person2: "2 people",
-                person3: "3 people",
-                person4: "4 people",
-                when: "When to go",
-                today: "TODAY",
-                duration: "How long",
-                twoDays: "Two days",
-                threeDays: "Three days",
-                fourDays: "Four days",
-                fiveDays: "Five days",
-                oneWeek: "One week",
-                tenDays: "Ten days",
-                twoWeeks: "Two weeks",
-                hotelCategory: "Hotel category",
-                stars1: "1 star",
-                stars2: "2 stars",
-                stars3: "3 stars",
-                stars4: "4 stars",
-                stars5: "5 stars",
-                travelVibes: "Travel vibes",
-                sea: "🏖️ SEA",
-                city: "🎨 ART CITY",
-                mountain: "🏔️ MOUNTAIN",
-                whereFrom: "Where from?",
-                searchAirport: "Search your airport...",
-                letsGo: "Let's fly! 🛫",
-                findingAdventure: "Finding your next adventure",
-                yourFlight: "Your flight",
-                yourHotel: "Your hotel",
-                outbound: "Outbound:",
-                return: "Return:",
-                airline: "Airline:",
-                bookFlight: "Book Flight",
-                rating: "Rating:",
-                roomType: "Room type:",
-                roomStandard: "Standard room",
-                roomSuperior: "Superior room",
-                roomSuite: "Suite",
-                bookHotel: "Book Hotel",
-                totalFor: "Total for",
-                persons: "people",
-                months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+                tagline: "Slide your travel vibes",
+                habitatLabel: "Habitat",
+                rangeLabel: "Range",
+                vibesLabel: "Vibes",
+                sea: "SEA",
+                city: "CITY",
+                mountain: "MOUNTAIN",
+                comfort: "COMFORT",
+                curious: "CURIOUS",
+                bloom: "BLOOM",
+                movida: "PARTY",
+                zen: "ZEN",
+                gourmet: "GOURMET",
+                wild: "WILD",
+                design: "DESIGN",
+                romantic: "ROMANTIC",
+                culture: "CULTURE",
+                glamour: "GLAMOUR",
+                gloobIt: "GLOOB IT!",
+                gloobing: "Gloobing...",
+                yourJourney: "Your journey",
+                bookNow: "Book",
+                tryAgain: "Regloob"
+            },
+            zh: {
+                tagline: "滑动你的旅行心情",
+                habitatLabel: "Habitat",
+                rangeLabel: "距离",
+                vibesLabel: "Vibes",
+                sea: "海边",
+                city: "城市",
+                mountain: "山区",
+                comfort: "舒适",
+                curious: "好奇",
+                bloom: "绽放",
+                movida: "派对",
+                zen: "禅意",
+                gourmet: "美食",
+                wild: "狂野",
+                design: "设计",
+                romantic: "浪漫",
+                culture: "文化",
+                glamour: "魅力",
+                gloobIt: "开始探索！",
+                gloobing: "探索中...",
+                yourJourney: "你的旅程",
+                bookNow: "预订",
+                tryAgain: "重新探索"
             },
             es: {
-                subtitle: "¡Sin estrés, reserva felicidad! ✈️",
-                budget: "Presupuesto total",
-                people: "Cuántas personas",
-                person1: "1 persona",
-                person2: "2 personas",
-                person3: "3 personas",
-                person4: "4 personas",
-                when: "Cuándo salimos",
-                today: "HOY",
-                duration: "Por cuánto tiempo",
-                twoDays: "Dos días",
-                threeDays: "Tres días",
-                fourDays: "Cuatro días",
-                fiveDays: "Cinco días",
-                oneWeek: "Una semana",
-                tenDays: "Diez días",
-                twoWeeks: "Dos semanas",
-                hotelCategory: "Categoría hotel",
-                stars1: "1 estrella",
-                stars2: "2 estrellas",
-                stars3: "3 estrellas",
-                stars4: "4 estrellas",
-                stars5: "5 estrellas",
-                travelVibes: "Travel vibes",
-                sea: "🏖️ MAR",
-                city: "🎨 CIUDAD DE ARTE",
-                mountain: "🏔️ MONTAÑA",
-                whereFrom: "¿Desde dónde?",
-                searchAirport: "Busca tu aeropuerto...",
-                letsGo: "¡Volemos! 🛫",
-                findingAdventure: "Encontrando tu próxima aventura",
-                yourFlight: "Tu vuelo",
-                yourHotel: "Tu hotel",
-                outbound: "Ida:",
-                return: "Vuelta:",
-                airline: "Aerolínea:",
-                bookFlight: "Reservar Vuelo",
-                rating: "Valoración:",
-                roomType: "Tipo habitación:",
-                roomStandard: "Habitación estándar",
-                roomSuperior: "Habitación superior",
-                roomSuite: "Suite",
-                bookHotel: "Reservar Hotel",
-                totalFor: "Total para",
-                persons: "personas",
-                months: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
-                days: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
+                tagline: "Desliza tus vibras viajeras",
+                habitatLabel: "Hábitat",
+                rangeLabel: "Alcance",
+                vibesLabel: "Vibras",
+                sea: "MAR",
+                city: "CIUDAD",
+                mountain: "MONTAÑA",
+                comfort: "COMFORT",
+                curious: "CURIOUS",
+                bloom: "FLORECER",
+                movida: "MOVIDA",
+                zen: "ZEN",
+                gourmet: "GOURMET",
+                wild: "SALVAJE",
+                design: "DISEÑO",
+                romantic: "ROMÁNTICO",
+                culture: "CULTURA",
+                glamour: "GLAMOUR",
+                gloobIt: "¡GLOOB IT!",
+                gloobing: "Gloobeando...",
+                yourJourney: "Tu viaje",
+                bookNow: "Reserva",
+                tryAgain: "Regloob"
+            },
+            hi: {
+                tagline: "अपनी ट्रैवल वाइब्स स्लाइड करें",
+                habitatLabel: "Habitat",
+                rangeLabel: "Range",
+                vibesLabel: "Vibes",
+                sea: "समुद्र",
+                city: "शहर",
+                mountain: "पहाड़",
+                comfort: "COMFORT",
+                curious: "CURIOUS", 
+                bloom: "BLOOM",
+                movida: "पार्टी",
+                zen: "शांति",
+                gourmet: "स्वादिष्ट",
+                wild: "जंगली",
+                design: "डिज़ाइन",
+                romantic: "रोमांटिक",
+                culture: "संस्कृति",
+                glamour: "ग्लैमर",
+                gloobIt: "चलो चलें!",
+                gloobing: "खोज रहे हैं...",
+                yourJourney: "आपकी यात्रा",
+                bookNow: "बुक करें",
+                tryAgain: "फिर से"
+            },
+            ar: {
+                tagline: "حرك أجواء سفرك",
+                habitatLabel: "Habitat",
+                rangeLabel: "مدى",
+                vibesLabel: "Vibes",
+                sea: "بحر",
+                city: "مدينة",
+                mountain: "جبال",
+                comfort: "راحة",
+                curious: "فضول",
+                bloom: "ازدهار",
+                movida: "حفلة",
+                zen: "هدوء",
+                gourmet: "طعام فاخر",
+                wild: "بري",
+                design: "تصميم",
+                romantic: "رومانسي",
+                culture: "ثقافة",
+                glamour: "سحر",
+                gloobIt: "هيا بنا!",
+                gloobing: "جاري البحث...",
+                yourJourney: "رحلتك",
+                bookNow: "احجز",
+                tryAgain: "جرب مرة أخرى"
             },
             fr: {
-                subtitle: "Zéro stress, réservez le bonheur! ✈️",
-                budget: "Budget total",
-                people: "Combien de personnes",
-                person1: "1 personne",
-                person2: "2 personnes",
-                person3: "3 personnes",
-                person4: "4 personnes",
-                when: "Quand partir",
-                today: "AUJOURD'HUI",
-                duration: "Pour combien de temps",
-                twoDays: "Deux jours",
-                threeDays: "Trois jours",
-                fourDays: "Quatre jours",
-                fiveDays: "Cinq jours",
-                oneWeek: "Une semaine",
-                tenDays: "Dix jours",
-                twoWeeks: "Deux semaines",
-                hotelCategory: "Catégorie hôtel",
-                stars1: "1 étoile",
-                stars2: "2 étoiles",
-                stars3: "3 étoiles",
-                stars4: "4 étoiles",
-                stars5: "5 étoiles",
-                travelVibes: "Travel vibes",
-                sea: "🏖️ MER",
-                city: "🎨 VILLE D'ART",
-                mountain: "🏔️ MONTAGNE",
-                whereFrom: "D'où partez-vous?",
-                searchAirport: "Cherchez votre aéroport...",
-                letsGo: "Volons! 🛫",
-                findingAdventure: "Je trouve votre prochaine aventure",
-                yourFlight: "Votre vol",
-                yourHotel: "Votre hôtel",
-                outbound: "Aller:",
-                return: "Retour:",
-                airline: "Compagnie:",
-                bookFlight: "Réserver Vol",
-                rating: "Évaluation:",
-                roomType: "Type de chambre:",
-                roomStandard: "Chambre standard",
-                roomSuperior: "Chambre supérieure",
-                roomSuite: "Suite",
-                bookHotel: "Réserver Hôtel",
-                totalFor: "Total pour",
-                persons: "personnes",
-                months: ["jan", "fév", "mar", "avr", "mai", "juin", "juil", "aoû", "sep", "oct", "nov", "déc"],
-                days: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"]
+                tagline: "Glisse tes vibes de voyage",
+                habitatLabel: "Habitat",
+                rangeLabel: "Portée",
+                vibesLabel: "Vibes",
+                sea: "MER",
+                city: "VILLE",
+                mountain: "MONTAGNE",
+                comfort: "CONFORT",
+                curious: "CURIEUX",
+                bloom: "ÉCLOSION",
+                movida: "FÊTE",
+                zen: "ZEN",
+                gourmet: "GOURMET",
+                wild: "SAUVAGE",
+                design: "DESIGN",
+                romantic: "ROMANTIQUE",
+                culture: "CULTURE",
+                glamour: "GLAMOUR",
+                gloobIt: "GLOOB IT!",
+                gloobing: "Gloobing...",
+                yourJourney: "Ton voyage",
+                bookNow: "Réserver",
+                tryAgain: "Regloob"
             },
-            de: {
-                subtitle: "Kein Stress, buche Glück! ✈️",
-                budget: "Gesamtbudget",
-                people: "Wie viele Personen",
-                person1: "1 Person",
-                person2: "2 Personen",
-                person3: "3 Personen",
-                person4: "4 Personen",
-                when: "Wann geht's los",
-                today: "HEUTE",
-                duration: "Wie lange",
-                twoDays: "Zwei Tage",
-                threeDays: "Drei Tage",
-                fourDays: "Vier Tage",
-                fiveDays: "Fünf Tage",
-                oneWeek: "Eine Woche",
-                tenDays: "Zehn Tage",
-                twoWeeks: "Zwei Wochen",
-                hotelCategory: "Hotelkategorie",
-                stars1: "1 Stern",
-                stars2: "2 Sterne",
-                stars3: "3 Sterne",
-                stars4: "4 Sterne",
-                stars5: "5 Sterne",
-                travelVibes: "Travel vibes",
-                sea: "🏖️ MEER",
-                city: "🎨 KUNSTSTADT",
-                mountain: "🏔️ BERGE",
-                whereFrom: "Von wo?",
-                searchAirport: "Flughafen suchen...",
-                letsGo: "Los geht's! 🛫",
-                findingAdventure: "Ich finde dein nächstes Abenteuer",
-                yourFlight: "Dein Flug",
-                yourHotel: "Dein Hotel",
-                outbound: "Hinflug:",
-                return: "Rückflug:",
-                airline: "Fluggesellschaft:",
-                bookFlight: "Flug buchen",
-                rating: "Bewertung:",
-                roomType: "Zimmertyp:",
-                roomStandard: "Standardzimmer",
-                roomSuperior: "Superior Zimmer",
-                roomSuite: "Suite",
-                bookHotel: "Hotel buchen",
-                totalFor: "Gesamt für",
-                persons: "Personen",
-                months: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
-                days: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+            pt: {
+                tagline: "Deslize suas vibes de viagem",
+                habitatLabel: "Habitat",
+                rangeLabel: "Alcance",
+                vibesLabel: "Vibes",
+                sea: "MAR",
+                city: "CIDADE",
+                mountain: "MONTANHA",
+                comfort: "COMFORT",
+                curious: "CURIOUS",
+                bloom: "FLORESCER",
+                movida: "FESTA",
+                zen: "ZEN",
+                gourmet: "GOURMET",
+                wild: "SELVAGEM",
+                design: "DESIGN",
+                romantic: "ROMÂNTICO",
+                culture: "CULTURA",
+                glamour: "GLAMOUR",
+                gloobIt: "GLOOB IT!",
+                gloobing: "Gloobing...",
+                yourJourney: "Sua viagem",
+                bookNow: "Reserve",
+                tryAgain: "Regloob"
+            },
+            ru: {
+                tagline: "Слайди свои трэвел вайбы",
+                habitatLabel: "Habitat",
+                rangeLabel: "Дальность",
+                vibesLabel: "Вайбс",
+                sea: "МОРЕ",
+                city: "ГОРОД",
+                mountain: "ГОРЫ",
+                comfort: "КОМФОРТ",
+                curious: "ЛЮБОПЫТСТВО",
+                bloom: "РАСЦВЕТ",
+                movida: "ВЕЧЕРИНКА",
+                zen: "ДЗЕН",
+                gourmet: "ГУРМЭ",
+                wild: "ДИКИЙ",
+                design: "ДИЗАЙН",
+                romantic: "РОМАНТИКА",
+                culture: "КУЛЬТУРА",
+                glamour: "ГЛАМУР",
+                gloobIt: "ПОЕХАЛИ!",
+                gloobing: "Поиск...",
+                yourJourney: "Твое путешествие",
+                bookNow: "Забронировать",
+                tryAgain: "Еще раз"
             }
         };
 
-        // STATO GLOBALE
-        let currentLang = 'it';
-        let selectedDate = new Date();
-        let vibePosition = 50;
-        let isDragging = false;
-        let clickTimer = null;
-        let selectedDuration = 2;
-        let userLocation = null;
-        let selectedAirport = null;
-        let hasMovedSlider = false;
-        let selectedStars = 3;
-        
-        // DATABASE DESTINAZIONI (versione ridotta per esempio)
-        const destinations = [
-            {
-                position: 0,
-                name: 'Santorini',
-                country: 'Greece',
-                tagline: {
-                    it: 'Il sogno greco',
-                    en: 'The Greek dream',
-                    es: 'El sueño griego',
-                    fr: 'Le rêve grec',
-                    de: 'Der griechische Traum'
-                },
-                description: {
-                    it: 'Tramonti che il mondo ci invidia, case bianche e cupole blu che si specchiano nell\'Egeo.',
-                    en: 'Sunsets the world envies, white houses and blue domes reflected in the Aegean.',
-                    es: 'Atardeceres que el mundo envidia, casas blancas y cúpulas azules reflejadas en el Egeo.',
-                    fr: 'Des couchers de soleil que le monde envie, maisons blanches et dômes bleus reflétés dans la mer Égée.',
-                    de: 'Sonnenuntergänge, um die uns die Welt beneidet, weiße Häuser und blaue Kuppeln spiegeln sich in der Ägäis.'
-                },
-                searchTerm: 'Santorini,+Greece',
-                priceIndex: 4,
-                quote: {
-                    it: '"In nessun altro luogo il tramonto ha lo stesso sapore" - Odysseas Elytis',
-                    en: '"Nowhere else does the sunset taste the same" - Odysseas Elytis',
-                    es: '"En ningún otro lugar el atardecer tiene el mismo sabor" - Odysseas Elytis',
-                    fr: '"Nulle part ailleurs le coucher de soleil n\'a le même goût" - Odysseas Elytis',
-                    de: '"Nirgendwo sonst schmeckt der Sonnenuntergang gleich" - Odysseas Elytis'
-                }
-            },
-            {
-                position: 50,
-                name: 'Rome',
-                country: 'Italy',
-                tagline: {
-                    it: 'La Città Eterna',
-                    en: 'The Eternal City',
-                    es: 'La Ciudad Eterna',
-                    fr: 'La Ville Éternelle',
-                    de: 'Die Ewige Stadt'
-                },
-                description: {
-                    it: 'Dove ogni angolo è un museo e la storia si respira tra carbonara e Colosseo.',
-                    en: 'Where every corner is a museum and history breathes between carbonara and Colosseum.',
-                    es: 'Donde cada esquina es un museo y la historia se respira entre carbonara y Coliseo.',
-                    fr: 'Où chaque coin est un musée et l\'histoire respire entre carbonara et Colisée.',
-                    de: 'Wo jede Ecke ein Museum ist und Geschichte zwischen Carbonara und Kolosseum atmet.'
-                },
-                searchTerm: 'Rome,+Italy',
-                priceIndex: 3,
-                quote: {
-                    it: '"Roma è la capitale del mondo" - Goethe',
-                    en: '"Rome is the capital of the world" - Goethe',
-                    es: '"Roma es la capital del mundo" - Goethe',
-                    fr: '"Rome est la capitale du monde" - Goethe',
-                    de: '"Rom ist die Hauptstadt der Welt" - Goethe'
-                }
-            },
-            {
-                position: 100,
-                name: 'Zermatt',
-                country: 'Switzerland',
-                tagline: {
-                    it: 'All\'ombra del Cervino',
-                    en: 'In the shadow of Matterhorn',
-                    es: 'A la sombra del Cervino',
-                    fr: 'À l\'ombre du Cervin',
-                    de: 'Im Schatten des Matterhorns'
-                },
-                description: {
-                    it: 'Il villaggio senza auto dove il Cervino domina ogni panorama e la neve è garantita.',
-                    en: 'The car-free village where Matterhorn dominates every view and snow is guaranteed.',
-                    es: 'El pueblo sin coches donde el Cervino domina cada vista y la nieve está garantizada.',
-                    fr: 'Le village sans voitures où le Cervin domine chaque vue et la neige est garantie.',
-                    de: 'Das autofreie Dorf, wo das Matterhorn jede Aussicht dominiert und Schnee garantiert ist.'
-                },
-                searchTerm: 'Zermatt,+Switzerland',
-                priceIndex: 5,
-                quote: {
-                    it: '"Il Cervino non si conquista, ti permette di salire" - Edward Whymper',
-                    en: '"The Matterhorn is not conquered, it allows you to climb" - Edward Whymper',
-                    es: '"El Cervino no se conquista, te permite subir" - Edward Whymper',
-                    fr: '"Le Cervin ne se conquiert pas, il vous permet de monter" - Edward Whymper',
-                    de: '"Das Matterhorn wird nicht erobert, es erlaubt dir zu steigen" - Edward Whymper'
-                }
-            }
-        ];
-
-        // FUNZIONE CAMBIO LINGUA
-        function changeLanguage(lang) {
-            currentLang = lang;
-            
-            // Update active button
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.lang === lang);
-            });
-            
-            // Update all translations
-            document.querySelectorAll('[data-translate]').forEach(el => {
-                const key = el.dataset.translate;
-                if (translations[lang][key]) {
-                    el.textContent = translations[lang][key];
-                }
-            });
-            
-            // Update placeholders
-            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
-                const key = el.dataset.translatePlaceholder;
-                if (translations[lang][key]) {
-                    el.placeholder = translations[lang][key];
-                }
-            });
-            
-            // Update dropdowns
-            updateDateMenu();
-            updateDurationMenu();
-            updateStarsLabel();
-            
-            // Update HTML lang
-            document.documentElement.lang = lang;
-        }
-
-        // INIZIALIZZA DATE MENU
-        function initDateMenu() {
-            updateDateMenu();
-        }
-        
-        function updateDateMenu() {
-            const menu = document.getElementById('date-menu');
-            menu.innerHTML = '';
-            
-            const t = translations[currentLang];
-            
-            // OGGI
-            const oggi = document.createElement('div');
-            oggi.className = 'dropdown-item';
-            oggi.textContent = t.today;
-            oggi.onclick = () => selectDate(new Date(), t.today);
-            menu.appendChild(oggi);
-            
-            // Prossimi 30 giorni
-            for (let i = 1; i < 30; i++) {
-                const date = new Date();
-                date.setDate(date.getDate() + i);
-                
-                const item = document.createElement('div');
-                item.className = 'dropdown-item';
-                item.textContent = `${t.days[date.getDay()]} ${date.getDate()} ${t.months[date.getMonth()]}`;
-                item.onclick = () => selectDate(date, item.textContent);
-                menu.appendChild(item);
-            }
-        }
-        
-        // INIZIALIZZA DURATION MENU
-        function initDurationMenu() {
-            updateDurationMenu();
-        }
-        
-        function updateDurationMenu() {
-            const menu = document.getElementById('duration-menu');
-            menu.innerHTML = '';
-            
-            const t = translations[currentLang];
-            const durations = [
-                {value: 2, key: 'twoDays'},
-                {value: 3, key: 'threeDays'},
-                {value: 4, key: 'fourDays'},
-                {value: 5, key: 'fiveDays'},
-                {value: 7, key: 'oneWeek'},
-                {value: 10, key: 'tenDays'},
-                {value: 14, key: 'twoWeeks'}
-            ];
-            
-            durations.forEach(dur => {
-                const item = document.createElement('div');
-                item.className = 'dropdown-item';
-                item.textContent = t[dur.key];
-                item.onclick = () => selectDuration(dur.value, t[dur.key]);
-                menu.appendChild(item);
-            });
-        }
-
-        // TOGGLE DATE MENU
-        function toggleDateMenu() {
-            document.getElementById('date-menu').classList.toggle('hidden');
-            document.getElementById('duration-menu').classList.add('hidden');
-        }
-        
-        // TOGGLE DURATION MENU
-        function toggleDurationMenu() {
-            document.getElementById('duration-menu').classList.toggle('hidden');
-            document.getElementById('date-menu').classList.add('hidden');
-        }
-
-        // SELECT DATE
-        function selectDate(date, text) {
-            selectedDate = date;
-            document.getElementById('when-selected').textContent = text;
-            document.getElementById('date-menu').classList.add('hidden');
-        }
-        
-        // SELECT DURATION
-        function selectDuration(value, text) {
-            selectedDuration = value;
-            document.getElementById('duration-selected').textContent = text;
-            document.getElementById('duration-menu').classList.add('hidden');
-        }
-        
-        // CHECK GEOLOCATION
-        function checkGeolocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        userLocation = {
-                            lat: position.coords.latitude,
-                            lon: position.coords.longitude
-                        };
-                        // In produzione potresti determinare l'aeroporto più vicino
+        // Database destinazioni con narrative
+        const destinations = {
+            // MARE + MOVIDA + COMFORT
+            "sea-movida-comfort": [
+                {
+                    name: "Ibiza",
+                    country: "Spain",
+                    tagline: {
+                        it: "Dove il tramonto diventa festa",
+                        en: "Where sunset becomes the party",
+                        es: "Donde el atardecer se convierte en fiesta",
+                        fr: "Où le coucher de soleil devient fête"
                     },
-                    (error) => {
-                        console.log('Geolocalizzazione non disponibile');
-                    }
-                );
-            }
-        }
-        
-        // FILTER AIRPORTS
-        function filterAirports() {
-            const search = document.getElementById('airport-search').value.toLowerCase();
-            const select = document.getElementById('airport-select');
-            const options = select.getElementsByTagName('option');
-            
-            for (let option of options) {
-                const text = option.textContent.toLowerCase();
-                option.style.display = text.includes(search) ? '' : 'none';
-            }
-        }
-        
-        // CONFIRM AIRPORT
-        function confirmAirport() {
-            const select = document.getElementById('airport-select');
-            if (select.value) {
-                selectedAirport = select.value;
-                
-                document.getElementById('airport-step').classList.add('hidden');
-                document.getElementById('loading-step').classList.remove('hidden');
-                
-                setTimeout(() => {
-                    showResults();
-                }, 3000);
-            } else {
-                alert('Select an airport!');
-            }
-        }
-
-        // MUOVI VIBES DOT
-        function moveVibesDot(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            isDragging = true;
-            const dot = document.getElementById('vibes-dot');
-            dot.classList.add('dragging');
-            dot.classList.remove('clickable');
-            
-            if (clickTimer) {
-                clearTimeout(clickTimer);
-                clickTimer = null;
-            }
-            
-            const slider = document.getElementById('vibes-slider');
-            const rect = slider.getBoundingClientRect();
-            
-            let x;
-            if (event.type.includes('touch')) {
-                x = event.touches[0].clientX - rect.left;
-            } else {
-                x = event.clientX - rect.left;
-            }
-            
-            const percentage = (x / rect.width) * 100;
-            vibePosition = Math.max(0, Math.min(100, percentage));
-            
-            dot.style.left = vibePosition + '%';
-            
-            const centerLabel = document.querySelector('.label-center');
-            
-            if (!hasMovedSlider) {
-                hasMovedSlider = true;
-                if (vibePosition < 35 || vibePosition > 65) {
-                    centerLabel.classList.remove('hidden');
+                    narratives: [
+                        {
+                            it: "Yoga all'alba a Benirràs, i tamburi iniziano a suonare. Salti da una caletta segreta all'altra - l'acqua è smeraldo liquido. Pranzo in un chiringuito dove il tempo non esiste. Tramonto al Café del Mar, poi la notte ti porta dove vuole: beach club, grotte misteriose, terrazze sotto le stelle. L'isola ti ha insegnato che la libertà ha il sapore del sale.",
+                            en: "Dawn yoga at Benirràs, drums begin their rhythm. You hop from one secret cove to another - water like liquid emerald. Lunch at a chiringuito where time doesn't exist. Sunset at Café del Mar, then night takes you where it wants: beach clubs, mysterious caves, terraces under stars. The island teaches you freedom tastes like salt.",
+                            es: "Yoga al amanecer en Benirràs, los tambores empiezan a sonar. Saltas de una cala secreta a otra - el agua es esmeralda líquida. Almuerzo en un chiringuito donde el tiempo no existe. Atardecer en Café del Mar, luego la noche te lleva donde quiere: beach clubs, cuevas misteriosas, terrazas bajo las estrellas. La isla te enseña que la libertad sabe a sal."
+                        },
+                        {
+                            it: "Es Vedrà emerge dalla nebbia come un'apparizione. Mercatino hippy a Las Dalias - compri un braccialetto che profuma di incenso. Paella in una baia nascosta, i piedi nella sabbia. Il pomeriggio scivola tra hammam e massaggi. Cena a Sa Caleta mentre il sole tuffa nel mare. La notte è giovane e tu anche.",
+                            en: "Es Vedrà emerges from the mist like an apparition. Hippy market at Las Dalias - you buy a bracelet that smells of incense. Paella in a hidden bay, feet in the sand. Afternoon slides between hammam and massages. Dinner at Sa Caleta as the sun dives into the sea. The night is young and so are you.",
+                            es: "Es Vedrà emerge de la niebla como una aparición. Mercadillo hippy en Las Dalias - compras una pulsera que huele a incienso. Paella en una bahía escondida, los pies en la arena. La tarde se desliza entre hammam y masajes. Cena en Sa Caleta mientras el sol se sumerge en el mar. La noche es joven y tú también."
+                        },
+                        {
+                            it: "L'isola bianca ti accoglie con le braccia aperte. Fichi e mandorle a colazione, poi via verso l'entroterra segreto. Villaggi di calce dove il tempo scorre diverso. Un vecchio ti indica una spiaggia che non c'è sulle mappe. Ci arrivi al tramonto - solo tu e il Mediterraneo. Le stelle stanotte sono più vicine.",
+                            en: "The white island welcomes you with open arms. Figs and almonds for breakfast, then off to the secret interior. Whitewashed villages where time flows differently. An old man points you to a beach not on any map. You arrive at sunset - just you and the Mediterranean. Tonight the stars are closer.",
+                            es: "La isla blanca te recibe con los brazos abiertos. Higos y almendras para desayunar, luego hacia el interior secreto. Pueblos encalados donde el tiempo fluye diferente. Un anciano te señala una playa que no está en los mapas. Llegas al atardecer - solo tú y el Mediterráneo. Esta noche las estrellas están más cerca."
+                        }
+                    ],
+            // MONTAGNA + GOURMET + COMFORT
+            "mountain-gourmet-comfort": [
+                {
+                    name: "Val d'Aosta",
+                    country: "Italy",
+                    tagline: {
+                        it: "Dove il gusto incontra le vette",
+                        en: "Where taste meets peaks",
+                        fr: "Où le goût rencontre les sommets"
+                    },
+                    narratives: [
+                        {
+                            it: "Il Monte Bianco ti saluta dalla finestra. Colazione con fontina d'alpeggio e miele di rododendro. Le terme di Pré-Saint-Didier - acqua calda mentre nevica sulle cime. Pranzo in una baita segreta: polenta concia e cervo al ginepro. Il pomeriggio scompare tra vigneti eroici e castelli medievali. Cena stellata con vista sul gigante bianco. La grappa alle erbe alpine chiude una giornata dove ogni boccone racconta la montagna.",
+                            en: "Mont Blanc greets you from the window. Breakfast with alpine fontina and rhododendron honey. Pré-Saint-Didier thermal baths - hot water while snow falls on peaks. Lunch in a secret mountain hut: polenta concia and juniper venison. Afternoon disappears between heroic vineyards and medieval castles. Starred dinner overlooking the white giant. Alpine herb grappa closes a day where every bite tells the mountain's story.",
+                            fr: "Le Mont Blanc vous salue depuis la fenêtre. Petit-déjeuner avec fontine d'alpage et miel de rhododendron. Les thermes de Pré-Saint-Didier - eau chaude pendant qu'il neige sur les sommets. Déjeuner dans un chalet secret: polenta concia et cerf au genièvre. L'après-midi disparaît entre vignobles héroïques et châteaux médiévaux."
+                        }
+                    ]
                 }
-            } else {
-                centerLabel.classList.remove('hidden');
-            }
-            
-            clickTimer = setTimeout(() => {
-                isDragging = false;
-                dot.classList.remove('dragging');
-                dot.classList.add('clickable');
-            }, 1000);
-        }
-        
-        // GESTISCI CLICK SUL GLOBO
-        function handleGlobeClick(event) {
-            event.stopPropagation();
-            if (!isDragging && document.getElementById('vibes-dot').classList.contains('clickable')) {
-                startGloob();
-            }
-        }
-
-        // START GLOOB
-        async function startGloob() {
-            const budget = parseInt(document.getElementById('budget').value);
-            
-            if (budget < 100) {
-                alert(currentLang === 'it' ? 'Budget minimo €100' : 'Minimum budget €100');
-                return;
-            }
-            
-            if (selectedAirport) {
-                document.getElementById('form-step').classList.add('hidden');
-                document.getElementById('loading-step').classList.remove('hidden');
-                
-                setTimeout(() => {
-                    showResults();
-                }, 3000);
-            } else {
-                document.getElementById('form-step').classList.add('hidden');
-                document.getElementById('airport-step').classList.remove('hidden');
-            }
-        }
-
-        // MOSTRA RISULTATI
-        async function showResults() {
-            document.getElementById('loading-step').classList.add('hidden');
-            document.getElementById('result-step').classList.remove('hidden');
-            
-            const budget = parseInt(document.getElementById('budget').value);
-            const people = parseInt(document.getElementById('people').value);
-            const currency = document.getElementById('currency').value;
-            const currencySymbol = currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : currency === 'USD' ? '$' : currency + ' ';
-            
-            // Trova destinazione
-            const destination = getDestinationByPosition(vibePosition);
-            
-            // Prezzi
-            const basePrice = [40, 60, 90, 150, 280][selectedStars - 1];
-            const hotelPrice = Math.round(basePrice * (destination.priceIndex / 3));
-            const hotelTotal = hotelPrice * selectedDuration;
-            
-            const flightPrice = Math.round(80 + (destination.priceIndex * 20) + (Math.random() * 40));
-            const flightTotal = flightPrice * 2;
-            
-            const total = hotelTotal + flightTotal;
-            
-            // Date
-            const checkIn = new Date(selectedDate);
-            const checkOut = new Date(selectedDate);
-            checkOut.setDate(checkOut.getDate() + selectedDuration);
-            
-            // Aggiorna UI con traduzioni
-            document.getElementById('destination-name').textContent = `${destination.name}, ${destination.country}`;
-            document.getElementById('ai-description').textContent = destination.description[currentLang] || destination.description.en;
-            document.getElementById('total-people').textContent = people;
-            
-            // Hotel
-            const hotelNames = ['Grand Hotel', 'Boutique Hotel', 'Hotel Central', 'Hotel Vista', 'Luxury Resort'];
-            const hotelName = `${hotelNames[selectedStars-1]} ${destination.name}`;
-            
-            document.getElementById('hotel-name').textContent = hotelName;
-            document.getElementById('hotel-stars').textContent = '⭐'.repeat(selectedStars);
-            document.getElementById('hotel-rating').textContent = `${8 + (selectedStars * 0.3)}/10`;
-            
-            const t = translations[currentLang];
-            document.getElementById('hotel-room').textContent = selectedStars <= 2 ? t.roomStandard : selectedStars <= 4 ? t.roomSuperior : t.roomSuite;
-            document.getElementById('hotel-price').textContent = `${currencySymbol}${hotelTotal}`;
-            
-            // Volo
-            const airlines = ['Ryanair', 'EasyJet', 'Vueling', 'Wizz Air', 'ITA Airways', 'Lufthansa'];
-            document.getElementById('flight-outbound').textContent = 
-                `${selectedAirport} → ${destination.name} | ${checkIn.toLocaleDateString(currentLang)} 08:30`;
-            document.getElementById('flight-return').textContent = 
-                `${destination.name} → ${selectedAirport} | ${checkOut.toLocaleDateString(currentLang)} 18:45`;
-            document.getElementById('flight-airline').textContent = airlines[Math.floor(Math.random() * airlines.length)];
-            document.getElementById('flight-price').textContent = `${currencySymbol}${flightTotal}`;
-            
-            // Totale
-            document.getElementById('total-price').textContent = `${currencySymbol}${total}`;
-            
-            // Citazione
-            const quote = destination.quote[currentLang] || destination.quote.en;
-            const quoteParts = quote.split(' - ');
-            document.getElementById('quote-text').textContent = quoteParts[0];
-            document.getElementById('quote-author').textContent = '- ' + quoteParts[1];
-            
-            // Link Trip.com
-            document.getElementById('book-hotel').onclick = () => {
-                const checkInDate = checkIn.toISOString().split('T')[0];
-                const checkOutDate = checkOut.toISOString().split('T')[0];
-                
-                const tripUrl = `https://trip.tpk.lu/DCFSQxzu?url=https://www.trip.com/hotels/list?cityName=${encodeURIComponent(destination.name)}&checkIn=${checkInDate}&checkOut=${checkOutDate}&adult=${people}&crn=1`;
-                
-                window.open(tripUrl, '_blank');
-            };
-            
-            // Link Skyscanner
-            document.getElementById('book-flight').onclick = () => {
-                window.open(`https://www.skyscanner.com`, '_blank');
-            };
-        }
-        
-        // TROVA DESTINAZIONE PER POSIZIONE
-        function getDestinationByPosition(position) {
-            // Per questo esempio, ritorna una destinazione random
-            return destinations[Math.floor(Math.random() * destinations.length)];
-        }
-
-        // SELECT STARS
-        function selectStars(stars) {
-            selectedStars = stars;
-            const starElements = document.querySelectorAll('.star');
-            
-            starElements.forEach((star, index) => {
-                if (index < stars) {
-                    star.classList.add('active');
-                } else {
-                    star.classList.remove('active');
+            ],
+            // MONTAGNA + DESIGN + CURIOUS  
+            "mountain-design-curious": [
+                {
+                    name: "Innsbruck",
+                    country: "Austria",
+                    tagline: {
+                        it: "Dove l'architettura scala le vette",
+                        en: "Where architecture climbs peaks",
+                        de: "Wo Architektur Gipfel erklimmt"
+                    },
+                    narratives: [
+                        {
+                            it: "La funivia di Zaha Hadid ti porta in cielo. Colazione al Bergisel con vista a 360 gradi. Il centro storico mescola barocco e avanguardia - il Tetto d'Oro brilla mentre entri al museo del XXI secolo. Lunch al Cloud 9, igloo di design a 3000 metri. I cristalli Swarovski raccontano storie di luce. La sera, sauna panoramica e cocktail molecular nel cuore delle Alpi. Innsbruck ti mostra che il futuro può abitare tra le montagne.",
+                            en: "Zaha Hadid's cable car takes you to heaven. Breakfast at Bergisel with 360-degree views. The old town mixes baroque and avant-garde - Golden Roof shines as you enter the 21st century museum. Lunch at Cloud 9, design igloo at 3000 meters. Swarovski crystals tell stories of light. Evening brings panoramic sauna and molecular cocktails in the heart of the Alps. Innsbruck shows you the future can live among mountains.",
+                            de: "Die Seilbahn von Zaha Hadid bringt dich in den Himmel. Frühstück am Bergisel mit 360-Grad-Blick. Die Altstadt mischt Barock und Avantgarde - das Goldene Dachl glänzt während du das Museum des 21. Jahrhunderts betrittst. Mittagessen im Cloud 9, Design-Iglu auf 3000 Metern."
+                        }
+                    ]
                 }
-            });
-            
-            updateStarsLabel();
-        }
-        
-        function updateStarsLabel() {
-            const t = translations[currentLang];
-            const labels = [t.stars1, t.stars2, t.stars3, t.stars4, t.stars5];
-            document.getElementById('stars-label').textContent = labels[selectedStars - 1];
-        }
-        
-        // INIT AL CARICAMENTO
+            ],
+            // MONTAGNA + MOVIDA + BLOOM
+            "mountain-movida-bloom": [
+                {
+                    name: "Chamonix",
+                    country: "France", 
+                    tagline: {
+                        it: "Dove l'adrenalina incontra l'altitude",
+                        en: "Where adrenaline meets altitude",
+                        fr: "Où l'adrénaline rencontre l'altitude"
+                    },
+                    narratives: [
+                        {
+                            it: "L'Aiguille du Midi ti aspetta. Prima luce sulla Mer de Glace - sci fuoripista nella polvere vergine. Pranzo al rifugio, vin brulé e racconti di alpinisti. Il pomeriggio voli col parapendio sopra la valle. Aperitivo al Chambre Neuf - DJ set con vista sul Monte Bianco. La notte ti porta da una festa in baita all'altra, mentre le stelle alpine vegliano sui tuoi eccessi. Chamonix ti insegna che si può ballare anche a 4000 metri.",
+                            en: "Aiguille du Midi awaits. First light on Mer de Glace - off-piste skiing in virgin powder. Lunch at the refuge, mulled wine and mountaineer tales. Afternoon paragliding over the valley. Aperitif at Chambre Neuf - DJ set overlooking Mont Blanc. Night takes you from one chalet party to another, while alpine stars watch over your excesses. Chamonix teaches you can dance even at 4000 meters.",
+                            fr: "L'Aiguille du Midi t'attend. Première lumière sur la Mer de Glace - ski hors-piste dans la poudreuse vierge. Déjeuner au refuge, vin chaud et récits d'alpinistes. L'après-midi tu voles en parapente au-dessus de la vallée. Apéro au Chambre Neuf - DJ set avec vue sur le Mont Blanc."
+                        }
+                    ]
+                }
+            ]
+                },
+                {
+                    name: "Mykonos",
+                    country: "Greece",
+                    tagline: {
+                        it: "Dove gli dei fanno festa",
+                        en: "Where gods come to party",
+                        es: "Donde los dioses vienen de fiesta",
+                        fr: "Où les dieux font la fête"
+                    },
+                    narratives: [
+                        {
+                            it: "Il sole ti sveglia attraverso le persiane bianche. Colazione con fichi e miele vista mare, poi ti perdi nei vicoli del borgo fino a Paradise Beach. L'acqua è cristallo puro. Nel pomeriggio scopri una taverna nascosta dove il padrone ti racconta storie di dei e pescatori. Al tramonto sei a Little Venice, i piedi a mollo, un cocktail che sa di estate infinita. La notte inizia dolce e finisce con l'alba - balli a piedi nudi sulla sabbia mentre il cielo si tinge di rosa. Domani non sarai più la stessa persona.",
+                            en: "Sun wakes you through white shutters. Breakfast of figs and honey with sea view, then you lose yourself in village alleys until Paradise Beach. Water like pure crystal. Afternoon brings a hidden taverna where the owner tells tales of gods and fishermen. Sunset finds you in Little Venice, feet in water, cocktail tasting of endless summer. Night starts sweet and ends with dawn - barefoot dancing on sand as sky turns pink. Tomorrow you won't be the same person.",
+                            es: "El sol te despierta a través de las persianas blancas. Desayuno con higos y miel con vista al mar, luego te pierdes en los callejones hasta Paradise Beach. El agua es cristal puro. Por la tarde descubres una taberna escondida donde el dueño cuenta historias de dioses y pescadores. Al atardecer estás en Little Venice, los pies en el agua, un cóctel que sabe a verano infinito. La noche empieza dulce y termina con el alba - bailas descalzo en la arena mientras el cielo se tiñe de rosa."
+                        }
+                    ]
+                }
+            ],
+            // CITTÀ + CULTURE + CURIOUS
+            "city-culture-curious": [
+                {
+                    name: "Kyoto",
+                    country: "Japan",
+                    tagline: {
+                        en: "Where tradition whispers through time",
+                        zh: "传统在时光中低语",
+                        es: "Donde la tradición susurra a través del tiempo"
+                    },
+                    narratives: [
+                        {
+                            it: "Nebbia sui templi. Ti alzi prima dell'alba per attraversare i mille torii rossi di Fushimi Inari in solitudine. Il tè matcha in una casa tradizionale ti centra l'anima. Cammini nel bambù di Arashiyama - il vento sussurra segreti antichi. Un monaco ti sorride al tempio d'oro. La sera ti trovi in un onsen nascosto, l'acqua calda scioglie ogni resistenza. Kyoto ti ha mostrato che il silenzio può essere più forte di qualsiasi parola. Torni diverso, più lento, più profondo.",
+                            en: "Mist over temples. You rise before dawn to walk through Fushimi Inari's thousand torii gates in solitude. Matcha tea in a traditional house centers your soul. Walking through Arashiyama bamboo - wind whispers ancient secrets. A monk smiles at the golden temple. Evening finds you in a hidden onsen, hot water melting all resistance. Kyoto shows you silence can be louder than any words. You return different, slower, deeper.",
+                            zh: "寺庙笼罩在薄雾中。你在黎明前起床，独自穿过伏见稻荷的千本鸟居。在传统茶室品尝抹茶，灵魂得到净化。漫步岚山竹林，风声诉说着古老的秘密。金阁寺的僧人对你微笑。夜晚你泡在隐秘的温泉里，热水融化了所有的抵抗。京都教会你，沉默可以比任何言语更有力量。你归来时已是另一个人，更缓慢，更深沉。"
+                        }
+                    ]
+                }
+            ],
+            // MONTAGNA + WILD + BLOOM
+            "mountain-wild-bloom": [
+                {
+                    name: "Patagonia",
+                    country: "Chile/Argentina",
+                    tagline: {
+                        it: "Dove finisce il mondo e inizia l'avventura",
+                        en: "Where the world ends and adventure begins",
+                        es: "Donde termina el mundo y comienza la aventura",
+                        pt: "Onde o mundo termina e a aventura começa"
+                    },
+                    narratives: [
+                        {
+                            it: "Ti svegli e il mondo è infinito. Ghiacciai che scricchiolano, condor che planano sopra la tua testa. Cavalchi con i gaucho attraverso la pampa sconfinata - il vento ti sculpisce il viso. Torres del Paine si staglia contro un cielo impossibile. La notte è un planetario naturale, la Via Lattea così vicina che potresti toccarla. Attorno al fuoco, con l'asado che sfrigola, capisci che esistono ancora posti dove la Terra respira selvaggia. L'avventura ti ha cambiato il DNA.",
+                            en: "You wake and the world is infinite. Glaciers creaking, condors soaring overhead. Riding with gauchos across endless pampas - wind sculpts your face. Torres del Paine stands against an impossible sky. Night is a natural planetarium, Milky Way so close you could touch it. Around the fire, asado sizzling, you understand there are still places where Earth breathes wild. Adventure has changed your DNA.",
+                            es: "Te despiertas y el mundo es infinito. Glaciares que crujen, cóndores planeando sobre tu cabeza. Cabalgando con los gauchos por la pampa sin fin - el viento esculpe tu rostro. Torres del Paine se alza contra un cielo imposible. La noche es un planetario natural, la Vía Láctea tan cerca que podrías tocarla. Alrededor del fuego, con el asado chisporroteando, entiendes que aún existen lugares donde la Tierra respira salvaje."
+                        }
+                    ]
+                }
+            ],
+            // MONTAGNA + ZEN + COMFORT
+            "mountain-zen-comfort": [
+                {
+                    name: "Dolomiti",
+                    country: "Italy",
+                    tagline: {
+                        it: "Dove le vette toccano l'anima",
+                        en: "Where peaks touch the soul",
+                        de: "Wo Gipfel die Seele berühren"
+                    },
+                    narratives: [
+                        {
+                            it: "Le Dolomiti si tingono di rosa all'alba. Colazione con vista sulle Tre Cime di Lavaredo - caffè e strudel mentre il mondo si sveglia. Sentieri che profumano di pino e resina. Un rifugio nascosto dove il tempo si ferma per un bombardino. Il lago di Braies riflette il cielo come uno specchio d'acqua perfetto. La sera, nella spa dell'hotel, l'acqua calda ti culla mentre fuori nevica piano. Le montagne ti hanno insegnato che la pace ha il colore del silenzio bianco.",
+                            en: "The Dolomites blush pink at dawn. Breakfast overlooking Tre Cime di Lavaredo - coffee and strudel as the world awakens. Trails scented with pine and resin. A hidden refuge where time stops for bombardino. Lake Braies reflects the sky like a perfect mirror. Evening in the hotel spa, warm water cradles you while snow falls softly outside. The mountains teach you peace has the color of white silence.",
+                            de: "Die Dolomiten erröten rosa im Morgengrauen. Frühstück mit Blick auf die Drei Zinnen - Kaffee und Strudel während die Welt erwacht. Wege duften nach Kiefer und Harz. Eine versteckte Hütte wo die Zeit für einen Bombardino steht. Der Pragser Wildsee spiegelt den Himmel wie ein perfekter Spiegel. Abends im Hotel-Spa, warmes Wasser wiegt dich während draußen leise Schnee fällt."
+                        }
+                    ]
+                }
+            ],
+            // MONTAGNA + ROMANTIC + CURIOUS
+            "mountain-romantic-curious": [
+                {
+                    name: "Swiss Alps",
+                    country: "Switzerland",
+                    tagline: {
+                        it: "Dove l'amore trova la sua altezza",
+                        en: "Where love finds its altitude",
+                        fr: "Où l'amour trouve son altitude"
+                    },
+                    narratives: [
+                        {
+                            it: "Il treno panoramico ti porta tra cime innevate e villaggi da fiaba. Zermatt ti accoglie con il Cervino che domina ogni vista. Fonduta a lume di candela in uno chalet nascosto. La mattina dopo, la funivia ti porta in paradiso - colazione a 3000 metri con vista su quattro nazioni. Passeggiata mano nella mano sui sentieri fioriti. Le terme di Leukerbad al tramonto, l'acqua calda che fuma nell'aria fredda. La Svizzera ti ha mostrato che l'amore cresce con l'altitudine.",
+                            en: "The panoramic train carries you between snowy peaks and fairytale villages. Zermatt welcomes you with the Matterhorn dominating every view. Candlelit fondue in a hidden chalet. Next morning, cable car takes you to paradise - breakfast at 3000 meters overlooking four nations. Hand in hand walks on flowered trails. Leukerbad thermal baths at sunset, hot water steaming in cold air. Switzerland shows you love grows with altitude.",
+                            fr: "Le train panoramique vous transporte entre sommets enneigés et villages de conte de fées. Zermatt vous accueille avec le Cervin dominant chaque vue. Fondue aux chandelles dans un chalet caché. Le lendemain, le téléphérique vous emmène au paradis - petit déjeuner à 3000 mètres avec vue sur quatre nations. Promenades main dans la main sur les sentiers fleuris. Les thermes de Loèche-les-Bains au coucher du soleil."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Citazioni di viaggio
+        const travelQuotes = {
+            it: [
+                { text: "Il vero viaggio di scoperta non consiste nel cercare nuove terre, ma nell'avere nuovi occhi.", author: "Marcel Proust" },
+                { text: "Si viaggia non per cambiare luogo, ma idea.", author: "Hippolyte Taine" },
+                { text: "Il mondo è un libro e chi non viaggia ne legge solo una pagina.", author: "Sant'Agostino" },
+                { text: "Viaggiare è vivere.", author: "Hans Christian Andersen" },
+                { text: "Non si viaggia per fuggire dalla vita, ma perché la vita non ci sfugga.", author: "Anonimo" }
+            ],
+            en: [
+                { text: "The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.", author: "Marcel Proust" },
+                { text: "We travel not to escape life, but for life not to escape us.", author: "Anonymous" },
+                { text: "The world is a book and those who do not travel read only one page.", author: "Saint Augustine" },
+                { text: "To travel is to live.", author: "Hans Christian Andersen" },
+                { text: "Travel makes one modest. You see what a tiny place you occupy in the world.", author: "Gustave Flaubert" }
+            ],
+            es: [
+                { text: "Viajar es un ejercicio con consecuencias fatales para los prejuicios.", author: "Mark Twain" },
+                { text: "El mundo es un libro y aquellos que no viajan leen sólo una página.", author: "San Agustín" },
+                { text: "Viajar es vivir.", author: "Hans Christian Andersen" }
+            ]
+        };
+
+        // Immagini per destinazioni (usando Unsplash per demo)
+        const destinationImages = {
+            "Ibiza": "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=1200",
+            "Mykonos": "https://images.unsplash.com/photo-1601581875039-e899893d520c?w=1200",
+            "Kyoto": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200",
+            "Patagonia": "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1200",
+            "Dolomiti": "https://images.unsplash.com/photo-1557456170-0cf4f4d0d362?w=1200",
+            "Swiss Alps": "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1200",
+            "Val d'Aosta": "https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=1200",
+            "Innsbruck": "https://images.unsplash.com/photo-1567430462357-e5df6a2c8bd0?w=1200",
+            "Chamonix": "https://images.unsplash.com/photo-1581888227599-779811939961?w=1200"
+        };
+        let currentLang = 'it';
+        let locationValue = 50;
+        let distanceValue = 50;
+        let moodX = 50;
+        let moodY = 50;
+        let isDraggingLocation = false;
+        let isDraggingDistance = false;
+        let isDragging = false;
+        let userLat = null;
+        let userLon = null;
+
+        // Inizializzazione
         window.onload = function() {
             // Setup language buttons
             document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -1268,23 +937,353 @@
                 changeLanguage(browserLang);
             }
             
-            initDateMenu();
-            initDurationMenu();
-            checkGeolocation();
+            // Get user location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    userLat = position.coords.latitude;
+                    userLon = position.coords.longitude;
+                });
+            }
+        };
+
+        // Funzione per aggiornare visibilità etichette slider
+        function updateLabelVisibility(type, value) {
+            const labels = document.getElementById(`${type}-labels`);
+            const spans = labels.querySelectorAll('span');
             
-            selectStars(3);
+            // Rimuovi tutte le classi visible
+            spans.forEach(span => span.classList.remove('visible'));
+            
+            // Mostra etichette in base alla posizione
+            if (value < 25) {
+                // Zona sinistra - mostra solo prima etichetta
+                spans[0].classList.add('visible');
+            } else if (value > 75) {
+                // Zona destra - mostra solo ultima etichetta
+                spans[2].classList.add('visible');
+            } else if (value > 40 && value < 60) {
+                // Zona centrale - mostra solo etichetta centrale
+                const centerLabel = labels.querySelector('.label-center');
+                if (centerLabel) centerLabel.classList.add('visible');
+            } else if (value <= 40) {
+                // Transizione sinistra-centro
+                spans[0].classList.add('visible');
+                const centerLabel = labels.querySelector('.label-center');
+                if (centerLabel) centerLabel.classList.add('visible');
+            } else {
+                // Transizione centro-destra
+                spans[2].classList.add('visible');
+                const centerLabel = labels.querySelector('.label-center');
+                if (centerLabel) centerLabel.classList.add('visible');
+            }
+        }
+
+        // Funzione per aggiornare etichette mood
+        function updateMoodLabels(x, y) {
+            const labels = document.querySelectorAll('.mood-label');
+            
+            // Reset tutte
+            labels.forEach(label => label.classList.remove('visible'));
+            
+            // Calcola quale zona siamo
+            const threshold = 30; // distanza per mostrare etichetta
+            
+            labels.forEach(label => {
+                let labelX = 50, labelY = 50;
+                
+                if (label.classList.contains('top')) labelY = 10;
+                if (label.classList.contains('bottom')) labelY = 90;
+                if (label.classList.contains('left')) labelX = 10;
+                if (label.classList.contains('right')) labelX = 90;
+                if (label.classList.contains('top-left')) { labelX = 20; labelY = 20; }
+                if (label.classList.contains('top-right')) { labelX = 80; labelY = 20; }
+                if (label.classList.contains('bottom-left')) { labelX = 20; labelY = 80; }
+                if (label.classList.contains('bottom-right')) { labelX = 80; labelY = 80; }
+                
+                const distance = Math.sqrt(Math.pow(x - labelX, 2) + Math.pow(y - labelY, 2));
+                
+                if (distance < threshold) {
+                    label.classList.add('visible');
+                }
+            });
+        }
+
+        // Cambio lingua
+        function changeLanguage(lang) {
+            currentLang = lang;
+            
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.dataset.translate;
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            // RTL per arabo
+            document.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        }
+
+        // Location slider - movimento fluido
+        function startLocationDrag(event) {
+            isDraggingLocation = true;
+            dragLocation(event);
+        }
+
+        function dragLocation(event) {
+            if (!isDraggingLocation) return;
+            
+            event.preventDefault();
+            const slider = event.currentTarget;
+            const rect = slider.getBoundingClientRect();
+            
+            let x;
+            if (event.type.includes('touch')) {
+                x = event.touches[0].clientX - rect.left;
+            } else {
+                x = event.clientX - rect.left;
+            }
+            
+            const percentage = (x / rect.width) * 100;
+            locationValue = Math.max(0, Math.min(100, percentage));
+            
+            const dot = document.getElementById('location-dot');
+            dot.style.left = locationValue + '%';
+            
+            // Mostra le etichette con fade in
+            const labels = document.getElementById('location-labels');
+            labels.classList.add('active');
+            
+            // Gestisci visibilità label centrale
+            updateLabelVisibility('location', locationValue);
+        }
+
+        function stopLocationDrag() {
+            isDraggingLocation = false;
+        }
+
+        // Distance slider - movimento fluido
+        function startDistanceDrag(event) {
+            isDraggingDistance = true;
+            dragDistance(event);
+        }
+
+        function dragDistance(event) {
+            if (!isDraggingDistance) return;
+            
+            event.preventDefault();
+            const slider = event.currentTarget;
+            const rect = slider.getBoundingClientRect();
+            
+            let x;
+            if (event.type.includes('touch')) {
+                x = event.touches[0].clientX - rect.left;
+            } else {
+                x = event.clientX - rect.left;
+            }
+            
+            const percentage = (x / rect.width) * 100;
+            distanceValue = Math.max(0, Math.min(100, percentage));
+            
+            const dot = document.getElementById('distance-dot');
+            dot.style.left = distanceValue + '%';
+            
+            // Mostra le etichette con fade in
+            const labels = document.getElementById('distance-labels');
+            labels.classList.add('active');
+            
+            // Gestisci visibilità label centrale
+            updateLabelVisibility('distance', distanceValue);
+        }
+
+        function stopDistanceDrag() {
+            isDraggingDistance = false;
+        }
+
+        // Mood joystick
+        function startDragging(event) {
+            isDragging = true;
+            dragGlobe(event);
+        }
+
+        function dragGlobe(event) {
+            if (!isDragging) return;
+            
+            const selector = document.getElementById('mood-selector');
+            const rect = selector.getBoundingClientRect();
+            
+            let x, y;
+            if (event.type.includes('touch')) {
+                x = event.touches[0].clientX - rect.left;
+                y = event.touches[0].clientY - rect.top;
+            } else {
+                x = event.clientX - rect.left;
+                y = event.clientY - rect.top;
+            }
+            
+            // Converti in percentuale
+            moodX = (x / rect.width) * 100;
+            moodY = (y / rect.height) * 100;
+            
+            // Limita ai bordi
+            moodX = Math.max(10, Math.min(90, moodX));
+            moodY = Math.max(10, Math.min(90, moodY));
+            
+            // Muovi il globo
+            const globe = document.getElementById('mood-globe');
+            globe.style.left = moodX + '%';
+            globe.style.top = moodY + '%';
+            
+            // Mostra etichette mood in base alla posizione
+            updateMoodLabels(moodX, moodY);
+        }
+
+        function stopDragging() {
+            isDragging = false;
+        }
+
+        // GLOOB IT!
+        function gloobIt() {
+            // Nascondi slider, mostra loading
+            document.getElementById('slider-step').classList.add('hidden');
+            document.getElementById('loading-step').classList.remove('hidden');
             
             setTimeout(() => {
-                document.getElementById('vibes-dot').classList.add('clickable');
-            }, 500);
+                document.getElementById('loading-step').classList.add('hidden');
+                document.getElementById('result-step').classList.remove('hidden');
+                showResults();
+            }, 2000);
+        }
+
+        // Mostra risultati
+        function showResults() {
+            // Determina categoria location
+            let locationType;
+            if (locationValue < 33) locationType = 'sea';
+            else if (locationValue < 66) locationType = 'city';
+            else locationType = 'mountain';
             
-            document.onclick = function(e) {
-                if (!e.target.closest('.relative')) {
-                    document.getElementById('date-menu').classList.add('hidden');
-                    document.getElementById('duration-menu').classList.add('hidden');
+            // Determina categoria distanza
+            let distanceType;
+            if (distanceValue < 33) distanceType = 'comfort';
+            else if (distanceValue < 66) distanceType = 'curious';
+            else distanceType = 'bloom';
+            
+            // Determina mood basato su posizione X,Y
+            let moodType;
+            if (moodY < 33) { // Top zone
+                if (moodX < 33) moodType = 'design';
+                else if (moodX < 66) moodType = 'movida';
+                else moodType = 'glamour';
+            } else if (moodY < 66) { // Middle zone
+                if (moodX < 50) moodType = 'gourmet';
+                else moodType = 'wild';
+            } else { // Bottom zone
+                if (moodX < 33) moodType = 'culture';
+                else if (moodX < 66) moodType = 'zen';
+                else moodType = 'romantic';
+            }
+            
+            // Costruisci chiave
+            const key = `${locationType}-${moodType}-${distanceType}`;
+            
+            console.log('Searching for:', key); // Debug
+            
+            // Cerca destinazione esatta
+            let possibleDestinations = destinations[key];
+            
+            // Se non trova combinazione esatta, cerca alternative intelligenti
+            if (!possibleDestinations || possibleDestinations.length === 0) {
+                // Prima prova con stesso location e mood, ma diverso distance
+                for (let dist of ['comfort', 'curious', 'bloom']) {
+                    const altKey = `${locationType}-${moodType}-${dist}`;
+                    if (destinations[altKey] && destinations[altKey].length > 0) {
+                        possibleDestinations = destinations[altKey];
+                        console.log('Found alternative:', altKey);
+                        break;
+                    }
                 }
-            };
-        };
+            }
+            
+            // Se ancora non trova, prova con stesso location
+            if (!possibleDestinations || possibleDestinations.length === 0) {
+                for (let key in destinations) {
+                    if (key.startsWith(locationType + '-')) {
+                        possibleDestinations = destinations[key];
+                        console.log('Found location match:', key);
+                        break;
+                    }
+                }
+            }
+            
+            // Solo se proprio non trova niente con quella location, usa fallback
+            if (!possibleDestinations || possibleDestinations.length === 0) {
+                console.log('Using emergency fallback');
+                possibleDestinations = destinations["city-culture-curious"] || [];
+            }
+            
+            // Scegli random
+            const destination = possibleDestinations[Math.floor(Math.random() * possibleDestinations.length)];
+            
+            if (!destination) {
+                // Destinazione di emergenza
+                showEmergencyDestination();
+                return;
+            }
+            
+            // Mostra destinazione
+            document.getElementById('destination-name').textContent = destination.name;
+            document.getElementById('destination-country').textContent = destination.country;
+            document.getElementById('destination-tagline').textContent = 
+                destination.tagline[currentLang] || destination.tagline.en || destination.tagline.it;
+            
+            // Scegli narrativa random
+            const narratives = destination.narratives;
+            const randomNarrative = narratives[Math.floor(Math.random() * narratives.length)];
+            const narrativeText = randomNarrative[currentLang] || randomNarrative.en || randomNarrative.it;
+            
+            document.getElementById('narrative-text').textContent = narrativeText;
+            
+            // Mostra immagine
+            const image = document.getElementById('destination-image');
+            if (destinationImages[destination.name]) {
+                image.src = destinationImages[destination.name];
+                image.style.display = 'block';
+            } else {
+                image.style.display = 'none';
+            }
+            
+            // Mostra citazione random
+            const quotes = travelQuotes[currentLang] || travelQuotes.en || travelQuotes.it;
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('travel-quote').textContent = randomQuote.text;
+            document.getElementById('quote-author').textContent = randomQuote.author;
+        }
+
+        // Destinazione di emergenza
+        function showEmergencyDestination() {
+            document.getElementById('destination-name').textContent = "Mystery Destination";
+            document.getElementById('destination-country').textContent = "Somewhere Amazing";
+            document.getElementById('destination-tagline').textContent = "Every journey begins with a single step";
+            document.getElementById('narrative-text').textContent = "L'avventura ti aspetta. Ogni viaggio è una storia da scrivere, ogni destinazione un capitolo nuovo. Parti con il cuore aperto e tornerai con l'anima più ricca.";
+            
+            // Nascondi immagine per mystery destination
+            document.getElementById('destination-image').style.display = 'none';
+            
+            // Citazione di default
+            const quotes = travelQuotes[currentLang] || travelQuotes.en || travelQuotes.it;
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('travel-quote').textContent = randomQuote.text;
+            document.getElementById('quote-author').textContent = randomQuote.author;
+        }
+
+        // Prenota
+        function bookTrip() {
+            window.open('https://trip.tpk.lu/DCFSQxzu', '_blank');
+        }
     </script>
 </body>
 </html>
