@@ -1,5 +1,5 @@
 // GLOOBER APP LOGIC
-// Version: 1.0.0
+// Version: 1.0.2 - Mobile optimized with language toggle
 // NON MODIFICARE QUESTO FILE - Modifica solo destinations-db.js per aggiungere destinazioni
 
 // =============================================
@@ -304,9 +304,21 @@ let userLon = null;
 // INIZIALIZZAZIONE
 // =============================================
 window.onload = function() {
+    // Setup language toggle NEW!
+    setupLanguageToggle();
+    
     // Setup language buttons
     document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => changeLanguage(btn.dataset.lang));
+        btn.addEventListener('click', (e) => {
+            const langSelector = document.getElementById('lang-selector');
+            if (!langSelector.classList.contains('open') && btn === document.querySelector('.lang-btn')) {
+                // Se è il primo bottone e il menu è chiuso, aprilo
+                e.stopPropagation();
+            } else {
+                // Altrimenti cambia lingua
+                changeLanguage(btn.dataset.lang);
+            }
+        });
     });
     
     // Detect browser language
@@ -325,15 +337,80 @@ window.onload = function() {
 };
 
 // =============================================
+// LANGUAGE TOGGLE SYSTEM - NEW!
+// =============================================
+function setupLanguageToggle() {
+    const langSelector = document.getElementById('lang-selector');
+    const firstLang = document.querySelector('.lang-btn');
+    
+    // Click sulla prima bandiera apre/chiude il menu
+    firstLang.addEventListener('click', (e) => {
+        if (!langSelector.classList.contains('open')) {
+            e.stopPropagation();
+            langSelector.classList.add('open');
+        }
+    });
+    
+    // Click fuori chiude il menu
+    document.addEventListener('click', (e) => {
+        if (!langSelector.contains(e.target)) {
+            langSelector.classList.remove('open');
+        }
+    });
+    
+    // Touch events per mobile
+    document.addEventListener('touchstart', (e) => {
+        if (!langSelector.contains(e.target)) {
+            langSelector.classList.remove('open');
+        }
+    });
+}
+
+// =============================================
 // GESTIONE LINGUE
 // =============================================
 function changeLanguage(lang) {
     currentLang = lang;
     
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
+    // Aggiorna bandiera attiva
+    const allBtns = document.querySelectorAll('.lang-btn');
+    const activeBtn = document.querySelector(`.lang-btn[data-lang="${lang}"]`);
+    const firstBtn = document.querySelector('.lang-btn');
     
+    // Rimuovi active da tutti
+    allBtns.forEach(btn => btn.classList.remove('active'));
+    
+    // Aggiungi active alla lingua selezionata
+    activeBtn.classList.add('active');
+    
+    // Se non è già la prima, scambia le posizioni
+    if (activeBtn !== firstBtn) {
+        const activeLang = activeBtn.dataset.lang;
+        const activeTitle = activeBtn.getAttribute('title');
+        const activeEmoji = activeBtn.textContent;
+        
+        const firstLang = firstBtn.dataset.lang;
+        const firstTitle = firstBtn.getAttribute('title');
+        const firstEmoji = firstBtn.textContent;
+        
+        // Scambia i contenuti
+        activeBtn.dataset.lang = firstLang;
+        activeBtn.setAttribute('title', firstTitle);
+        activeBtn.textContent = firstEmoji;
+        
+        firstBtn.dataset.lang = activeLang;
+        firstBtn.setAttribute('title', activeTitle);
+        firstBtn.textContent = activeEmoji;
+        
+        // Mantieni active sul primo bottone
+        firstBtn.classList.add('active');
+        activeBtn.classList.remove('active');
+    }
+    
+    // Chiudi il menu
+    document.getElementById('lang-selector').classList.remove('open');
+    
+    // Aggiorna i testi
     document.querySelectorAll('[data-translate]').forEach(el => {
         const key = el.dataset.translate;
         if (translations[lang][key]) {
@@ -358,7 +435,7 @@ function getTranslatedText(obj, lang = currentLang) {
 }
 
 // =============================================
-// GESTIONE SLIDER LOCATION
+// GESTIONE SLIDER LOCATION - FIXED!
 // =============================================
 function startLocationDrag(event) {
     isDraggingLocation = true;
@@ -380,7 +457,8 @@ function dragLocation(event) {
     }
     
     const percentage = (x / rect.width) * 100;
-    locationValue = Math.max(0, Math.min(100, percentage));
+    // FIXED: Limita il movimento per non far uscire il pallino
+    locationValue = Math.max(5, Math.min(95, percentage));
     
     const dot = document.getElementById('location-dot');
     dot.style.left = locationValue + '%';
@@ -398,7 +476,7 @@ function stopLocationDrag() {
 }
 
 // =============================================
-// GESTIONE SLIDER DISTANCE
+// GESTIONE SLIDER DISTANCE - FIXED!
 // =============================================
 function startDistanceDrag(event) {
     isDraggingDistance = true;
@@ -420,7 +498,8 @@ function dragDistance(event) {
     }
     
     const percentage = (x / rect.width) * 100;
-    distanceValue = Math.max(0, Math.min(100, percentage));
+    // FIXED: Limita il movimento per non far uscire il pallino
+    distanceValue = Math.max(5, Math.min(95, percentage));
     
     const dot = document.getElementById('distance-dot');
     dot.style.left = distanceValue + '%';
@@ -438,7 +517,7 @@ function stopDistanceDrag() {
 }
 
 // =============================================
-// GESTIONE MOOD SELECTOR
+// GESTIONE MOOD SELECTOR - FIXED!
 // =============================================
 function startDragging(event) {
     event.preventDefault();
@@ -467,9 +546,9 @@ function dragGlobe(event) {
     moodX = (x / rect.width) * 100;
     moodY = (y / rect.height) * 100;
     
-    // Limita ai bordi
-    moodX = Math.max(10, Math.min(90, moodX));
-    moodY = Math.max(10, Math.min(90, moodY));
+    // FIXED: Limita ai bordi considerando la dimensione del pallino
+    moodX = Math.max(7, Math.min(93, moodX));
+    moodY = Math.max(14, Math.min(86, moodY));
     
     // Muovi il globo
     const globe = document.getElementById('mood-globe');
