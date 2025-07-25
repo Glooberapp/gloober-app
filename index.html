@@ -1,533 +1,772 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Slide your travel vibes and discover your perfect destination">
-    <title>Gloober - Slide Your Travel Vibes</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background: #000000;
-            min-height: 100vh;
-            overflow-x: hidden;
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Logo circle con gradiente come nel manifesto */
-        .logo-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #000000;
-            border: 3px solid transparent;
-            background-image: linear-gradient(#000000, #000000), 
-                              linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: border-box;
-            background-clip: content-box, border-box;
-            display: inline-block;
-            margin-right: 15px;
-        }
-        
-        /* Container principale responsive */
-        .main-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        /* Glass card responsive */
-        .glass-card {
-            padding: 30px 20px;
-        }
-        
-        @media (max-height: 800px) {
-            .glass-card {
-                padding: 20px 15px;
+// GLOOBER APP LOGIC
+// Version: 1.0.2 - Mobile optimized with language toggle
+// NON MODIFICARE QUESTO FILE - Modifica solo destinations-db.js per aggiungere destinazioni
+
+// =============================================
+// TRADUZIONI UI
+// =============================================
+const translations = {
+    it: {
+        tagline: "Slide your travel vibes",
+        habitatLabel: "HABITAT",
+        rangeLabel: "RANGE", 
+        vibesLabel: "VIBES",
+        sea: "MARE",
+        city: "CITTÀ",
+        mountain: "MONTAGNA",
+        comfort: "COMFORT",
+        curious: "CURIOUS",
+        bloom: "BLOOM",
+        movida: "MOVIDA",
+        zen: "ZEN",
+        gourmet: "GOURMET",
+        wild: "WILD",
+        design: "DESIGN",
+        romantic: "ROMANTIC",
+        culture: "CULTURE",
+        glamour: "GLAMOUR",
+        gloobIt: "Gloob it!",
+        gloobing: "Gloobing...",
+        yourJourney: "Il tuo viaggio",
+        bookNow: "Prenota",
+        tryAgain: "Regloob"
+    },
+    en: {
+        tagline: "Slide your travel vibes",
+        habitatLabel: "HABITAT",
+        rangeLabel: "RANGE",
+        vibesLabel: "VIBES",
+        sea: "SEA",
+        city: "CITY",
+        mountain: "MOUNTAIN",
+        comfort: "COMFORT",
+        curious: "CURIOUS",
+        bloom: "BLOOM",
+        movida: "PARTY",
+        zen: "ZEN",
+        gourmet: "GOURMET",
+        wild: "WILD",
+        design: "DESIGN",
+        romantic: "ROMANTIC",
+        culture: "CULTURE",
+        glamour: "GLAMOUR",
+        gloobIt: "Gloob it!",
+        gloobing: "Gloobing...",
+        yourJourney: "Your journey",
+        bookNow: "Book now",
+        tryAgain: "Regloob"
+    },
+    zh: {
+        tagline: "滑动你的旅行心情",
+        habitatLabel: "栖息地",
+        rangeLabel: "距离",
+        vibesLabel: "氛围",
+        sea: "海边",
+        city: "城市",
+        mountain: "山区",
+        comfort: "舒适",
+        curious: "好奇",
+        bloom: "绽放",
+        movida: "派对",
+        zen: "禅意",
+        gourmet: "美食",
+        wild: "狂野",
+        design: "设计",
+        romantic: "浪漫",
+        culture: "文化",
+        glamour: "魅力",
+        gloobIt: "开始探索！",
+        gloobing: "探索中...",
+        yourJourney: "你的旅程",
+        bookNow: "预订",
+        tryAgain: "重新探索"
+    },
+    es: {
+        tagline: "Desliza tus vibras viajeras",
+        habitatLabel: "HÁBITAT",
+        rangeLabel: "ALCANCE",
+        vibesLabel: "VIBRAS",
+        sea: "MAR",
+        city: "CIUDAD",
+        mountain: "MONTAÑA",
+        comfort: "COMFORT",
+        curious: "CURIOSO",
+        bloom: "FLORECER",
+        movida: "MOVIDA",
+        zen: "ZEN",
+        gourmet: "GOURMET",
+        wild: "SALVAJE",
+        design: "DISEÑO",
+        romantic: "ROMÁNTICO",
+        culture: "CULTURA",
+        glamour: "GLAMOUR",
+        gloobIt: "¡Gloob it!",
+        gloobing: "Gloobeando...",
+        yourJourney: "Tu viaje",
+        bookNow: "Reserva",
+        tryAgain: "Regloob"
+    },
+    hi: {
+        tagline: "अपनी ट्रैवल वाइब्स स्लाइड करें",
+        habitatLabel: "निवास",
+        rangeLabel: "सीमा",
+        vibesLabel: "वाइब्स",
+        sea: "समुद्र",
+        city: "शहर",
+        mountain: "पहाड़",
+        comfort: "आराम",
+        curious: "जिज्ञासु", 
+        bloom: "खिलना",
+        movida: "पार्टी",
+        zen: "शांति",
+        gourmet: "स्वादिष्ट",
+        wild: "जंगली",
+        design: "डिज़ाइन",
+        romantic: "रोमांटिक",
+        culture: "संस्कृति",
+        glamour: "ग्लैमर",
+        gloobIt: "चलो चलें!",
+        gloobing: "खोज रहे हैं...",
+        yourJourney: "आपकी यात्रा",
+        bookNow: "बुक करें",
+        tryAgain: "फिर से"
+    },
+    ar: {
+        tagline: "حرك أجواء سفرك",
+        habitatLabel: "الموطن",
+        rangeLabel: "المدى",
+        vibesLabel: "الأجواء",
+        sea: "بحر",
+        city: "مدينة",
+        mountain: "جبال",
+        comfort: "راحة",
+        curious: "فضولي",
+        bloom: "ازدهار",
+        movida: "حفلة",
+        zen: "هدوء",
+        gourmet: "طعام فاخر",
+        wild: "بري",
+        design: "تصميم",
+        romantic: "رومانسي",
+        culture: "ثقافة",
+        glamour: "سحر",
+        gloobIt: "هيا بنا!",
+        gloobing: "جاري البحث...",
+        yourJourney: "رحلتك",
+        bookNow: "احجز",
+        tryAgain: "جرب مرة أخرى"
+    },
+    fr: {
+        tagline: "Glisse tes vibes de voyage",
+        habitatLabel: "HABITAT",
+        rangeLabel: "PORTÉE",
+        vibesLabel: "VIBES",
+        sea: "MER",
+        city: "VILLE",
+        mountain: "MONTAGNE",
+        comfort: "CONFORT",
+        curious: "CURIEUX",
+        bloom: "ÉCLOSION",
+        movida: "FÊTE",
+        zen: "ZEN",
+        gourmet: "GOURMET",
+        wild: "SAUVAGE",
+        design: "DESIGN",
+        romantic: "ROMANTIQUE",
+        culture: "CULTURE",
+        glamour: "GLAMOUR",
+        gloobIt: "Gloob it!",
+        gloobing: "Gloobing...",
+        yourJourney: "Ton voyage",
+        bookNow: "Réserver",
+        tryAgain: "Regloob"
+    },
+    pt: {
+        tagline: "Deslize suas vibes de viagem",
+        habitatLabel: "HABITAT",
+        rangeLabel: "ALCANCE",
+        vibesLabel: "VIBES",
+        sea: "MAR",
+        city: "CIDADE",
+        mountain: "MONTANHA",
+        comfort: "CONFORTO",
+        curious: "CURIOSO",
+        bloom: "FLORESCER",
+        movida: "FESTA",
+        zen: "ZEN",
+        gourmet: "GOURMET",
+        wild: "SELVAGEM",
+        design: "DESIGN",
+        romantic: "ROMÂNTICO",
+        culture: "CULTURA",
+        glamour: "GLAMOUR",
+        gloobIt: "Gloob it!",
+        gloobing: "Gloobing...",
+        yourJourney: "Sua viagem",
+        bookNow: "Reserve",
+        tryAgain: "Regloob"
+    },
+    ru: {
+        tagline: "Слайди свои трэвел вайбы",
+        habitatLabel: "СРЕДА",
+        rangeLabel: "ДАЛЬНОСТЬ",
+        vibesLabel: "ВАЙБС",
+        sea: "МОРЕ",
+        city: "ГОРОД",
+        mountain: "ГОРЫ",
+        comfort: "КОМФОРТ",
+        curious: "ЛЮБОПЫТСТВО",
+        bloom: "РАСЦВЕТ",
+        movida: "ВЕЧЕРИНКА",
+        zen: "ДЗЕН",
+        gourmet: "ГУРМЭ",
+        wild: "ДИКИЙ",
+        design: "ДИЗАЙН",
+        romantic: "РОМАНТИКА",
+        culture: "КУЛЬТУРА",
+        glamour: "ГЛАМУР",
+        gloobIt: "Поехали!",
+        gloobing: "Поиск...",
+        yourJourney: "Твое путешествие",
+        bookNow: "Забронировать",
+        tryAgain: "Еще раз"
+    }
+};
+
+// =============================================
+// CITAZIONI DI VIAGGIO
+// =============================================
+const travelQuotes = {
+    it: [
+        { text: "Il vero viaggio di scoperta non consiste nel cercare nuove terre, ma nell'avere nuovi occhi.", author: "Marcel Proust" },
+        { text: "Si viaggia non per cambiare luogo, ma idea.", author: "Hippolyte Taine" },
+        { text: "Il mondo è un libro e chi non viaggia ne legge solo una pagina.", author: "Sant'Agostino" },
+        { text: "Viaggiare è vivere.", author: "Hans Christian Andersen" },
+        { text: "Non si viaggia per fuggire dalla vita, ma perché la vita non ci sfugga.", author: "Anonimo" }
+    ],
+    en: [
+        { text: "The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.", author: "Marcel Proust" },
+        { text: "We travel not to escape life, but for life not to escape us.", author: "Anonymous" },
+        { text: "The world is a book and those who do not travel read only one page.", author: "Saint Augustine" },
+        { text: "To travel is to live.", author: "Hans Christian Andersen" },
+        { text: "Travel makes one modest. You see what a tiny place you occupy in the world.", author: "Gustave Flaubert" }
+    ],
+    es: [
+        { text: "Viajar es un ejercicio con consecuencias fatales para los prejuicios.", author: "Mark Twain" },
+        { text: "El mundo es un libro y aquellos que no viajan leen sólo una página.", author: "San Agustín" },
+        { text: "Viajar es vivir.", author: "Hans Christian Andersen" }
+    ],
+    zh: [
+        { text: "真正的发现之旅不在于寻找新的风景，而在于拥有新的眼光。", author: "马塞尔·普鲁斯特" },
+        { text: "世界是一本书，不旅行的人只读了一页。", author: "圣奥古斯丁" },
+        { text: "旅行就是生活。", author: "安徒生" }
+    ],
+    fr: [
+        { text: "Le véritable voyage de découverte ne consiste pas à chercher de nouveaux paysages, mais à avoir de nouveaux yeux.", author: "Marcel Proust" },
+        { text: "On voyage pour changer, non de lieu, mais d'idées.", author: "Hippolyte Taine" },
+        { text: "Le monde est un livre et ceux qui ne voyagent pas n'en lisent qu'une page.", author: "Saint Augustin" }
+    ],
+    pt: [
+        { text: "A verdadeira viagem de descoberta não consiste em procurar novas paisagens, mas em ter novos olhos.", author: "Marcel Proust" },
+        { text: "O mundo é um livro e aqueles que não viajam leem apenas uma página.", author: "Santo Agostinho" },
+        { text: "Viajar é viver.", author: "Hans Christian Andersen" }
+    ],
+    ru: [
+        { text: "Настоящее путешествие-открытие состоит не в поиске новых пейзажей, а в обретении новых глаз.", author: "Марсель Пруст" },
+        { text: "Мир - это книга, и те, кто не путешествует, читают только одну страницу.", author: "Святой Августин" },
+        { text: "Путешествовать - значит жить.", author: "Ханс Кристиан Андерсен" }
+    ],
+    hi: [
+        { text: "वास्तविक खोज की यात्रा नए परिदृश्यों की तलाश में नहीं, बल्कि नई आंखों के होने में है।", author: "मार्सेल प्रूस्त" },
+        { text: "दुनिया एक किताब है और जो यात्रा नहीं करते वे केवल एक पृष्ठ पढ़ते हैं।", author: "संत ऑगस्टीन" }
+    ],
+    ar: [
+        { text: "الرحلة الحقيقية للاكتشاف لا تتمثل في البحث عن مناظر طبيعية جديدة، بل في امتلاك عيون جديدة.", author: "مارسيل بروست" },
+        { text: "العالم كتاب، ومن لا يسافر يقرأ صفحة واحدة فقط.", author: "القديس أوغسطين" }
+    ]
+};
+
+// =============================================
+// VARIABILI GLOBALI
+// =============================================
+let currentLang = 'it';
+let locationValue = 50;
+let distanceValue = 50;
+let moodX = 50;
+let moodY = 50;
+let isDraggingLocation = false;
+let isDraggingDistance = false;
+let isDragging = false;
+let userLat = null;
+let userLon = null;
+
+// =============================================
+// INIZIALIZZAZIONE
+// =============================================
+window.onload = function() {
+    // Setup language toggle NEW!
+    setupLanguageToggle();
+    
+    // Setup language buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const langSelector = document.getElementById('lang-selector');
+            if (!langSelector.classList.contains('open') && btn === document.querySelector('.lang-btn')) {
+                // Se è il primo bottone e il menu è chiuso, aprilo
+                e.stopPropagation();
+            } else {
+                // Altrimenti cambia lingua
+                changeLanguage(btn.dataset.lang);
             }
-            h1 {
-                font-size: 3rem !important;
+        });
+    });
+    
+    // Detect browser language
+    const browserLang = navigator.language.substring(0, 2);
+    if (translations[browserLang]) {
+        changeLanguage(browserLang);
+    }
+    
+    // Get user location (for future features)
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            userLat = position.coords.latitude;
+            userLon = position.coords.longitude;
+        });
+    }
+};
+
+// =============================================
+// LANGUAGE TOGGLE SYSTEM - NEW!
+// =============================================
+function setupLanguageToggle() {
+    const langSelector = document.getElementById('lang-selector');
+    const firstLang = document.querySelector('.lang-btn');
+    
+    // Click sulla prima bandiera apre/chiude il menu
+    firstLang.addEventListener('click', (e) => {
+        if (!langSelector.classList.contains('open')) {
+            e.stopPropagation();
+            langSelector.classList.add('open');
+        }
+    });
+    
+    // Click fuori chiude il menu
+    document.addEventListener('click', (e) => {
+        if (!langSelector.contains(e.target)) {
+            langSelector.classList.remove('open');
+        }
+    });
+    
+    // Touch events per mobile
+    document.addEventListener('touchstart', (e) => {
+        if (!langSelector.contains(e.target)) {
+            langSelector.classList.remove('open');
+        }
+    });
+}
+
+// =============================================
+// GESTIONE LINGUE
+// =============================================
+function changeLanguage(lang) {
+    currentLang = lang;
+    
+    // Aggiorna bandiera attiva
+    const allBtns = document.querySelectorAll('.lang-btn');
+    const activeBtn = document.querySelector(`.lang-btn[data-lang="${lang}"]`);
+    const firstBtn = document.querySelector('.lang-btn');
+    
+    // Rimuovi active da tutti
+    allBtns.forEach(btn => btn.classList.remove('active'));
+    
+    // Aggiungi active alla lingua selezionata
+    activeBtn.classList.add('active');
+    
+    // Se non è già la prima, scambia le posizioni
+    if (activeBtn !== firstBtn) {
+        const activeLang = activeBtn.dataset.lang;
+        const activeTitle = activeBtn.getAttribute('title');
+        const activeEmoji = activeBtn.textContent;
+        
+        const firstLang = firstBtn.dataset.lang;
+        const firstTitle = firstBtn.getAttribute('title');
+        const firstEmoji = firstBtn.textContent;
+        
+        // Scambia i contenuti
+        activeBtn.dataset.lang = firstLang;
+        activeBtn.setAttribute('title', firstTitle);
+        activeBtn.textContent = firstEmoji;
+        
+        firstBtn.dataset.lang = activeLang;
+        firstBtn.setAttribute('title', activeTitle);
+        firstBtn.textContent = activeEmoji;
+        
+        // Mantieni active sul primo bottone
+        firstBtn.classList.add('active');
+        activeBtn.classList.remove('active');
+    }
+    
+    // Chiudi il menu
+    document.getElementById('lang-selector').classList.remove('open');
+    
+    // Aggiorna i testi
+    document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.dataset.translate;
+        if (translations[lang][key]) {
+            el.textContent = translations[lang][key];
+        }
+    });
+    
+    // RTL per arabo
+    document.dir = lang === 'ar' ? 'rtl' : 'ltr';
+}
+
+// Funzione helper per ottenere testo tradotto
+function getTranslatedText(obj, lang = currentLang) {
+    // Se esiste la traduzione nella lingua corrente, usala
+    if (obj[lang]) return obj[lang];
+    // Altrimenti usa inglese come fallback
+    if (obj.en) return obj.en;
+    // Ultimo fallback: italiano
+    if (obj.it) return obj.it;
+    // Se non c'è niente, ritorna stringa vuota
+    return '';
+}
+
+// =============================================
+// GESTIONE SLIDER LOCATION - FIXED!
+// =============================================
+function startLocationDrag(event) {
+    isDraggingLocation = true;
+    dragLocation(event);
+}
+
+function dragLocation(event) {
+    if (!isDraggingLocation) return;
+    
+    event.preventDefault();
+    const slider = event.currentTarget;
+    const rect = slider.getBoundingClientRect();
+    
+    let x;
+    if (event.type.includes('touch')) {
+        x = event.touches[0].clientX - rect.left;
+    } else {
+        x = event.clientX - rect.left;
+    }
+    
+    const percentage = (x / rect.width) * 100;
+    // FIXED: Limita il movimento per non far uscire il pallino
+    locationValue = Math.max(5, Math.min(95, percentage));
+    
+    const dot = document.getElementById('location-dot');
+    dot.style.left = locationValue + '%';
+    
+    // Mostra le etichette con fade in
+    const labels = document.getElementById('location-labels');
+    labels.classList.add('active');
+    
+    // Gestisci visibilità label centrale
+    updateLabelVisibility('location', locationValue);
+}
+
+function stopLocationDrag() {
+    isDraggingLocation = false;
+}
+
+// =============================================
+// GESTIONE SLIDER DISTANCE - FIXED!
+// =============================================
+function startDistanceDrag(event) {
+    isDraggingDistance = true;
+    dragDistance(event);
+}
+
+function dragDistance(event) {
+    if (!isDraggingDistance) return;
+    
+    event.preventDefault();
+    const slider = event.currentTarget;
+    const rect = slider.getBoundingClientRect();
+    
+    let x;
+    if (event.type.includes('touch')) {
+        x = event.touches[0].clientX - rect.left;
+    } else {
+        x = event.clientX - rect.left;
+    }
+    
+    const percentage = (x / rect.width) * 100;
+    // FIXED: Limita il movimento per non far uscire il pallino
+    distanceValue = Math.max(5, Math.min(95, percentage));
+    
+    const dot = document.getElementById('distance-dot');
+    dot.style.left = distanceValue + '%';
+    
+    // Mostra le etichette con fade in
+    const labels = document.getElementById('distance-labels');
+    labels.classList.add('active');
+    
+    // Gestisci visibilità label centrale
+    updateLabelVisibility('distance', distanceValue);
+}
+
+function stopDistanceDrag() {
+    isDraggingDistance = false;
+}
+
+// =============================================
+// GESTIONE MOOD SELECTOR - FIXED!
+// =============================================
+function startDragging(event) {
+    event.preventDefault();
+    isDragging = true;
+    dragGlobe(event);
+}
+
+function dragGlobe(event) {
+    if (!isDragging) return;
+    
+    event.preventDefault();
+    
+    const selector = document.getElementById('mood-selector');
+    const rect = selector.getBoundingClientRect();
+    
+    let x, y;
+    if (event.type.includes('touch')) {
+        x = event.touches[0].clientX - rect.left;
+        y = event.touches[0].clientY - rect.top;
+    } else {
+        x = event.clientX - rect.left;
+        y = event.clientY - rect.top;
+    }
+    
+    // Converti in percentuale
+    moodX = (x / rect.width) * 100;
+    moodY = (y / rect.height) * 100;
+    
+    // FIXED: Limita ai bordi considerando la dimensione del pallino
+    moodX = Math.max(7, Math.min(93, moodX));
+    moodY = Math.max(14, Math.min(86, moodY));
+    
+    // Muovi il globo
+    const globe = document.getElementById('mood-globe');
+    globe.style.left = moodX + '%';
+    globe.style.top = moodY + '%';
+    
+    // Mostra etichette mood in base alla posizione
+    updateMoodLabels(moodX, moodY);
+}
+
+function stopDragging() {
+    isDragging = false;
+}
+
+// =============================================
+// FUNZIONI UI HELPER
+// =============================================
+function updateLabelVisibility(type, value) {
+    const labels = document.getElementById(`${type}-labels`);
+    const spans = labels.querySelectorAll('span');
+    
+    // Rimuovi tutte le classi visible
+    spans.forEach(span => span.classList.remove('visible'));
+    
+    // Mostra etichette in base alla posizione
+    if (value < 25) {
+        // Zona sinistra - mostra solo prima etichetta
+        spans[0].classList.add('visible');
+    } else if (value > 75) {
+        // Zona destra - mostra solo ultima etichetta
+        spans[2].classList.add('visible');
+    } else if (value > 40 && value < 60) {
+        // Zona centrale - mostra solo etichetta centrale
+        const centerLabel = labels.querySelector('.label-center');
+        if (centerLabel) centerLabel.classList.add('visible');
+    } else if (value <= 40) {
+        // Transizione sinistra-centro
+        spans[0].classList.add('visible');
+        const centerLabel = labels.querySelector('.label-center');
+        if (centerLabel) centerLabel.classList.add('visible');
+    } else {
+        // Transizione centro-destra
+        spans[2].classList.add('visible');
+        const centerLabel = labels.querySelector('.label-center');
+        if (centerLabel) centerLabel.classList.add('visible');
+    }
+}
+
+function updateMoodLabels(x, y) {
+    const labels = document.querySelectorAll('.mood-label');
+    
+    // Reset tutte
+    labels.forEach(label => label.classList.remove('visible'));
+    
+    // Calcola quale zona siamo
+    const threshold = 30; // distanza per mostrare etichetta
+    
+    labels.forEach(label => {
+        let labelX = 50, labelY = 50;
+        
+        if (label.classList.contains('top')) labelY = 10;
+        if (label.classList.contains('bottom')) labelY = 90;
+        if (label.classList.contains('left')) labelX = 10;
+        if (label.classList.contains('right')) labelX = 90;
+        if (label.classList.contains('top-left')) { labelX = 20; labelY = 20; }
+        if (label.classList.contains('top-right')) { labelX = 80; labelY = 20; }
+        if (label.classList.contains('bottom-left')) { labelX = 20; labelY = 80; }
+        if (label.classList.contains('bottom-right')) { labelX = 80; labelY = 80; }
+        
+        const distance = Math.sqrt(Math.pow(x - labelX, 2) + Math.pow(y - labelY, 2));
+        
+        if (distance < threshold) {
+            label.classList.add('visible');
+        }
+    });
+}
+
+// =============================================
+// FUNZIONE PRINCIPALE - GLOOB IT!
+// =============================================
+function gloobIt() {
+    // Nascondi slider, mostra loading
+    document.getElementById('slider-step').classList.add('hidden');
+    document.getElementById('loading-step').classList.remove('hidden');
+    
+    setTimeout(() => {
+        document.getElementById('loading-step').classList.add('hidden');
+        document.getElementById('result-step').classList.remove('hidden');
+        showResults();
+    }, 2000);
+}
+
+// =============================================
+// MOSTRA RISULTATI
+// =============================================
+function showResults() {
+    // Determina categoria location
+    let locationType;
+    if (locationValue < 33) locationType = 'sea';
+    else if (locationValue < 66) locationType = 'city';
+    else locationType = 'mountain';
+    
+    // Determina categoria distanza
+    let distanceType;
+    if (distanceValue < 33) distanceType = 'comfort';
+    else if (distanceValue < 66) distanceType = 'curious';
+    else distanceType = 'bloom';
+    
+    // Determina mood basato su posizione X,Y
+    let moodType;
+    if (moodY < 33) { // Top zone
+        if (moodX < 33) moodType = 'design';
+        else if (moodX < 66) moodType = 'movida';
+        else moodType = 'glamour';
+    } else if (moodY < 66) { // Middle zone
+        if (moodX < 50) moodType = 'gourmet';
+        else moodType = 'wild';
+    } else { // Bottom zone
+        if (moodX < 33) moodType = 'culture';
+        else if (moodX < 66) moodType = 'zen';
+        else moodType = 'romantic';
+    }
+    
+    // Costruisci chiave
+    const key = `${locationType}-${moodType}-${distanceType}`;
+    
+    console.log('Searching for:', key); // Debug
+    
+    // Cerca destinazione esatta
+    let possibleDestinations = DESTINATIONS_DB[key];
+    
+    // Se non trova combinazione esatta, cerca alternative intelligenti
+    if (!possibleDestinations || possibleDestinations.length === 0) {
+        // Prima prova con stesso location e mood, ma diverso distance
+        for (let dist of ['comfort', 'curious', 'bloom']) {
+            const altKey = `${locationType}-${moodType}-${dist}`;
+            if (DESTINATIONS_DB[altKey] && DESTINATIONS_DB[altKey].length > 0) {
+                possibleDestinations = DESTINATIONS_DB[altKey];
+                console.log('Found alternative:', altKey);
+                break;
             }
         }
-        
-        /* Language selector */
-        .lang-selector {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 100;
-            display: flex;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 6px;
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
-            flex-wrap: wrap;
-            max-width: 320px;
-        }
-        
-        .lang-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            opacity: 0.6;
-            transition: all 0.3s ease;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .lang-btn:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-        
-        .lang-btn.active {
-            opacity: 1;
-            box-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
-            border: 2px solid #00b4d8;
-        }
-        
-        /* Stile unificato per tutti gli slider */
-        .slider-container {
-            width: 100%;
-            height: 60px;
-            margin: 15px auto;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        /* Location slider gradient */
-        .location-slider {
-            background: linear-gradient(to right, #60a5fa 0%, #f97316 50%, #10b981 100%);
-        }
-        
-        /* Distance slider gradient */
-        .distance-slider {
-            background: linear-gradient(to right, #94a3b8 0%, #64748b 50%, #334155 100%);
-        }
-        
-        /* Labels dentro lo slider - STILE UNIFICATO */
-        .slider-inner-labels {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 25px;
-            pointer-events: none;
-            user-select: none;
-        }
-        
-        .slider-inner-labels span {
-            color: rgba(255, 255, 255, 0.9);
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 12px;
-            font-weight: 400;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-        
-        /* Labels laterali sempre visibili, centrale appare solo quando muovi */
-        .slider-inner-labels span:first-child,
-        .slider-inner-labels span:last-child {
-            opacity: 0;
-        }
-        
-        .slider-inner-labels span.visible {
-            opacity: 1;
-        }
-        
-        .slider-inner-labels .label-center {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-        }
-        
-        .slider-inner-labels.active span {
-            opacity: 1;
-        }
-        
-        /* Slider dot generico - cerchio con gradiente come logo */
-        .slider-dot {
-            position: absolute;
-            width: 56px;
-            height: 56px;
-            background: #000000;
-            border: 3px solid transparent;
-            background-image: linear-gradient(#000000, #000000), 
-                              linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: border-box;
-            background-clip: content-box, border-box;
-            border-radius: 50%;
-            top: 2px;
-            cursor: grab;
-            box-shadow: 0 4px 16px rgba(0, 180, 216, 0.4);
-            transition: left 0.15s ease-out;
-            will-change: left;
-            z-index: 10;
-        }
-        
-        .slider-dot:active {
-            cursor: grabbing;
-            transform: scale(0.95);
-            transition: none;
-        }
-        
-        /* Mood selector rettangolare */
-        .mood-selector {
-            position: relative;
-            width: 100%;
-            height: 200px;
-            margin: 15px auto;
-            background: linear-gradient(135deg, 
-                #ec4899 0%, 
-                #8b5cf6 25%, 
-                #3b82f6 50%, 
-                #10b981 75%, 
-                #f59e0b 100%);
-            border-radius: 20px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
-            cursor: pointer;
-            overflow: hidden;
-        }
-        
-        @media (max-height: 700px) {
-            .mood-selector {
-                height: 150px;
+    }
+    
+    // Se ancora non trova, prova con stesso location
+    if (!possibleDestinations || possibleDestinations.length === 0) {
+        for (let key in DESTINATIONS_DB) {
+            if (key.startsWith(locationType + '-')) {
+                possibleDestinations = DESTINATIONS_DB[key];
+                console.log('Found location match:', key);
+                break;
             }
         }
-        
-        .mood-labels {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            user-select: none;
-        }
-        
-        .mood-label {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.9);
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 12px;
-            font-weight: 400;
-            text-transform: uppercase;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            letter-spacing: 0.08em;
-        }
-        
-        /* Posizioni etichette mood - tutte dentro */
-        .mood-label.top { 
-            top: 10px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-        }
-        .mood-label.bottom { 
-            bottom: 10px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-        }
-        .mood-label.left { 
-            left: 15px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-        }
-        .mood-label.right { 
-            right: 15px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-        }
-        .mood-label.top-left { 
-            top: 25px; 
-            left: 25px; 
-        }
-        .mood-label.top-right { 
-            top: 25px; 
-            right: 25px; 
-        }
-        .mood-label.bottom-left { 
-            bottom: 25px; 
-            left: 25px; 
-        }
-        .mood-label.bottom-right { 
-            bottom: 25px; 
-            right: 25px; 
-        }
-        
-        /* Mood labels nascosti di default */
-        .mood-label {
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        
-        .mood-label.visible {
-            opacity: 1;
-        }
-        
-        /* Joystick globe - cerchio con gradiente come logo */
-        .joystick-globe {
-            position: absolute;
-            width: 56px;
-            height: 56px;
-            background: #000000;
-            border: 3px solid transparent;
-            background-image: linear-gradient(#000000, #000000), 
-                              linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: border-box;
-            background-clip: content-box, border-box;
-            border-radius: 50%;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            cursor: grab;
-            box-shadow: 0 8px 24px rgba(0, 180, 216, 0.5);
-            transition: left 0.1s ease-out, top 0.1s ease-out;
-            will-change: left, top;
-            z-index: 10;
-        }
-        
-        .joystick-globe:active {
-            cursor: grabbing;
-            transform: translate(-50%, -50%) scale(0.95);
-            transition: none;
-        }
-        
-        /* Globo loading - cerchio nero con bordo gradiente che gira in 3D */
-        @keyframes spinGlobe {
-            from { 
-                transform: rotateY(0deg) rotateX(10deg); 
-            }
-            to { 
-                transform: rotateY(360deg) rotateX(10deg); 
-            }
-        }
-        
-        .loading-globe {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto;
-            border-radius: 50%;
-            background: #000000;
-            border: 6px solid transparent;
-            background-image: linear-gradient(#000000, #000000), 
-                              linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: border-box;
-            background-clip: content-box, border-box;
-            box-shadow: 0 8px 24px rgba(0, 180, 216, 0.5);
-            animation: spinGlobe 2s linear infinite;
-            transform-style: preserve-3d;
-        }
-        
-        /* Narrative text uniformata */
-        .narrative-text {
-            background: rgba(255, 255, 255, 0.05);
-            border-left: 4px solid #00b4d8;
-            padding: 25px;
-            margin-bottom: 20px;
-            border-radius: 0 12px 12px 0;
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 1.1rem;
-            font-weight: 400;
-            line-height: 1.8;
-            font-style: italic;
-        }
-        
-        /* Bottone principale uniformato */
-        .gloob-button {
-            background: linear-gradient(135deg, #00b4d8, #0077b6);
-            color: white;
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-weight: 700;
-            padding: 16px 32px;
-            border-radius: 50px;
-            font-size: 1.125rem;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .gloob-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 24px rgba(0, 180, 216, 0.4);
-        }
-        
-        /* Labels uniformate con Satoshi - BOLD */
-        label {
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .hidden { display: none; }
-    </style>
-</head>
-<body class="text-white">
-    <!-- Language Selector (9 lingue con italiano!) -->
-    <div class="lang-selector">
-        <div class="lang-btn active" data-lang="it" title="Italiano">🇮🇹</div>
-        <div class="lang-btn" data-lang="en" title="English">🇬🇧</div>
-        <div class="lang-btn" data-lang="zh" title="中文">🇨🇳</div>
-        <div class="lang-btn" data-lang="es" title="Español">🇪🇸</div>
-        <div class="lang-btn" data-lang="hi" title="हिन्दी">🇮🇳</div>
-        <div class="lang-btn" data-lang="ar" title="العربية">🇦🇪</div>
-        <div class="lang-btn" data-lang="fr" title="Français">🇫🇷</div>
-        <div class="lang-btn" data-lang="pt" title="Português">🇧🇷</div>
-        <div class="lang-btn" data-lang="ru" title="Русский">🇷🇺</div>
-    </div>
+    }
+    
+    // Solo se proprio non trova niente con quella location, usa fallback
+    if (!possibleDestinations || possibleDestinations.length === 0) {
+        console.log('Using emergency fallback');
+        possibleDestinations = DESTINATIONS_DB["city-culture-curious"] || [];
+    }
+    
+    // Scegli random
+    const destination = possibleDestinations[Math.floor(Math.random() * possibleDestinations.length)];
+    
+    if (!destination) {
+        // Destinazione di emergenza
+        showEmergencyDestination();
+        return;
+    }
+    
+    // Mostra destinazione
+    document.getElementById('destination-name').textContent = destination.name;
+    document.getElementById('destination-country').textContent = destination.country;
+    
+    // Usa la funzione helper per ottenere testi tradotti
+    document.getElementById('destination-tagline').textContent = getTranslatedText(destination.tagline);
+    document.getElementById('narrative-text').textContent = getTranslatedText(destination.narrative);
+    
+    // Mostra immagine
+    const image = document.getElementById('destination-image');
+    if (destination.image) {
+        image.src = destination.image;
+        image.style.display = 'block';
+    } else {
+        image.style.display = 'none';
+    }
+    
+    // Mostra citazione random
+    const quotes = travelQuotes[currentLang] || travelQuotes.en || travelQuotes.it;
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('travel-quote').textContent = randomQuote.text;
+    document.getElementById('quote-author').textContent = randomQuote.author;
+}
 
-    <!-- STEP 1: SLIDERS -->
-    <div id="slider-step">
-        <div class="main-container">
-            <div class="text-center mb-6">
-                <h1 class="text-5xl font-bold mb-3 text-white flex items-center justify-center">
-                    <span class="logo-circle"></span>
-                    Gloober
-                </h1>
-                <p class="text-lg text-gray-400" data-translate="tagline">Slide your travel vibes</p>
-            </div>
+// =============================================
+// DESTINAZIONE DI EMERGENZA
+// =============================================
+function showEmergencyDestination() {
+    document.getElementById('destination-name').textContent = "Mystery Destination";
+    document.getElementById('destination-country').textContent = "Somewhere Amazing";
+    document.getElementById('destination-tagline').textContent = "Every journey begins with a single step";
+    document.getElementById('narrative-text').textContent = "L'avventura ti aspetta. Ogni viaggio è una storia da scrivere, ogni destinazione un capitolo nuovo. Parti con il cuore aperto e tornerai con l'anima più ricca.";
+    
+    // Nascondi immagine per mystery destination
+    document.getElementById('destination-image').style.display = 'none';
+    
+    // Citazione di default
+    const quotes = travelQuotes[currentLang] || travelQuotes.en || travelQuotes.it;
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('travel-quote').textContent = randomQuote.text;
+    document.getElementById('quote-author').textContent = randomQuote.author;
+}
 
-            <div class="glass-card rounded-2xl">
-                <!-- Location Slider -->
-                <div class="mb-6">
-                    <label class="block text-center mb-2" data-translate="habitatLabel">HABITAT</label>
-                    <div class="slider-container location-slider" onmousedown="startLocationDrag(event)" onmousemove="dragLocation(event)" onmouseup="stopLocationDrag()" onmouseleave="stopLocationDrag()" ontouchstart="startLocationDrag(event)" ontouchmove="dragLocation(event)" ontouchend="stopLocationDrag()">
-                        <div class="slider-inner-labels" id="location-labels">
-                            <span data-translate="sea">MARE</span>
-                            <span class="label-center" data-translate="city">CITTÀ</span>
-                            <span data-translate="mountain">MONTAGNA</span>
-                        </div>
-                        <div class="slider-dot" id="location-dot" style="left: 50%;"></div>
-                    </div>
-                </div>
-
-                <!-- Distance Slider -->
-                <div class="mb-6">
-                    <label class="block text-center mb-2" data-translate="rangeLabel">RANGE</label>
-                    <div class="slider-container distance-slider" onmousedown="startDistanceDrag(event)" onmousemove="dragDistance(event)" onmouseup="stopDistanceDrag()" onmouseleave="stopDistanceDrag()" ontouchstart="startDistanceDrag(event)" ontouchmove="dragDistance(event)" ontouchend="stopDistanceDrag()">
-                        <div class="slider-inner-labels" id="distance-labels">
-                            <span data-translate="comfort">COMFORT</span>
-                            <span class="label-center" data-translate="curious">CURIOUS</span>
-                            <span data-translate="bloom">BLOOM</span>
-                        </div>
-                        <div class="slider-dot" id="distance-dot" style="left: 50%;"></div>
-                    </div>
-                </div>
-
-                <!-- Mood Selector -->
-                <div class="mb-6">
-                    <label class="block text-center mb-2" data-translate="vibesLabel">VIBES</label>
-                    <div class="mood-selector" id="mood-selector" 
-                         onmousedown="startDragging(event)" 
-                         onmousemove="dragGlobe(event)"
-                         onmouseup="stopDragging()"
-                         onmouseleave="stopDragging()"
-                         ontouchstart="startDragging(event)"
-                         ontouchmove="dragGlobe(event)"
-                         ontouchend="stopDragging()">
-                        <div class="mood-labels">
-                            <span class="mood-label top" data-translate="movida">MOVIDA</span>
-                            <span class="mood-label bottom" data-translate="zen">ZEN</span>
-                            <span class="mood-label left" data-translate="gourmet">GOURMET</span>
-                            <span class="mood-label right" data-translate="wild">WILD</span>
-                            <span class="mood-label top-left" data-translate="design">DESIGN</span>
-                            <span class="mood-label top-right" data-translate="glamour">GLAMOUR</span>
-                            <span class="mood-label bottom-left" data-translate="culture">CULTURE</span>
-                            <span class="mood-label bottom-right" data-translate="romantic">ROMANTIC</span>
-                        </div>
-                        <div class="joystick-globe" id="mood-globe"></div>
-                    </div>
-                </div>
-
-                <!-- Gloob Button -->
-                <div class="text-center">
-                    <button onclick="gloobIt()" class="gloob-button">
-                        <span data-translate="gloobIt">Gloob it!</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- STEP 2: LOADING -->
-    <div id="loading-step" class="hidden min-h-screen flex items-center justify-center">
-        <div class="text-center">
-            <div style="width: 200px; height: 200px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                <div class="loading-globe"></div>
-            </div>
-            <h2 class="text-3xl font-bold mt-6" data-translate="gloobing" style="font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">Gloobing...</h2>
-        </div>
-    </div>
-
-    <!-- STEP 3: RESULTS -->
-    <div id="result-step" class="hidden">
-        <div class="container mx-auto px-4 py-8">
-            <div class="max-w-4xl mx-auto">
-                <!-- Destination Header -->
-                <div class="glass-card rounded-2xl p-8 text-center mb-8">
-                    <h2 class="text-5xl font-bold text-white mb-3" id="destination-name" style="font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">Loading...</h2>
-                    <p class="text-xl italic mb-2" id="destination-tagline">...</p>
-                    <p class="text-gray-400" id="destination-country">...</p>
-                </div>
-
-                <!-- Narrative -->
-                <div class="mb-8">
-                    <h3 class="text-2xl font-bold mb-6 text-center" data-translate="yourJourney">Il tuo viaggio</h3>
-                    <div class="narrative-text glass-card rounded-xl" id="narrative-text">
-                        <!-- La narrativa verrà inserita qui -->
-                    </div>
-                </div>
-
-                <!-- Immagine destinazione -->
-                <div class="mb-8 text-center">
-                    <img id="destination-image" class="rounded-xl shadow-2xl mx-auto max-w-full" style="max-height: 400px;" alt="Destination">
-                </div>
-
-                <!-- Citazione -->
-                <div class="mb-8">
-                    <blockquote class="text-center italic text-lg text-gray-400">
-                        <p id="travel-quote" class="mb-2"></p>
-                        <cite class="text-sm text-gray-500">— <span id="quote-author"></span></cite>
-                    </blockquote>
-                </div>
-
-                <!-- Book Button -->
-                <div class="text-center">
-                    <button onclick="bookTrip()" class="gloob-button mb-4">
-                        <span data-translate="bookNow">Prenota</span> →
-                    </button>
-                    <br>
-                    <button onclick="location.reload()" class="text-gray-500 hover:text-white transition-all">
-                        <span data-translate="tryAgain">Regloob</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Script separati -->
-    <script src="destinations-db.js"></script>
-    <script src="app.js"></script>
-</body>
-</html>
+// =============================================
+// PRENOTA VIAGGIO
+// =============================================
+function bookTrip() {
+    // Per ora usa il link generico
+    // In futuro implementeremo la logica per passare la destinazione a Trip.com
+    window.open('https://trip.tpk.lu/DCFSQxzu', '_blank');
+}
