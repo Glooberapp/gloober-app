@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Slide your travel vibes and discover your perfect destination">
     <title>Gloober - Slide Your Travel Vibes</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,19 +21,31 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* Logo circle con gradiente come nel manifesto */
+        /* Logo circle con gradiente e EFFETTO 3D */
         .logo-circle {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: #000000;
             border: 3px solid transparent;
-            background-image: linear-gradient(#000000, #000000), 
-                              linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: border-box;
-            background-clip: content-box, border-box;
+            background-image: 
+                /* Gradiente per effetto 3D - luce */
+                radial-gradient(circle at 30% 30%, 
+                    rgba(255, 255, 255, 0.3) 0%, 
+                    rgba(255, 255, 255, 0.1) 20%,
+                    transparent 40%),
+                /* Gradiente per effetto 3D - ombra */
+                radial-gradient(circle at 70% 70%, 
+                    transparent 40%, 
+                    rgba(0, 0, 0, 0.4) 70%),
+                /* Background nero */
+                linear-gradient(#000000, #000000), 
+                /* Bordo gradiente */
+                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
+            background-origin: content-box, content-box, border-box, border-box;
+            background-clip: content-box, content-box, content-box, border-box;
             display: inline-block;
             margin-right: 15px;
+            box-shadow: 0 4px 16px rgba(0, 180, 216, 0.4);
         }
         
         /* Container principale responsive */
@@ -48,38 +60,39 @@
             padding: 30px 20px;
         }
         
-        /* Language selector NUOVO DESIGN */
+        @media (max-height: 800px) {
+            .glass-card {
+                padding: 20px 15px;
+            }
+            h1 {
+                font-size: 3rem !important;
+            }
+        }
+        
+        /* Language selector */
         .lang-selector {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            top: 10px;
+            right: 10px;
             z-index: 100;
             display: flex;
             gap: 6px;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(255, 255, 255, 0.1);
             padding: 6px;
             border-radius: 25px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            overflow: hidden;
-            max-width: 44px;
-        }
-        
-        .lang-selector.open {
-            max-width: 320px;
             flex-wrap: wrap;
+            max-width: 320px;
         }
         
         .lang-btn {
-            width: 32px;
-            height: 32px;
-            min-width: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
-            opacity: 1;
+            opacity: 0.6;
             transition: all 0.3s ease;
-            font-size: 18px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -87,123 +100,14 @@
         }
         
         .lang-btn:hover {
+            opacity: 1;
             transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.2);
         }
         
         .lang-btn.active {
+            opacity: 1;
             box-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
             border: 2px solid #00b4d8;
-        }
-        
-        /* Solo la prima lingua visibile quando chiuso */
-        .lang-selector:not(.open) .lang-btn:not(:first-child) {
-            display: none;
-        }
-        
-        /* Freccia indicatore */
-        .lang-selector::after {
-            content: '›';
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%) rotate(90deg);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 20px;
-            transition: transform 0.3s ease;
-        }
-        
-        .lang-selector.open::after {
-            transform: translateY(-50%) rotate(-90deg);
-        }
-        
-        /* Ottimizzazioni MOBILE */
-@media (max-width: 768px) and (max-height: 900px) {
-            .main-container {
-                padding: 15px;
-            }
-            
-            .glass-card {
-                padding: 20px 15px;
-            }
-            
-            h1 {
-                font-size: 2.5rem !important;
-                margin-bottom: 0.5rem !important;
-            }
-            
-            .logo-circle {
-                width: 45px;
-                height: 45px;
-                margin-right: 10px;
-            }
-            
-            .text-lg {
-                font-size: 1rem !important;
-            }
-            
-            .mb-6 {
-                margin-bottom: 1rem !important;
-            }
-            
-            .mood-selector {
-                height: 160px !important;
-            }
-            
-            label {
-                font-size: 0.75rem !important;
-                margin-bottom: 0.5rem !important;
-            }
-            
-            .slider-container {
-                height: 50px;
-                margin: 10px auto;
-            }
-            
-            .slider-dot {
-                width: 46px;
-                height: 46px;
-            }
-            
-            .joystick-globe {
-                width: 48px;
-                height: 48px;
-            }
-            
-            .gloob-button {
-                padding: 12px 28px;
-                font-size: 1rem;
-            }
-        }
-        
-        /* Ultra small devices */
-        @media (max-height: 700px) {
-            .glass-card {
-                padding: 15px 12px;
-            }
-            
-            h1 {
-                font-size: 2rem !important;
-                margin-bottom: 0.25rem !important;
-            }
-            
-            .mood-selector {
-                height: 140px !important;
-            }
-            
-            .mb-6 {
-                margin-bottom: 0.75rem !important;
-            }
-        }
-        
-        /* Assicura che tutto stia in viewport */
-        #slider-step {
-            min-height: 100vh;
-            max-height: 100vh;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         /* Stile unificato per tutti gli slider */
@@ -274,17 +178,28 @@
             opacity: 1;
         }
         
-        /* Slider dot generico - cerchio con gradiente come logo */
+        /* Slider dot con EFFETTO 3D GRADIENTE */
         .slider-dot {
             position: absolute;
             width: 56px;
             height: 56px;
-            background: #000000;
             border: 3px solid transparent;
-            background-image: linear-gradient(#000000, #000000), 
-                              linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: border-box;
-            background-clip: content-box, border-box;
+            background-image: 
+                /* Gradiente per effetto 3D - luce */
+                radial-gradient(circle at 30% 30%, 
+                    rgba(255, 255, 255, 0.3) 0%, 
+                    rgba(255, 255, 255, 0.1) 20%,
+                    transparent 40%),
+                /* Gradiente per effetto 3D - ombra */
+                radial-gradient(circle at 70% 70%, 
+                    transparent 40%, 
+                    rgba(0, 0, 0, 0.4) 70%),
+                /* Background nero */
+                linear-gradient(#000000, #000000), 
+                /* Bordo gradiente */
+                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
+            background-origin: content-box, content-box, border-box, border-box;
+            background-clip: content-box, content-box, content-box, border-box;
             border-radius: 50%;
             top: 2px;
             cursor: grab;
@@ -316,6 +231,12 @@
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
             cursor: pointer;
             overflow: hidden;
+        }
+        
+        @media (max-height: 700px) {
+            .mood-selector {
+                height: 150px;
+            }
         }
         
         .mood-labels {
@@ -385,17 +306,28 @@
             opacity: 1;
         }
         
-        /* Joystick globe - cerchio con gradiente come logo */
+        /* Joystick globe con EFFETTO 3D GRADIENTE */
         .joystick-globe {
             position: absolute;
             width: 56px;
             height: 56px;
-            background: #000000;
             border: 3px solid transparent;
-            background-image: linear-gradient(#000000, #000000), 
-                              linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: border-box;
-            background-clip: content-box, border-box;
+            background-image: 
+                /* Gradiente per effetto 3D - luce */
+                radial-gradient(circle at 30% 30%, 
+                    rgba(255, 255, 255, 0.3) 0%, 
+                    rgba(255, 255, 255, 0.1) 20%,
+                    transparent 40%),
+                /* Gradiente per effetto 3D - ombra */
+                radial-gradient(circle at 70% 70%, 
+                    transparent 40%, 
+                    rgba(0, 0, 0, 0.4) 70%),
+                /* Background nero */
+                linear-gradient(#000000, #000000), 
+                /* Bordo gradiente */
+                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
+            background-origin: content-box, content-box, border-box, border-box;
+            background-clip: content-box, content-box, content-box, border-box;
             border-radius: 50%;
             left: 50%;
             top: 50%;
@@ -413,7 +345,7 @@
             transition: none;
         }
         
-        /* Globo loading - cerchio nero con bordo gradiente che gira in 3D */
+        /* Globo loading con EFFETTO 3D GRADIENTE */
         @keyframes spinGlobe {
             from { 
                 transform: rotateY(0deg) rotateX(10deg); 
@@ -428,12 +360,23 @@
             height: 180px;
             margin: 0 auto;
             border-radius: 50%;
-            background: #000000;
             border: 6px solid transparent;
-            background-image: linear-gradient(#000000, #000000), 
-                              linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: border-box;
-            background-clip: content-box, border-box;
+            background-image: 
+                /* Gradiente per effetto 3D - luce */
+                radial-gradient(circle at 30% 30%, 
+                    rgba(255, 255, 255, 0.3) 0%, 
+                    rgba(255, 255, 255, 0.1) 20%,
+                    transparent 40%),
+                /* Gradiente per effetto 3D - ombra */
+                radial-gradient(circle at 70% 70%, 
+                    transparent 40%, 
+                    rgba(0, 0, 0, 0.4) 70%),
+                /* Background nero */
+                linear-gradient(#000000, #000000), 
+                /* Bordo gradiente */
+                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
+            background-origin: content-box, content-box, border-box, border-box;
+            background-clip: content-box, content-box, content-box, border-box;
             box-shadow: 0 8px 24px rgba(0, 180, 216, 0.5);
             animation: spinGlobe 2s linear infinite;
             transform-style: preserve-3d;
@@ -486,8 +429,8 @@
     </style>
 </head>
 <body class="text-white">
-    <!-- Language Selector - NUOVO DESIGN IN BASSO -->
-    <div class="lang-selector" id="lang-selector">
+    <!-- Language Selector (9 lingue con italiano!) -->
+    <div class="lang-selector">
         <div class="lang-btn active" data-lang="it" title="Italiano">🇮🇹</div>
         <div class="lang-btn" data-lang="en" title="English">🇬🇧</div>
         <div class="lang-btn" data-lang="zh" title="中文">🇨🇳</div>
