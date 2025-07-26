@@ -178,7 +178,7 @@
             opacity: 1;
         }
         
-        /* Slider dot con EFFETTO 3D GRADIENTE */
+        /* Slider dot con EFFETTO 3D GRADIENTE e FIX POSIZIONE */
         .slider-dot {
             position: absolute;
             width: 56px;
@@ -207,12 +207,12 @@
             transition: left 0.15s ease-out;
             will-change: left;
             z-index: 10;
-            transform: translateX(-50%); /* IMPORTANTE: centra il pallino sulla posizione */
+            transform: translateX(-50%); /* FIX: centra il pallino sulla posizione */
         }
         
         .slider-dot:active {
             cursor: grabbing;
-            transform: translateX(-50%) scale(0.95);
+            transform: translateX(-50%) scale(0.95); /* FIX: mantiene il centraggio anche quando premuto */
             transition: none;
         }
         
