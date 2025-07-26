@@ -165,7 +165,7 @@
             opacity: 1;
         }
         
-        /* Slider dot con EFFETTO 3D GRADIENTE */
+        /* Slider dot con EFFETTO 3D GRADIENTE - SENZA TRANSFORM */
         .slider-dot {
             position: absolute;
             width: 56px;
@@ -190,12 +190,13 @@
             transition: left 0.15s ease-out;
             will-change: left;
             z-index: 10;
-            transform: translateX(-50%);
+            /* IMPORTANTE: margin-left invece di transform per centrare */
+            margin-left: -28px;
         }
         
         .slider-dot:active {
             cursor: grabbing;
-            transform: translateX(-50%) scale(0.95);
+            transform: scale(0.95);
             transition: none;
         }
         
@@ -395,7 +396,6 @@
         
         /* MOBILE OPTIMIZATIONS */
         @media (max-width: 768px) {
-            /* Usa tutto lo schermo disponibile */
             body {
                 margin: 0;
                 padding: 0;
@@ -407,7 +407,6 @@
                 justify-content: space-between;
             }
             
-            /* Header più compatto */
             .text-center.mb-6 {
                 margin-bottom: 20px !important;
             }
@@ -427,7 +426,6 @@
                 font-size: 1rem !important;
             }
             
-            /* Card con meno padding */
             .glass-card {
                 padding: 20px 15px !important;
             }
@@ -461,6 +459,7 @@
             .slider-dot {
                 width: 66px;
                 height: 66px;
+                margin-left: -33px;
             }
             
             /* Mood selector più grande */
