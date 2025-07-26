@@ -2,7 +2,7 @@
 // Version: 2.0 - Con foto Unsplash reali
 // ============================================
 
-const DESTINATIONS = [
+const DESTINATIONS_DB = [
     // MARE (Sea) Destinations
     {
         name: "Maldive",
