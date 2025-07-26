@@ -1,5 +1,5 @@
 // GLOOBER APP LOGIC
-// Version: 2.0 - VERSIONE FUNZIONANTE
+// Version: 2.2 - Fix definitivo per pallini e prenotazione
 // ============================================
 
 // Stato globale dell'app
@@ -283,7 +283,20 @@ function dragLocation(e) {
     const slider = e.currentTarget;
     const rect = slider.getBoundingClientRect();
     const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    
+    // Calcola dinamicamente la larghezza del pallino
+    const dot = document.getElementById('location-dot');
+    const dotRect = dot.getBoundingClientRect();
+    const dotWidth = dotRect.width;
+    const halfDot = dotWidth / 2;
+    
+    // Limita il movimento considerando il transform
+    const minX = halfDot;
+    const maxX = rect.width - halfDot;
+    const clampedX = Math.max(minX, Math.min(maxX, x));
+    
+    // Calcola la percentuale basata sulla posizione limitata
+    const percentage = ((clampedX - minX) / (maxX - minX)) * 100;
     
     userPreferences.location = percentage;
     document.getElementById('location-dot').style.left = percentage + '%';
@@ -312,7 +325,20 @@ function dragDistance(e) {
     const slider = e.currentTarget;
     const rect = slider.getBoundingClientRect();
     const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    
+    // Calcola dinamicamente la larghezza del pallino
+    const dot = document.getElementById('distance-dot');
+    const dotRect = dot.getBoundingClientRect();
+    const dotWidth = dotRect.width;
+    const halfDot = dotWidth / 2;
+    
+    // Limita il movimento considerando il transform
+    const minX = halfDot;
+    const maxX = rect.width - halfDot;
+    const clampedX = Math.max(minX, Math.min(maxX, x));
+    
+    // Calcola la percentuale basata sulla posizione limitata
+    const percentage = ((clampedX - minX) / (maxX - minX)) * 100;
     
     userPreferences.distance = percentage;
     document.getElementById('distance-dot').style.left = percentage + '%';
@@ -343,13 +369,27 @@ function dragGlobe(e) {
     const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
     const y = (e.type.includes('touch') ? e.touches[0].clientY : e.clientY) - rect.top;
     
-    const percentX = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    const percentY = Math.max(0, Math.min(100, (y / rect.height) * 100));
+    // Calcola dinamicamente la dimensione del globe
+    const globe = document.getElementById('mood-globe');
+    const globeRect = globe.getBoundingClientRect();
+    const globeSize = globeRect.width;
+    const halfGlobe = globeSize / 2;
+    
+    // Limita il movimento
+    const minX = halfGlobe;
+    const maxX = rect.width - halfGlobe;
+    const minY = halfGlobe;
+    const maxY = rect.height - halfGlobe;
+    
+    const clampedX = Math.max(minX, Math.min(maxX, x));
+    const clampedY = Math.max(minY, Math.min(maxY, y));
+    
+    const percentX = ((clampedX - minX) / (maxX - minX)) * 100;
+    const percentY = ((clampedY - minY) / (maxY - minY)) * 100;
     
     userPreferences.moodX = percentX;
     userPreferences.moodY = percentY;
     
-    const globe = document.getElementById('mood-globe');
     globe.style.left = percentX + '%';
     globe.style.top = percentY + '%';
     
@@ -442,7 +482,7 @@ function calculateDestination() {
     // Determina i mood principali (massimo 2)
     const moods = getMoodsFromPosition(userPreferences.moodX, userPreferences.moodY);
     
-    // Filtra le destinazioni per tipo - USA DESTINATIONS_DB!
+    // Filtra le destinazioni per tipo
     let candidates = DESTINATIONS_DB.filter(dest => dest.type === habitatType);
     
     // Se non ci sono candidati esatti, allarga la ricerca
@@ -624,11 +664,32 @@ function generateNarrative(destination) {
     return typeNarratives[Math.floor(Math.random() * typeNarratives.length)];
 }
 
-// GESTIONE PRENOTAZIONE
+// GESTIONE PRENOTAZIONE - FUNZIONANTE!
 function bookTrip() {
     const destination = document.getElementById('destination-name').textContent;
-    // Qui puoi aggiungere link a booking.com, expedia, etc.
-    alert(`Presto potrai prenotare il tuo viaggio a ${destination}!`);
+    const country = document.getElementById('destination-country').textContent;
+    
+    // Costruisci query di ricerca in base alla lingua
+    let searchQuery = '';
+    switch(currentLang) {
+        case 'it':
+            searchQuery = `voli hotel ${destination} ${country}`;
+            break;
+        case 'es':
+            searchQuery = `vuelos hoteles ${destination} ${country}`;
+            break;
+        case 'fr':
+            searchQuery = `vols hotels ${destination} ${country}`;
+            break;
+        case 'de':
+            searchQuery = `flüge hotels ${destination} ${country}`;
+            break;
+        default:
+            searchQuery = `flights hotels ${destination} ${country}`;
+    }
+    
+    // Apri Google Travel in una nuova scheda
+    window.open(`https://www.google.com/travel/search?q=${encodeURIComponent(searchQuery)}`, '_blank');
 }
 
 // GESTIONE CAMBIO LINGUA
