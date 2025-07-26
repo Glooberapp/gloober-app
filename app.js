@@ -1,5 +1,5 @@
 // GLOOBER APP LOGIC
-// Version: 2.0 - Algoritmo di matching migliorato
+// Version: 2.0 - VERSIONE FUNZIONANTE
 // ============================================
 
 // Stato globale dell'app
@@ -369,10 +369,30 @@ function stopDragging() {
 function updateMoodLabels(x, y) {
     const labels = document.querySelectorAll('.mood-label');
     labels.forEach(label => {
-        const labelX = label.classList.contains('left') ? 0 : 
-                      label.classList.contains('right') ? 100 : 50;
-        const labelY = label.classList.contains('top') ? 0 : 
-                      label.classList.contains('bottom') ? 100 : 50;
+        let labelX = 50;
+        let labelY = 50;
+        
+        if (label.classList.contains('left')) labelX = 0;
+        if (label.classList.contains('right')) labelX = 100;
+        if (label.classList.contains('top')) labelY = 0;
+        if (label.classList.contains('bottom')) labelY = 100;
+        
+        if (label.classList.contains('top-left')) {
+            labelX = 25;
+            labelY = 25;
+        }
+        if (label.classList.contains('top-right')) {
+            labelX = 75;
+            labelY = 25;
+        }
+        if (label.classList.contains('bottom-left')) {
+            labelX = 25;
+            labelY = 75;
+        }
+        if (label.classList.contains('bottom-right')) {
+            labelX = 75;
+            labelY = 75;
+        }
         
         const distance = Math.sqrt(Math.pow(x - labelX, 2) + Math.pow(y - labelY, 2));
         
@@ -422,7 +442,7 @@ function calculateDestination() {
     // Determina i mood principali (massimo 2)
     const moods = getMoodsFromPosition(userPreferences.moodX, userPreferences.moodY);
     
-    // Filtra le destinazioni per tipo
+    // Filtra le destinazioni per tipo - USA DESTINATIONS_DB!
     let candidates = DESTINATIONS_DB.filter(dest => dest.type === habitatType);
     
     // Se non ci sono candidati esatti, allarga la ricerca
@@ -565,6 +585,34 @@ function generateNarrative(destination) {
             mountain: [
                 `The peaks of ${destination.name} call you upward, where the air is pure and silence speaks. A natural sanctuary that awakens the soul.`,
                 `${destination.name} offers you the majesty of the mountains, where every path is a meditation and every summit a personal conquest.`
+            ]
+        },
+        es: {
+            sea: [
+                `${destination.name} te espera con aguas cristalinas y atardeceres que pintan el cielo. Un lugar donde el tiempo se ralentiza y cada ola cuenta una historia.`,
+                `Déjate arrullar por el ritmo del mar en ${destination.name}. Aquí, donde la arena se encuentra con el infinito, encontrarás la paz que buscabas.`
+            ],
+            city: [
+                `${destination.name} palpita con energía y posibilidades. Cada calle esconde una sorpresa, cada esquina una nueva aventura urbana que te espera.`,
+                `Sumérgete en el caos creativo de ${destination.name}. Una metrópolis que nunca duerme, donde los sueños toman forma entre rascacielos y callejones ocultos.`
+            ],
+            mountain: [
+                `Las cumbres de ${destination.name} te llaman hacia arriba, donde el aire es puro y el silencio habla. Un santuario natural que despierta el alma.`,
+                `${destination.name} te ofrece la majestuosidad de la montaña, donde cada sendero es una meditación y cada cima una conquista personal.`
+            ]
+        },
+        fr: {
+            sea: [
+                `${destination.name} vous attend avec ses eaux cristallines et ses couchers de soleil qui peignent le ciel. Un lieu où le temps ralentit et chaque vague raconte une histoire.`,
+                `Laissez-vous bercer par le rythme de la mer à ${destination.name}. Ici, où le sable rencontre l'infini, vous trouverez la paix que vous cherchiez.`
+            ],
+            city: [
+                `${destination.name} vibre d'énergie et de possibilités. Chaque rue cache une surprise, chaque coin une nouvelle aventure urbaine qui vous attend.`,
+                `Plongez dans le chaos créatif de ${destination.name}. Une métropole qui ne dort jamais, où les rêves prennent forme entre gratte-ciels et ruelles cachées.`
+            ],
+            mountain: [
+                `Les sommets de ${destination.name} vous appellent vers le haut, où l'air est pur et le silence parle. Un sanctuaire naturel qui réveille l'âme.`,
+                `${destination.name} vous offre la majesté de la montagne, où chaque sentier est une méditation et chaque sommet une conquête personnelle.`
             ]
         }
     };
