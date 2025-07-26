@@ -207,11 +207,12 @@
             transition: left 0.15s ease-out;
             will-change: left;
             z-index: 10;
+            transform: translateX(-50%); /* IMPORTANTE: centra il pallino sulla posizione */
         }
         
         .slider-dot:active {
             cursor: grabbing;
-            transform: scale(0.95);
+            transform: translateX(-50%) scale(0.95);
             transition: none;
         }
         
