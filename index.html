@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Slide your travel vibes and discover your perfect destination">
     <title>Gloober - Slide Your Travel Vibes</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,6 +11,7 @@
         body {
             background: #000000;
             min-height: 100vh;
+            min-height: -webkit-fill-available;
             overflow-x: hidden;
             font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
@@ -28,18 +29,14 @@
             border-radius: 50%;
             border: 3px solid transparent;
             background-image: 
-                /* Gradiente per effetto 3D - luce */
                 radial-gradient(circle at 30% 30%, 
                     rgba(255, 255, 255, 0.3) 0%, 
                     rgba(255, 255, 255, 0.1) 20%,
                     transparent 40%),
-                /* Gradiente per effetto 3D - ombra */
                 radial-gradient(circle at 70% 70%, 
                     transparent 40%, 
                     rgba(0, 0, 0, 0.4) 70%),
-                /* Background nero */
                 linear-gradient(#000000, #000000), 
-                /* Bordo gradiente */
                 linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
             background-origin: content-box, content-box, border-box, border-box;
             background-clip: content-box, content-box, content-box, border-box;
@@ -53,20 +50,16 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         /* Glass card responsive */
         .glass-card {
             padding: 30px 20px;
-        }
-        
-        @media (max-height: 800px) {
-            .glass-card {
-                padding: 20px 15px;
-            }
-            h1 {
-                font-size: 3rem !important;
-            }
         }
         
         /* Language selector */
@@ -119,23 +112,36 @@
             cursor: pointer;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
             position: relative;
+            overflow: visible; /* Cambiato da hidden */
+            padding: 0 30px; /* Spazio per il pallino */
+        }
+        
+        /* Wrapper interno per il gradiente */
+        .slider-gradient-wrapper {
+            position: absolute;
+            left: 30px;
+            right: 30px;
+            top: 0;
+            bottom: 0;
+            border-radius: 30px;
             overflow: hidden;
         }
         
         /* Location slider gradient */
-        .location-slider {
+        .location-slider .slider-gradient-wrapper {
             background: linear-gradient(to right, #60a5fa 0%, #f97316 50%, #10b981 100%);
         }
         
         /* Distance slider gradient */
-        .distance-slider {
+        .distance-slider .slider-gradient-wrapper {
             background: linear-gradient(to right, #94a3b8 0%, #64748b 50%, #334155 100%);
         }
         
-        /* Labels dentro lo slider - STILE UNIFICATO */
+        /* Labels dentro lo slider */
         .slider-inner-labels {
             position: absolute;
-            width: 100%;
+            left: 30px;
+            right: 30px;
             height: 100%;
             display: flex;
             justify-content: space-between;
@@ -157,12 +163,6 @@
             letter-spacing: 0.08em;
         }
         
-        /* Labels laterali sempre visibili, centrale appare solo quando muovi */
-        .slider-inner-labels span:first-child,
-        .slider-inner-labels span:last-child {
-            opacity: 0;
-        }
-        
         .slider-inner-labels span.visible {
             opacity: 1;
         }
@@ -178,25 +178,21 @@
             opacity: 1;
         }
         
-        /* Slider dot con EFFETTO 3D GRADIENTE e FIX POSIZIONE */
+        /* Slider dot con EFFETTO 3D GRADIENTE */
         .slider-dot {
             position: absolute;
             width: 56px;
             height: 56px;
             border: 3px solid transparent;
             background-image: 
-                /* Gradiente per effetto 3D - luce */
                 radial-gradient(circle at 30% 30%, 
                     rgba(255, 255, 255, 0.3) 0%, 
                     rgba(255, 255, 255, 0.1) 20%,
                     transparent 40%),
-                /* Gradiente per effetto 3D - ombra */
                 radial-gradient(circle at 70% 70%, 
                     transparent 40%, 
                     rgba(0, 0, 0, 0.4) 70%),
-                /* Background nero */
                 linear-gradient(#000000, #000000), 
-                /* Bordo gradiente */
                 linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
             background-origin: content-box, content-box, border-box, border-box;
             background-clip: content-box, content-box, content-box, border-box;
@@ -207,12 +203,12 @@
             transition: left 0.15s ease-out;
             will-change: left;
             z-index: 10;
-            transform: translateX(-50%); /* FIX: centra il pallino sulla posizione */
+            transform: translateX(-50%);
         }
         
         .slider-dot:active {
             cursor: grabbing;
-            transform: translateX(-50%) scale(0.95); /* FIX: mantiene il centraggio anche quando premuto */
+            transform: translateX(-50%) scale(0.95);
             transition: none;
         }
         
@@ -234,12 +230,6 @@
             overflow: hidden;
         }
         
-        @media (max-height: 700px) {
-            .mood-selector {
-                height: 150px;
-            }
-        }
-        
         .mood-labels {
             position: absolute;
             width: 100%;
@@ -257,9 +247,11 @@
             text-transform: uppercase;
             text-shadow: 0 2px 4px rgba(0,0,0,0.4);
             letter-spacing: 0.08em;
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
         
-        /* Posizioni etichette mood - tutte dentro */
+        /* Posizioni etichette mood */
         .mood-label.top { 
             top: 10px; 
             left: 50%; 
@@ -297,35 +289,25 @@
             right: 25px; 
         }
         
-        /* Mood labels nascosti di default */
-        .mood-label {
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        
         .mood-label.visible {
             opacity: 1;
         }
         
-        /* Joystick globe con EFFETTO 3D GRADIENTE */
+        /* Joystick globe */
         .joystick-globe {
             position: absolute;
             width: 56px;
             height: 56px;
             border: 3px solid transparent;
             background-image: 
-                /* Gradiente per effetto 3D - luce */
                 radial-gradient(circle at 30% 30%, 
                     rgba(255, 255, 255, 0.3) 0%, 
                     rgba(255, 255, 255, 0.1) 20%,
                     transparent 40%),
-                /* Gradiente per effetto 3D - ombra */
                 radial-gradient(circle at 70% 70%, 
                     transparent 40%, 
                     rgba(0, 0, 0, 0.4) 70%),
-                /* Background nero */
                 linear-gradient(#000000, #000000), 
-                /* Bordo gradiente */
                 linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
             background-origin: content-box, content-box, border-box, border-box;
             background-clip: content-box, content-box, content-box, border-box;
@@ -346,7 +328,7 @@
             transition: none;
         }
         
-        /* Globo loading con EFFETTO 3D GRADIENTE */
+        /* Globo loading */
         @keyframes spinGlobe {
             from { 
                 transform: rotateY(0deg) rotateX(10deg); 
@@ -363,18 +345,14 @@
             border-radius: 50%;
             border: 6px solid transparent;
             background-image: 
-                /* Gradiente per effetto 3D - luce */
                 radial-gradient(circle at 30% 30%, 
                     rgba(255, 255, 255, 0.3) 0%, 
                     rgba(255, 255, 255, 0.1) 20%,
                     transparent 40%),
-                /* Gradiente per effetto 3D - ombra */
                 radial-gradient(circle at 70% 70%, 
                     transparent 40%, 
                     rgba(0, 0, 0, 0.4) 70%),
-                /* Background nero */
                 linear-gradient(#000000, #000000), 
-                /* Bordo gradiente */
                 linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
             background-origin: content-box, content-box, border-box, border-box;
             background-clip: content-box, content-box, content-box, border-box;
@@ -383,7 +361,7 @@
             transform-style: preserve-3d;
         }
         
-        /* Narrative text uniformata */
+        /* Narrative text */
         .narrative-text {
             background: rgba(255, 255, 255, 0.05);
             border-left: 4px solid #00b4d8;
@@ -397,7 +375,7 @@
             font-style: italic;
         }
         
-        /* Bottone principale uniformato */
+        /* Bottone principale */
         .gloob-button {
             background: linear-gradient(135deg, #00b4d8, #0077b6);
             color: white;
@@ -416,7 +394,7 @@
             box-shadow: 0 8px 24px rgba(0, 180, 216, 0.4);
         }
         
-        /* Labels uniformate con Satoshi - BOLD */
+        /* Labels */
         label {
             font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-weight: 700;
@@ -427,10 +405,156 @@
         }
         
         .hidden { display: none; }
+        
+        /* MOBILE OPTIMIZATIONS */
+        @media (max-width: 768px) {
+            /* Usa tutto lo schermo disponibile */
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .main-container {
+                padding: 15px;
+                max-width: 100%;
+                justify-content: space-between;
+            }
+            
+            /* Header più compatto */
+            .text-center.mb-6 {
+                margin-bottom: 20px !important;
+            }
+            
+            h1 {
+                font-size: 2.5rem !important;
+                margin-bottom: 5px !important;
+            }
+            
+            .logo-circle {
+                width: 45px;
+                height: 45px;
+                margin-right: 10px;
+            }
+            
+            .text-lg {
+                font-size: 1rem !important;
+            }
+            
+            /* Card con meno padding */
+            .glass-card {
+                padding: 20px 15px !important;
+            }
+            
+            /* Slider più grandi e usabili */
+            .slider-container {
+                height: 70px !important;
+                margin: 20px auto !important;
+                padding: 0 40px;
+            }
+            
+            .slider-gradient-wrapper {
+                left: 40px;
+                right: 40px;
+            }
+            
+            .slider-inner-labels {
+                left: 40px;
+                right: 40px;
+                padding: 0 20px;
+            }
+            
+            /* Etichette solo agli estremi su mobile */
+            .slider-inner-labels span {
+                font-size: 10px;
+            }
+            
+            .slider-inner-labels .label-center {
+                display: none; /* Nascondi etichetta centrale su mobile */
+            }
+            
+            /* Mostra solo etichette laterali */
+            .slider-inner-labels span:first-child,
+            .slider-inner-labels span:last-child {
+                opacity: 0.6;
+            }
+            
+            /* Pallino più grande */
+            .slider-dot {
+                width: 66px;
+                height: 66px;
+            }
+            
+            /* Mood selector più grande */
+            .mood-selector {
+                height: 250px !important;
+                margin: 20px auto !important;
+            }
+            
+            /* Etichette mood più leggibili */
+            .mood-label {
+                font-size: 11px;
+                opacity: 0.5; /* Sempre visibili ma discrete */
+            }
+            
+            .mood-label.visible {
+                opacity: 1;
+            }
+            
+            /* Pallino mood più grande */
+            .joystick-globe {
+                width: 66px;
+                height: 66px;
+            }
+            
+            /* Bottone più grande */
+            .gloob-button {
+                width: 100%;
+                padding: 18px 40px;
+                font-size: 1.25rem;
+            }
+            
+            /* Language selector più piccolo */
+            .lang-selector {
+                padding: 4px;
+                gap: 4px;
+            }
+            
+            .lang-btn {
+                width: 24px;
+                height: 24px;
+                font-size: 14px;
+            }
+            
+            /* Spazi verticali ridotti */
+            .mb-6 {
+                margin-bottom: 15px !important;
+            }
+            
+            label {
+                margin-bottom: 10px !important;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Extra small devices */
+        @media (max-width: 380px) {
+            h1 {
+                font-size: 2rem !important;
+            }
+            
+            .logo-circle {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .mood-selector {
+                height: 200px !important;
+            }
+        }
     </style>
 </head>
 <body class="text-white">
-    <!-- Language Selector (9 lingue con italiano!) -->
+    <!-- Language Selector -->
     <div class="lang-selector">
         <div class="lang-btn active" data-lang="it" title="Italiano">🇮🇹</div>
         <div class="lang-btn" data-lang="en" title="English">🇬🇧</div>
@@ -459,6 +583,7 @@
                 <div class="mb-6">
                     <label class="block text-center mb-2" data-translate="habitatLabel">HABITAT</label>
                     <div class="slider-container location-slider" onmousedown="startLocationDrag(event)" onmousemove="dragLocation(event)" onmouseup="stopLocationDrag()" onmouseleave="stopLocationDrag()" ontouchstart="startLocationDrag(event)" ontouchmove="dragLocation(event)" ontouchend="stopLocationDrag()">
+                        <div class="slider-gradient-wrapper"></div>
                         <div class="slider-inner-labels" id="location-labels">
                             <span data-translate="sea">MARE</span>
                             <span class="label-center" data-translate="city">CITTÀ</span>
@@ -472,6 +597,7 @@
                 <div class="mb-6">
                     <label class="block text-center mb-2" data-translate="rangeLabel">RANGE</label>
                     <div class="slider-container distance-slider" onmousedown="startDistanceDrag(event)" onmousemove="dragDistance(event)" onmouseup="stopDistanceDrag()" onmouseleave="stopDistanceDrag()" ontouchstart="startDistanceDrag(event)" ontouchmove="dragDistance(event)" ontouchend="stopDistanceDrag()">
+                        <div class="slider-gradient-wrapper"></div>
                         <div class="slider-inner-labels" id="distance-labels">
                             <span data-translate="comfort">COMFORT</span>
                             <span class="label-center" data-translate="curious">CURIOUS</span>
