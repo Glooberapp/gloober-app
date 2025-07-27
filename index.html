@@ -166,33 +166,10 @@
         }
         
         /* Slider dot con EFFETTO 3D GRADIENTE - SENZA TRANSFORM */
-        .slider-dot {
-            position: absolute;
-            width: 56px;
-            height: 56px;
-            border: 3px solid transparent;
-            background-image: 
-                radial-gradient(circle at 30% 30%, 
-                    rgba(255, 255, 255, 0.3) 0%, 
-                    rgba(255, 255, 255, 0.1) 20%,
-                    transparent 40%),
-                radial-gradient(circle at 70% 70%, 
-                    transparent 40%, 
-                    rgba(0, 0, 0, 0.4) 70%),
-                linear-gradient(#000000, #000000), 
-                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: content-box, content-box, border-box, border-box;
-            background-clip: content-box, content-box, content-box, border-box;
-            border-radius: 50%;
-            top: 2px;
-            cursor: grab;
-            box-shadow: 0 4px 16px rgba(0, 180, 216, 0.4);
-            transition: left 0.15s ease-out;
-            will-change: left;
-            z-index: 10;
-            /* IMPORTANTE: margin-left invece di transform per centrare */
-            margin-left: -28px;
-        }
+       .slider-dot {
+    /* ... altro codice ... */
+    margin-left: -28px;  /* CAMBIA IN: margin-left: 0; */
+}
         
         .slider-dot:active {
             cursor: grabbing;
@@ -515,20 +492,14 @@
         }
         
         /* Extra small devices */
-        @media (max-width: 380px) {
-            h1 {
-                font-size: 2rem !important;
-            }
-            
-            .logo-circle {
-                width: 35px;
-                height: 35px;
-            }
-            
-            .mood-selector {
-                height: 200px !important;
-            }
-        }
+        @media (max-width: 768px) {
+    /* ... altro codice ... */
+    .slider-dot {
+        width: 66px;
+        height: 66px;
+        margin-left: -33px;  /* CAMBIA IN: margin-left: 0; */
+    }
+}
     </style>
 </head>
 <body class="text-white">
