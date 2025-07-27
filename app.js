@@ -454,6 +454,19 @@ function gloobIt() {
 
 // ALGORITMO DI MATCHING MIGLIORATO
 function calculateDestination() {
+    // Verifica che il database sia caricato
+    if (typeof DESTINATIONS_DB === 'undefined' || !DESTINATIONS_DB || DESTINATIONS_DB.length === 0) {
+        console.error('Database destinazioni non caricato!');
+        return {
+            name: "Errore",
+            country: "Database non caricato",
+            image: "",
+            type: "city",
+            distance: "medium",
+            moods: [],
+            tagline: { it: "Ricarica la pagina", en: "Reload the page" }
+        };
+    }
     // Determina il tipo di habitat
     let habitatType;
     if (userPreferences.location < 33) {
@@ -571,15 +584,27 @@ function getMoodsFromPosition(x, y) {
 
 // MOSTRA RISULTATO
 function showResult(destination) {
+    // Debug - verifica cosa arriva
+    console.log('Destinazione selezionata:', destination);
+    
     // Nascondi loading e mostra risultato
     document.getElementById('loading-step').classList.add('hidden');
     document.getElementById('result-step').classList.remove('hidden');
     
     // Popola i dati
-    document.getElementById('destination-name').textContent = destination.name;
-    document.getElementById('destination-tagline').textContent = destination.tagline[currentLang] || '';
-    document.getElementById('destination-country').textContent = destination.country;
-    document.getElementById('destination-image').src = destination.image;
+    document.getElementById('destination-name').textContent = destination.name || 'Destinazione';
+    document.getElementById('destination-tagline').textContent = destination.tagline && destination.tagline[currentLang] ? destination.tagline[currentLang] : '';
+    document.getElementById('destination-country').textContent = destination.country || '';
+    
+    // Imposta immagine
+    const img = document.getElementById('destination-image');
+    if (destination.image) {
+        img.src = destination.image;
+        img.alt = destination.name || 'Destination';
+        img.style.display = 'block';
+    } else {
+        img.style.display = 'none';
+    }
     
     // Narrativa personalizzata
     const narrative = generateNarrative(destination);
@@ -597,62 +622,91 @@ function generateNarrative(destination) {
         it: {
             sea: [
                 `${destination.name} ti aspetta con le sue acque cristalline e tramonti che dipingono il cielo. Un luogo dove il tempo rallenta e ogni onda racconta una storia.`,
-                `Lasciati cullare dal ritmo del mare a ${destination.name}. Qui, dove la sabbia incontra l'infinito, troverai la pace che cercavi.`
+                `Lasciati cullare dal ritmo del mare a ${destination.name}. Qui, dove la sabbia incontra l'infinito, troverai la pace che cercavi.`,
+                `${destination.name} è una sinfonia di colori marini, dove il blu del cielo si fonde con il turchese del mare in un abbraccio infinito.`
             ],
             city: [
                 `${destination.name} pulsa di energia e possibilità. Ogni strada nasconde una sorpresa, ogni angolo una nuova avventura urbana che ti aspetta.`,
-                `Immergiti nel caos creativo di ${destination.name}. Una metropoli che non dorme mai, dove i sogni prendono forma tra grattacieli e vicoli nascosti.`
+                `Immergiti nel caos creativo di ${destination.name}. Una metropoli che non dorme mai, dove i sogni prendono forma tra grattacieli e vicoli nascosti.`,
+                `${destination.name} è un caleidoscopio urbano dove passato e futuro danzano insieme nelle strade illuminate dai neon.`
             ],
             mountain: [
                 `Le vette di ${destination.name} ti chiamano verso l'alto, dove l'aria è pura e il silenzio parla. Un santuario naturale che risveglia l'anima.`,
-                `${destination.name} ti offre la maestosità della montagna, dove ogni sentiero è una meditazione e ogni cima una conquista personale.`
+                `${destination.name} ti offre la maestosità della montagna, dove ogni sentiero è una meditazione e ogni cima una conquista personale.`,
+                `Tra le cime di ${destination.name}, scoprirai che le montagne non sono solo roccia e neve, ma cattedrali naturali che toccano il cielo.`
             ]
         },
         en: {
             sea: [
                 `${destination.name} awaits you with crystal waters and sunsets that paint the sky. A place where time slows down and every wave tells a story.`,
-                `Let yourself be lulled by the rhythm of the sea in ${destination.name}. Here, where sand meets infinity, you'll find the peace you were looking for.`
+                `Let yourself be lulled by the rhythm of the sea in ${destination.name}. Here, where sand meets infinity, you'll find the peace you were looking for.`,
+                `${destination.name} is a symphony of marine colors, where the blue of the sky merges with the turquoise of the sea in an endless embrace.`
             ],
             city: [
                 `${destination.name} pulses with energy and possibilities. Every street hides a surprise, every corner a new urban adventure waiting for you.`,
-                `Immerse yourself in the creative chaos of ${destination.name}. A metropolis that never sleeps, where dreams take shape between skyscrapers and hidden alleys.`
+                `Immerse yourself in the creative chaos of ${destination.name}. A metropolis that never sleeps, where dreams take shape between skyscrapers and hidden alleys.`,
+                `${destination.name} is an urban kaleidoscope where past and future dance together in neon-lit streets.`
             ],
             mountain: [
                 `The peaks of ${destination.name} call you upward, where the air is pure and silence speaks. A natural sanctuary that awakens the soul.`,
-                `${destination.name} offers you the majesty of the mountains, where every path is a meditation and every summit a personal conquest.`
+                `${destination.name} offers you the majesty of the mountains, where every path is a meditation and every summit a personal conquest.`,
+                `Among the peaks of ${destination.name}, you'll discover that mountains are not just rock and snow, but natural cathedrals touching the sky.`
             ]
         },
         es: {
             sea: [
                 `${destination.name} te espera con aguas cristalinas y atardeceres que pintan el cielo. Un lugar donde el tiempo se ralentiza y cada ola cuenta una historia.`,
-                `Déjate arrullar por el ritmo del mar en ${destination.name}. Aquí, donde la arena se encuentra con el infinito, encontrarás la paz que buscabas.`
+                `Déjate arrullar por el ritmo del mar en ${destination.name}. Aquí, donde la arena se encuentra con el infinito, encontrarás la paz que buscabas.`,
+                `${destination.name} es una sinfonía de colores marinos, donde el azul del cielo se fusiona con el turquesa del mar en un abrazo infinito.`
             ],
             city: [
                 `${destination.name} palpita con energía y posibilidades. Cada calle esconde una sorpresa, cada esquina una nueva aventura urbana que te espera.`,
-                `Sumérgete en el caos creativo de ${destination.name}. Una metrópolis que nunca duerme, donde los sueños toman forma entre rascacielos y callejones ocultos.`
+                `Sumérgete en el caos creativo de ${destination.name}. Una metrópolis que nunca duerme, donde los sueños toman forma entre rascacielos y callejones ocultos.`,
+                `${destination.name} es un caleidoscopio urbano donde pasado y futuro bailan juntos en calles iluminadas por neón.`
             ],
             mountain: [
                 `Las cumbres de ${destination.name} te llaman hacia arriba, donde el aire es puro y el silencio habla. Un santuario natural que despierta el alma.`,
-                `${destination.name} te ofrece la majestuosidad de la montaña, donde cada sendero es una meditación y cada cima una conquista personal.`
+                `${destination.name} te ofrece la majestuosidad de la montaña, donde cada sendero es una meditación y cada cima una conquista personal.`,
+                `Entre las cumbres de ${destination.name}, descubrirás que las montañas no son solo roca y nieve, sino catedrales naturales que tocan el cielo.`
             ]
         },
         fr: {
             sea: [
                 `${destination.name} vous attend avec ses eaux cristallines et ses couchers de soleil qui peignent le ciel. Un lieu où le temps ralentit et chaque vague raconte une histoire.`,
-                `Laissez-vous bercer par le rythme de la mer à ${destination.name}. Ici, où le sable rencontre l'infini, vous trouverez la paix que vous cherchiez.`
+                `Laissez-vous bercer par le rythme de la mer à ${destination.name}. Ici, où le sable rencontre l'infini, vous trouverez la paix que vous cherchiez.`,
+                `${destination.name} est une symphonie de couleurs marines, où le bleu du ciel se fond avec le turquoise de la mer dans une étreinte infinie.`
             ],
             city: [
                 `${destination.name} vibre d'énergie et de possibilités. Chaque rue cache une surprise, chaque coin une nouvelle aventure urbaine qui vous attend.`,
-                `Plongez dans le chaos créatif de ${destination.name}. Une métropole qui ne dort jamais, où les rêves prennent forme entre gratte-ciels et ruelles cachées.`
+                `Plongez dans le chaos créatif de ${destination.name}. Une métropole qui ne dort jamais, où les rêves prennent forme entre gratte-ciels et ruelles cachées.`,
+                `${destination.name} est un kaléidoscope urbain où passé et futur dansent ensemble dans des rues éclairées au néon.`
             ],
             mountain: [
                 `Les sommets de ${destination.name} vous appellent vers le haut, où l'air est pur et le silence parle. Un sanctuaire naturel qui réveille l'âme.`,
-                `${destination.name} vous offre la majesté de la montagne, où chaque sentier est une méditation et chaque sommet une conquête personnelle.`
+                `${destination.name} vous offre la majesté de la montagne, où chaque sentier est une méditation et chaque sommet une conquête personnelle.`,
+                `Parmi les sommets de ${destination.name}, vous découvrirez que les montagnes ne sont pas seulement roche et neige, mais des cathédrales naturelles touchant le ciel.`
+            ]
+        },
+        zh: {
+            sea: [
+                `${destination.name}以其晶莹的海水和彩绘天空的日落等待着您。这是一个时间放缓、每一道波浪都在诉说故事的地方。`,
+                `让自己在${destination.name}被大海的节奏摇曳。在这里，沙滩与无限相遇，您将找到寻求的平静。`,
+                `${destination.name}是海洋色彩的交响曲，天空的蓝与海水的碧绿在无尽的拥抱中融合。`
+            ],
+            city: [
+                `${destination.name}充满活力和可能性。每条街道都隐藏着惊喜，每个角落都有新的城市冒险在等待着您。`,
+                `沉浸在${destination.name}的创意混沌中。这是一座不夜城，梦想在摩天大楼和隐秘小巷之间成形。`,
+                `${destination.name}是一个城市万花筒，过去与未来在霓虹灯照亮的街道上共舞。`
+            ],
+            mountain: [
+                `${destination.name}的山峰召唤您向上，那里空气纯净，寂静有声。这是唤醒灵魂的自然圣地。`,
+                `${destination.name}为您呈现山脉的壮丽，每条小径都是一次冥想，每座山峰都是个人的征服。`,
+                `在${destination.name}的山峰间，您会发现山脉不仅是岩石和雪，更是触摸天空的自然大教堂。`
             ]
         }
     };
     
-    // Usa narrativa italiana se la lingua non è disponibile
+    // Usa narrativa nella lingua corrente, altrimenti italiano
     const langNarratives = narratives[currentLang] || narratives.it;
     const typeNarratives = langNarratives[destination.type] || langNarratives.city;
     
