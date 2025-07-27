@@ -1,5 +1,5 @@
 // GLOOBER DESTINATIONS DATABASE
-// Version: 2.3 - Con immagini Pexels AFFIDABILI
+// Version: 2.4 - Con immagini SICURE usando Picsum
 // ============================================
 
 const DESTINATIONS_DB = [
@@ -7,7 +7,7 @@ const DESTINATIONS_DB = [
     {
         name: "Maldive",
         country: "Maldive",
-        image: "https://images.pexels.com/photos/1287460/pexels-photo-1287460.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=1",
         type: "sea",
         distance: "bloom",
         moods: ["zen", "romantic", "wild"],
@@ -21,7 +21,7 @@ const DESTINATIONS_DB = [
     {
         name: "Santorini",
         country: "Grecia",
-        image: "https://images.pexels.com/photos/1010657/pexels-photo-1010657.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=2",
         type: "sea",
         distance: "curious",
         moods: ["romantic", "culture", "zen"],
@@ -35,7 +35,7 @@ const DESTINATIONS_DB = [
     {
         name: "Sardegna",
         country: "Italia",
-        image: "https://images.pexels.com/photos/2583852/pexels-photo-2583852.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=3",
         type: "sea",
         distance: "comfort",
         moods: ["zen", "movida", "gourmet"],
@@ -49,7 +49,7 @@ const DESTINATIONS_DB = [
     {
         name: "Bali",
         country: "Indonesia",
-        image: "https://images.pexels.com/photos/2474689/pexels-photo-2474689.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=4",
         type: "sea",
         distance: "bloom",
         moods: ["wild", "culture", "zen"],
@@ -63,7 +63,7 @@ const DESTINATIONS_DB = [
     {
         name: "Ibiza",
         country: "Spagna",
-        image: "https://images.pexels.com/photos/2108832/pexels-photo-2108832.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=5",
         type: "sea",
         distance: "curious",
         moods: ["movida", "zen", "glamour"],
@@ -79,7 +79,7 @@ const DESTINATIONS_DB = [
     {
         name: "Tokyo",
         country: "Giappone",
-        image: "https://images.pexels.com/photos/2614818/pexels-photo-2614818.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=6",
         type: "city",
         distance: "bloom",
         moods: ["culture", "movida", "wild", "gourmet"],
@@ -93,7 +93,7 @@ const DESTINATIONS_DB = [
     {
         name: "New York",
         country: "USA",
-        image: "https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=7",
         type: "city",
         distance: "bloom",
         moods: ["culture", "movida", "wild", "design"],
@@ -107,7 +107,7 @@ const DESTINATIONS_DB = [
     {
         name: "Parigi",
         country: "Francia",
-        image: "https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=8",
         type: "city",
         distance: "comfort",
         moods: ["romantic", "culture", "gourmet", "glamour"],
@@ -121,7 +121,7 @@ const DESTINATIONS_DB = [
     {
         name: "Dubai",
         country: "UAE",
-        image: "https://images.pexels.com/photos/1470502/pexels-photo-1470502.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=9",
         type: "city",
         distance: "curious",
         moods: ["glamour", "wild", "movida", "design"],
@@ -135,7 +135,7 @@ const DESTINATIONS_DB = [
     {
         name: "Londra",
         country: "UK",
-        image: "https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=10",
         type: "city",
         distance: "comfort",
         moods: ["culture", "movida", "design", "gourmet"],
@@ -151,7 +151,7 @@ const DESTINATIONS_DB = [
     {
         name: "Dolomiti",
         country: "Italia",
-        image: "https://images.pexels.com/photos/1666021/pexels-photo-1666021.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=11",
         type: "mountain",
         distance: "comfort",
         moods: ["zen", "wild", "gourmet", "romantic"],
@@ -165,7 +165,7 @@ const DESTINATIONS_DB = [
     {
         name: "Zermatt",
         country: "Svizzera",
-        image: "https://images.pexels.com/photos/376697/pexels-photo-376697.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=12",
         type: "mountain",
         distance: "curious",
         moods: ["zen", "glamour", "wild", "gourmet"],
@@ -179,7 +179,7 @@ const DESTINATIONS_DB = [
     {
         name: "Patagonia",
         country: "Argentina/Cile",
-        image: "https://images.pexels.com/photos/2091351/pexels-photo-2091351.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=13",
         type: "mountain",
         distance: "bloom",
         moods: ["wild", "zen", "culture"],
@@ -193,7 +193,7 @@ const DESTINATIONS_DB = [
     {
         name: "Alpi Francesi",
         country: "Francia",
-        image: "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=14",
         type: "mountain",
         distance: "curious",
         moods: ["glamour", "wild", "gourmet", "movida"],
@@ -207,7 +207,7 @@ const DESTINATIONS_DB = [
     {
         name: "Himalaya",
         country: "Nepal",
-        image: "https://images.pexels.com/photos/1117021/pexels-photo-1117021.jpeg?w=800",
+        image: "https://picsum.photos/800/600?random=15",
         type: "mountain",
         distance: "bloom",
         moods: ["zen", "wild", "culture"],
