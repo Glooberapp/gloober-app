@@ -1,5 +1,5 @@
 // GLOOBER DESTINATIONS DATABASE
-// Version: 3.0 - Database con foto selezionate dall'utente
+// Version: 2.3 - Con immagini Pexels AFFIDABILI
 // ============================================
 
 const DESTINATIONS_DB = [
@@ -7,7 +7,7 @@ const DESTINATIONS_DB = [
     {
         name: "Maldive",
         country: "Maldive",
-        image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800",
+        image: "https://images.pexels.com/photos/1287460/pexels-photo-1287460.jpeg?w=800",
         type: "sea",
         distance: "bloom",
         moods: ["zen", "romantic", "wild"],
@@ -21,7 +21,7 @@ const DESTINATIONS_DB = [
     {
         name: "Santorini",
         country: "Grecia",
-        image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800",
+        image: "https://images.pexels.com/photos/1010657/pexels-photo-1010657.jpeg?w=800",
         type: "sea",
         distance: "curious",
         moods: ["romantic", "culture", "zen"],
@@ -35,7 +35,7 @@ const DESTINATIONS_DB = [
     {
         name: "Sardegna",
         country: "Italia",
-        image: "https://images.unsplash.com/photo-1569526381287-97ec81df4245?w=800",
+        image: "https://images.pexels.com/photos/2583852/pexels-photo-2583852.jpeg?w=800",
         type: "sea",
         distance: "comfort",
         moods: ["zen", "movida", "gourmet"],
@@ -49,7 +49,7 @@ const DESTINATIONS_DB = [
     {
         name: "Bali",
         country: "Indonesia",
-        image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800",
+        image: "https://images.pexels.com/photos/2474689/pexels-photo-2474689.jpeg?w=800",
         type: "sea",
         distance: "bloom",
         moods: ["wild", "culture", "zen"],
@@ -63,15 +63,15 @@ const DESTINATIONS_DB = [
     {
         name: "Ibiza",
         country: "Spagna",
-        image: "https://images.unsplash.com/photo-1558538097-3d09ad4096f7?w=800",
+        image: "https://images.pexels.com/photos/2108832/pexels-photo-2108832.jpeg?w=800",
         type: "sea",
         distance: "curious",
         moods: ["movida", "zen", "glamour"],
         tagline: {
             it: "Ritmi hippy e notti infinite",
-            en: "Hippy rhythms and endless nights",
+            en: "Hippy vibes and endless nights",
             es: "Ritmos hippies y noches infinitas",
-            fr: "Rythmes hippies et nuits sans fin"
+            fr: "Vibrations hippies et nuits sans fin"
         }
     },
     
@@ -79,21 +79,21 @@ const DESTINATIONS_DB = [
     {
         name: "Tokyo",
         country: "Giappone",
-        image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800",
+        image: "https://images.pexels.com/photos/2614818/pexels-photo-2614818.jpeg?w=800",
         type: "city",
         distance: "bloom",
         moods: ["culture", "movida", "wild", "gourmet"],
         tagline: {
-            it: "Dove il futuro incontra la tradizione",
-            en: "Where future meets tradition",
-            es: "Donde el futuro se encuentra con la tradición",
-            fr: "Où le futur rencontre la tradition"
+            it: "Futuro e tradizione in perfetta armonia",
+            en: "Future and tradition in perfect harmony",
+            es: "Futuro y tradición en perfecta armonía",
+            fr: "Futur et tradition en parfaite harmonie"
         }
     },
     {
         name: "New York",
         country: "USA",
-        image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800",
+        image: "https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?w=800",
         type: "city",
         distance: "bloom",
         moods: ["culture", "movida", "wild", "design"],
@@ -107,38 +107,38 @@ const DESTINATIONS_DB = [
     {
         name: "Parigi",
         country: "Francia",
-        image: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=800",
+        image: "https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?w=800",
         type: "city",
         distance: "comfort",
         moods: ["romantic", "culture", "gourmet", "glamour"],
         tagline: {
-            it: "L'eterna città dell'amore",
-            en: "The eternal city of love",
-            es: "La ciudad eterna del amor",
-            fr: "L'éternelle ville de l'amour"
+            it: "Romanticismo e luci sulla Senna",
+            en: "Romance and lights on the Seine",
+            es: "Romance y luces sobre el Sena",
+            fr: "Romance et lumières sur la Seine"
         }
     },
     {
         name: "Dubai",
         country: "UAE",
-        image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800",
+        image: "https://images.pexels.com/photos/1470502/pexels-photo-1470502.jpeg?w=800",
         type: "city",
         distance: "curious",
         moods: ["glamour", "wild", "movida", "design"],
         tagline: {
-            it: "Dove l'impossibile diventa realtà",
-            en: "Where the impossible becomes reality",
-            es: "Donde lo imposible se hace realidad",
-            fr: "Où l'impossible devient réalité"
+            it: "Lusso sfrenato nel deserto",
+            en: "Unbridled luxury in the desert",
+            es: "Lujo desenfrenado en el desierto",
+            fr: "Luxe débridé dans le désert"
         }
     },
     {
         name: "Londra",
         country: "UK",
-        image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800",
+        image: "https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?w=800",
         type: "city",
         distance: "comfort",
-        moods: ["culture", "movida", "design"],
+        moods: ["culture", "movida", "design", "gourmet"],
         tagline: {
             it: "Storia e innovazione sul Tamigi",
             en: "History and innovation on the Thames",
@@ -151,71 +151,71 @@ const DESTINATIONS_DB = [
     {
         name: "Dolomiti",
         country: "Italia",
-        image: "https://images.unsplash.com/photo-1558637845-c8b7ead71a3e?w=800",
+        image: "https://images.pexels.com/photos/1666021/pexels-photo-1666021.jpeg?w=800",
         type: "mountain",
         distance: "comfort",
-        moods: ["zen", "wild", "gourmet"],
+        moods: ["zen", "wild", "gourmet", "romantic"],
         tagline: {
-            it: "Le montagne rosa al tramonto",
-            en: "Pink mountains at sunset",
-            es: "Montañas rosadas al atardecer",
-            fr: "Montagnes roses au coucher du soleil"
+            it: "Cattedrali di roccia rosa al tramonto",
+            en: "Pink rock cathedrals at sunset",
+            es: "Catedrales de roca rosa al atardecer",
+            fr: "Cathédrales de roche rose au coucher du soleil"
         }
     },
     {
-        name: "Interlaken",
+        name: "Zermatt",
         country: "Svizzera",
-        image: "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=800",
+        image: "https://images.pexels.com/photos/376697/pexels-photo-376697.jpeg?w=800",
         type: "mountain",
         distance: "curious",
-        moods: ["wild", "zen", "romantic"],
+        moods: ["zen", "glamour", "wild", "gourmet"],
         tagline: {
-            it: "Tra laghi alpini e vette innevate",
-            en: "Between alpine lakes and snowy peaks",
-            es: "Entre lagos alpinos y picos nevados",
-            fr: "Entre lacs alpins et sommets enneigés"
+            it: "Il Cervino e cime innevate da sogno",
+            en: "The Matterhorn and dreamy snowy peaks",
+            es: "El Matterhorn y picos nevados de ensueño",
+            fr: "Le Cervin et sommets enneigés de rêve"
         }
     },
     {
         name: "Patagonia",
         country: "Argentina/Cile",
-        image: "https://images.unsplash.com/photo-1484804959297-65e7c19d7c9f?w=800",
+        image: "https://images.pexels.com/photos/2091351/pexels-photo-2091351.jpeg?w=800",
         type: "mountain",
         distance: "bloom",
-        moods: ["wild", "zen"],
+        moods: ["wild", "zen", "culture"],
         tagline: {
-            it: "L'ultima frontiera selvaggia",
-            en: "The last wild frontier",
-            es: "La última frontera salvaje",
-            fr: "La dernière frontière sauvage"
-        }
-    },
-    {
-        name: "Himalaya",
-        country: "Nepal",
-        image: "https://images.unsplash.com/photo-1589825592501-0c7c7d9d9285?w=800",
-        type: "mountain",
-        distance: "bloom",
-        moods: ["zen", "culture", "wild"],
-        tagline: {
-            it: "Il tetto del mondo",
-            en: "The roof of the world",
-            es: "El techo del mundo",
-            fr: "Le toit du monde"
+            it: "Ghiacciai eterni e natura incontaminata",
+            en: "Eternal glaciers and pristine nature",
+            es: "Glaciares eternos y naturaleza prístina",
+            fr: "Glaciers éternels et nature intacte"
         }
     },
     {
         name: "Alpi Francesi",
         country: "Francia",
-        image: "https://images.unsplash.com/photo-1518002054494-3a6f94352e9d?w=800",
+        image: "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?w=800",
         type: "mountain",
         distance: "curious",
-        moods: ["glamour", "wild", "gourmet"],
+        moods: ["glamour", "wild", "gourmet", "movida"],
         tagline: {
-            it: "Neve esclusiva e charme alpino",
-            en: "Exclusive snow and alpine charm",
-            es: "Nieve exclusiva y encanto alpino",
-            fr: "Neige exclusive et charme alpin"
+            it: "Neve, champagne e alta quota",
+            en: "Snow, champagne and high altitude",
+            es: "Nieve, champán y gran altitud",
+            fr: "Neige, champagne et haute altitude"
+        }
+    },
+    {
+        name: "Himalaya",
+        country: "Nepal",
+        image: "https://images.pexels.com/photos/1117021/pexels-photo-1117021.jpeg?w=800",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["zen", "wild", "culture"],
+        tagline: {
+            it: "Il tetto del mondo e spiritualità",
+            en: "The roof of the world and spirituality",
+            es: "El techo del mundo y espiritualidad",
+            fr: "Le toit du monde et spiritualité"
         }
     }
 ];
