@@ -1,5 +1,5 @@
 // GLOOBER DESTINATIONS DATABASE
-// Version: 5.0 - DATABASE ESPANSO CON 60 DESTINAZIONI E MULTILINGUA
+// Version: 5.1 - DATABASE COMPLETO E CORRETTO
 // ============================================
 
 const DESTINATIONS_DB = [
@@ -16,75 +16,7 @@ const DESTINATIONS_DB = [
             en: "Paradise of crystal atolls",
             es: "Paraíso de atolones cristalinos",
             fr: "Paradis d'atolls cristallins",
-            de: "Wo sich die Welt trifft",
-            zh: "世界相遇之地",
-            hi: "जहाँ दुनिया मिलती है",
-            ar: "حيث يلتقي العالم",
-            pt: "Onde o mundo se encontra",
-            ru: "Где встречается мир"
-        }
-    },
-    {
-        name: "Cortina",
-        country: "Italia",
-        image: "https://via.placeholder.com/800x600/FFF0F5/000000?text=Cortina",
-        type: "mountain",
-        distance: "comfort",
-        moods: ["glamour", "culture", "gourmet", "romantic"],
-        tagline: {
-            it: "La regina delle Dolomiti",
-            en: "The queen of the Dolomites",
-            es: "La reina de los Dolomitas",
-            fr: "La reine des Dolomites",
-            de: "Die Königin der Dolomiten",
-            zh: "多洛米蒂山脉的女王",
-            hi: "डोलोमाइट्स की रानी",
-            ar: "ملكة الدولوميت",
-            pt: "A rainha das Dolomitas",
-            ru: "Королева Доломитов"
-        }
-    },
-    {
-        name: "Jackson Hole",
-        country: "USA",
-        image: "https://via.placeholder.com/800x600/FFEFD5/000000?text=Jackson+Hole",
-        type: "mountain",
-        distance: "bloom",
-        moods: ["wild", "zen", "gourmet", "culture"],
-        tagline: {
-            it: "L'ultimo West incontra la neve perfetta",
-            en: "The last West meets perfect snow",
-            es: "El último Oeste encuentra la nieve perfecta",
-            fr: "Le dernier Ouest rencontre la neige parfaite",
-            de: "Der letzte Westen trifft auf perfekten Schnee",
-            zh: "最后的西部遇见完美雪景",
-            hi: "अंतिम पश्चिम परफेक्ट बर्फ से मिलता है",
-            ar: "الغرب الأخير يلتقي بالثلج المثالي",
-            pt: "O último Oeste encontra neve perfeita",
-            ru: "Последний Запад встречает идеальный снег"
-        }
-    },
-    {
-        name: "Niseko",
-        country: "Giappone",
-        image: "https://via.placeholder.com/800x600/FFFAFA/000000?text=Niseko",
-        type: "mountain",
-        distance: "bloom",
-        moods: ["zen", "wild", "gourmet", "culture"],
-        tagline: {
-            it: "Polvere giapponese e onsen fumanti",
-            en: "Japanese powder and steaming onsen",
-            es: "Polvo japonés y onsen humeantes",
-            fr: "Poudreuse japonaise et onsen fumants",
-            de: "Japanischer Pulverschnee und dampfende Onsen",
-            zh: "日本粉雪与温泉",
-            hi: "जापानी पाउडर और भाप वाले ऑनसेन",
-            ar: "مسحوق ياباني وينابيع ساخنة",
-            pt: "Neve japonesa e onsen fumegantes",
-            ru: "Японский снег и горячие источники"
-        }
-    }
-]; "Paradies der kristallklaren Atolle",
+            de: "Paradies der kristallklaren Atolle",
             zh: "水晶环礁天堂",
             hi: "क्रिस्टल एटोल का स्वर्ग",
             ar: "جنة الجزر المرجانية الكريستالية",
@@ -1201,11 +1133,3 @@ const DESTINATIONS_DB = [
         country: "Svizzera",
         image: "https://via.placeholder.com/800x600/F5FFFA/000000?text=Davos",
         type: "mountain",
-        distance: "curious",
-        moods: ["zen", "culture", "gourmet", "design"],
-        tagline: {
-            it: "Dove il mondo si incontra",
-            en: "Where the world meets",
-            es: "Donde el mundo se encuentra",
-            fr: "Où le monde se rencontre",
-            de:
