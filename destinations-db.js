@@ -1,5 +1,5 @@
 // GLOOBER DESTINATIONS DATABASE
-// Version: 2.1 - Database completo con tutte le destinazioni
+// Version: 2.2 - Con immagini Unsplash FUNZIONANTI
 // ============================================
 
 const DESTINATIONS_DB = [
@@ -7,7 +7,7 @@ const DESTINATIONS_DB = [
     {
         name: "Maldive",
         country: "Maldive",
-        image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800",
+        image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800",
         type: "sea",
         distance: "bloom",
         moods: ["zen", "romantic", "wild"],
@@ -21,7 +21,7 @@ const DESTINATIONS_DB = [
     {
         name: "Santorini",
         country: "Grecia",
-        image: "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800",
+        image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800",
         type: "sea",
         distance: "curious",
         moods: ["romantic", "culture", "zen"],
@@ -35,7 +35,7 @@ const DESTINATIONS_DB = [
     {
         name: "Sardegna",
         country: "Italia",
-        image: "https://images.unsplash.com/photo-1589742158508-65785cf4172e?w=800",
+        image: "https://images.unsplash.com/photo-1565071783279-f5e0b2796b2f?w=800",
         type: "sea",
         distance: "comfort",
         moods: ["zen", "movida", "gourmet"],
@@ -49,7 +49,7 @@ const DESTINATIONS_DB = [
     {
         name: "Bali",
         country: "Indonesia",
-        image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800",
+        image: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=800",
         type: "sea",
         distance: "bloom",
         moods: ["wild", "culture", "zen"],
@@ -63,7 +63,7 @@ const DESTINATIONS_DB = [
     {
         name: "Ibiza",
         country: "Spagna",
-        image: "https://images.unsplash.com/photo-1563784804984-9e83c036bba4?w=800",
+        image: "https://images.unsplash.com/photo-1558005137-d9619a5c539f?w=800",
         type: "sea",
         distance: "curious",
         moods: ["movida", "zen", "glamour"],
@@ -79,7 +79,7 @@ const DESTINATIONS_DB = [
     {
         name: "Tokyo",
         country: "Giappone",
-        image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800",
+        image: "https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=800",
         type: "city",
         distance: "bloom",
         moods: ["culture", "movida", "wild", "gourmet"],
@@ -93,7 +93,7 @@ const DESTINATIONS_DB = [
     {
         name: "New York",
         country: "USA",
-        image: "https://images.unsplash.com/photo-1538970272646-f61fabb3a8a2?w=800",
+        image: "https://images.unsplash.com/photo-1490644658840-3f2e3f8c5625?w=800",
         type: "city",
         distance: "bloom",
         moods: ["culture", "movida", "wild", "design"],
@@ -107,7 +107,7 @@ const DESTINATIONS_DB = [
     {
         name: "Parigi",
         country: "Francia",
-        image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800",
+        image: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=800",
         type: "city",
         distance: "comfort",
         moods: ["romantic", "culture", "gourmet", "glamour"],
@@ -121,7 +121,7 @@ const DESTINATIONS_DB = [
     {
         name: "Dubai",
         country: "UAE",
-        image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800",
+        image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=800",
         type: "city",
         distance: "curious",
         moods: ["glamour", "wild", "movida", "design"],
@@ -135,7 +135,7 @@ const DESTINATIONS_DB = [
     {
         name: "Londra",
         country: "UK",
-        image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800",
+        image: "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=800",
         type: "city",
         distance: "comfort",
         moods: ["culture", "movida", "design", "gourmet"],
@@ -151,7 +151,7 @@ const DESTINATIONS_DB = [
     {
         name: "Dolomiti",
         country: "Italia",
-        image: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800",
+        image: "https://images.unsplash.com/photo-1558051815-0f18e64e6280?w=800",
         type: "mountain",
         distance: "comfort",
         moods: ["zen", "wild", "gourmet", "romantic"],
@@ -165,7 +165,7 @@ const DESTINATIONS_DB = [
     {
         name: "Zermatt",
         country: "Svizzera",
-        image: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800",
+        image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800",
         type: "mountain",
         distance: "curious",
         moods: ["zen", "glamour", "wild", "gourmet"],
@@ -179,7 +179,7 @@ const DESTINATIONS_DB = [
     {
         name: "Patagonia",
         country: "Argentina/Cile",
-        image: "https://images.unsplash.com/photo-1533604125109-cbd1c7146730?w=800",
+        image: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?w=800",
         type: "mountain",
         distance: "bloom",
         moods: ["wild", "zen", "culture"],
@@ -193,7 +193,7 @@ const DESTINATIONS_DB = [
     {
         name: "Alpi Francesi",
         country: "Francia",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
+        image: "https://images.unsplash.com/photo-1518709268804-71e1c25db362?w=800",
         type: "mountain",
         distance: "curious",
         moods: ["glamour", "wild", "gourmet", "movida"],
@@ -207,7 +207,7 @@ const DESTINATIONS_DB = [
     {
         name: "Himalaya",
         country: "Nepal",
-        image: "https://images.unsplash.com/photo-1515245696852-ae418832c28e?w=800",
+        image: "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?w=800",
         type: "mountain",
         distance: "bloom",
         moods: ["zen", "wild", "culture"],
