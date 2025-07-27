@@ -1,756 +1,1211 @@
-// GLOOBER APP LOGIC
-// Version: 3.1 - CORRETTA CON FIX SLIDER
+// GLOOBER DESTINATIONS DATABASE
+// Version: 5.0 - DATABASE ESPANSO CON 60 DESTINAZIONI E MULTILINGUA
 // ============================================
 
-// Stato globale dell'app
-let currentLang = 'it';
-let userPreferences = {
-    location: 50,
-    distance: 50,
-    moodX: 50,
-    moodY: 50
-};
-
-// Stato del drag
-let isDraggingLocation = false;
-let isDraggingDistance = false;
-let isDraggingMood = false;
-
-// TRADUZIONI UI
-const translations = {
-    it: {
-        tagline: "Muovi le tue vibrazioni di viaggio",
-        habitatLabel: "HABITAT",
-        sea: "MARE",
-        city: "CITTÀ", 
-        mountain: "MONTAGNA",
-        rangeLabel: "RANGE",
-        comfort: "COMFORT",
-        curious: "CURIOUS",
-        bloom: "BLOOM",
-        vibesLabel: "VIBES",
-        movida: "MOVIDA",
-        zen: "ZEN",
-        gourmet: "GOURMET",
-        wild: "WILD",
-        design: "DESIGN",
-        glamour: "GLAMOUR",
-        culture: "CULTURE",
-        romantic: "ROMANTIC",
-        gloobIt: "Gloob it!",
-        gloobing: "Gloobing...",
-        yourJourney: "Il tuo viaggio",
-        bookNow: "Prenota",
-        tryAgain: "Regloob"
-    },
-    en: {
-        tagline: "Slide your travel vibes",
-        habitatLabel: "HABITAT",
-        sea: "SEA",
-        city: "CITY",
-        mountain: "MOUNTAIN", 
-        rangeLabel: "RANGE",
-        comfort: "COMFORT",
-        curious: "CURIOUS",
-        bloom: "BLOOM",
-        vibesLabel: "VIBES",
-        movida: "NIGHTLIFE",
-        zen: "ZEN",
-        gourmet: "GOURMET",
-        wild: "WILD",
-        design: "DESIGN",
-        glamour: "GLAMOUR",
-        culture: "CULTURE",
-        romantic: "ROMANTIC",
-        gloobIt: "Gloob it!",
-        gloobing: "Gloobing...",
-        yourJourney: "Your journey",
-        bookNow: "Book Now",
-        tryAgain: "Regloob"
-    },
-    es: {
-        tagline: "Desliza tus vibras de viaje",
-        habitatLabel: "HÁBITAT",
-        sea: "MAR",
-        city: "CIUDAD",
-        mountain: "MONTAÑA",
-        rangeLabel: "RANGO",
-        comfort: "CONFORT",
-        curious: "CURIOSO",
-        bloom: "FLORACIÓN",
-        vibesLabel: "VIBRAS",
-        movida: "MOVIDA",
-        zen: "ZEN",
-        gourmet: "GOURMET",
-        wild: "SALVAJE",
-        design: "DISEÑO",
-        glamour: "GLAMOUR",
-        culture: "CULTURA",
-        romantic: "ROMÁNTICO",
-        gloobIt: "¡Gloob it!",
-        gloobing: "Gloobeando...",
-        yourJourney: "Tu viaje",
-        bookNow: "Reservar",
-        tryAgain: "Regloob"
-    },
-    fr: {
-        tagline: "Glissez vos vibrations de voyage",
-        habitatLabel: "HABITAT",
-        sea: "MER",
-        city: "VILLE",
-        mountain: "MONTAGNE",
-        rangeLabel: "GAMME",
-        comfort: "CONFORT",
-        curious: "CURIEUX",
-        bloom: "ÉPANOUISSEMENT",
-        vibesLabel: "VIBRATIONS",
-        movida: "VIE NOCTURNE",
-        zen: "ZEN",
-        gourmet: "GOURMET",
-        wild: "SAUVAGE",
-        design: "DESIGN",
-        glamour: "GLAMOUR",
-        culture: "CULTURE",
-        romantic: "ROMANTIQUE",
-        gloobIt: "Gloob it!",
-        gloobing: "Gloobing...",
-        yourJourney: "Votre voyage",
-        bookNow: "Réserver",
-        tryAgain: "Regloob"
-    },
-    de: {
-        tagline: "Schiebe deine Reisevibes",
-        habitatLabel: "LEBENSRAUM",
-        sea: "MEER",
-        city: "STADT",
-        mountain: "BERG",
-        rangeLabel: "BEREICH",
-        comfort: "KOMFORT",
-        curious: "NEUGIERIG",
-        bloom: "BLÜTE",
-        vibesLabel: "STIMMUNG",
-        movida: "NACHTLEBEN",
-        zen: "ZEN",
-        gourmet: "GOURMET",
-        wild: "WILD",
-        design: "DESIGN",
-        glamour: "GLAMOUR",
-        culture: "KULTUR",
-        romantic: "ROMANTISCH",
-        gloobIt: "Gloob it!",
-        gloobing: "Gloobing...",
-        yourJourney: "Deine Reise",
-        bookNow: "Buchen",
-        tryAgain: "Regloob"
-    },
-    zh: {
-        tagline: "滑动你的旅行氛围",
-        habitatLabel: "栖息地",
-        sea: "海",
-        city: "城市",
-        mountain: "山",
-        rangeLabel: "范围",
-        comfort: "舒适",
-        curious: "好奇",
-        bloom: "绽放",
-        vibesLabel: "氛围",
-        movida: "夜生活",
-        zen: "禅",
-        gourmet: "美食",
-        wild: "狂野",
-        design: "设计",
-        glamour: "魅力",
-        culture: "文化",
-        romantic: "浪漫",
-        gloobIt: "Gloob it!",
-        gloobing: "Gloobing...",
-        yourJourney: "你的旅程",
-        bookNow: "预订",
-        tryAgain: "重新Gloob"
-    },
-    hi: {
-        tagline: "अपनी यात्रा की वाइब्स को स्लाइड करें",
-        habitatLabel: "निवास",
-        sea: "समुद्र",
-        city: "शहर",
-        mountain: "पहाड़",
-        rangeLabel: "रेंज",
-        comfort: "आराम",
-        curious: "जिज्ञासु",
-        bloom: "खिलना",
-        vibesLabel: "वाइब्स",
-        movida: "नाइटलाइफ़",
-        zen: "ज़ेन",
-        gourmet: "पेटू",
-        wild: "जंगली",
-        design: "डिज़ाइन",
-        glamour: "ग्लैमर",
-        culture: "संस्कृति",
-        romantic: "रोमांटिक",
-        gloobIt: "Gloob it!",
-        gloobing: "Gloobing...",
-        yourJourney: "आपकी यात्रा",
-        bookNow: "बुक करें",
-        tryAgain: "Regloob"
-    },
-    ar: {
-        tagline: "حرك أجواء سفرك",
-        habitatLabel: "الموطن",
-        sea: "بحر",
-        city: "مدينة",
-        mountain: "جبل",
-        rangeLabel: "النطاق",
-        comfort: "راحة",
-        curious: "فضولي",
-        bloom: "ازدهار",
-        vibesLabel: "الأجواء",
-        movida: "الحياة الليلية",
-        zen: "زين",
-        gourmet: "ذواقة",
-        wild: "بري",
-        design: "تصميم",
-        glamour: "سحر",
-        culture: "ثقافة",
-        romantic: "رومانسي",
-        gloobIt: "!Gloob it",
-        gloobing: "...Gloobing",
-        yourJourney: "رحلتك",
-        bookNow: "احجز الآن",
-        tryAgain: "Regloob"
-    },
-    pt: {
-        tagline: "Deslize suas vibrações de viagem",
-        habitatLabel: "HABITAT",
-        sea: "MAR",
-        city: "CIDADE",
-        mountain: "MONTANHA",
-        rangeLabel: "ALCANCE",
-        comfort: "CONFORTO",
-        curious: "CURIOSO",
-        bloom: "FLORESCER",
-        vibesLabel: "VIBRAÇÕES",
-        movida: "VIDA NOTURNA",
-        zen: "ZEN",
-        gourmet: "GOURMET",
-        wild: "SELVAGEM",
-        design: "DESIGN",
-        glamour: "GLAMOUR",
-        culture: "CULTURA",
-        romantic: "ROMÂNTICO",
-        gloobIt: "Gloob it!",
-        gloobing: "Gloobing...",
-        yourJourney: "Sua jornada",
-        bookNow: "Reservar",
-        tryAgain: "Regloob"
-    },
-    ru: {
-        tagline: "Двигайте свои туристические вибрации",
-        habitatLabel: "МЕСТО ОБИТАНИЯ",
-        sea: "МОРЕ",
-        city: "ГОРОД",
-        mountain: "ГОРЫ",
-        rangeLabel: "ДИАПАЗОН",
-        comfort: "КОМФОРТ",
-        curious: "ЛЮБОПЫТНЫЙ",
-        bloom: "РАСЦВЕТ",
-        vibesLabel: "НАСТРОЕНИЕ",
-        movida: "НОЧНАЯ ЖИЗНЬ",
-        zen: "ДЗЕН",
-        gourmet: "ГУРМАН",
-        wild: "ДИКИЙ",
-        design: "ДИЗАЙН",
-        glamour: "ГЛАМУР",
-        culture: "КУЛЬТУРА",
-        romantic: "РОМАНТИЧНЫЙ",
-        gloobIt: "Gloob it!",
-        gloobing: "Gloobing...",
-        yourJourney: "Ваше путешествие",
-        bookNow: "Забронировать",
-        tryAgain: "Regloob"
-    }
-};
-
-// CITAZIONI DI VIAGGIO
-const TRAVEL_QUOTES = [
+const DESTINATIONS_DB = [
+    // ========== MARE (20 destinazioni) ==========
     {
-        quote: {
-            it: "Il mondo è un libro e chi non viaggia ne legge solo una pagina.",
-            en: "The world is a book and those who do not travel read only one page.",
-            es: "El mundo es un libro y quienes no viajan solo leen una página.",
-            fr: "Le monde est un livre et ceux qui ne voyagent pas n'en lisent qu'une page."
-        },
-        author: "Sant'Agostino"
+        name: "Maldive",
+        country: "Maldive",
+        image: "https://via.placeholder.com/800x600/00CED1/FFFFFF?text=Maldive",
+        type: "sea",
+        distance: "bloom",
+        moods: ["zen", "romantic", "wild"],
+        tagline: {
+            it: "Paradiso di atolli cristallini",
+            en: "Paradise of crystal atolls",
+            es: "Paraíso de atolones cristalinos",
+            fr: "Paradis d'atolls cristallins",
+            de: "Wo sich die Welt trifft",
+            zh: "世界相遇之地",
+            hi: "जहाँ दुनिया मिलती है",
+            ar: "حيث يلتقي العالم",
+            pt: "Onde o mundo se encontra",
+            ru: "Где встречается мир"
+        }
     },
     {
-        quote: {
-            it: "La vita è un viaggio e chi viaggia vive due volte.",
-            en: "Life is a journey and those who travel live twice.",
-            es: "La vida es un viaje y quien viaja vive dos veces.",
-            fr: "La vie est un voyage et ceux qui voyagent vivent deux fois."
-        },
-        author: "Omar Khayyam"
+        name: "Cortina",
+        country: "Italia",
+        image: "https://via.placeholder.com/800x600/FFF0F5/000000?text=Cortina",
+        type: "mountain",
+        distance: "comfort",
+        moods: ["glamour", "culture", "gourmet", "romantic"],
+        tagline: {
+            it: "La regina delle Dolomiti",
+            en: "The queen of the Dolomites",
+            es: "La reina de los Dolomitas",
+            fr: "La reine des Dolomites",
+            de: "Die Königin der Dolomiten",
+            zh: "多洛米蒂山脉的女王",
+            hi: "डोलोमाइट्स की रानी",
+            ar: "ملكة الدولوميت",
+            pt: "A rainha das Dolomitas",
+            ru: "Королева Доломитов"
+        }
     },
     {
-        quote: {
-            it: "Non tutti quelli che vagano sono perduti.",
-            en: "Not all those who wander are lost.",
-            es: "No todos los que vagan están perdidos.",
-            fr: "Tous ceux qui errent ne sont pas perdus."
-        },
-        author: "J.R.R. Tolkien"
+        name: "Jackson Hole",
+        country: "USA",
+        image: "https://via.placeholder.com/800x600/FFEFD5/000000?text=Jackson+Hole",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["wild", "zen", "gourmet", "culture"],
+        tagline: {
+            it: "L'ultimo West incontra la neve perfetta",
+            en: "The last West meets perfect snow",
+            es: "El último Oeste encuentra la nieve perfecta",
+            fr: "Le dernier Ouest rencontre la neige parfaite",
+            de: "Der letzte Westen trifft auf perfekten Schnee",
+            zh: "最后的西部遇见完美雪景",
+            hi: "अंतिम पश्चिम परफेक्ट बर्फ से मिलता है",
+            ar: "الغرب الأخير يلتقي بالثلج المثالي",
+            pt: "O último Oeste encontra neve perfeita",
+            ru: "Последний Запад встречает идеальный снег"
+        }
+    },
+    {
+        name: "Niseko",
+        country: "Giappone",
+        image: "https://via.placeholder.com/800x600/FFFAFA/000000?text=Niseko",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["zen", "wild", "gourmet", "culture"],
+        tagline: {
+            it: "Polvere giapponese e onsen fumanti",
+            en: "Japanese powder and steaming onsen",
+            es: "Polvo japonés y onsen humeantes",
+            fr: "Poudreuse japonaise et onsen fumants",
+            de: "Japanischer Pulverschnee und dampfende Onsen",
+            zh: "日本粉雪与温泉",
+            hi: "जापानी पाउडर और भाप वाले ऑनसेन",
+            ar: "مسحوق ياباني وينابيع ساخنة",
+            pt: "Neve japonesa e onsen fumegantes",
+            ru: "Японский снег и горячие источники"
+        }
     }
-];
-
-// FUNZIONI SLIDER LOCATION - CON FIX PER EVITARE CHE ESCANO
-function startLocationDrag(e) {
-    isDraggingLocation = true;
-    dragLocation(e);
-}
-
-function dragLocation(e) {
-    if (!isDraggingLocation) return;
-    e.preventDefault();
-    
-    const slider = e.currentTarget;
-    const rect = slider.getBoundingClientRect();
-    const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-    
-    // Limita la percentuale tra 5% e 95% per evitare che il pallino esca
-    const percentage = Math.max(5, Math.min(95, (x / rect.width) * 100));
-    
-    userPreferences.location = percentage;
-    document.getElementById('location-dot').style.left = percentage + '%';
-    
-    // Mostra le etichette
-    document.getElementById('location-labels').classList.add('active');
-}
-
-function stopLocationDrag() {
-    isDraggingLocation = false;
-    setTimeout(() => {
-        document.getElementById('location-labels').classList.remove('active');
-    }, 1000);
-}
-
-// FUNZIONI SLIDER DISTANCE - CON FIX PER EVITARE CHE ESCANO
-function startDistanceDrag(e) {
-    isDraggingDistance = true;
-    dragDistance(e);
-}
-
-function dragDistance(e) {
-    if (!isDraggingDistance) return;
-    e.preventDefault();
-    
-    const slider = e.currentTarget;
-    const rect = slider.getBoundingClientRect();
-    const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-    
-    // Limita la percentuale tra 5% e 95% per evitare che il pallino esca
-    const percentage = Math.max(5, Math.min(95, (x / rect.width) * 100));
-    
-    userPreferences.distance = percentage;
-    document.getElementById('distance-dot').style.left = percentage + '%';
-    
-    // Mostra le etichette
-    document.getElementById('distance-labels').classList.add('active');
-}
-
-function stopDistanceDrag() {
-    isDraggingDistance = false;
-    setTimeout(() => {
-        document.getElementById('distance-labels').classList.remove('active');
-    }, 1000);
-}
-
-// FUNZIONI MOOD SELECTOR
-function startDragging(e) {
-    isDraggingMood = true;
-    dragGlobe(e);
-}
-
-function dragGlobe(e) {
-    if (!isDraggingMood) return;
-    e.preventDefault();
-    
-    const selector = document.getElementById('mood-selector');
-    const rect = selector.getBoundingClientRect();
-    const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
-    const y = (e.type.includes('touch') ? e.touches[0].clientY : e.clientY) - rect.top;
-    
-    const percentX = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    const percentY = Math.max(0, Math.min(100, (y / rect.height) * 100));
-    
-    userPreferences.moodX = percentX;
-    userPreferences.moodY = percentY;
-    
-    const globe = document.getElementById('mood-globe');
-    globe.style.left = percentX + '%';
-    globe.style.top = percentY + '%';
-    
-    // Mostra etichette vicine
-    updateMoodLabels(percentX, percentY);
-}
-
-function stopDragging() {
-    isDraggingMood = false;
-    setTimeout(() => {
-        document.querySelectorAll('.mood-label').forEach(label => {
-            label.classList.remove('visible');
-        });
-    }, 1000);
-}
-
-function updateMoodLabels(x, y) {
-    const labels = document.querySelectorAll('.mood-label');
-    labels.forEach(label => {
-        let labelX = 50;
-        let labelY = 50;
-        
-        if (label.classList.contains('left')) labelX = 0;
-        if (label.classList.contains('right')) labelX = 100;
-        if (label.classList.contains('top')) labelY = 0;
-        if (label.classList.contains('bottom')) labelY = 100;
-        
-        if (label.classList.contains('top-left')) {
-            labelX = 25;
-            labelY = 25;
+]; "Paradies der kristallklaren Atolle",
+            zh: "水晶环礁天堂",
+            hi: "क्रिस्टल एटोल का स्वर्ग",
+            ar: "جنة الجزر المرجانية الكريستالية",
+            pt: "Paraíso dos atóis cristalinos",
+            ru: "Рай кристальных атоллов"
         }
-        if (label.classList.contains('top-right')) {
-            labelX = 75;
-            labelY = 25;
+    },
+    {
+        name: "Santorini",
+        country: "Grecia",
+        image: "https://via.placeholder.com/800x600/6495ED/FFFFFF?text=Santorini",
+        type: "sea",
+        distance: "curious",
+        moods: ["romantic", "culture", "zen"],
+        tagline: {
+            it: "Tramonti mozzafiato sull'Egeo",
+            en: "Breathtaking sunsets over the Aegean",
+            es: "Atardeceres impresionantes sobre el Egeo",
+            fr: "Couchers de soleil époustouflants sur la mer Égée",
+            de: "Atemberaubende Sonnenuntergänge über der Ägäis",
+            zh: "爱琴海上的壮丽日落",
+            hi: "एजियन पर लुभावनी सूर्यास्त",
+            ar: "غروب الشمس الخلاب فوق بحر إيجه",
+            pt: "Pôr do sol deslumbrante sobre o Egeu",
+            ru: "Захватывающие закаты над Эгейским морем"
         }
-        if (label.classList.contains('bottom-left')) {
-            labelX = 25;
-            labelY = 75;
+    },
+    {
+        name: "Sardegna",
+        country: "Italia",
+        image: "https://via.placeholder.com/800x600/40E0D0/FFFFFF?text=Sardegna",
+        type: "sea",
+        distance: "comfort",
+        moods: ["zen", "movida", "gourmet"],
+        tagline: {
+            it: "Spiagge caraibiche nel Mediterraneo",
+            en: "Caribbean beaches in the Mediterranean",
+            es: "Playas caribeñas en el Mediterráneo",
+            fr: "Plages des Caraïbes en Méditerranée",
+            de: "Karibische Strände im Mittelmeer",
+            zh: "地中海的加勒比海滩",
+            hi: "भूमध्य सागर में कैरेबियन समुद्र तट",
+            ar: "شواطئ كاريبية في البحر المتوسط",
+            pt: "Praias caribenhas no Mediterrâneo",
+            ru: "Карибские пляжи в Средиземноморье"
         }
-        if (label.classList.contains('bottom-right')) {
-            labelX = 75;
-            labelY = 75;
+    },
+    {
+        name: "Bali",
+        country: "Indonesia",
+        image: "https://via.placeholder.com/800x600/98FB98/000000?text=Bali",
+        type: "sea",
+        distance: "bloom",
+        moods: ["wild", "culture", "zen"],
+        tagline: {
+            it: "L'isola degli dei e delle onde perfette",
+            en: "Island of gods and perfect waves",
+            es: "Isla de dioses y olas perfectas",
+            fr: "L'île des dieux et des vagues parfaites",
+            de: "Insel der Götter und perfekten Wellen",
+            zh: "众神之岛与完美海浪",
+            hi: "देवताओं और परफेक्ट लहरों का द्वीप",
+            ar: "جزيرة الآلهة والأمواج المثالية",
+            pt: "Ilha dos deuses e ondas perfeitas",
+            ru: "Остров богов и идеальных волн"
         }
-        
-        const distance = Math.sqrt(Math.pow(x - labelX, 2) + Math.pow(y - labelY, 2));
-        
-        if (distance < 40) {
-            label.classList.add('visible');
-        } else {
-            label.classList.remove('visible');
+    },
+    {
+        name: "Ibiza",
+        country: "Spagna",
+        image: "https://via.placeholder.com/800x600/FF69B4/FFFFFF?text=Ibiza",
+        type: "sea",
+        distance: "curious",
+        moods: ["movida", "zen", "glamour"],
+        tagline: {
+            it: "Ritmi hippy e notti infinite",
+            en: "Hippy vibes and endless nights",
+            es: "Ritmos hippies y noches infinitas",
+            fr: "Vibrations hippies et nuits sans fin",
+            de: "Hippie-Vibes und endlose Nächte",
+            zh: "嬉皮氛围与无尽之夜",
+            hi: "हिप्पी वाइब्स और अंतहीन रातें",
+            ar: "إيقاعات الهيبي والليالي التي لا تنتهي",
+            pt: "Vibrações hippies e noites infinitas",
+            ru: "Хиппи-вайбы и бесконечные ночи"
         }
-    });
-}
+    },
+    {
+        name: "Seychelles",
+        country: "Seychelles",
+        image: "https://via.placeholder.com/800x600/00FA9A/FFFFFF?text=Seychelles",
+        type: "sea",
+        distance: "bloom",
+        moods: ["zen", "romantic", "wild"],
+        tagline: {
+            it: "Granito rosa e tartarughe giganti",
+            en: "Pink granite and giant tortoises",
+            es: "Granito rosa y tortugas gigantes",
+            fr: "Granit rose et tortues géantes",
+            de: "Rosa Granit und Riesenschildkröten",
+            zh: "粉红花岗岩与巨龟",
+            hi: "गुलाबी ग्रेनाइट और विशाल कछुए",
+            ar: "الجرانيت الوردي والسلاحف العملاقة",
+            pt: "Granito rosa e tartarugas gigantes",
+            ru: "Розовый гранит и гигантские черепахи"
+        }
+    },
+    {
+        name: "Zanzibar",
+        country: "Tanzania",
+        image: "https://via.placeholder.com/800x600/FFE4B5/000000?text=Zanzibar",
+        type: "sea",
+        distance: "bloom",
+        moods: ["culture", "zen", "wild"],
+        tagline: {
+            it: "Spezie, dhow e tramonti africani",
+            en: "Spices, dhows and African sunsets",
+            es: "Especias, dhows y atardeceres africanos",
+            fr: "Épices, boutres et couchers de soleil africains",
+            de: "Gewürze, Dhaus und afrikanische Sonnenuntergänge",
+            zh: "香料、独桅帆船与非洲日落",
+            hi: "मसाले, धोव और अफ्रीकी सूर्यास्त",
+            ar: "التوابل والمراكب الشراعية وغروب الشمس الأفريقي",
+            pt: "Especiarias, dhows e pôr do sol africano",
+            ru: "Специи, доу и африканские закаты"
+        }
+    },
+    {
+        name: "Phuket",
+        country: "Thailandia",
+        image: "https://via.placeholder.com/800x600/20B2AA/FFFFFF?text=Phuket",
+        type: "sea",
+        distance: "bloom",
+        moods: ["movida", "wild", "gourmet"],
+        tagline: {
+            it: "Spiagge da sogno e street food incredibile",
+            en: "Dream beaches and incredible street food",
+            es: "Playas de ensueño y comida callejera increíble",
+            fr: "Plages de rêve et street food incroyable",
+            de: "Traumstrände und unglaubliches Street Food",
+            zh: "梦幻海滩与美味街头小吃",
+            hi: "सपनों के समुद्र तट और अविश्वसनीय स्ट्रीट फूड",
+            ar: "شواطئ الأحلام وطعام الشارع المذهل",
+            pt: "Praias dos sonhos e comida de rua incrível",
+            ru: "Пляжи мечты и невероятная уличная еда"
+        }
+    },
+    {
+        name: "Cancun",
+        country: "Messico",
+        image: "https://via.placeholder.com/800x600/00CED1/FFFFFF?text=Cancun",
+        type: "sea",
+        distance: "curious",
+        moods: ["movida", "culture", "wild"],
+        tagline: {
+            it: "Piramidi Maya e mare turchese",
+            en: "Mayan pyramids and turquoise sea",
+            es: "Pirámides mayas y mar turquesa",
+            fr: "Pyramides mayas et mer turquoise",
+            de: "Maya-Pyramiden und türkisfarbenes Meer",
+            zh: "玛雅金字塔与碧绿海水",
+            hi: "माया पिरामिड और फ़िरोज़ा समुद्र",
+            ar: "أهرامات المايا والبحر الفيروزي",
+            pt: "Pirâmides maias e mar turquesa",
+            ru: "Пирамиды майя и бирюзовое море"
+        }
+    },
+    {
+        name: "Bora Bora",
+        country: "Polinesia Francese",
+        image: "https://via.placeholder.com/800x600/48D1CC/FFFFFF?text=Bora+Bora",
+        type: "sea",
+        distance: "bloom",
+        moods: ["romantic", "zen", "glamour"],
+        tagline: {
+            it: "La perla del Pacifico",
+            en: "The Pearl of the Pacific",
+            es: "La perla del Pacífico",
+            fr: "La perle du Pacifique",
+            de: "Die Perle des Pazifiks",
+            zh: "太平洋明珠",
+            hi: "प्रशांत का मोती",
+            ar: "لؤلؤة المحيط الهادئ",
+            pt: "A pérola do Pacífico",
+            ru: "Жемчужина Тихого океана"
+        }
+    },
+    {
+        name: "Mykonos",
+        country: "Grecia",
+        image: "https://via.placeholder.com/800x600/87CEEB/000000?text=Mykonos",
+        type: "sea",
+        distance: "curious",
+        moods: ["movida", "glamour", "culture"],
+        tagline: {
+            it: "Mulini a vento e beach club esclusivi",
+            en: "Windmills and exclusive beach clubs",
+            es: "Molinos de viento y beach clubs exclusivos",
+            fr: "Moulins à vent et beach clubs exclusifs",
+            de: "Windmühlen und exklusive Beach Clubs",
+            zh: "风车与奢华海滩俱乐部",
+            hi: "पवनचक्की और एक्सक्लूसिव बीच क्लब",
+            ar: "طواحين الهواء ونوادي الشاطئ الحصرية",
+            pt: "Moinhos de vento e beach clubs exclusivos",
+            ru: "Ветряные мельницы и эксклюзивные пляжные клубы"
+        }
+    },
+    {
+        name: "Bahamas",
+        country: "Bahamas",
+        image: "https://via.placeholder.com/800x600/AFEEEE/000000?text=Bahamas",
+        type: "sea",
+        distance: "curious",
+        moods: ["zen", "wild", "glamour"],
+        tagline: {
+            it: "Maiali nuotatori e spiagge rosa",
+            en: "Swimming pigs and pink beaches",
+            es: "Cerdos nadadores y playas rosadas",
+            fr: "Cochons nageurs et plages roses",
+            de: "Schwimmende Schweine und rosa Strände",
+            zh: "游泳的猪与粉红海滩",
+            hi: "तैरते सूअर और गुलाबी समुद्र तट",
+            ar: "الخنازير السابحة والشواطئ الوردية",
+            pt: "Porcos nadadores e praias rosa",
+            ru: "Плавающие свиньи и розовые пляжи"
+        }
+    },
+    {
+        name: "Mauritius",
+        country: "Mauritius",
+        image: "https://via.placeholder.com/800x600/5F9EA0/FFFFFF?text=Mauritius",
+        type: "sea",
+        distance: "bloom",
+        moods: ["zen", "romantic", "gourmet"],
+        tagline: {
+            it: "Lagune turchesi e melting pot culturale",
+            en: "Turquoise lagoons and cultural melting pot",
+            es: "Lagunas turquesas y crisol cultural",
+            fr: "Lagons turquoise et melting-pot culturel",
+            de: "Türkisfarbene Lagunen und kultureller Schmelztiegel",
+            zh: "碧绿潟湖与文化大熔炉",
+            hi: "फ़िरोज़ा लैगून और सांस्कृतिक मेल्टिंग पॉट",
+            ar: "البحيرات الفيروزية وبوتقة الثقافات",
+            pt: "Lagoas turquesa e caldeirão cultural",
+            ru: "Бирюзовые лагуны и культурный плавильный котел"
+        }
+    },
+    {
+        name: "Corsica",
+        country: "Francia",
+        image: "https://via.placeholder.com/800x600/B0C4DE/000000?text=Corsica",
+        type: "sea",
+        distance: "comfort",
+        moods: ["wild", "zen", "gourmet"],
+        tagline: {
+            it: "Montagne che tuffano nel mare",
+            en: "Mountains diving into the sea",
+            es: "Montañas que se sumergen en el mar",
+            fr: "Montagnes plongeant dans la mer",
+            de: "Berge, die ins Meer tauchen",
+            zh: "山脉潜入大海",
+            hi: "समुद्र में गोता लगाते पहाड़",
+            ar: "جبال تغوص في البحر",
+            pt: "Montanhas mergulhando no mar",
+            ru: "Горы, ныряющие в море"
+        }
+    },
+    {
+        name: "Malta",
+        country: "Malta",
+        image: "https://via.placeholder.com/800x600/F0E68C/000000?text=Malta",
+        type: "sea",
+        distance: "comfort",
+        moods: ["culture", "zen", "gourmet"],
+        tagline: {
+            it: "Cavalieri, templi e acque cristalline",
+            en: "Knights, temples and crystal waters",
+            es: "Caballeros, templos y aguas cristalinas",
+            fr: "Chevaliers, temples et eaux cristallines",
+            de: "Ritter, Tempel und kristallklares Wasser",
+            zh: "骑士、神庙与晶莹海水",
+            hi: "शूरवीर, मंदिर और क्रिस्टल पानी",
+            ar: "الفرسان والمعابد والمياه الكريستالية",
+            pt: "Cavaleiros, templos e águas cristalinas",
+            ru: "Рыцари, храмы и кристальные воды"
+        }
+    },
+    {
+        name: "Amalfi",
+        country: "Italia",
+        image: "https://via.placeholder.com/800x600/FFB6C1/000000?text=Amalfi",
+        type: "sea",
+        distance: "comfort",
+        moods: ["romantic", "gourmet", "culture"],
+        tagline: {
+            it: "Limoni, curve mozzafiato e dolce vita",
+            en: "Lemons, breathtaking curves and dolce vita",
+            es: "Limones, curvas impresionantes y dolce vita",
+            fr: "Citrons, virages époustouflants et dolce vita",
+            de: "Zitronen, atemberaubende Kurven und Dolce Vita",
+            zh: "柠檬、惊险弯道与甜蜜生活",
+            hi: "नींबू, लुभावने मोड़ और डोल्चे वीटा",
+            ar: "الليمون والمنحنيات الخلابة والحياة الحلوة",
+            pt: "Limões, curvas deslumbrantes e dolce vita",
+            ru: "Лимоны, захватывающие повороты и дольче вита"
+        }
+    },
+    {
+        name: "Algarve",
+        country: "Portogallo",
+        image: "https://via.placeholder.com/800x600/FFDAB9/000000?text=Algarve",
+        type: "sea",
+        distance: "comfort",
+        moods: ["zen", "wild", "gourmet"],
+        tagline: {
+            it: "Scogliere dorate e villaggi bianchi",
+            en: "Golden cliffs and white villages",
+            es: "Acantilados dorados y pueblos blancos",
+            fr: "Falaises dorées et villages blancs",
+            de: "Goldene Klippen und weiße Dörfer",
+            zh: "金色悬崖与白色村庄",
+            hi: "सुनहरी चट्टानें और सफेद गाँव",
+            ar: "المنحدرات الذهبية والقرى البيضاء",
+            pt: "Falésias douradas e aldeias brancas",
+            ru: "Золотые скалы и белые деревни"
+        }
+    },
+    {
+        name: "Gold Coast",
+        country: "Australia",
+        image: "https://via.placeholder.com/800x600/FFD700/000000?text=Gold+Coast",
+        type: "sea",
+        distance: "bloom",
+        moods: ["wild", "movida", "zen"],
+        tagline: {
+            it: "Surf, grattacieli e koala",
+            en: "Surf, skyscrapers and koalas",
+            es: "Surf, rascacielos y koalas",
+            fr: "Surf, gratte-ciels et koalas",
+            de: "Surfen, Wolkenkratzer und Koalas",
+            zh: "冲浪、摩天大楼与考拉",
+            hi: "सर्फ, गगनचुंबी इमारतें और कोआला",
+            ar: "ركوب الأمواج وناطحات السحاب والكوالا",
+            pt: "Surf, arranha-céus e coalas",
+            ru: "Серфинг, небоскребы и коалы"
+        }
+    },
+    {
+        name: "Tulum",
+        country: "Messico",
+        image: "https://via.placeholder.com/800x600/40E0D0/000000?text=Tulum",
+        type: "sea",
+        distance: "curious",
+        moods: ["zen", "culture", "glamour"],
+        tagline: {
+            it: "Rovine Maya sulla spiaggia caraibica",
+            en: "Mayan ruins on Caribbean beach",
+            es: "Ruinas mayas en playa caribeña",
+            fr: "Ruines mayas sur plage des Caraïbes",
+            de: "Maya-Ruinen am Karibikstrand",
+            zh: "加勒比海滩上的玛雅遗址",
+            hi: "कैरेबियन समुद्र तट पर माया खंडहर",
+            ar: "أطلال المايا على شاطئ الكاريبي",
+            pt: "Ruínas maias na praia caribenha",
+            ru: "Руины майя на карибском пляже"
+        }
+    },
+    {
+        name: "Malibu",
+        country: "USA",
+        image: "https://via.placeholder.com/800x600/FFA07A/000000?text=Malibu",
+        type: "sea",
+        distance: "bloom",
+        moods: ["glamour", "wild", "zen"],
+        tagline: {
+            it: "Surf, star e tramonti californiani",
+            en: "Surf, stars and California sunsets",
+            es: "Surf, estrellas y atardeceres californianos",
+            fr: "Surf, stars et couchers de soleil californiens",
+            de: "Surfen, Stars und kalifornische Sonnenuntergänge",
+            zh: "冲浪、明星与加州日落",
+            hi: "सर्फ, सितारे और कैलिफोर्निया सूर्यास्त",
+            ar: "ركوب الأمواج والنجوم وغروب الشمس في كاليفورنيا",
+            pt: "Surf, estrelas e pôr do sol californiano",
+            ru: "Серфинг, звезды и калифорнийские закаты"
+        }
+    },
 
-// FUNZIONE PRINCIPALE GLOOB
-function gloobIt() {
-    // Mostra loading
-    document.getElementById('slider-step').classList.add('hidden');
-    document.getElementById('loading-step').classList.remove('hidden');
-    
-    // Calcola destinazione dopo 2 secondi
-    setTimeout(() => {
-        const destination = calculateDestination();
-        showResult(destination);
-    }, 2000);
-}
-
-// ALGORITMO DI MATCHING MIGLIORATO
-function calculateDestination() {
-    // Verifica che il database sia caricato
-    if (typeof DESTINATIONS_DB === 'undefined' || !DESTINATIONS_DB || DESTINATIONS_DB.length === 0) {
-        console.error('Database destinazioni non caricato!');
-        return {
-            name: "Errore",
-            country: "Database non caricato",
-            image: "",
-            type: "city",
-            distance: "medium",
-            moods: [],
-            tagline: { it: "Ricarica la pagina", en: "Reload the page" }
-        };
-    }
-    // Determina il tipo di habitat
-    let habitatType;
-    if (userPreferences.location < 33) {
-        habitatType = 'sea';
-    } else if (userPreferences.location < 67) {
-        habitatType = 'city';
-    } else {
-        habitatType = 'mountain';
-    }
-    
-    // Determina la distanza
-    let distanceType;
-    if (userPreferences.distance < 33) {
-        distanceType = 'comfort';
-    } else if (userPreferences.distance < 67) {
-        distanceType = 'curious';
-    } else {
-        distanceType = 'bloom';
-    }
-    
-    // Determina i mood principali (massimo 2)
-    const moods = getMoodsFromPosition(userPreferences.moodX, userPreferences.moodY);
-    
-    // Filtra le destinazioni per tipo
-    let candidates = DESTINATIONS_DB.filter(dest => dest.type === habitatType);
-    
-    // Se non ci sono candidati esatti, allarga la ricerca
-    if (candidates.length === 0) {
-        candidates = DESTINATIONS_DB;
-    }
-    
-    // Calcola punteggi per ogni destinazione
-    const scoredDestinations = candidates.map(dest => {
-        let score = 0;
-        
-        // Punteggio per tipo di habitat (peso maggiore)
-        if (dest.type === habitatType) {
-            score += 50;
+    // ========== CITTÀ (20 destinazioni) ==========
+    {
+        name: "Tokyo",
+        country: "Giappone",
+        image: "https://via.placeholder.com/800x600/FF1493/FFFFFF?text=Tokyo",
+        type: "city",
+        distance: "bloom",
+        moods: ["culture", "movida", "wild", "gourmet"],
+        tagline: {
+            it: "Futuro e tradizione in perfetta armonia",
+            en: "Future and tradition in perfect harmony",
+            es: "Futuro y tradición en perfecta armonía",
+            fr: "Futur et tradition en parfaite harmonie",
+            de: "Zukunft und Tradition in perfekter Harmonie",
+            zh: "未来与传统的完美和谐",
+            hi: "भविष्य और परंपरा पूर्ण सामंजस्य में",
+            ar: "المستقبل والتقاليد في انسجام تام",
+            pt: "Futuro e tradição em perfeita harmonia",
+            ru: "Будущее и традиции в идеальной гармонии"
         }
-        
-        // Punteggio per distanza
-        if (dest.distance === distanceType) {
-            score += 30;
-        } else if (
-            (dest.distance === 'curious' && (distanceType === 'comfort' || distanceType === 'bloom')) ||
-            (distanceType === 'curious' && (dest.distance === 'comfort' || dest.distance === 'bloom'))
-        ) {
-            score += 15; // Punteggio parziale per distanze vicine
+    },
+    {
+        name: "New York",
+        country: "USA",
+        image: "https://via.placeholder.com/800x600/4169E1/FFFFFF?text=New+York",
+        type: "city",
+        distance: "bloom",
+        moods: ["culture", "movida", "wild", "design"],
+        tagline: {
+            it: "La città che non dorme mai",
+            en: "The city that never sleeps",
+            es: "La ciudad que nunca duerme",
+            fr: "La ville qui ne dort jamais",
+            de: "Die Stadt, die niemals schläft",
+            zh: "不夜城",
+            hi: "वह शहर जो कभी नहीं सोता",
+            ar: "المدينة التي لا تنام أبداً",
+            pt: "A cidade que nunca dorme",
+            ru: "Город, который никогда не спит"
         }
-        
-        // Punteggio per mood (peso importante)
-        moods.forEach(mood => {
-            if (dest.moods.includes(mood)) {
-                score += 20;
-            }
-        });
-        
-        // Bonus per match multipli di mood
-        const matchingMoods = moods.filter(mood => dest.moods.includes(mood));
-        if (matchingMoods.length >= 2) {
-            score += 10;
+    },
+    {
+        name: "Parigi",
+        country: "Francia",
+        image: "https://via.placeholder.com/800x600/DDA0DD/000000?text=Parigi",
+        type: "city",
+        distance: "comfort",
+        moods: ["romantic", "culture", "gourmet", "glamour"],
+        tagline: {
+            it: "Romanticismo e luci sulla Senna",
+            en: "Romance and lights on the Seine",
+            es: "Romance y luces sobre el Sena",
+            fr: "Romance et lumières sur la Seine",
+            de: "Romantik und Lichter an der Seine",
+            zh: "塞纳河上的浪漫与灯光",
+            hi: "सीन पर रोमांस और रोशनी",
+            ar: "الرومانسية والأضواء على نهر السين",
+            pt: "Romance e luzes sobre o Sena",
+            ru: "Романтика и огни на Сене"
         }
-        
-        return {
-            destination: dest,
-            score: score
-        };
-    });
-    
-    // Ordina per punteggio
-    scoredDestinations.sort((a, b) => b.score - a.score);
-    
-    // Se il punteggio migliore è troppo basso, scegline uno casuale del tipo giusto
-    if (scoredDestinations[0].score < 30) {
-        const typeMatches = DESTINATIONS_DB.filter(d => d.type === habitatType);
-        return typeMatches[Math.floor(Math.random() * typeMatches.length)];
-    }
-    
-    // Altrimenti restituisci il migliore
-    return scoredDestinations[0].destination;
-}
-
-// Determina i mood dalla posizione nel quadrato
-function getMoodsFromPosition(x, y) {
-    const moods = [];
-    
-    // Mappa delle posizioni dei mood
-    const moodMap = {
-        movida: { x: 50, y: 0 },
-        zen: { x: 50, y: 100 },
-        gourmet: { x: 0, y: 50 },
-        wild: { x: 100, y: 50 },
-        design: { x: 25, y: 25 },
-        glamour: { x: 75, y: 25 },
-        culture: { x: 25, y: 75 },
-        romantic: { x: 75, y: 75 }
-    };
-    
-    // Calcola distanze e prendi i 2 più vicini
-    const distances = Object.entries(moodMap).map(([mood, pos]) => {
-        const distance = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
-        return { mood, distance };
-    });
-    
-    distances.sort((a, b) => a.distance - b.distance);
-    
-    // Prendi i due mood più vicini
-    moods.push(distances[0].mood);
-    if (distances[1].distance < 40) {
-        moods.push(distances[1].mood);
-    }
-    
-    return moods;
-}
-
-// MOSTRA RISULTATO
-function showResult(destination) {
-    // Debug - verifica cosa arriva
-    console.log('Destinazione selezionata:', destination);
-    
-    // Nascondi loading e mostra risultato
-    document.getElementById('loading-step').classList.add('hidden');
-    document.getElementById('result-step').classList.remove('hidden');
-    
-    // Popola i dati
-    document.getElementById('destination-name').textContent = destination.name || 'Destinazione';
-    document.getElementById('destination-tagline').textContent = destination.tagline && destination.tagline[currentLang] ? destination.tagline[currentLang] : '';
-    document.getElementById('destination-country').textContent = destination.country || '';
-    
-    // Imposta immagine
-    const img = document.getElementById('destination-image');
-    if (destination.image) {
-        img.src = destination.image;
-        img.alt = destination.name || 'Destination';
-        img.style.display = 'block';
-    } else {
-        img.style.display = 'none';
-    }
-    
-    // Narrativa personalizzata
-    const narrative = generateNarrative(destination);
-    document.getElementById('narrative-text').textContent = narrative;
-    
-    // Citazione casuale
-    const quote = TRAVEL_QUOTES[Math.floor(Math.random() * TRAVEL_QUOTES.length)];
-    document.getElementById('travel-quote').textContent = quote.quote[currentLang] || quote.quote.it;
-    document.getElementById('quote-author').textContent = quote.author;
-}
-
-// GENERA NARRATIVA
-function generateNarrative(destination) {
-    const narratives = {
-        it: {
-            sea: [
-                `${destination.name} ti aspetta con le sue acque cristalline e tramonti che dipingono il cielo. Un luogo dove il tempo rallenta e ogni onda racconta una storia.`,
-                `Lasciati cullare dal ritmo del mare a ${destination.name}. Qui, dove la sabbia incontra l'infinito, troverai la pace che cercavi.`,
-                `${destination.name} è una sinfonia di colori marini, dove il blu del cielo si fonde con il turchese del mare in un abbraccio infinito.`
-            ],
-            city: [
-                `${destination.name} pulsa di energia e possibilità. Ogni strada nasconde una sorpresa, ogni angolo una nuova avventura urbana che ti aspetta.`,
-                `Immergiti nel caos creativo di ${destination.name}. Una metropoli che non dorme mai, dove i sogni prendono forma tra grattacieli e vicoli nascosti.`,
-                `${destination.name} è un caleidoscopio urbano dove passato e futuro danzano insieme nelle strade illuminate dai neon.`
-            ],
-            mountain: [
-                `Le vette di ${destination.name} ti chiamano verso l'alto, dove l'aria è pura e il silenzio parla. Un santuario naturale che risveglia l'anima.`,
-                `${destination.name} ti offre la maestosità della montagna, dove ogni sentiero è una meditazione e ogni cima una conquista personale.`,
-                `Tra le cime di ${destination.name}, scoprirai che le montagne non sono solo roccia e neve, ma cattedrali naturali che toccano il cielo.`
-            ]
-        },
-        en: {
-            sea: [
-                `${destination.name} awaits you with crystal waters and sunsets that paint the sky. A place where time slows down and every wave tells a story.`,
-                `Let yourself be lulled by the rhythm of the sea in ${destination.name}. Here, where sand meets infinity, you'll find the peace you were looking for.`,
-                `${destination.name} is a symphony of marine colors, where the blue of the sky merges with the turquoise of the sea in an endless embrace.`
-            ],
-            city: [
-                `${destination.name} pulses with energy and possibilities. Every street hides a surprise, every corner a new urban adventure waiting for you.`,
-                `Immerse yourself in the creative chaos of ${destination.name}. A metropolis that never sleeps, where dreams take shape between skyscrapers and hidden alleys.`,
-                `${destination.name} is an urban kaleidoscope where past and future dance together in neon-lit streets.`
-            ],
-            mountain: [
-                `The peaks of ${destination.name} call you upward, where the air is pure and silence speaks. A natural sanctuary that awakens the soul.`,
-                `${destination.name} offers you the majesty of the mountains, where every path is a meditation and every summit a personal conquest.`,
-                `Among the peaks of ${destination.name}, you'll discover that mountains are not just rock and snow, but natural cathedrals touching the sky.`
-            ]
-        },
-        es: {
-            sea: [
-                `${destination.name} te espera con aguas cristalinas y atardeceres que pintan el cielo. Un lugar donde el tiempo se ralentiza y cada ola cuenta una historia.`,
-                `Déjate arrullar por el ritmo del mar en ${destination.name}. Aquí, donde la arena se encuentra con el infinito, encontrarás la paz que buscabas.`,
-                `${destination.name} es una sinfonía de colores marinos, donde el azul del cielo se fusiona con el turquesa del mar en un abrazo infinito.`
-            ],
-            city: [
-                `${destination.name} palpita con energía y posibilidades. Cada calle esconde una sorpresa, cada esquina una nueva aventura urbana que te espera.`,
-                `Sumérgete en el caos creativo de ${destination.name}. Una metrópolis que nunca duerme, donde los sueños toman forma entre rascacielos y callejones ocultos.`,
-                `${destination.name} es un caleidoscopio urbano donde pasado y futuro bailan juntos en calles iluminadas por neón.`
-            ],
-            mountain: [
-                `Las cumbres de ${destination.name} te llaman hacia arriba, donde el aire es puro y el silencio habla. Un santuario natural que despierta el alma.`,
-                `${destination.name} te ofrece la majestuosidad de la montaña, donde cada sendero es una meditación y cada cima una conquista personal.`,
-                `Entre las cumbres de ${destination.name}, descubrirás que las montañas no son solo roca y nieve, sino catedrales naturales que tocan el cielo.`
-            ]
-        },
-        fr: {
-            sea: [
-                `${destination.name} vous attend avec ses eaux cristallines et ses couchers de soleil qui peignent le ciel. Un lieu où le temps ralentit et chaque vague raconte une histoire.`,
-                `Laissez-vous bercer par le rythme de la mer à ${destination.name}. Ici, où le sable rencontre l'infini, vous trouverez la paix que vous cherchiez.`,
-                `${destination.name} est une symphonie de couleurs marines, où le bleu du ciel se fond avec le turquoise de la mer dans une étreinte infinie.`
-            ],
-            city: [
-                `${destination.name} vibre d'énergie et de possibilités. Chaque rue cache une surprise, chaque coin une nouvelle aventure urbaine qui vous attend.`,
-                `Plongez dans le chaos créatif de ${destination.name}. Une métropole qui ne dort jamais, où les rêves prennent forme entre gratte-ciels et ruelles cachées.`,
-                `${destination.name} est un kaléidoscope urbain où passé et futur dansent ensemble dans des rues éclairées au néon.`
-            ],
-            mountain: [
-                `Les sommets de ${destination.name} vous appellent vers le haut, où l'air est pur et le silence parle. Un sanctuaire naturel qui réveille l'âme.`,
-                `${destination.name} vous offre la majesté de la montagne, où chaque sentier est une méditation et chaque sommet une conquête personnelle.`,
-                `Parmi les sommets de ${destination.name}, vous découvrirez que les montagnes ne sont pas seulement roche et neige, mais des cathédrales naturelles touchant le ciel.`
-            ]
-        },
-        zh: {
-            sea: [
-                `${destination.name}以其晶莹的海水和彩绘天空的日落等待着您。这是一个时间放缓、每一道波浪都在诉说故事的地方。`,
-                `让自己在${destination.name}被大海的节奏摇曳。在这里，沙滩与无限相遇，您将找到寻求的平静。`,
-                `${destination.name}是海洋色彩的交响曲，天空的蓝与海水的碧绿在无尽的拥抱中融合。`
-            ],
-            city: [
-                `${destination.name}充满活力和可能性。每条街道都隐藏着惊喜，每个角落都有新的城市冒险在等待着您。`,
-                `沉浸在${destination.name}的创意混沌中。这是一座不夜城，梦想在摩天大楼和隐秘小巷之间成形。`,
-                `${destination.name}是一个城市万花筒，过去与未来在霓虹灯照亮的街道上共舞。`
-            ],
-            mountain: [
-                `${destination.name}的山峰召唤您向上，那里空气纯净，寂静有声。这是唤醒灵魂的自然圣地。`,
-                `${destination.name}为您呈现山脉的壮丽，每条小径都是一次冥想，每座山峰都是个人的征服。`,
-                `在${destination.name}的山峰间，您会发现山脉不仅是岩石和雪，更是触摸天空的自然大教堂。`
-            ]
+    },
+    {
+        name: "Dubai",
+        country: "UAE",
+        image: "https://via.placeholder.com/800x600/FFD700/000000?text=Dubai",
+        type: "city",
+        distance: "curious",
+        moods: ["glamour", "wild", "movida", "design"],
+        tagline: {
+            it: "Lusso sfrenato nel deserto",
+            en: "Unbridled luxury in the desert",
+            es: "Lujo desenfrenado en el desierto",
+            fr: "Luxe débridé dans le désert",
+            de: "Zügelloser Luxus in der Wüste",
+            zh: "沙漠中的奢华",
+            hi: "रेगिस्तान में बेलगाम विलासिता",
+            ar: "الرفاهية الجامحة في الصحراء",
+            pt: "Luxo desenfreado no deserto",
+            ru: "Безудержная роскошь в пустыне"
         }
-    };
-    
-    // Usa narrativa nella lingua corrente, altrimenti italiano
-    const langNarratives = narratives[currentLang] || narratives.it;
-    const typeNarratives = langNarratives[destination.type] || langNarratives.city;
-    
-    return typeNarratives[Math.floor(Math.random() * typeNarratives.length)];
-}
-
-// GESTIONE PRENOTAZIONE CON TRIP.COM
-function bookTrip() {
-    const destination = document.getElementById('destination-name').textContent;
-    
-    // Apri Trip.com con la destinazione
-    window.open(`https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}`, '_blank');
-}
-
-// GESTIONE CAMBIO LINGUA
-function changeLanguage(lang) {
-    currentLang = lang;
-    
-    // Aggiorna classi attive
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.lang === lang) {
-            btn.classList.add('active');
+    },
+    {
+        name: "Londra",
+        country: "UK",
+        image: "https://via.placeholder.com/800x600/DC143C/FFFFFF?text=Londra",
+        type: "city",
+        distance: "comfort",
+        moods: ["culture", "movida", "design", "gourmet"],
+        tagline: {
+            it: "Storia e innovazione sul Tamigi",
+            en: "History and innovation on the Thames",
+            es: "Historia e innovación en el Támesis",
+            fr: "Histoire et innovation sur la Tamise",
+            de: "Geschichte und Innovation an der Themse",
+            zh: "泰晤士河畔的历史与创新",
+            hi: "टेम्स पर इतिहास और नवाचार",
+            ar: "التاريخ والابتكار على نهر التايمز",
+            pt: "História e inovação no Tâmisa",
+            ru: "История и инновации на Темзе"
         }
-    });
-    
-    // Aggiorna testi
-    document.querySelectorAll('[data-translate]').forEach(element => {
-        const key = element.dataset.translate;
-        if (translations[lang] && translations[lang][key]) {
-            element.textContent = translations[lang][key];
+    },
+    {
+        name: "Singapore",
+        country: "Singapore",
+        image: "https://via.placeholder.com/800x600/32CD32/FFFFFF?text=Singapore",
+        type: "city",
+        distance: "bloom",
+        moods: ["design", "gourmet", "culture", "glamour"],
+        tagline: {
+            it: "Giardino futuristico dell'Asia",
+            en: "Asia's futuristic garden",
+            es: "Jardín futurista de Asia",
+            fr: "Jardin futuriste de l'Asie",
+            de: "Asiens futuristischer Garten",
+            zh: "亚洲的未来花园",
+            hi: "एशिया का भविष्यवादी उद्यान",
+            ar: "حديقة آسيا المستقبلية",
+            pt: "Jardim futurista da Ásia",
+            ru: "Футуристический сад Азии"
         }
-    });
-}
+    },
+    {
+        name: "Hong Kong",
+        country: "Cina",
+        image: "https://via.placeholder.com/800x600/FF6347/FFFFFF?text=Hong+Kong",
+        type: "city",
+        distance: "bloom",
+        moods: ["movida", "gourmet", "design", "culture"],
+        tagline: {
+            it: "Grattacieli, dim sum e tradizioni",
+            en: "Skyscrapers, dim sum and traditions",
+            es: "Rascacielos, dim sum y tradiciones",
+            fr: "Gratte-ciels, dim sum et traditions",
+            de: "Wolkenkratzer, Dim Sum und Traditionen",
+            zh: "摩天大楼、点心与传统",
+            hi: "गगनचुंबी इमारतें, डिम सम और परंपराएं",
+            ar: "ناطحات السحاب والديم سوم والتقاليد",
+            pt: "Arranha-céus, dim sum e tradições",
+            ru: "Небоскребы, димсамы и традиции"
+        }
+    },
+    {
+        name: "Bangkok",
+        country: "Thailandia",
+        image: "https://via.placeholder.com/800x600/FF8C00/000000?text=Bangkok",
+        type: "city",
+        distance: "bloom",
+        moods: ["culture", "gourmet", "movida", "wild"],
+        tagline: {
+            it: "Templi dorati e street food divino",
+            en: "Golden temples and divine street food",
+            es: "Templos dorados y comida callejera divina",
+            fr: "Temples dorés et street food divine",
+            de: "Goldene Tempel und göttliches Street Food",
+            zh: "金色寺庙与美味街头小吃",
+            hi: "सुनहरे मंदिर और दिव्य स्ट्रीट फूड",
+            ar: "المعابد الذهبية وطعام الشارع الإلهي",
+            pt: "Templos dourados e comida de rua divina",
+            ru: "Золотые храмы и божественная уличная еда"
+        }
+    },
+    {
+        name: "Seoul",
+        country: "Corea del Sud",
+        image: "https://via.placeholder.com/800x600/9370DB/FFFFFF?text=Seoul",
+        type: "city",
+        distance: "bloom",
+        moods: ["design", "movida", "gourmet", "culture"],
+        tagline: {
+            it: "K-pop, kimchi e tecnologia",
+            en: "K-pop, kimchi and technology",
+            es: "K-pop, kimchi y tecnología",
+            fr: "K-pop, kimchi et technologie",
+            de: "K-Pop, Kimchi und Technologie",
+            zh: "韩流、泡菜与科技",
+            hi: "के-पॉप, किमची और प्रौद्योगिकी",
+            ar: "الكيبوب والكيمتشي والتكنولوجيا",
+            pt: "K-pop, kimchi e tecnologia",
+            ru: "K-pop, кимчи и технологии"
+        }
+    },
+    {
+        name: "Miami",
+        country: "USA",
+        image: "https://via.placeholder.com/800x600/FF69B4/FFFFFF?text=Miami",
+        type: "city",
+        distance: "curious",
+        moods: ["movida", "glamour", "design", "gourmet"],
+        tagline: {
+            it: "Art Deco e ritmi latini",
+            en: "Art Deco and Latin rhythms",
+            es: "Art Déco y ritmos latinos",
+            fr: "Art déco et rythmes latins",
+            de: "Art Deco und lateinamerikanische Rhythmen",
+            zh: "装饰艺术与拉丁节奏",
+            hi: "आर्ट डेको और लैटिन लय",
+            ar: "آرت ديكو والإيقاعات اللاتينية",
+            pt: "Art Déco e ritmos latinos",
+            ru: "Арт-деко и латинские ритмы"
+        }
+    },
+    {
+        name: "Las Vegas",
+        country: "USA",
+        image: "https://via.placeholder.com/800x600/FFD700/000000?text=Las+Vegas",
+        type: "city",
+        distance: "bloom",
+        moods: ["movida", "glamour", "wild", "design"],
+        tagline: {
+            it: "La città del peccato nel deserto",
+            en: "Sin City in the desert",
+            es: "La ciudad del pecado en el desierto",
+            fr: "La ville du péché dans le désert",
+            de: "Die Sündenstadt in der Wüste",
+            zh: "沙漠中的罪恶之城",
+            hi: "रेगिस्तान में पाप का शहर",
+            ar: "مدينة الخطيئة في الصحراء",
+            pt: "A cidade do pecado no deserto",
+            ru: "Город греха в пустыне"
+        }
+    },
+    {
+        name: "Roma",
+        country: "Italia",
+        image: "https://via.placeholder.com/800x600/CD853F/FFFFFF?text=Roma",
+        type: "city",
+        distance: "comfort",
+        moods: ["culture", "romantic", "gourmet", "glamour"],
+        tagline: {
+            it: "L'eternità a portata di mano",
+            en: "Eternity at your fingertips",
+            es: "La eternidad al alcance de la mano",
+            fr: "L'éternité à portée de main",
+            de: "Die Ewigkeit zum Greifen nah",
+            zh: "触手可及的永恒",
+            hi: "आपकी उंगलियों पर अनंत काल",
+            ar: "الأبدية في متناول يدك",
+            pt: "A eternidade ao alcance das mãos",
+            ru: "Вечность на расстоянии вытянутой руки"
+        }
+    },
+    {
+        name: "Madrid",
+        country: "Spagna",
+        image: "https://via.placeholder.com/800x600/FF4500/FFFFFF?text=Madrid",
+        type: "city",
+        distance: "comfort",
+        moods: ["movida", "culture", "gourmet", "design"],
+        tagline: {
+            it: "Tapas, flamenco e notti infinite",
+            en: "Tapas, flamenco and endless nights",
+            es: "Tapas, flamenco y noches infinitas",
+            fr: "Tapas, flamenco et nuits sans fin",
+            de: "Tapas, Flamenco und endlose Nächte",
+            zh: "小吃、弗拉明戈与无尽之夜",
+            hi: "तापस, फ्लेमेंको और अंतहीन रातें",
+            ar: "التاباس والفلامنكو والليالي التي لا تنتهي",
+            pt: "Tapas, flamenco e noites infinitas",
+            ru: "Тапас, фламенко и бесконечные ночи"
+        }
+    },
+    {
+        name: "Amsterdam",
+        country: "Olanda",
+        image: "https://via.placeholder.com/800x600/FF8C00/000000?text=Amsterdam",
+        type: "city",
+        distance: "comfort",
+        moods: ["culture", "movida", "design", "zen"],
+        tagline: {
+            it: "Canali, bici e libertà",
+            en: "Canals, bikes and freedom",
+            es: "Canales, bicicletas y libertad",
+            fr: "Canaux, vélos et liberté",
+            de: "Kanäle, Fahrräder und Freiheit",
+            zh: "运河、自行车与自由",
+            hi: "नहरें, बाइक और स्वतंत्रता",
+            ar: "القنوات والدراجات والحرية",
+            pt: "Canais, bicicletas e liberdade",
+            ru: "Каналы, велосипеды и свобода"
+        }
+    },
+    {
+        name: "Vienna",
+        country: "Austria",
+        image: "https://via.placeholder.com/800x600/8B4513/FFFFFF?text=Vienna",
+        type: "city",
+        distance: "comfort",
+        moods: ["culture", "romantic", "gourmet", "glamour"],
+        tagline: {
+            it: "Valzer, caffè e palazzi imperiali",
+            en: "Waltzes, coffee and imperial palaces",
+            es: "Valses, café y palacios imperiales",
+            fr: "Valses, café et palais impériaux",
+            de: "Walzer, Kaffee und Kaiserpaläste",
+            zh: "华尔兹、咖啡与皇宫",
+            hi: "वाल्ट्ज़, कॉफी और शाही महल",
+            ar: "الفالس والقهوة والقصور الإمبراطورية",
+            pt: "Valsas, café e palácios imperiais",
+            ru: "Вальсы, кофе и императорские дворцы"
+        }
+    },
+    {
+        name: "Prague",
+        country: "Repubblica Ceca",
+        image: "https://via.placeholder.com/800x600/B22222/FFFFFF?text=Prague",
+        type: "city",
+        distance: "comfort",
+        moods: ["culture", "romantic", "zen", "gourmet"],
+        tagline: {
+            it: "Fiaba boema sul fiume dorato",
+            en: "Bohemian fairy tale on the golden river",
+            es: "Cuento de hadas bohemio en el río dorado",
+            fr: "Conte de fées bohème sur la rivière dorée",
+            de: "Böhmisches Märchen am goldenen Fluss",
+            zh: "金色河畔的波西米亚童话",
+            hi: "सुनहरी नदी पर बोहेमियन परी कथा",
+            ar: "حكاية خرافية بوهيمية على النهر الذهبي",
+            pt: "Conto de fadas boêmio no rio dourado",
+            ru: "Богемская сказка на золотой реке"
+        }
+    },
+    {
+        name: "Marrakech",
+        country: "Marocco",
+        image: "https://via.placeholder.com/800x600/D2691E/FFFFFF?text=Marrakech",
+        type: "city",
+        distance: "curious",
+        moods: ["culture", "wild", "gourmet", "glamour"],
+        tagline: {
+            it: "Spezie, souk e magia berbera",
+            en: "Spices, souks and Berber magic",
+            es: "Especias, zocos y magia bereber",
+            fr: "Épices, souks et magie berbère",
+            de: "Gewürze, Souks und Berber-Magie",
+            zh: "香料、市集与柏柏尔魔法",
+            hi: "मसाले, बाज़ार और बर्बर जादू",
+            ar: "التوابل والأسواق والسحر الأمازيغي",
+            pt: "Especiarias, souks e magia berbere",
+            ru: "Специи, базары и берберская магия"
+        }
+    },
+    {
+        name: "Cape Town",
+        country: "Sudafrica",
+        image: "https://via.placeholder.com/800x600/4682B4/FFFFFF?text=Cape+Town",
+        type: "city",
+        distance: "bloom",
+        moods: ["wild", "culture", "gourmet", "zen"],
+        tagline: {
+            it: "Dove due oceani si incontrano",
+            en: "Where two oceans meet",
+            es: "Donde se encuentran dos océanos",
+            fr: "Où deux océans se rencontrent",
+            de: "Wo zwei Ozeane aufeinandertreffen",
+            zh: "两洋交汇之地",
+            hi: "जहाँ दो महासागर मिलते हैं",
+            ar: "حيث يلتقي محيطان",
+            pt: "Onde dois oceanos se encontram",
+            ru: "Где встречаются два океана"
+        }
+    },
+    {
+        name: "Melbourne",
+        country: "Australia",
+        image: "https://via.placeholder.com/800x600/708090/FFFFFF?text=Melbourne",
+        type: "city",
+        distance: "bloom",
+        moods: ["culture", "gourmet", "design", "movida"],
+        tagline: {
+            it: "Caffè, arte e multiculturalismo",
+            en: "Coffee, art and multiculturalism",
+            es: "Café, arte y multiculturalismo",
+            fr: "Café, art et multiculturalisme",
+            de: "Kaffee, Kunst und Multikulturalismus",
+            zh: "咖啡、艺术与多元文化",
+            hi: "कॉफी, कला और बहुसंस्कृतिवाद",
+            ar: "القهوة والفن والتعددية الثقافية",
+            pt: "Café, arte e multiculturalismo",
+            ru: "Кофе, искусство и мультикультурализм"
+        }
+    },
+    {
+        name: "San Francisco",
+        country: "USA",
+        image: "https://via.placeholder.com/800x600/FF6347/FFFFFF?text=San+Francisco",
+        type: "city",
+        distance: "bloom",
+        moods: ["design", "culture", "wild", "gourmet"],
+        tagline: {
+            it: "Innovazione tra nebbia e colline",
+            en: "Innovation between fog and hills",
+            es: "Innovación entre niebla y colinas",
+            fr: "Innovation entre brouillard et collines",
+            de: "Innovation zwischen Nebel und Hügeln",
+            zh: "雾与山丘间的创新",
+            hi: "कोहरे और पहाड़ियों के बीच नवाचार",
+            ar: "الابتكار بين الضباب والتلال",
+            pt: "Inovação entre neblina e colinas",
+            ru: "Инновации между туманом и холмами"
+        }
+    },
 
-// INIZIALIZZAZIONE
-document.addEventListener('DOMContentLoaded', () => {
-    // Setup language buttons
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            changeLanguage(btn.dataset.lang);
-        });
-    });
-    
-    // Inizializza con italiano
-    changeLanguage('it');
-});
+    // ========== MONTAGNA (20 destinazioni) ==========
+    {
+        name: "Dolomiti",
+        country: "Italia",
+        image: "https://via.placeholder.com/800x600/8FBC8F/000000?text=Dolomiti",
+        type: "mountain",
+        distance: "comfort",
+        moods: ["zen", "wild", "gourmet", "romantic"],
+        tagline: {
+            it: "Cattedrali di roccia rosa al tramonto",
+            en: "Pink rock cathedrals at sunset",
+            es: "Catedrales de roca rosa al atardecer",
+            fr: "Cathédrales de roche rose au coucher du soleil",
+            de: "Rosa Felskathedralen bei Sonnenuntergang",
+            zh: "日落时的粉红岩石大教堂",
+            hi: "सूर्यास्त में गुलाबी चट्टान के गिरजाघर",
+            ar: "كاتدرائيات الصخور الوردية عند الغروب",
+            pt: "Catedrais de rocha rosa ao pôr do sol",
+            ru: "Розовые скальные соборы на закате"
+        }
+    },
+    {
+        name: "Zermatt",
+        country: "Svizzera",
+        image: "https://via.placeholder.com/800x600/87CEEB/000000?text=Zermatt",
+        type: "mountain",
+        distance: "curious",
+        moods: ["zen", "glamour", "wild", "gourmet"],
+        tagline: {
+            it: "Il Cervino e cime innevate da sogno",
+            en: "The Matterhorn and dreamy snowy peaks",
+            es: "El Matterhorn y picos nevados de ensueño",
+            fr: "Le Cervin et sommets enneigés de rêve",
+            de: "Das Matterhorn und traumhafte Schneegipfel",
+            zh: "马特洪峰与梦幻雪峰",
+            hi: "मैटरहॉर्न और सपनों की बर्फीली चोटियाँ",
+            ar: "ماترهورن وقمم ثلجية حالمة",
+            pt: "O Matterhorn e picos nevados de sonho",
+            ru: "Маттерхорн и сказочные снежные вершины"
+        }
+    },
+    {
+        name: "Patagonia",
+        country: "Argentina/Cile",
+        image: "https://via.placeholder.com/800x600/4682B4/FFFFFF?text=Patagonia",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["wild", "zen", "culture"],
+        tagline: {
+            it: "Ghiacciai eterni e natura incontaminata",
+            en: "Eternal glaciers and pristine nature",
+            es: "Glaciares eternos y naturaleza prístina",
+            fr: "Glaciers éternels et nature intacte",
+            de: "Ewige Gletscher und unberührte Natur",
+            zh: "永恒冰川与原始自然",
+            hi: "शाश्वत ग्लेशियर और प्राचीन प्रकृति",
+            ar: "الأنهار الجليدية الأبدية والطبيعة البكر",
+            pt: "Glaciares eternos e natureza intocada",
+            ru: "Вечные ледники и первозданная природа"
+        }
+    },
+    {
+        name: "Alpi Francesi",
+        country: "Francia",
+        image: "https://via.placeholder.com/800x600/F0F8FF/000000?text=Alpi+Francesi",
+        type: "mountain",
+        distance: "curious",
+        moods: ["glamour", "wild", "gourmet", "movida"],
+        tagline: {
+            it: "Neve, champagne e alta quota",
+            en: "Snow, champagne and high altitude",
+            es: "Nieve, champán y gran altitud",
+            fr: "Neige, champagne et haute altitude",
+            de: "Schnee, Champagner und Höhenlage",
+            zh: "雪、香槟与高海拔",
+            hi: "बर्फ, शैंपेन और ऊंचाई",
+            ar: "الثلج والشمبانيا والارتفاع الشاهق",
+            pt: "Neve, champanhe e altitude elevada",
+            ru: "Снег, шампанское и высокогорье"
+        }
+    },
+    {
+        name: "Himalaya",
+        country: "Nepal",
+        image: "https://via.placeholder.com/800x600/B0E0E6/000000?text=Himalaya",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["zen", "wild", "culture"],
+        tagline: {
+            it: "Il tetto del mondo e spiritualità",
+            en: "The roof of the world and spirituality",
+            es: "El techo del mundo y espiritualidad",
+            fr: "Le toit du monde et spiritualité",
+            de: "Das Dach der Welt und Spiritualität",
+            zh: "世界屋脊与灵性",
+            hi: "दुनिया की छत और आध्यात्मिकता",
+            ar: "سقف العالم والروحانية",
+            pt: "O teto do mundo e espiritualidade",
+            ru: "Крыша мира и духовность"
+        }
+    },
+    {
+        name: "Aspen",
+        country: "USA",
+        image: "https://via.placeholder.com/800x600/FFFAFA/000000?text=Aspen",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["glamour", "wild", "gourmet", "movida"],
+        tagline: {
+            it: "Glamour e polvere fresca del Colorado",
+            en: "Glamour and fresh powder in Colorado",
+            es: "Glamour y nieve fresca en Colorado",
+            fr: "Glamour et poudreuse fraîche du Colorado",
+            de: "Glamour und frischer Pulverschnee in Colorado",
+            zh: "科罗拉多的魅力与新雪",
+            hi: "कोलोराडो में ग्लैमर और ताज़ा बर्फ",
+            ar: "السحر والثلج الطازج في كولورادو",
+            pt: "Glamour e neve fresca no Colorado",
+            ru: "Гламур и свежий снег в Колорадо"
+        }
+    },
+    {
+        name: "Chamonix",
+        country: "Francia",
+        image: "https://via.placeholder.com/800x600/E0FFFF/000000?text=Chamonix",
+        type: "mountain",
+        distance: "curious",
+        moods: ["wild", "zen", "gourmet", "culture"],
+        tagline: {
+            it: "La culla dell'alpinismo mondiale",
+            en: "The cradle of world mountaineering",
+            es: "La cuna del alpinismo mundial",
+            fr: "Le berceau de l'alpinisme mondial",
+            de: "Die Wiege des Weltbergsteigens",
+            zh: "世界登山运动的摇篮",
+            hi: "विश्व पर्वतारोहण का पालना",
+            ar: "مهد تسلق الجبال العالمي",
+            pt: "O berço do alpinismo mundial",
+            ru: "Колыбель мирового альпинизма"
+        }
+    },
+    {
+        name: "Interlaken",
+        country: "Svizzera",
+        image: "https://via.placeholder.com/800x600/00BFFF/FFFFFF?text=Interlaken",
+        type: "mountain",
+        distance: "curious",
+        moods: ["wild", "zen", "romantic", "glamour"],
+        tagline: {
+            it: "Paradiso tra due laghi alpini",
+            en: "Paradise between two Alpine lakes",
+            es: "Paraíso entre dos lagos alpinos",
+            fr: "Paradis entre deux lacs alpins",
+            de: "Paradies zwischen zwei Alpenseen",
+            zh: "两个高山湖泊间的天堂",
+            hi: "दो अल्पाइन झीलों के बीच स्वर्ग",
+            ar: "الجنة بين بحيرتين جبليتين",
+            pt: "Paraíso entre dois lagos alpinos",
+            ru: "Рай между двумя альпийскими озерами"
+        }
+    },
+    {
+        name: "Queenstown",
+        country: "Nuova Zelanda",
+        image: "https://via.placeholder.com/800x600/1E90FF/FFFFFF?text=Queenstown",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["wild", "zen", "glamour", "gourmet"],
+        tagline: {
+            it: "Capitale mondiale dell'avventura",
+            en: "World capital of adventure",
+            es: "Capital mundial de la aventura",
+            fr: "Capitale mondiale de l'aventure",
+            de: "Welthauptstadt des Abenteuers",
+            zh: "世界冒险之都",
+            hi: "साहसिक की विश्व राजधानी",
+            ar: "عاصمة المغامرة العالمية",
+            pt: "Capital mundial da aventura",
+            ru: "Мировая столица приключений"
+        }
+    },
+    {
+        name: "Banff",
+        country: "Canada",
+        image: "https://via.placeholder.com/800x600/00CED1/FFFFFF?text=Banff",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["wild", "zen", "romantic", "culture"],
+        tagline: {
+            it: "Laghi turchesi e orsi grizzly",
+            en: "Turquoise lakes and grizzly bears",
+            es: "Lagos turquesas y osos grizzly",
+            fr: "Lacs turquoise et grizzlis",
+            de: "Türkisfarbene Seen und Grizzlybären",
+            zh: "碧绿湖泊与灰熊",
+            hi: "फ़िरोज़ा झीलें और ग्रिज़ली भालू",
+            ar: "البحيرات الفيروزية والدببة الرمادية",
+            pt: "Lagos turquesa e ursos grizzly",
+            ru: "Бирюзовые озера и медведи гризли"
+        }
+    },
+    {
+        name: "St. Moritz",
+        country: "Svizzera",
+        image: "https://via.placeholder.com/800x600/F5F5DC/000000?text=St+Moritz",
+        type: "mountain",
+        distance: "curious",
+        moods: ["glamour", "zen", "gourmet", "design"],
+        tagline: {
+            it: "Jet set e sole alpino garantito",
+            en: "Jet set and guaranteed Alpine sun",
+            es: "Jet set y sol alpino garantizado",
+            fr: "Jet-set et soleil alpin garanti",
+            de: "Jetset und garantierte Alpensonne",
+            zh: "名流聚集地与阿尔卑斯阳光",
+            hi: "जेट सेट और गारंटीड अल्पाइन सूरज",
+            ar: "النخبة والشمس الألبية المضمونة",
+            pt: "Jet set e sol alpino garantido",
+            ru: "Джет-сет и гарантированное альпийское солнце"
+        }
+    },
+    {
+        name: "Innsbruck",
+        country: "Austria",
+        image: "https://via.placeholder.com/800x600/FFE4E1/000000?text=Innsbruck",
+        type: "mountain",
+        distance: "comfort",
+        moods: ["culture", "zen", "gourmet", "romantic"],
+        tagline: {
+            it: "Città imperiale abbracciata dalle Alpi",
+            en: "Imperial city embraced by the Alps",
+            es: "Ciudad imperial abrazada por los Alpes",
+            fr: "Ville impériale embrassée par les Alpes",
+            de: "Kaiserstadt umgeben von den Alpen",
+            zh: "被阿尔卑斯山环抱的帝国城市",
+            hi: "आल्प्स से घिरा शाही शहर",
+            ar: "مدينة إمبراطورية تحتضنها جبال الألب",
+            pt: "Cidade imperial abraçada pelos Alpes",
+            ru: "Императорский город в объятиях Альп"
+        }
+    },
+    {
+        name: "Vail",
+        country: "USA",
+        image: "https://via.placeholder.com/800x600/FAFAD2/000000?text=Vail",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["glamour", "wild", "gourmet", "movida"],
+        tagline: {
+            it: "Villaggio alpino nel cuore del Colorado",
+            en: "Alpine village in the heart of Colorado",
+            es: "Pueblo alpino en el corazón de Colorado",
+            fr: "Village alpin au cœur du Colorado",
+            de: "Alpendorf im Herzen Colorados",
+            zh: "科罗拉多心脏地带的高山村庄",
+            hi: "कोलोराडो के दिल में अल्पाइन गांव",
+            ar: "قرية جبلية في قلب كولورادو",
+            pt: "Vila alpina no coração do Colorado",
+            ru: "Альпийская деревня в сердце Колорадо"
+        }
+    },
+    {
+        name: "Whistler",
+        country: "Canada",
+        image: "https://via.placeholder.com/800x600/F0FFFF/000000?text=Whistler",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["wild", "movida", "gourmet", "zen"],
+        tagline: {
+            it: "Due montagne, infinite possibilità",
+            en: "Two mountains, infinite possibilities",
+            es: "Dos montañas, infinitas posibilidades",
+            fr: "Deux montagnes, possibilités infinies",
+            de: "Zwei Berge, unendliche Möglichkeiten",
+            zh: "两座山，无限可能",
+            hi: "दो पहाड़, अनंत संभावनाएं",
+            ar: "جبلان، إمكانيات لا نهائية",
+            pt: "Duas montanhas, infinitas possibilidades",
+            ru: "Две горы, бесконечные возможности"
+        }
+    },
+    {
+        name: "Courmayeur",
+        country: "Italia",
+        image: "https://via.placeholder.com/800x600/FFFAF0/000000?text=Courmayeur",
+        type: "mountain",
+        distance: "comfort",
+        moods: ["glamour", "zen", "gourmet", "romantic"],
+        tagline: {
+            it: "Ai piedi del Monte Bianco",
+            en: "At the foot of Mont Blanc",
+            es: "A los pies del Mont Blanc",
+            fr: "Au pied du Mont-Blanc",
+            de: "Am Fuße des Mont Blanc",
+            zh: "勃朗峰脚下",
+            hi: "मोंट ब्लांक के चरणों में",
+            ar: "عند سفح مونت بلانك",
+            pt: "Aos pés do Mont Blanc",
+            ru: "У подножия Монблана"
+        }
+    },
+    {
+        name: "Verbier",
+        country: "Svizzera",
+        image: "https://via.placeholder.com/800x600/FFF8DC/000000?text=Verbier",
+        type: "mountain",
+        distance: "curious",
+        moods: ["glamour", "wild", "movida", "gourmet"],
+        tagline: {
+            it: "Paradiso dello sci e del après-ski",
+            en: "Paradise for skiing and après-ski",
+            es: "Paraíso del esquí y el après-ski",
+            fr: "Paradis du ski et de l'après-ski",
+            de: "Paradies für Ski und Après-Ski",
+            zh: "滑雪与滑雪后派对天堂",
+            hi: "स्कीइंग और आफ्टर-स्की का स्वर्ग",
+            ar: "جنة التزلج وما بعد التزلج",
+            pt: "Paraíso do esqui e après-ski",
+            ru: "Рай для лыж и апре-ски"
+        }
+    },
+    {
+        name: "Davos",
+        country: "Svizzera",
+        image: "https://via.placeholder.com/800x600/F5FFFA/000000?text=Davos",
+        type: "mountain",
+        distance: "curious",
+        moods: ["zen", "culture", "gourmet", "design"],
+        tagline: {
+            it: "Dove il mondo si incontra",
+            en: "Where the world meets",
+            es: "Donde el mundo se encuentra",
+            fr: "Où le monde se rencontre",
+            de:
