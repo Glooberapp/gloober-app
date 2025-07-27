@@ -1,5 +1,5 @@
 // GLOOBER DESTINATIONS DATABASE
-// Version: 2.1 - Database aggiornato con categorie corrette
+// Version: 2.1 - Database completo con tutte le destinazioni
 // ============================================
 
 const DESTINATIONS_DB = [
@@ -179,7 +179,7 @@ const DESTINATIONS_DB = [
     {
         name: "Patagonia",
         country: "Argentina/Cile",
-        image: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800",
+        image: "https://images.unsplash.com/photo-1533604125109-cbd1c7146730?w=800",
         type: "mountain",
         distance: "bloom",
         moods: ["wild", "zen", "culture"],
