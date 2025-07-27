@@ -284,20 +284,32 @@ function dragLocation(e) {
     const rect = slider.getBoundingClientRect();
     const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
     
-    // Limita il movimento del pallino
-    const dotWidth = window.innerWidth < 768 ? 66 : 56; // mobile vs desktop
-    const minPos = 0;
-    const maxPos = rect.width - dotWidth;
-    const clampedX = Math.max(minPos, Math.min(maxPos, x - dotWidth/2));
-    
-    // Calcola la percentuale
-    const percentage = (clampedX / maxPos) * 100;
+    // SOLUZIONE SEMPLICE: limita la percentuale tra 5% e 95%
+    const percentage = Math.max(5, Math.min(95, (x / rect.width) * 100));
     
     userPreferences.location = percentage;
     document.getElementById('location-dot').style.left = percentage + '%';
     
     // Mostra le etichette
     document.getElementById('location-labels').classList.add('active');
+}
+
+function dragDistance(e) {
+    if (!isDraggingDistance) return;
+    e.preventDefault();
+    
+    const slider = e.currentTarget;
+    const rect = slider.getBoundingClientRect();
+    const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
+    
+    // SOLUZIONE SEMPLICE: limita la percentuale tra 5% e 95%
+    const percentage = Math.max(5, Math.min(95, (x / rect.width) * 100));
+    
+    userPreferences.distance = percentage;
+    document.getElementById('distance-dot').style.left = percentage + '%';
+    
+    // Mostra le etichette
+    document.getElementById('distance-labels').classList.add('active');
 }
 
 function stopLocationDrag() {
