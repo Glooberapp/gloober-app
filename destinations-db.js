@@ -1,236 +1,257 @@
-// GLOOBER DESTINATIONS DATABASE
-// Version: 2.0 - Con foto Unsplash reali
-// ============================================
-
-const DESTINATIONS_DB = [
-    // MARE (Sea) Destinations
+const destinations = [
     {
+        id: 1,
         name: "Faroe Islands",
-        country: "Danimarca",
-        image: "https://via.placeholder.com/800x600/2F4F4F/FFFFFF?text=Faroe+Islands",
-        type: "sea",
-        distance: "curious",
-        moods: ["wild", "zen", "culture"],
+        country: "Denmark",
+        continent: "Europe",
+        type: "seaside",
+        budget: "medium",
+        temperature: "cold",
+        description: "Remote Nordic archipelago with dramatic cliffs and waterfalls",
+        bestMonths: ["Jun", "Jul", "Aug"],
+        image: "./images/faroe.jpg",
         translations: {
-            it: "Faroe Islands",
-            en: "Faroe Islands",
-            es: "Islas Feroe",
-            fr: "Îles Féroé",
-            de: "Färöer"
+            it: {
+                description: "Remoto arcipelago nordico con scogliere drammatiche e cascate"
+            }
         }
     },
     {
-        name: "Socotra",
+        id: 2,
+        name: "Socotra Island",
         country: "Yemen",
-        image: "https://via.placeholder.com/800x600/8B4513/FFFFFF?text=Socotra",
-        type: "sea",
-        distance: "bloom",
-        moods: ["wild", "culture", "zen"],
+        continent: "Asia",
+        type: "seaside",
+        budget: "medium",
+        temperature: "hot",
+        description: "Alien-like island with unique dragon blood trees",
+        bestMonths: ["Oct", "Nov", "Feb", "Mar"],
+        image: "./images/Socotra.jpg",
         translations: {
-            it: "Socotra",
-            en: "Socotra",
-            es: "Socotra",
-            fr: "Socotra",
-            de: "Sokotra"
+            it: {
+                description: "Isola dall'aspetto alieno con unici alberi del sangue di drago"
+            }
         }
     },
     {
-        name: "Lofoten",
-        country: "Norvegia",
-        image: "https://via.placeholder.com/800x600/4682B4/FFFFFF?text=Lofoten",
-        type: "sea",
-        distance: "curious",
-        moods: ["wild", "zen", "romantic"],
+        id: 3,
+        name: "Lofoten Islands",
+        country: "Norway",
+        continent: "Europe",
+        type: "seaside",
+        budget: "high",
+        temperature: "cold",
+        description: "Arctic archipelago with fishing villages and northern lights",
+        bestMonths: ["Jun", "Jul", "Aug", "Sep"],
+        image: "./images/lofoten.jpg",
         translations: {
-            it: "Lofoten",
-            en: "Lofoten",
-            es: "Lofoten",
-            fr: "Lofoten",
-            de: "Lofoten"
+            it: {
+                description: "Arcipelago artico con villaggi di pescatori e aurore boreali"
+            }
         }
     },
     {
+        id: 4,
         name: "Gili Nanggu",
         country: "Indonesia",
-        image: "https://via.placeholder.com/800x600/00CED1/FFFFFF?text=Gili+Nanggu",
-        type: "sea",
-        distance: "bloom",
-        moods: ["zen", "romantic", "wild"],
+        continent: "Asia",
+        type: "seaside",
+        budget: "low",
+        temperature: "hot",
+        description: "Pristine island paradise with crystal clear waters",
+        bestMonths: ["Apr", "May", "Sep", "Oct"],
+        image: "./images/gili.jpg",
         translations: {
-            it: "Gili Nanggu",
-            en: "Gili Nanggu",
-            es: "Gili Nanggu",
-            fr: "Gili Nanggu",
-            de: "Gili Nanggu"
+            it: {
+                description: "Paradiso insulare incontaminato con acque cristalline"
+            }
         }
     },
     {
+        id: 5,
         name: "Comporta",
-        country: "Portogallo",
-        image: "https://via.placeholder.com/800x600/F4A460/000000?text=Comporta",
-        type: "sea",
-        distance: "comfort",
-        moods: ["zen", "glamour", "gourmet"],
+        country: "Portugal",
+        continent: "Europe",
+        type: "seaside",
+        budget: "high",
+        temperature: "mild",
+        description: "Chic coastal retreat with endless sand dunes",
+        bestMonths: ["May", "Jun", "Sep", "Oct"],
+        image: "./images/comporta.jpeg",
         translations: {
-            it: "Comporta",
-            en: "Comporta",
-            es: "Comporta",
-            fr: "Comporta",
-            de: "Comporta"
+            it: {
+                description: "Rifugio costiero chic con dune di sabbia infinite"
+            }
         }
     },
-    
-    // CITTÀ (City) Destinations
     {
+        id: 6,
         name: "Tbilisi",
         country: "Georgia",
-        image: "https://via.placeholder.com/800x600/B22222/FFFFFF?text=Tbilisi",
+        continent: "Asia",
         type: "city",
-        distance: "curious",
-        moods: ["culture", "movida", "gourmet", "wild"],
+        budget: "low",
+        temperature: "mild",
+        description: "Ancient city with colorful balconies and sulfur baths",
+        bestMonths: ["May", "Jun", "Sep", "Oct"],
+        image: "https://via.placeholder.com/800x600/8B4513/FFFFFF?text=Tbilisi",
         translations: {
-            it: "Tbilisi",
-            en: "Tbilisi",
-            es: "Tiflis",
-            fr: "Tbilissi",
-            de: "Tiflis"
+            it: {
+                description: "Città antica con balconi colorati e bagni di zolfo"
+            }
         }
     },
     {
-        name: "Valparaiso",
-        country: "Cile",
-        image: "https://via.placeholder.com/800x600/FF1493/FFFFFF?text=Valparaiso",
+        id: 7,
+        name: "Valparaíso",
+        country: "Chile",
+        continent: "South America",
         type: "city",
-        distance: "bloom",
-        moods: ["culture", "wild", "design", "movida"],
+        budget: "low",
+        temperature: "mild",
+        description: "Bohemian port city with street art and funiculars",
+        bestMonths: ["Oct", "Nov", "Mar", "Apr"],
+        image: "https://via.placeholder.com/800x600/FF6347/FFFFFF?text=Valparaiso",
         translations: {
-            it: "Valparaiso",
-            en: "Valparaiso",
-            es: "Valparaíso",
-            fr: "Valparaiso",
-            de: "Valparaíso"
+            it: {
+                description: "Città portuale bohémien con street art e funicolari"
+            }
         }
     },
     {
+        id: 8,
         name: "Ljubljana",
         country: "Slovenia",
-        image: "https://via.placeholder.com/800x600/32CD32/FFFFFF?text=Ljubljana",
+        continent: "Europe",
         type: "city",
-        distance: "comfort",
-        moods: ["zen", "culture", "romantic", "gourmet"],
+        budget: "medium",
+        temperature: "mild",
+        description: "Charming capital with dragons, castle and green river",
+        bestMonths: ["May", "Jun", "Sep"],
+        image: "./images/ljubljana.jpg",
         translations: {
-            it: "Lubiana",
-            en: "Ljubljana",
-            es: "Liubliana",
-            fr: "Ljubljana",
-            de: "Ljubljana"
+            it: {
+                description: "Capitale affascinante con draghi, castello e fiume verde"
+            }
         }
     },
     {
+        id: 9,
         name: "Oaxaca",
-        country: "Messico",
-        image: "https://via.placeholder.com/800x600/FF8C00/000000?text=Oaxaca",
+        country: "Mexico",
+        continent: "North America",
         type: "city",
-        distance: "bloom",
-        moods: ["culture", "gourmet", "wild", "design"],
+        budget: "low",
+        temperature: "mild",
+        description: "Colonial city with mezcal, markets and Day of the Dead",
+        bestMonths: ["Oct", "Nov", "Feb", "Mar"],
+        image: "./images/oaxaca.jpg",
         translations: {
-            it: "Oaxaca",
-            en: "Oaxaca",
-            es: "Oaxaca",
-            fr: "Oaxaca",
-            de: "Oaxaca"
+            it: {
+                description: "Città coloniale con mezcal, mercati e Giorno dei Morti"
+            }
         }
     },
     {
+        id: 10,
         name: "Porto",
-        country: "Portogallo",
-        image: "https://via.placeholder.com/800x600/4B0082/FFFFFF?text=Porto",
+        country: "Portugal",
+        continent: "Europe",
         type: "city",
-        distance: "comfort",
-        moods: ["gourmet", "culture", "romantic", "movida"],
+        budget: "medium",
+        temperature: "mild",
+        description: "Riverside city famous for port wine and azulejos",
+        bestMonths: ["May", "Jun", "Sep", "Oct"],
+        image: "./images/porto.jpg",
         translations: {
-            it: "Porto",
-            en: "Porto",
-            es: "Oporto",
-            fr: "Porto",
-            de: "Porto"
+            it: {
+                description: "Città fluviale famosa per il vino porto e gli azulejos"
+            }
         }
     },
-    
-    // MONTAGNA (Mountain) Destinations
     {
+        id: 11,
         name: "Svaneti",
         country: "Georgia",
-        image: "https://via.placeholder.com/800x600/696969/FFFFFF?text=Svaneti",
+        continent: "Asia",
         type: "mountain",
-        distance: "bloom",
-        moods: ["wild", "culture", "zen"],
+        budget: "low",
+        temperature: "cold",
+        description: "Remote mountain region with medieval tower houses",
+        bestMonths: ["Jul", "Aug", "Sep"],
+        image: "https://via.placeholder.com/800x600/708090/FFFFFF?text=Svaneti",
         translations: {
-            it: "Svaneti",
-            en: "Svaneti",
-            es: "Svaneti",
-            fr: "Svanétie",
-            de: "Swanetien"
+            it: {
+                description: "Remota regione montana con case-torre medievali"
+            }
         }
     },
     {
-        name: "Valbona",
+        id: 12,
+        name: "Valbona Valley",
         country: "Albania",
-        image: "https://via.placeholder.com/800x600/228B22/FFFFFF?text=Valbona",
+        continent: "Europe",
         type: "mountain",
-        distance: "curious",
-        moods: ["wild", "zen", "culture"],
+        budget: "low",
+        temperature: "mild",
+        description: "Pristine alpine valley in the Albanian Alps",
+        bestMonths: ["Jun", "Jul", "Aug", "Sep"],
+        image: "https://via.placeholder.com/800x600/228B22/FFFFFF?text=Valbona+Valley",
         translations: {
-            it: "Valbona",
-            en: "Valbona",
-            es: "Valbona",
-            fr: "Valbona",
-            de: "Valbona"
+            it: {
+                description: "Valle alpina incontaminata nelle Alpi albanesi"
+            }
         }
     },
     {
+        id: 13,
         name: "Huaraz",
-        country: "Perù",
-        image: "https://via.placeholder.com/800x600/87CEEB/000000?text=Huaraz",
+        country: "Peru",
+        continent: "South America",
         type: "mountain",
-        distance: "bloom",
-        moods: ["wild", "culture", "zen"],
+        budget: "low",
+        temperature: "cold",
+        description: "Gateway to the Cordillera Blanca mountains",
+        bestMonths: ["May", "Jun", "Jul", "Aug"],
+        image: "./images/Huaraz.jpg",
         translations: {
-            it: "Huaraz",
-            en: "Huaraz",
-            es: "Huaraz",
-            fr: "Huaraz",
-            de: "Huaraz"
+            it: {
+                description: "Porta d'accesso alle montagne della Cordillera Blanca"
+            }
         }
     },
     {
+        id: 14,
         name: "Lyngen Alps",
-        country: "Norvegia",
-        image: "https://via.placeholder.com/800x600/F0F8FF/000000?text=Lyngen+Alps",
+        country: "Norway",
+        continent: "Europe",
         type: "mountain",
-        distance: "bloom",
-        moods: ["wild", "zen", "glamour"],
+        budget: "high",
+        temperature: "cold",
+        description: "Arctic mountains meeting fjords with aurora views",
+        bestMonths: ["Mar", "Apr", "Sep", "Oct"],
+        image: "./images/lyngen.jpg",
         translations: {
-            it: "Alpi di Lyngen",
-            en: "Lyngen Alps",
-            es: "Alpes de Lyngen",
-            fr: "Alpes de Lyngen",
-            de: "Lyngenalpen"
+            it: {
+                description: "Montagne artiche che incontrano fiordi con vista aurora"
+            }
         }
     },
     {
+        id: 15,
         name: "Sinaia",
         country: "Romania",
-        image: "https://via.placeholder.com/800x600/8B0000/FFFFFF?text=Sinaia",
+        continent: "Europe",
         type: "mountain",
-        distance: "comfort",
-        moods: ["culture", "romantic", "gourmet", "glamour"],
+        budget: "low",
+        temperature: "cold",
+        description: "Mountain resort with fairy-tale Peleș Castle",
+        bestMonths: ["Jun", "Jul", "Aug", "Dec"],
+        image: "./images/Sinaia.jpg",
         translations: {
-            it: "Sinaia",
-            en: "Sinaia",
-            es: "Sinaia",
-            fr: "Sinaia",
-            de: "Sinaia"
+            it: {
+                description: "Resort montano con il fiabesco Castello di Peleș"
+            }
         }
     }
 ];
