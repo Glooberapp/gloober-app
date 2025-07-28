@@ -1,679 +1,495 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Slide your travel vibes and discover your perfect destination">
-    <title>Gloober - Slide Your Travel Vibes</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gloober - Slide Your Travel Vibes ✈️</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: #000000;
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
-            overflow-x: hidden;
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Logo circle con gradiente e EFFETTO 3D */
-        .logo-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            background-image: 
-                radial-gradient(circle at 30% 30%, 
-                    rgba(255, 255, 255, 0.3) 0%, 
-                    rgba(255, 255, 255, 0.1) 20%,
-                    transparent 40%),
-                radial-gradient(circle at 70% 70%, 
-                    transparent 40%, 
-                    rgba(0, 0, 0, 0.4) 70%),
-                linear-gradient(#000000, #000000), 
-                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: content-box, content-box, border-box, border-box;
-            background-clip: content-box, content-box, content-box, border-box;
-            display: inline-block;
-            margin-right: 15px;
-            box-shadow: 0 4px 16px rgba(0, 180, 216, 0.4);
-        }
-        
-        /* Container principale responsive */
-        .main-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        /* Glass card responsive */
-        .glass-card {
-            padding: 30px 20px;
-        }
-        
-        /* Language selector */
-        .lang-selector {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 100;
-            display: flex;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 6px;
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
-            flex-wrap: wrap;
-            max-width: 320px;
-        }
-        
-        .lang-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            opacity: 0.6;
-            transition: all 0.3s ease;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .lang-btn:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-        
-        .lang-btn.active {
-            opacity: 1;
-            box-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
-            border: 2px solid #00b4d8;
-        }
-        
-        /* Stile unificato per tutti gli slider */
-        .slider-container {
-            width: 100%;
-            height: 60px;
-            margin: 15px auto;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
-            position: relative;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #000;
+            color: #fff;
             overflow: hidden;
+            position: relative;
+            height: 100vh;
         }
-        
-        /* Location slider gradient */
-        .location-slider {
-            background: linear-gradient(to right, #60a5fa 0%, #f97316 50%, #10b981 100%);
-        }
-        
-        /* Distance slider gradient */
-        .distance-slider {
-            background: linear-gradient(to right, #94a3b8 0%, #64748b 50%, #334155 100%);
-        }
-        
-        /* Labels dentro lo slider */
-        .slider-inner-labels {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 40px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            z-index: 10;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 25px;
-            pointer-events: none;
-            user-select: none;
         }
-        
-        .slider-inner-labels span {
-            color: rgba(255, 255, 255, 0.9);
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 12px;
-            font-weight: 400;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .slider-inner-labels span.visible {
-            opacity: 1;
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            align-items: center;
         }
-        
-        .slider-inner-labels .label-center {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
         }
-        
-        .slider-inner-labels.active span {
-            opacity: 1;
-        }
-        
-        /* Slider dot con EFFETTO 3D GRADIENTE */
-        .slider-dot {
-            position: absolute;
-            width: 56px;
-            height: 56px;
-            border: 3px solid transparent;
-            background-image: 
-                radial-gradient(circle at 30% 30%, 
-                    rgba(255, 255, 255, 0.3) 0%, 
-                    rgba(255, 255, 255, 0.1) 20%,
-                    transparent 40%),
-                radial-gradient(circle at 70% 70%, 
-                    transparent 40%, 
-                    rgba(0, 0, 0, 0.4) 70%),
-                linear-gradient(#000000, #000000), 
-                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: content-box, content-box, border-box, border-box;
-            background-clip: content-box, content-box, content-box, border-box;
-            border-radius: 50%;
-            top: 2px;
-            cursor: grab;
-            box-shadow: 0 4px 16px rgba(0, 180, 216, 0.4);
-            transition: left 0.15s ease-out;
-            will-change: left;
-            z-index: 10;
-            transform: translateX(-50%);
-        }
-        
-        .slider-dot:active {
-            cursor: grabbing;
-            transform: translateX(-50%) scale(0.95);
-            transition: none;
-        }
-        
-        /* Mood selector rettangolare */
-        .mood-selector {
-            position: relative;
-            width: 100%;
-            height: 200px;
-            margin: 15px auto;
-            background: linear-gradient(135deg, 
-                #ec4899 0%, 
-                #8b5cf6 25%, 
-                #3b82f6 50%, 
-                #10b981 75%, 
-                #f59e0b 100%);
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
             border-radius: 20px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
             cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .filter-btn.active {
+            background: #007AFF;
+            border-color: #007AFF;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Cards */
+        .card {
+            position: absolute;
+            width: 90%;
+            max-width: 400px;
+            height: 600px;
+            background: #1a1a1a;
+            border-radius: 20px;
             overflow: hidden;
-        }
-        
-        .mood-labels {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            user-select: none;
-        }
-        
-        .mood-label {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.9);
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 12px;
-            font-weight: 400;
-            text-transform: uppercase;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-            letter-spacing: 0.08em;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        
-        /* Posizioni etichette mood */
-        .mood-label.top { 
-            top: 10px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-        }
-        .mood-label.bottom { 
-            bottom: 10px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-        }
-        .mood-label.left { 
-            left: 15px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-        }
-        .mood-label.right { 
-            right: 15px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-        }
-        .mood-label.top-left { 
-            top: 25px; 
-            left: 25px; 
-        }
-        .mood-label.top-right { 
-            top: 25px; 
-            right: 25px; 
-        }
-        .mood-label.bottom-left { 
-            bottom: 25px; 
-            left: 25px; 
-        }
-        .mood-label.bottom-right { 
-            bottom: 25px; 
-            right: 25px; 
-        }
-        
-        .mood-label.visible {
-            opacity: 1;
-        }
-        
-        /* Joystick globe */
-        .joystick-globe {
-            position: absolute;
-            width: 56px;
-            height: 56px;
-            border: 3px solid transparent;
-            background-image: 
-                radial-gradient(circle at 30% 30%, 
-                    rgba(255, 255, 255, 0.3) 0%, 
-                    rgba(255, 255, 255, 0.1) 20%,
-                    transparent 40%),
-                radial-gradient(circle at 70% 70%, 
-                    transparent 40%, 
-                    rgba(0, 0, 0, 0.4) 70%),
-                linear-gradient(#000000, #000000), 
-                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: content-box, content-box, border-box, border-box;
-            background-clip: content-box, content-box, content-box, border-box;
-            border-radius: 50%;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
             cursor: grab;
-            box-shadow: 0 8px 24px rgba(0, 180, 216, 0.5);
-            transition: left 0.1s ease-out, top 0.1s ease-out;
-            will-change: left, top;
+            transition: transform 0.2s, opacity 0.2s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card.dragging {
+            transition: none;
+            cursor: grabbing;
+        }
+
+        .card img {
+            width: 100%;
+            height: 60%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+            height: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .card .location {
+            color: #888;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .card .description {
+            color: #ccc;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tags {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tag {
+            padding: 4px 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        /* Navigation indicators */
+        .nav-indicator {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+            z-index: 5;
+        }
+
+        .nav-indicator.left {
+            left: 20px;
+        }
+
+        .nav-indicator.right {
+            right: 20px;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
             z-index: 10;
         }
-        
-        .joystick-globe:active {
-            cursor: grabbing;
-            transform: translate(-50%, -50%) scale(0.95);
-            transition: none;
-        }
-        
-        /* Globo loading */
-        @keyframes spinGlobe {
-            from { 
-                transform: rotateY(0deg) rotateX(10deg); 
-            }
-            to { 
-                transform: rotateY(360deg) rotateX(10deg); 
-            }
-        }
-        
-        .loading-globe {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto;
+
+        .action-btn {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            border: 6px solid transparent;
-            background-image: 
-                radial-gradient(circle at 30% 30%, 
-                    rgba(255, 255, 255, 0.3) 0%, 
-                    rgba(255, 255, 255, 0.1) 20%,
-                    transparent 40%),
-                radial-gradient(circle at 70% 70%, 
-                    transparent 40%, 
-                    rgba(0, 0, 0, 0.4) 70%),
-                linear-gradient(#000000, #000000), 
-                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
-            background-origin: content-box, content-box, border-box, border-box;
-            background-clip: content-box, content-box, content-box, border-box;
-            box-shadow: 0 8px 24px rgba(0, 180, 216, 0.5);
-            animation: spinGlobe 2s linear infinite;
-            transform-style: preserve-3d;
+            border: 2px solid #fff;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
-        /* Narrative text */
-        .narrative-text {
-            background: rgba(255, 255, 255, 0.05);
-            border-left: 4px solid #00b4d8;
-            padding: 25px;
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .action-btn.dislike {
+            color: #ff4458;
+            border-color: #ff4458;
+        }
+
+        .action-btn.like {
+            color: #44d362;
+            border-color: #44d362;
+        }
+
+        .action-btn.favorite {
+            color: #ffd700;
+            border-color: #ffd700;
+        }
+
+        /* Messages */
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 80px;
+            font-weight: bold;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .message.show {
+            opacity: 1;
+        }
+
+        .message.nope {
+            color: #ff4458;
+        }
+
+        .message.like {
+            color: #44d362;
+        }
+
+        .message.super {
+            color: #ffd700;
+        }
+
+        /* Loading and error states */
+        .loading, .error, .empty {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 20;
+        }
+
+        .loading {
+            font-size: 24px;
+            color: #666;
+        }
+
+        .error {
+            background: #ff4458;
+            padding: 20px 40px;
+            border-radius: 10px;
+            max-width: 400px;
+        }
+
+        .error h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty h2 {
+            font-size: 36px;
             margin-bottom: 20px;
-            border-radius: 0 12px 12px 0;
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 1.1rem;
-            font-weight: 400;
-            line-height: 1.8;
-            font-style: italic;
         }
-        
-        /* Bottone principale */
-        .gloob-button {
-            background: linear-gradient(135deg, #00b4d8, #0077b6);
+
+        .empty p {
+            color: #888;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .reset-btn {
+            padding: 12px 30px;
+            background: #007AFF;
             color: white;
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-weight: 700;
-            padding: 16px 32px;
-            border-radius: 50px;
-            font-size: 1.125rem;
-            transition: all 0.3s ease;
             border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: #0056b3;
+        }
+
+        /* Travel summary */
+        .travel-summary {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            z-index: 15;
+        }
+
+        .travel-summary.show {
+            transform: translateY(0);
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .summary-header h3 {
+            font-size: 24px;
+        }
+
+        .close-summary {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
             cursor: pointer;
         }
-        
-        .gloob-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 24px rgba(0, 180, 216, 0.4);
+
+        .summary-content {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
         }
-        
-        /* Labels */
-        label {
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.6);
+
+        .summary-card {
+            min-width: 200px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
         }
-        
-        .hidden { display: none; }
-        
-        /* MOBILE OPTIMIZATIONS */
+
+        .summary-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .summary-card h4 {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        /* Quotes */
+        .quote {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            max-width: 600px;
+            padding: 0 20px;
+            z-index: 5;
+        }
+
+        .quote p {
+            font-style: italic;
+            color: #888;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .quote .author {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                margin: 0;
-                padding: 0;
+            .header {
+                padding: 15px 20px;
             }
-            
-            .main-container {
-                padding: 15px;
-                max-width: 100%;
-                justify-content: space-between;
+
+            .logo {
+                font-size: 24px;
             }
-            
-            .text-center.mb-6 {
-                margin-bottom: 20px !important;
+
+            .filters {
+                display: none;
             }
-            
-            h1 {
-                font-size: 2.5rem !important;
-                margin-bottom: 5px !important;
+
+            .card {
+                width: 85%;
+                height: 70vh;
+                max-height: 600px;
             }
-            
-            .logo-circle {
-                width: 45px;
-                height: 45px;
-                margin-right: 10px;
+
+            .message {
+                font-size: 60px;
             }
-            
-            .text-lg {
-                font-size: 1rem !important;
+
+            .nav-indicator {
+                font-size: 30px;
             }
-            
-            .glass-card {
-                padding: 20px 15px !important;
+
+            .action-buttons {
+                bottom: 20px;
             }
-            
-            /* Slider più grandi e usabili */
-            .slider-container {
-                height: 70px !important;
-                margin: 20px auto !important;
-            }
-            
-            .slider-inner-labels {
-                padding: 0 30px;
-            }
-            
-            /* Etichette solo agli estremi su mobile */
-            .slider-inner-labels span {
-                font-size: 10px;
-            }
-            
-            .slider-inner-labels .label-center {
-                display: none; /* Nascondi etichetta centrale su mobile */
-            }
-            
-            /* Mostra solo etichette laterali */
-            .slider-inner-labels span:first-child,
-            .slider-inner-labels span:last-child {
-                opacity: 0.6;
-            }
-            
-            /* Pallino più grande */
-            .slider-dot {
-                width: 66px;
-                height: 66px;
-                transform: translateX(-50%);
-            }
-            
-            /* Mood selector più grande */
-            .mood-selector {
-                height: 250px !important;
-                margin: 20px auto !important;
-            }
-            
-            /* Etichette mood più leggibili */
-            .mood-label {
-                font-size: 11px;
-                opacity: 0.5; /* Sempre visibili ma discrete */
-            }
-            
-            .mood-label.visible {
-                opacity: 1;
-            }
-            
-            /* Pallino mood più grande */
-            .joystick-globe {
-                width: 66px;
-                height: 66px;
-            }
-            
-            /* Bottone più grande */
-            .gloob-button {
-                width: 100%;
-                padding: 18px 40px;
-                font-size: 1.25rem;
-            }
-            
-            /* Language selector più piccolo */
-            .lang-selector {
-                padding: 4px;
-                gap: 4px;
-            }
-            
-            .lang-btn {
-                width: 24px;
-                height: 24px;
-                font-size: 14px;
-            }
-            
-            /* Spazi verticali ridotti */
-            .mb-6 {
-                margin-bottom: 15px !important;
-            }
-            
-            label {
-                margin-bottom: 10px !important;
-                font-size: 0.8rem;
-            }
-        }
-        
-        /* Extra small devices */
-        @media (max-width: 380px) {
-            h1 {
-                font-size: 2rem !important;
-            }
-            
-            .logo-circle {
-                width: 35px;
-                height: 35px;
-            }
-            
-            .mood-selector {
-                height: 200px !important;
+
+            .action-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
             }
         }
     </style>
 </head>
-<body class="text-white">
-    <!-- Language Selector -->
-    <div class="lang-selector">
-        <div class="lang-btn active" data-lang="it" title="Italiano">🇮🇹</div>
-        <div class="lang-btn" data-lang="en" title="English">🇬🇧</div>
-        <div class="lang-btn" data-lang="zh" title="中文">🇨🇳</div>
-        <div class="lang-btn" data-lang="es" title="Español">🇪🇸</div>
-        <div class="lang-btn" data-lang="hi" title="हिन्दी">🇮🇳</div>
-        <div class="lang-btn" data-lang="ar" title="العربية">🇦🇪</div>
-        <div class="lang-btn" data-lang="fr" title="Français">🇫🇷</div>
-        <div class="lang-btn" data-lang="pt" title="Português">🇧🇷</div>
-        <div class="lang-btn" data-lang="ru" title="Русский">🇷🇺</div>
-    </div>
-
-    <!-- STEP 1: SLIDERS -->
-    <div id="slider-step">
-        <div class="main-container">
-            <div class="text-center mb-6">
-                <h1 class="text-5xl font-bold mb-3 text-white flex items-center justify-center">
-                    <span class="logo-circle"></span>
-                    Gloober
-                </h1>
-                <p class="text-lg text-gray-400" data-translate="tagline">Slide your travel vibes</p>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <span>🌍</span>
+            <span>Gloober</span>
+        </div>
+        <div class="filters">
+            <div class="filter-group" data-filter="type">
+                <button class="filter-btn active" data-value="all">Tutte</button>
+                <button class="filter-btn" data-value="seaside">🏖️ Mare</button>
+                <button class="filter-btn" data-value="city">🏙️ Città</button>
+                <button class="filter-btn" data-value="mountain">⛰️ Montagna</button>
             </div>
-
-            <div class="glass-card rounded-2xl">
-                <!-- Location Slider -->
-                <div class="mb-6">
-                    <label class="block text-center mb-2" data-translate="habitatLabel">HABITAT</label>
-                    <div class="slider-container location-slider" onmousedown="startLocationDrag(event)" onmousemove="dragLocation(event)" onmouseup="stopLocationDrag()" onmouseleave="stopLocationDrag()" ontouchstart="startLocationDrag(event)" ontouchmove="dragLocation(event)" ontouchend="stopLocationDrag()">
-                        <div class="slider-inner-labels" id="location-labels">
-                            <span data-translate="sea">MARE</span>
-                            <span class="label-center" data-translate="city">CITTÀ</span>
-                            <span data-translate="mountain">MONTAGNA</span>
-                        </div>
-                        <div class="slider-dot" id="location-dot" style="left: 50%;"></div>
-                    </div>
-                </div>
-
-                <!-- Distance Slider -->
-                <div class="mb-6">
-                    <label class="block text-center mb-2" data-translate="rangeLabel">RANGE</label>
-                    <div class="slider-container distance-slider" onmousedown="startDistanceDrag(event)" onmousemove="dragDistance(event)" onmouseup="stopDistanceDrag()" onmouseleave="stopDistanceDrag()" ontouchstart="startDistanceDrag(event)" ontouchmove="dragDistance(event)" ontouchend="stopDistanceDrag()">
-                        <div class="slider-inner-labels" id="distance-labels">
-                            <span data-translate="comfort">COMFORT</span>
-                            <span class="label-center" data-translate="curious">CURIOUS</span>
-                            <span data-translate="bloom">BLOOM</span>
-                        </div>
-                        <div class="slider-dot" id="distance-dot" style="left: 50%;"></div>
-                    </div>
-                </div>
-
-                <!-- Mood Selector -->
-                <div class="mb-6">
-                    <label class="block text-center mb-2" data-translate="vibesLabel">VIBES</label>
-                    <div class="mood-selector" id="mood-selector" 
-                         onmousedown="startDragging(event)" 
-                         onmousemove="dragGlobe(event)"
-                         onmouseup="stopDragging()"
-                         onmouseleave="stopDragging()"
-                         ontouchstart="startDragging(event)"
-                         ontouchmove="dragGlobe(event)"
-                         ontouchend="stopDragging()">
-                        <div class="mood-labels">
-                            <span class="mood-label top" data-translate="movida">MOVIDA</span>
-                            <span class="mood-label bottom" data-translate="zen">ZEN</span>
-                            <span class="mood-label left" data-translate="gourmet">GOURMET</span>
-                            <span class="mood-label right" data-translate="wild">WILD</span>
-                            <span class="mood-label top-left" data-translate="design">DESIGN</span>
-                            <span class="mood-label top-right" data-translate="glamour">GLAMOUR</span>
-                            <span class="mood-label bottom-left" data-translate="culture">CULTURE</span>
-                            <span class="mood-label bottom-right" data-translate="romantic">ROMANTIC</span>
-                        </div>
-                        <div class="joystick-globe" id="mood-globe"></div>
-                    </div>
-                </div>
-
-                <!-- Gloob Button -->
-                <div class="text-center">
-                    <button onclick="gloobIt()" class="gloob-button">
-                        <span data-translate="gloobIt">Gloob it!</span>
-                    </button>
-                </div>
+            <div class="filter-group" data-filter="budget">
+                <button class="filter-btn active" data-value="all">💰 Tutti</button>
+                <button class="filter-btn" data-value="low">€</button>
+                <button class="filter-btn" data-value="medium">€€</button>
+                <button class="filter-btn" data-value="high">€€€</button>
             </div>
         </div>
     </div>
 
-    <!-- STEP 2: LOADING -->
-    <div id="loading-step" class="hidden min-h-screen flex items-center justify-center">
-        <div class="text-center">
-            <div style="width: 200px; height: 200px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                <div class="loading-globe"></div>
-            </div>
-            <h2 class="text-3xl font-bold mt-6" data-translate="gloobing" style="font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">Gloobing...</h2>
-        </div>
+    <!-- Main container -->
+    <div class="container" id="app">
+        <div class="loading">Caricamento...</div>
     </div>
 
-    <!-- STEP 3: RESULTS -->
-    <div id="result-step" class="hidden">
-        <div class="container mx-auto px-4 py-8">
-            <div class="max-w-4xl mx-auto">
-                <!-- Destination Header -->
-                <div class="glass-card rounded-2xl p-8 text-center mb-8">
-                    <h2 class="text-5xl font-bold text-white mb-3" id="destination-name" style="font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">Loading...</h2>
-                    <p class="text-xl italic mb-2" id="destination-tagline">...</p>
-                    <p class="text-gray-400" id="destination-country">...</p>
-                </div>
+    <!-- Navigation indicators -->
+    <div class="nav-indicator left">👈</div>
+    <div class="nav-indicator right">👉</div>
 
-                <!-- Narrative -->
-                <div class="mb-8">
-                    <h3 class="text-2xl font-bold mb-6 text-center" data-translate="yourJourney">Il tuo viaggio</h3>
-                    <div class="narrative-text glass-card rounded-xl" id="narrative-text">
-                        <!-- La narrativa verrà inserita qui -->
-                    </div>
-                </div>
-
-                <!-- Immagine destinazione -->
-                <div class="mb-8 text-center">
-                    <img id="destination-image" class="rounded-xl shadow-2xl mx-auto max-w-full" style="max-height: 400px;" alt="Destination">
-                </div>
-
-                <!-- Citazione -->
-                <div class="mb-8">
-                    <blockquote class="text-center italic text-lg text-gray-400">
-                        <p id="travel-quote" class="mb-2"></p>
-                        <cite class="text-sm text-gray-500">— <span id="quote-author"></span></cite>
-                    </blockquote>
-                </div>
-
-                <!-- Book Button -->
-                <div class="text-center">
-                    <button onclick="bookTrip()" class="gloob-button mb-4">
-                        <span data-translate="bookNow">Prenota</span> →
-                    </button>
-                    <br>
-                    <button onclick="location.reload()" class="text-gray-500 hover:text-white transition-all">
-                        <span data-translate="tryAgain">Regloob</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+    <!-- Action buttons -->
+    <div class="action-buttons">
+        <button class="action-btn dislike" id="dislikeBtn">✕</button>
+        <button class="action-btn favorite" id="superBtn">⭐</button>
+        <button class="action-btn like" id="likeBtn">❤️</button>
     </div>
 
-    <!-- Script separati -->
+    <!-- Messages -->
+    <div class="message nope">NOPE</div>
+    <div class="message like">LIKE</div>
+    <div class="message super">SUPER!</div>
+
+    <!-- Quote -->
+    <div class="quote">
+        <p>La vita è un viaggio e chi viaggia vive due volte.</p>
+        <div class="author">— Omar Khayyam</div>
+    </div>
+
+    <!-- Travel summary -->
+    <div class="travel-summary" id="travelSummary">
+        <div class="summary-header">
+            <h3>Il tuo viaggio</h3>
+            <button class="close-summary" id="closeSummary">✕</button>
+        </div>
+        <div class="summary-content" id="summaryContent"></div>
+    </div>
+
+    <!-- Scripts -->
     <script src="destinations-db.js"></script>
     <script src="app.js"></script>
 </body>
