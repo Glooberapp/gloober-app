@@ -1,428 +1,578 @@
-// Variabili globali
-let currentIndex = 0;
-let filteredDestinations = [];
-let likedDestinations = [];
-let isAnimating = false;
+// GLOOBER APP LOGIC
+// Version: 1.0 - App originale con il tuo database
+// ============================================
 
-// Elementi DOM
-const app = document.getElementById('app');
-const likeBtn = document.getElementById('likeBtn');
-const dislikeBtn = document.getElementById('dislikeBtn');
-const superBtn = document.getElementById('superBtn');
-const travelSummary = document.getElementById('travelSummary');
-const summaryContent = document.getElementById('summaryContent');
-const closeSummary = document.getElementById('closeSummary');
-
-// Filtri attivi
-let activeFilters = {
-    type: 'all',
-    budget: 'all'
+// Stato globale dell'app
+let currentLang = 'it';
+let userPreferences = {
+    location: 50,
+    distance: 50,
+    moodX: 50,
+    moodY: 50
 };
 
-// Inizializzazione
-document.addEventListener('DOMContentLoaded', () => {
+// Stato del drag
+let isDraggingLocation = false;
+let isDraggingDistance = false;
+let isDraggingMood = false;
+
+// TRADUZIONI UI
+const translations = {
+    it: {
+        tagline: "Muovi le tue vibrazioni di viaggio",
+        habitatLabel: "HABITAT",
+        sea: "MARE",
+        city: "CITTÀ", 
+        mountain: "MONTAGNA",
+        rangeLabel: "RANGE",
+        comfort: "COMFORT",
+        curious: "CURIOUS",
+        bloom: "BLOOM",
+        vibesLabel: "VIBES",
+        movida: "MOVIDA",
+        zen: "ZEN",
+        gourmet: "GOURMET",
+        wild: "WILD",
+        design: "DESIGN",
+        glamour: "GLAMOUR",
+        culture: "CULTURE",
+        romantic: "ROMANTIC",
+        gloobIt: "Gloob it!",
+        gloobing: "Gloobing...",
+        yourJourney: "Il tuo viaggio",
+        bookNow: "Prenota",
+        tryAgain: "Regloob"
+    },
+    en: {
+        tagline: "Slide your travel vibes",
+        habitatLabel: "HABITAT",
+        sea: "SEA",
+        city: "CITY",
+        mountain: "MOUNTAIN", 
+        rangeLabel: "RANGE",
+        comfort: "COMFORT",
+        curious: "CURIOUS",
+        bloom: "BLOOM",
+        vibesLabel: "VIBES",
+        movida: "NIGHTLIFE",
+        zen: "ZEN",
+        gourmet: "GOURMET",
+        wild: "WILD",
+        design: "DESIGN",
+        glamour: "GLAMOUR",
+        culture: "CULTURE",
+        romantic: "ROMANTIC",
+        gloobIt: "Gloob it!",
+        gloobing: "Gloobing...",
+        yourJourney: "Your journey",
+        bookNow: "Book Now",
+        tryAgain: "Regloob"
+    },
+    es: {
+        tagline: "Desliza tus vibras de viaje",
+        habitatLabel: "HÁBITAT",
+        sea: "MAR",
+        city: "CIUDAD",
+        mountain: "MONTAÑA",
+        rangeLabel: "RANGO",
+        comfort: "CONFORT",
+        curious: "CURIOSO",
+        bloom: "FLORACIÓN",
+        vibesLabel: "VIBRAS",
+        movida: "MOVIDA",
+        zen: "ZEN",
+        gourmet: "GOURMET",
+        wild: "SALVAJE",
+        design: "DISEÑO",
+        glamour: "GLAMOUR",
+        culture: "CULTURA",
+        romantic: "ROMÁNTICO",
+        gloobIt: "¡Gloob it!",
+        gloobing: "Gloobeando...",
+        yourJourney: "Tu viaje",
+        bookNow: "Reservar",
+        tryAgain: "Regloob"
+    },
+    fr: {
+        tagline: "Glissez vos vibrations de voyage",
+        habitatLabel: "HABITAT",
+        sea: "MER",
+        city: "VILLE",
+        mountain: "MONTAGNE",
+        rangeLabel: "GAMME",
+        comfort: "CONFORT",
+        curious: "CURIEUX",
+        bloom: "ÉPANOUISSEMENT",
+        vibesLabel: "VIBRATIONS",
+        movida: "VIE NOCTURNE",
+        zen: "ZEN",
+        gourmet: "GOURMET",
+        wild: "SAUVAGE",
+        design: "DESIGN",
+        glamour: "GLAMOUR",
+        culture: "CULTURE",
+        romantic: "ROMANTIQUE",
+        gloobIt: "Gloob it!",
+        gloobing: "Gloobing...",
+        yourJourney: "Votre voyage",
+        bookNow: "Réserver",
+        tryAgain: "Regloob"
+    }
+};
+
+// CITAZIONI DI VIAGGIO
+const TRAVEL_QUOTES = [
+    {
+        quote: {
+            it: "Il mondo è un libro e chi non viaggia ne legge solo una pagina.",
+            en: "The world is a book and those who do not travel read only one page.",
+            es: "El mundo es un libro y quienes no viajan solo leen una página.",
+            fr: "Le monde est un livre et ceux qui ne voyagent pas n'en lisent qu'une page."
+        },
+        author: "Sant'Agostino"
+    },
+    {
+        quote: {
+            it: "La vita è un viaggio e chi viaggia vive due volte.",
+            en: "Life is a journey and those who travel live twice.",
+            es: "La vida es un viaje y quien viaja vive dos veces.",
+            fr: "La vie est un voyage et ceux qui voyagent vivent deux fois."
+        },
+        author: "Omar Khayyam"
+    },
+    {
+        quote: {
+            it: "Non tutti quelli che vagano sono perduti.",
+            en: "Not all those who wander are lost.",
+            es: "No todos los que vagan están perdidos.",
+            fr: "Tous ceux qui errent ne sont pas perdus."
+        },
+        author: "J.R.R. Tolkien"
+    }
+];
+
+// FUNZIONI SLIDER LOCATION - CON FIX PER EVITARE CHE ESCANO
+function startLocationDrag(e) {
+    isDraggingLocation = true;
+    dragLocation(e);
+}
+
+function dragLocation(e) {
+    if (!isDraggingLocation) return;
+    e.preventDefault();
+    
+    const slider = e.currentTarget;
+    const rect = slider.getBoundingClientRect();
+    const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
+    
+    // Limita la percentuale tra 5% e 95% per evitare che il pallino esca
+    const percentage = Math.max(5, Math.min(95, (x / rect.width) * 100));
+    
+    userPreferences.location = percentage;
+    document.getElementById('location-dot').style.left = percentage + '%';
+    
+    // Mostra le etichette
+    document.getElementById('location-labels').classList.add('active');
+}
+
+function stopLocationDrag() {
+    isDraggingLocation = false;
+    setTimeout(() => {
+        document.getElementById('location-labels').classList.remove('active');
+    }, 1000);
+}
+
+// FUNZIONI SLIDER DISTANCE - CON FIX PER EVITARE CHE ESCANO
+function startDistanceDrag(e) {
+    isDraggingDistance = true;
+    dragDistance(e);
+}
+
+function dragDistance(e) {
+    if (!isDraggingDistance) return;
+    e.preventDefault();
+    
+    const slider = e.currentTarget;
+    const rect = slider.getBoundingClientRect();
+    const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
+    
+    // Limita la percentuale tra 5% e 95% per evitare che il pallino esca
+    const percentage = Math.max(5, Math.min(95, (x / rect.width) * 100));
+    
+    userPreferences.distance = percentage;
+    document.getElementById('distance-dot').style.left = percentage + '%';
+    
+    // Mostra le etichette
+    document.getElementById('distance-labels').classList.add('active');
+}
+
+function stopDistanceDrag() {
+    isDraggingDistance = false;
+    setTimeout(() => {
+        document.getElementById('distance-labels').classList.remove('active');
+    }, 1000);
+}
+
+// FUNZIONI MOOD SELECTOR
+function startDragging(e) {
+    isDraggingMood = true;
+    dragGlobe(e);
+}
+
+function dragGlobe(e) {
+    if (!isDraggingMood) return;
+    e.preventDefault();
+    
+    const selector = document.getElementById('mood-selector');
+    const rect = selector.getBoundingClientRect();
+    const x = (e.type.includes('touch') ? e.touches[0].clientX : e.clientX) - rect.left;
+    const y = (e.type.includes('touch') ? e.touches[0].clientY : e.clientY) - rect.top;
+    
+    const percentX = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    const percentY = Math.max(0, Math.min(100, (y / rect.height) * 100));
+    
+    userPreferences.moodX = percentX;
+    userPreferences.moodY = percentY;
+    
+    const globe = document.getElementById('mood-globe');
+    globe.style.left = percentX + '%';
+    globe.style.top = percentY + '%';
+    
+    // Mostra etichette vicine
+    updateMoodLabels(percentX, percentY);
+}
+
+function stopDragging() {
+    isDraggingMood = false;
+    setTimeout(() => {
+        document.querySelectorAll('.mood-label').forEach(label => {
+            label.classList.remove('visible');
+        });
+    }, 1000);
+}
+
+function updateMoodLabels(x, y) {
+    const labels = document.querySelectorAll('.mood-label');
+    labels.forEach(label => {
+        let labelX = 50;
+        let labelY = 50;
+        
+        if (label.classList.contains('left')) labelX = 0;
+        if (label.classList.contains('right')) labelX = 100;
+        if (label.classList.contains('top')) labelY = 0;
+        if (label.classList.contains('bottom')) labelY = 100;
+        
+        if (label.classList.contains('top-left')) {
+            labelX = 25;
+            labelY = 25;
+        }
+        if (label.classList.contains('top-right')) {
+            labelX = 75;
+            labelY = 25;
+        }
+        if (label.classList.contains('bottom-left')) {
+            labelX = 25;
+            labelY = 75;
+        }
+        if (label.classList.contains('bottom-right')) {
+            labelX = 75;
+            labelY = 75;
+        }
+        
+        const distance = Math.sqrt(Math.pow(x - labelX, 2) + Math.pow(y - labelY, 2));
+        
+        if (distance < 40) {
+            label.classList.add('visible');
+        } else {
+            label.classList.remove('visible');
+        }
+    });
+}
+
+// FUNZIONE PRINCIPALE GLOOB
+function gloobIt() {
+    // Mostra loading
+    document.getElementById('slider-step').classList.add('hidden');
+    document.getElementById('loading-step').classList.remove('hidden');
+    
+    // Calcola destinazione dopo 2 secondi
+    setTimeout(() => {
+        const destination = calculateDestination();
+        showResult(destination);
+    }, 2000);
+}
+
+// ALGORITMO DI MATCHING MIGLIORATO
+function calculateDestination() {
     // Verifica che il database sia caricato
-    if (typeof destinations === 'undefined' || !destinations) {
-        showError();
-        return;
+    if (typeof DESTINATIONS_DB === 'undefined' || !DESTINATIONS_DB || DESTINATIONS_DB.length === 0) {
+        console.error('Database destinazioni non caricato!');
+        return {
+            name: "Errore",
+            country: "Database non caricato",
+            image: "",
+            type: "city",
+            distance: "medium",
+            moods: [],
+            tagline: { it: "Ricarica la pagina", en: "Reload the page" }
+        };
     }
     
-    // Inizializza l'app
-    initializeApp();
-});
-
-function initializeApp() {
-    // Applica i filtri iniziali
-    applyFilters();
+    // Determina il tipo di habitat
+    let habitatType;
+    if (userPreferences.location < 33) {
+        habitatType = 'sea';
+    } else if (userPreferences.location < 67) {
+        habitatType = 'city';
+    } else {
+        habitatType = 'mountain';
+    }
     
-    // Event listeners per i filtri
-    document.querySelectorAll('.filter-group').forEach(group => {
-        group.addEventListener('click', (e) => {
-            if (e.target.classList.contains('filter-btn')) {
-                const filterType = group.dataset.filter;
-                const filterValue = e.target.dataset.value;
-                
-                // Aggiorna il filtro attivo
-                activeFilters[filterType] = filterValue;
-                
-                // Aggiorna UI del filtro
-                group.querySelectorAll('.filter-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                e.target.classList.add('active');
-                
-                // Riapplica i filtri
-                applyFilters();
+    // Determina la distanza
+    let distanceType;
+    if (userPreferences.distance < 33) {
+        distanceType = 'comfort';
+    } else if (userPreferences.distance < 67) {
+        distanceType = 'curious';
+    } else {
+        distanceType = 'bloom';
+    }
+    
+    // Determina i mood principali (massimo 2)
+    const moods = getMoodsFromPosition(userPreferences.moodX, userPreferences.moodY);
+    
+    // Filtra le destinazioni per tipo
+    let candidates = DESTINATIONS_DB.filter(dest => dest.type === habitatType);
+    
+    // Se non ci sono candidati esatti, allarga la ricerca
+    if (candidates.length === 0) {
+        candidates = DESTINATIONS_DB;
+    }
+    
+    // Calcola punteggi per ogni destinazione
+    const scoredDestinations = candidates.map(dest => {
+        let score = 0;
+        
+        // Punteggio per tipo di habitat (peso maggiore)
+        if (dest.type === habitatType) {
+            score += 50;
+        }
+        
+        // Punteggio per distanza
+        if (dest.distance === distanceType) {
+            score += 30;
+        } else if (
+            (dest.distance === 'curious' && (distanceType === 'comfort' || distanceType === 'bloom')) ||
+            (distanceType === 'curious' && (dest.distance === 'comfort' || dest.distance === 'bloom'))
+        ) {
+            score += 15; // Punteggio parziale per distanze vicine
+        }
+        
+        // Punteggio per mood (peso importante)
+        moods.forEach(mood => {
+            if (dest.moods.includes(mood)) {
+                score += 20;
             }
         });
-    });
-    
-    // Event listeners per i pulsanti
-    likeBtn.addEventListener('click', () => handleAction('like'));
-    dislikeBtn.addEventListener('click', () => handleAction('dislike'));
-    superBtn.addEventListener('click', () => handleAction('super'));
-    
-    // Chiudi sommario
-    closeSummary.addEventListener('click', () => {
-        travelSummary.classList.remove('show');
-    });
-    
-    // Keyboard controls
-    document.addEventListener('keydown', (e) => {
-        if (isAnimating) return;
         
-        switch(e.key) {
-            case 'ArrowLeft':
-                handleAction('dislike');
-                break;
-            case 'ArrowRight':
-                handleAction('like');
-                break;
-            case 'ArrowUp':
-                handleAction('super');
-                break;
-        }
-    });
-}
-
-function applyFilters() {
-    // Filtra le destinazioni
-    filteredDestinations = destinations.filter(dest => {
-        const typeMatch = activeFilters.type === 'all' || dest.type === activeFilters.type;
-        const budgetMatch = activeFilters.budget === 'all' || dest.budget === activeFilters.budget;
-        return typeMatch && budgetMatch;
-    });
-    
-    // Reset index
-    currentIndex = 0;
-    
-    // Ricarica le cards
-    loadCards();
-}
-
-function loadCards() {
-    // Pulisci il container
-    app.innerHTML = '';
-    
-    if (filteredDestinations.length === 0) {
-        showEmpty();
-        return;
-    }
-    
-    // Carica fino a 3 cards
-    const cardsToLoad = Math.min(3, filteredDestinations.length - currentIndex);
-    
-    for (let i = cardsToLoad - 1; i >= 0; i--) {
-        const destination = filteredDestinations[currentIndex + i];
-        if (destination) {
-            const card = createCard(destination, i);
-            app.appendChild(card);
-        }
-    }
-    
-    // Aggiungi drag functionality alla prima card
-    if (cardsToLoad > 0) {
-        addDragListeners(app.querySelector('.card'));
-    }
-    
-    // Mostra sommario se ci sono destinazioni piaciute
-    if (likedDestinations.length > 0 && currentIndex >= filteredDestinations.length) {
-        setTimeout(() => showTravelSummary(), 500);
-    }
-}
-
-function createCard(destination, stackIndex) {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.dataset.id = destination.id;
-    
-    // Posiziona le cards nello stack
-    card.style.transform = `scale(${1 - stackIndex * 0.05}) translateY(${stackIndex * 10}px)`;
-    card.style.zIndex = 10 - stackIndex;
-    
-    // Usa la descrizione in italiano se disponibile
-    const description = destination.translations?.it?.description || destination.description;
-    
-    card.innerHTML = `
-        <img src="${destination.image}" alt="${destination.name}" onerror="this.src='https://via.placeholder.com/800x600/2F4F4F/FFFFFF?text=${encodeURIComponent(destination.name)}'">
-        <div class="card-content">
-            <div>
-                <h2>${destination.name}</h2>
-                <p class="location">${destination.country}</p>
-                <p class="description">${description}</p>
-            </div>
-            <div class="card-footer">
-                <div class="tags">
-                    <span class="tag">${getTypeEmoji(destination.type)}</span>
-                    <span class="tag">${getBudgetSymbol(destination.budget)}</span>
-                    <span class="tag">${getTemperatureEmoji(destination.temperature)}</span>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    return card;
-}
-
-function getTypeEmoji(type) {
-    const emojis = {
-        seaside: '🏖️ Mare',
-        city: '🏙️ Città',
-        mountain: '⛰️ Montagna'
-    };
-    return emojis[type] || type;
-}
-
-function getBudgetSymbol(budget) {
-    const symbols = {
-        low: '€',
-        medium: '€€',
-        high: '€€€'
-    };
-    return symbols[budget] || budget;
-}
-
-function getTemperatureEmoji(temp) {
-    const emojis = {
-        cold: '❄️ Freddo',
-        mild: '🌤️ Mite',
-        hot: '☀️ Caldo'
-    };
-    return emojis[temp] || temp;
-}
-
-function addDragListeners(card) {
-    let startX = 0;
-    let startY = 0;
-    let currentX = 0;
-    let currentY = 0;
-    let isDragging = false;
-    
-    // Touch events
-    card.addEventListener('touchstart', handleStart, { passive: true });
-    card.addEventListener('touchmove', handleMove, { passive: true });
-    card.addEventListener('touchend', handleEnd);
-    
-    // Mouse events
-    card.addEventListener('mousedown', handleStart);
-    card.addEventListener('mousemove', handleMove);
-    card.addEventListener('mouseup', handleEnd);
-    card.addEventListener('mouseleave', handleEnd);
-    
-    function handleStart(e) {
-        if (isAnimating) return;
-        isDragging = true;
-        card.classList.add('dragging');
-        
-        startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-        startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-    }
-    
-    function handleMove(e) {
-        if (!isDragging || isAnimating) return;
-        
-        currentX = (e.type.includes('mouse') ? e.clientX : e.touches[0].clientX) - startX;
-        currentY = (e.type.includes('mouse') ? e.clientY : e.touches[0].clientY) - startY;
-        
-        const rotation = currentX * 0.1;
-        
-        card.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotation}deg)`;
-        
-        // Update opacity based on distance
-        const opacity = 1 - Math.abs(currentX) / 300;
-        card.style.opacity = opacity;
-        
-        // Show/hide indicators
-        updateIndicators(currentX);
-    }
-    
-    function handleEnd() {
-        if (!isDragging || isAnimating) return;
-        isDragging = false;
-        card.classList.remove('dragging');
-        
-        const threshold = 100;
-        
-        if (Math.abs(currentX) > threshold) {
-            // Swipe detected
-            if (currentX > 0) {
-                animateCard('right');
-            } else {
-                animateCard('left');
-            }
-        } else {
-            // Return to center
-            card.style.transform = '';
-            card.style.opacity = '';
+        // Bonus per match multipli di mood
+        const matchingMoods = moods.filter(mood => dest.moods.includes(mood));
+        if (matchingMoods.length >= 2) {
+            score += 10;
         }
         
-        // Reset indicators
-        updateIndicators(0);
+        return {
+            destination: dest,
+            score: score
+        };
+    });
+    
+    // Ordina per punteggio
+    scoredDestinations.sort((a, b) => b.score - a.score);
+    
+    // Se il punteggio migliore è troppo basso, scegline uno casuale del tipo giusto
+    if (scoredDestinations[0].score < 30) {
+        const typeMatches = DESTINATIONS_DB.filter(d => d.type === habitatType);
+        return typeMatches[Math.floor(Math.random() * typeMatches.length)];
     }
+    
+    // Altrimenti restituisci il migliore
+    return scoredDestinations[0].destination;
 }
 
-function updateIndicators(xPos) {
-    const leftIndicator = document.querySelector('.nav-indicator.left');
-    const rightIndicator = document.querySelector('.nav-indicator.right');
+// Determina i mood dalla posizione nel quadrato
+function getMoodsFromPosition(x, y) {
+    const moods = [];
     
-    if (xPos < -50) {
-        leftIndicator.style.opacity = '0.8';
-        rightIndicator.style.opacity = '0.3';
-    } else if (xPos > 50) {
-        leftIndicator.style.opacity = '0.3';
-        rightIndicator.style.opacity = '0.8';
+    // Mappa delle posizioni dei mood
+    const moodMap = {
+        movida: { x: 50, y: 0 },
+        zen: { x: 50, y: 100 },
+        gourmet: { x: 0, y: 50 },
+        wild: { x: 100, y: 50 },
+        design: { x: 25, y: 25 },
+        glamour: { x: 75, y: 25 },
+        culture: { x: 25, y: 75 },
+        romantic: { x: 75, y: 75 }
+    };
+    
+    // Calcola distanze e prendi i 2 più vicini
+    const distances = Object.entries(moodMap).map(([mood, pos]) => {
+        const distance = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2));
+        return { mood, distance };
+    });
+    
+    distances.sort((a, b) => a.distance - b.distance);
+    
+    // Prendi i due mood più vicini
+    moods.push(distances[0].mood);
+    if (distances[1].distance < 40) {
+        moods.push(distances[1].mood);
+    }
+    
+    return moods;
+}
+
+// MOSTRA RISULTATO
+function showResult(destination) {
+    // Debug - verifica cosa arriva
+    console.log('Destinazione selezionata:', destination);
+    
+    // Nascondi loading e mostra risultato
+    document.getElementById('loading-step').classList.add('hidden');
+    document.getElementById('result-step').classList.remove('hidden');
+    
+    // Popola i dati
+    document.getElementById('destination-name').textContent = destination.name || 'Destinazione';
+    document.getElementById('destination-tagline').textContent = destination.tagline && destination.tagline[currentLang] ? destination.tagline[currentLang] : '';
+    document.getElementById('destination-country').textContent = destination.country || '';
+    
+    // Imposta immagine
+    const img = document.getElementById('destination-image');
+    if (destination.image) {
+        img.src = destination.image;
+        img.alt = destination.name || 'Destination';
+        img.style.display = 'block';
     } else {
-        leftIndicator.style.opacity = '0.3';
-        rightIndicator.style.opacity = '0.3';
-    }
-}
-
-function handleAction(action) {
-    if (isAnimating) return;
-    
-    const card = app.querySelector('.card');
-    if (!card) return;
-    
-    let direction;
-    switch(action) {
-        case 'like':
-            direction = 'right';
-            likedDestinations.push(filteredDestinations[currentIndex]);
-            showMessage('like');
-            break;
-        case 'dislike':
-            direction = 'left';
-            showMessage('nope');
-            break;
-        case 'super':
-            direction = 'up';
-            likedDestinations.push(filteredDestinations[currentIndex]);
-            showMessage('super');
-            break;
+        img.style.display = 'none';
     }
     
-    animateCard(direction);
+    // Narrativa personalizzata
+    const narrative = generateNarrative(destination);
+    document.getElementById('narrative-text').textContent = narrative;
+    
+    // Citazione casuale
+    const quote = TRAVEL_QUOTES[Math.floor(Math.random() * TRAVEL_QUOTES.length)];
+    document.getElementById('travel-quote').textContent = quote.quote[currentLang] || quote.quote.it;
+    document.getElementById('quote-author').textContent = quote.author;
 }
 
-function animateCard(direction) {
-    isAnimating = true;
-    const card = app.querySelector('.card');
-    
-    let transform;
-    switch(direction) {
-        case 'left':
-            transform = 'translateX(-150%) rotate(-30deg)';
-            break;
-        case 'right':
-            transform = 'translateX(150%) rotate(30deg)';
-            break;
-        case 'up':
-            transform = 'translateY(-150%) rotate(10deg) scale(0.8)';
-            break;
-    }
-    
-    card.style.transition = 'transform 0.6s, opacity 0.6s';
-    card.style.transform = transform;
-    card.style.opacity = '0';
-    
-    setTimeout(() => {
-        currentIndex++;
-        isAnimating = false;
-        loadCards();
-    }, 600);
-}
-
-function showMessage(type) {
-    const message = document.querySelector(`.message.${type}`);
-    message.classList.add('show');
-    
-    setTimeout(() => {
-        message.classList.remove('show');
-    }, 800);
-}
-
-function showTravelSummary() {
-    if (likedDestinations.length === 0) return;
-    
-    // Popola il sommario
-    summaryContent.innerHTML = likedDestinations.map(dest => {
-        const description = dest.translations?.it?.description || dest.description;
-        return `
-            <div class="summary-card">
-                <img src="${dest.image}" alt="${dest.name}" onerror="this.src='https://via.placeholder.com/800x600/2F4F4F/FFFFFF?text=${encodeURIComponent(dest.name)}'">
-                <h4>${dest.name}</h4>
-            </div>
-        `;
-    }).join('');
-    
-    // Mostra il sommario
-    travelSummary.classList.add('show');
-}
-
-function showEmpty() {
-    app.innerHTML = `
-        <div class="empty">
-            <h2>Nessuna destinazione trovata</h2>
-            <p>Prova a cambiare i filtri per scoprire nuovi luoghi!</p>
-            <button class="reset-btn" onclick="resetFilters()">Resetta filtri</button>
-        </div>
-    `;
-}
-
-function showError() {
-    app.innerHTML = `
-        <div class="error">
-            <h2>Errore</h2>
-            <p>Ricarica la pagina</p>
-            <p style="font-size: 14px; margin-top: 10px;">Database non caricato</p>
-        </div>
-    `;
-}
-
-function resetFilters() {
-    // Reset tutti i filtri
-    activeFilters = {
-        type: 'all',
-        budget: 'all'
+// GENERA NARRATIVA
+function generateNarrative(destination) {
+    const narratives = {
+        it: {
+            sea: [
+                `${destination.name} ti aspetta con le sue acque cristalline e tramonti che dipingono il cielo. Un luogo dove il tempo rallenta e ogni onda racconta una storia.`,
+                `Lasciati cullare dal ritmo del mare a ${destination.name}. Qui, dove la sabbia incontra l'infinito, troverai la pace che cercavi.`
+            ],
+            city: [
+                `${destination.name} pulsa di energia e possibilità. Ogni strada nasconde una sorpresa, ogni angolo una nuova avventura urbana che ti aspetta.`,
+                `Immergiti nel caos creativo di ${destination.name}. Una metropoli che non dorme mai, dove i sogni prendono forma tra grattacieli e vicoli nascosti.`
+            ],
+            mountain: [
+                `Le vette di ${destination.name} ti chiamano verso l'alto, dove l'aria è pura e il silenzio parla. Un santuario naturale che risveglia l'anima.`,
+                `${destination.name} ti offre la maestosità della montagna, dove ogni sentiero è una meditazione e ogni cima una conquista personale.`
+            ]
+        },
+        en: {
+            sea: [
+                `${destination.name} awaits you with crystal waters and sunsets that paint the sky. A place where time slows down and every wave tells a story.`,
+                `Let yourself be lulled by the rhythm of the sea in ${destination.name}. Here, where sand meets infinity, you'll find the peace you were looking for.`
+            ],
+            city: [
+                `${destination.name} pulses with energy and possibilities. Every street hides a surprise, every corner a new urban adventure waiting for you.`,
+                `Immerse yourself in the creative chaos of ${destination.name}. A metropolis that never sleeps, where dreams take shape between skyscrapers and hidden alleys.`
+            ],
+            mountain: [
+                `The peaks of ${destination.name} call you upward, where the air is pure and silence speaks. A natural sanctuary that awakens the soul.`,
+                `${destination.name} offers you the majesty of the mountains, where every path is a meditation and every summit a personal conquest.`
+            ]
+        },
+        es: {
+            sea: [
+                `${destination.name} te espera con aguas cristalinas y atardeceres que pintan el cielo. Un lugar donde el tiempo se ralentiza y cada ola cuenta una historia.`,
+                `Déjate arrullar por el ritmo del mar en ${destination.name}. Aquí, donde la arena se encuentra con el infinito, encontrarás la paz que buscabas.`
+            ],
+            city: [
+                `${destination.name} palpita con energía y posibilidades. Cada calle esconde una sorpresa, cada esquina una nueva aventura urbana que te espera.`,
+                `Sumérgete en el caos creativo de ${destination.name}. Una metrópolis que nunca duerme, donde los sueños toman forma entre rascacielos y callejones ocultos.`
+            ],
+            mountain: [
+                `Las cumbres de ${destination.name} te llaman hacia arriba, donde el aire es puro y el silencio habla. Un santuario natural que despierta el alma.`,
+                `${destination.name} te ofrece la majestuosidad de la montaña, donde cada sendero es una meditación y cada cima una conquista personal.`
+            ]
+        },
+        fr: {
+            sea: [
+                `${destination.name} vous attend avec ses eaux cristallines et ses couchers de soleil qui peignent le ciel. Un lieu où le temps ralentit et chaque vague raconte une histoire.`,
+                `Laissez-vous bercer par le rythme de la mer à ${destination.name}. Ici, où le sable rencontre l'infini, vous trouverez la paix que vous cherchiez.`
+            ],
+            city: [
+                `${destination.name} vibre d'énergie et de possibilités. Chaque rue cache une surprise, chaque coin une nouvelle aventure urbaine qui vous attend.`,
+                `Plongez dans le chaos créatif de ${destination.name}. Une métropole qui ne dort jamais, où les rêves prennent forme entre gratte-ciels et ruelles cachées.`
+            ],
+            mountain: [
+                `Les sommets de ${destination.name} vous appellent vers le haut, où l'air est pur et le silence parle. Un sanctuaire naturel qui réveille l'âme.`,
+                `${destination.name} vous offre la majesté de la montagne, où chaque sentier est une méditation et chaque sommet une conquête personnelle.`
+            ]
+        }
     };
     
-    // Reset UI
-    document.querySelectorAll('.filter-btn').forEach(btn => {
+    // Usa narrativa italiana se la lingua non è disponibile
+    const langNarratives = narratives[currentLang] || narratives.it;
+    const typeNarratives = langNarratives[destination.type] || langNarratives.city;
+    
+    return typeNarratives[Math.floor(Math.random() * typeNarratives.length)];
+}
+
+// GESTIONE PRENOTAZIONE CON TRIP.COM
+function bookTrip() {
+    const destination = document.getElementById('destination-name').textContent;
+    
+    // Apri Trip.com con la destinazione
+    window.open(`https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}`, '_blank');
+}
+
+// GESTIONE CAMBIO LINGUA
+function changeLanguage(lang) {
+    currentLang = lang;
+    
+    // Aggiorna classi attive
+    document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.dataset.value === 'all') {
+        if (btn.dataset.lang === lang) {
             btn.classList.add('active');
         }
     });
     
-    // Riapplica filtri
-    applyFilters();
+    // Aggiorna testi
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const key = element.dataset.translate;
+        if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
+    });
 }
 
-// Quote rotation
-const quotes = [
-    { text: "La vita è un viaggio e chi viaggia vive due volte.", author: "Omar Khayyam" },
-    { text: "Il mondo è un libro e chi non viaggia ne legge solo una pagina.", author: "Sant'Agostino" },
-    { text: "Non tutti quelli che vagano sono perduti.", author: "J.R.R. Tolkien" },
-    { text: "Viaggiare è vivere.", author: "Hans Christian Andersen" },
-    { text: "Fatti portare dal vento, ma scegli tu la direzione.", author: "Proverbio" },
-    { text: "Il viaggio più lungo è il viaggio interiore.", author: "Dag Hammarskjöld" },
-    { text: "Immergiti nel caos creativo di Errore. Una metropoli che non dorme mai, dove i sogni prendono forma tra grattacieli e vicoli nascosti.", author: "Gloober" },
-    { text: "Errore pulsa di energia e possibilità. Ogni strada nasconde una sorpresa, ogni angolo una nuova avventura urbana che ti aspetta.", author: "Gloober" }
-];
-
-let currentQuote = 0;
-function rotateQuotes() {
-    const quoteElement = document.querySelector('.quote p');
-    const authorElement = document.querySelector('.quote .author');
+// INIZIALIZZAZIONE
+document.addEventListener('DOMContentLoaded', () => {
+    // Setup language buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            changeLanguage(btn.dataset.lang);
+        });
+    });
     
-    if (quoteElement && authorElement) {
-        const quote = quotes[currentQuote];
-        quoteElement.textContent = quote.text;
-        authorElement.textContent = `— ${quote.author}`;
-        
-        currentQuote = (currentQuote + 1) % quotes.length;
-    }
-}
-
-// Ruota le citazioni ogni 10 secondi
-setInterval(rotateQuotes, 10000);
+    // Inizializza con italiano
+    changeLanguage('it');
+});
