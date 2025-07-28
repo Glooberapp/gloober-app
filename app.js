@@ -575,4 +575,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Inizializza con italiano
     changeLanguage('it');
+    
+    // Debug - verifica che le funzioni siano disponibili
+    console.log('App inizializzata!');
+    console.log('Database caricato:', typeof DESTINATIONS_DB !== 'undefined' ? DESTINATIONS_DB.length + ' destinazioni' : 'ERRORE');
 });
+
+// Rendi le funzioni globali per l'HTML
+window.startLocationDrag = startLocationDrag;
+window.dragLocation = dragLocation;
+window.stopLocationDrag = stopLocationDrag;
+window.startDistanceDrag = startDistanceDrag;
+window.dragDistance = dragDistance;
+window.stopDistanceDrag = stopDistanceDrag;
+window.startDragging = startDragging;
+window.dragGlobe = dragGlobe;
+window.stopDragging = stopDragging;
+window.gloobIt = gloobIt;
+window.bookTrip = bookTrip;
