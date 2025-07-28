@@ -9,7 +9,7 @@ const destinations = [
         temperature: "cold",
         description: "Remote Nordic archipelago with dramatic cliffs and waterfalls",
         bestMonths: ["Jun", "Jul", "Aug"],
-        image: "./images/faroe.jpg",
+        image: "images/faroe.jpg",
         translations: {
             it: {
                 description: "Remoto arcipelago nordico con scogliere drammatiche e cascate"
@@ -26,7 +26,7 @@ const destinations = [
         temperature: "hot",
         description: "Alien-like island with unique dragon blood trees",
         bestMonths: ["Oct", "Nov", "Feb", "Mar"],
-        image: "./images/Socotra.jpg",
+        image: "images/Socotra.jpg",
         translations: {
             it: {
                 description: "Isola dall'aspetto alieno con unici alberi del sangue di drago"
@@ -43,7 +43,7 @@ const destinations = [
         temperature: "cold",
         description: "Arctic archipelago with fishing villages and northern lights",
         bestMonths: ["Jun", "Jul", "Aug", "Sep"],
-        image: "./images/lofoten.jpg",
+        image: "images/lofoten.jpg",
         translations: {
             it: {
                 description: "Arcipelago artico con villaggi di pescatori e aurore boreali"
@@ -60,7 +60,7 @@ const destinations = [
         temperature: "hot",
         description: "Pristine island paradise with crystal clear waters",
         bestMonths: ["Apr", "May", "Sep", "Oct"],
-        image: "./images/gili.jpg",
+        image: "images/gili.jpg",
         translations: {
             it: {
                 description: "Paradiso insulare incontaminato con acque cristalline"
@@ -77,7 +77,7 @@ const destinations = [
         temperature: "mild",
         description: "Chic coastal retreat with endless sand dunes",
         bestMonths: ["May", "Jun", "Sep", "Oct"],
-        image: "./images/comporta.jpeg",
+        image: "images/comporta.jpeg",
         translations: {
             it: {
                 description: "Rifugio costiero chic con dune di sabbia infinite"
@@ -128,7 +128,7 @@ const destinations = [
         temperature: "mild",
         description: "Charming capital with dragons, castle and green river",
         bestMonths: ["May", "Jun", "Sep"],
-        image: "./images/ljubljana.jpg",
+        image: "images/ljubljana.jpg",
         translations: {
             it: {
                 description: "Capitale affascinante con draghi, castello e fiume verde"
@@ -145,7 +145,7 @@ const destinations = [
         temperature: "mild",
         description: "Colonial city with mezcal, markets and Day of the Dead",
         bestMonths: ["Oct", "Nov", "Feb", "Mar"],
-        image: "./images/oaxaca.jpg",
+        image: "images/oaxaca.jpg",
         translations: {
             it: {
                 description: "Città coloniale con mezcal, mercati e Giorno dei Morti"
@@ -162,7 +162,7 @@ const destinations = [
         temperature: "mild",
         description: "Riverside city famous for port wine and azulejos",
         bestMonths: ["May", "Jun", "Sep", "Oct"],
-        image: "./images/porto.jpg",
+        image: "images/porto.jpg",
         translations: {
             it: {
                 description: "Città fluviale famosa per il vino porto e gli azulejos"
@@ -213,7 +213,7 @@ const destinations = [
         temperature: "cold",
         description: "Gateway to the Cordillera Blanca mountains",
         bestMonths: ["May", "Jun", "Jul", "Aug"],
-        image: "./images/Huaraz.jpg",
+        image: "images/Huaraz.jpg",
         translations: {
             it: {
                 description: "Porta d'accesso alle montagne della Cordillera Blanca"
@@ -230,7 +230,7 @@ const destinations = [
         temperature: "cold",
         description: "Arctic mountains meeting fjords with aurora views",
         bestMonths: ["Mar", "Apr", "Sep", "Oct"],
-        image: "./images/lyngen.jpg",
+        image: "images/lyngen.jpg",
         translations: {
             it: {
                 description: "Montagne artiche che incontrano fiordi con vista aurora"
@@ -247,7 +247,7 @@ const destinations = [
         temperature: "cold",
         description: "Mountain resort with fairy-tale Peleș Castle",
         bestMonths: ["Jun", "Jul", "Aug", "Dec"],
-        image: "./images/Sinaia.jpg",
+        image: "images/Sinaia.jpg",
         translations: {
             it: {
                 description: "Resort montano con il fiabesco Castello di Peleș"
