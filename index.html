@@ -554,7 +554,7 @@
                 <!-- Location Slider -->
                 <div class="mb-6">
                     <label class="block text-center mb-2" data-translate="habitatLabel">HABITAT</label>
-                    <div class="slider-container location-slider" onmousedown="startLocationDrag(event)" onmousemove="dragLocation(event)" onmouseup="stopLocationDrag()" onmouseleave="stopLocationDrag()" ontouchstart="startLocationDrag(event)" ontouchmove="dragLocation(event)" ontouchend="stopLocationDrag()">
+                    <div class="slider-container location-slider" id="location-slider">
                         <div class="slider-inner-labels" id="location-labels">
                             <span data-translate="sea">MARE</span>
                             <span class="label-center" data-translate="city">CITTÀ</span>
@@ -567,7 +567,7 @@
                 <!-- Distance Slider -->
                 <div class="mb-6">
                     <label class="block text-center mb-2" data-translate="rangeLabel">RANGE</label>
-                    <div class="slider-container distance-slider" onmousedown="startDistanceDrag(event)" onmousemove="dragDistance(event)" onmouseup="stopDistanceDrag()" onmouseleave="stopDistanceDrag()" ontouchstart="startDistanceDrag(event)" ontouchmove="dragDistance(event)" ontouchend="stopDistanceDrag()">
+                    <div class="slider-container distance-slider" id="distance-slider">
                         <div class="slider-inner-labels" id="distance-labels">
                             <span data-translate="comfort">COMFORT</span>
                             <span class="label-center" data-translate="curious">CURIOUS</span>
@@ -580,14 +580,7 @@
                 <!-- Mood Selector -->
                 <div class="mb-6">
                     <label class="block text-center mb-2" data-translate="vibesLabel">VIBES</label>
-                    <div class="mood-selector" id="mood-selector" 
-                         onmousedown="startDragging(event)" 
-                         onmousemove="dragGlobe(event)"
-                         onmouseup="stopDragging()"
-                         onmouseleave="stopDragging()"
-                         ontouchstart="startDragging(event)"
-                         ontouchmove="dragGlobe(event)"
-                         ontouchend="stopDragging()">
+                    <div class="mood-selector" id="mood-selector">
                         <div class="mood-labels">
                             <span class="mood-label top" data-translate="movida">MOVIDA</span>
                             <span class="mood-label bottom" data-translate="zen">ZEN</span>
@@ -604,7 +597,7 @@
 
                 <!-- Gloob Button -->
                 <div class="text-center">
-                    <button onclick="gloobIt()" class="gloob-button">
+                    <button id="gloob-button" class="gloob-button">
                         <span data-translate="gloobIt">Gloob it!</span>
                     </button>
                 </div>
@@ -656,11 +649,11 @@
 
                 <!-- Book Button -->
                 <div class="text-center">
-                    <button onclick="bookTrip()" class="gloob-button mb-4">
+                    <button id="book-button" class="gloob-button mb-4">
                         <span data-translate="bookNow">Prenota</span> →
                     </button>
                     <br>
-                    <button onclick="location.reload()" class="text-gray-500 hover:text-white transition-all">
+                    <button id="reload-button" class="text-gray-500 hover:text-white transition-all">
                         <span data-translate="tryAgain">Regloob</span>
                     </button>
                 </div>
@@ -671,5 +664,69 @@
     <!-- Script separati -->
     <script src="destinations-db.js"></script>
     <script src="app.js"></script>
+    <script>
+    // Setup degli event listeners dopo che tutto è caricato
+    window.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM caricato - setup event listeners...');
+        
+        // Location slider
+        const locationSlider = document.getElementById('location-slider');
+        if (locationSlider) {
+            locationSlider.addEventListener('mousedown', startLocationDrag);
+            locationSlider.addEventListener('mousemove', dragLocation);
+            locationSlider.addEventListener('mouseup', stopLocationDrag);
+            locationSlider.addEventListener('mouseleave', stopLocationDrag);
+            locationSlider.addEventListener('touchstart', startLocationDrag);
+            locationSlider.addEventListener('touchmove', dragLocation);
+            locationSlider.addEventListener('touchend', stopLocationDrag);
+        }
+        
+        // Distance slider  
+        const distanceSlider = document.getElementById('distance-slider');
+        if (distanceSlider) {
+            distanceSlider.addEventListener('mousedown', startDistanceDrag);
+            distanceSlider.addEventListener('mousemove', dragDistance);
+            distanceSlider.addEventListener('mouseup', stopDistanceDrag);
+            distanceSlider.addEventListener('mouseleave', stopDistanceDrag);
+            distanceSlider.addEventListener('touchstart', startDistanceDrag);
+            distanceSlider.addEventListener('touchmove', dragDistance);
+            distanceSlider.addEventListener('touchend', stopDistanceDrag);
+        }
+        
+        // Mood selector
+        const moodSelector = document.getElementById('mood-selector');
+        if (moodSelector) {
+            moodSelector.addEventListener('mousedown', startDragging);
+            moodSelector.addEventListener('mousemove', dragGlobe);
+            moodSelector.addEventListener('mouseup', stopDragging);
+            moodSelector.addEventListener('mouseleave', stopDragging);
+            moodSelector.addEventListener('touchstart', startDragging);
+            moodSelector.addEventListener('touchmove', dragGlobe);
+            moodSelector.addEventListener('touchend', stopDragging);
+        }
+        
+        // Gloob button
+        const gloobButton = document.getElementById('gloob-button');
+        if (gloobButton) {
+            gloobButton.addEventListener('click', gloobIt);
+        }
+        
+        // Book button
+        const bookButton = document.getElementById('book-button');
+        if (bookButton) {
+            bookButton.addEventListener('click', bookTrip);
+        }
+        
+        // Reload button
+        const reloadButton = document.getElementById('reload-button');
+        if (reloadButton) {
+            reloadButton.addEventListener('click', function() {
+                location.reload();
+            });
+        }
+        
+        console.log('Event listeners configurati!');
+    });
+    </script>
 </body>
 </html>
