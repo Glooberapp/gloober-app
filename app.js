@@ -593,3 +593,17 @@ window.dragGlobe = dragGlobe;
 window.stopDragging = stopDragging;
 window.gloobIt = gloobIt;
 window.bookTrip = bookTrip;
+// ESPORTA LE FUNZIONI GLOBALMENTE - AGGIUNGI ALLA FINE DI app.js
+window.startLocationDrag = startLocationDrag;
+window.dragLocation = dragLocation;
+window.stopLocationDrag = stopLocationDrag;
+window.startDistanceDrag = startDistanceDrag;
+window.dragDistance = dragDistance;
+window.stopDistanceDrag = stopDistanceDrag;
+window.startDragging = startDragging;
+window.dragGlobe = dragGlobe;
+window.stopDragging = stopDragging;
+window.gloobIt = gloobIt;
+window.bookTrip = bookTrip;
+
+console.log('Funzioni esportate globalmente!');
