@@ -665,13 +665,13 @@
     <script src="destinations-db.js"></script>
     <script src="app.js"></script>
     <script>
-    // Setup degli event listeners dopo che tutto è caricato
-    window.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM caricato - setup event listeners...');
+    // ASPETTA che app.js sia completamente caricato
+    setTimeout(function() {
+        console.log('Setup event listeners con delay...');
         
         // Location slider
         const locationSlider = document.getElementById('location-slider');
-        if (locationSlider) {
+        if (locationSlider && typeof startLocationDrag !== 'undefined') {
             locationSlider.addEventListener('mousedown', startLocationDrag);
             locationSlider.addEventListener('mousemove', dragLocation);
             locationSlider.addEventListener('mouseup', stopLocationDrag);
@@ -679,11 +679,12 @@
             locationSlider.addEventListener('touchstart', startLocationDrag);
             locationSlider.addEventListener('touchmove', dragLocation);
             locationSlider.addEventListener('touchend', stopLocationDrag);
+            console.log('Location slider configurato!');
         }
         
         // Distance slider  
         const distanceSlider = document.getElementById('distance-slider');
-        if (distanceSlider) {
+        if (distanceSlider && typeof startDistanceDrag !== 'undefined') {
             distanceSlider.addEventListener('mousedown', startDistanceDrag);
             distanceSlider.addEventListener('mousemove', dragDistance);
             distanceSlider.addEventListener('mouseup', stopDistanceDrag);
@@ -691,11 +692,12 @@
             distanceSlider.addEventListener('touchstart', startDistanceDrag);
             distanceSlider.addEventListener('touchmove', dragDistance);
             distanceSlider.addEventListener('touchend', stopDistanceDrag);
+            console.log('Distance slider configurato!');
         }
         
         // Mood selector
         const moodSelector = document.getElementById('mood-selector');
-        if (moodSelector) {
+        if (moodSelector && typeof startDragging !== 'undefined') {
             moodSelector.addEventListener('mousedown', startDragging);
             moodSelector.addEventListener('mousemove', dragGlobe);
             moodSelector.addEventListener('mouseup', stopDragging);
@@ -703,17 +705,19 @@
             moodSelector.addEventListener('touchstart', startDragging);
             moodSelector.addEventListener('touchmove', dragGlobe);
             moodSelector.addEventListener('touchend', stopDragging);
+            console.log('Mood selector configurato!');
         }
         
         // Gloob button
         const gloobButton = document.getElementById('gloob-button');
-        if (gloobButton) {
+        if (gloobButton && typeof gloobIt !== 'undefined') {
             gloobButton.addEventListener('click', gloobIt);
+            console.log('Gloob button configurato!');
         }
         
         // Book button
         const bookButton = document.getElementById('book-button');
-        if (bookButton) {
+        if (bookButton && typeof bookTrip !== 'undefined') {
             bookButton.addEventListener('click', bookTrip);
         }
         
@@ -725,8 +729,8 @@
             });
         }
         
-        console.log('Event listeners configurati!');
-    });
+        console.log('SETUP COMPLETATO!');
+    }, 100); // Piccolo delay per assicurarsi che tutto sia caricato
     </script>
 </body>
 </html>
