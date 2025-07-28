@@ -255,3 +255,4 @@ const destinations = [
         }
     }
 ];
+window.destinations = destinations;
