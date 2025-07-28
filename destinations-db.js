@@ -1,9 +1,9 @@
 // GLOOBER DESTINATIONS DATABASE
-// Version: CHICCHE SEGRETE - 15 DESTINAZIONI FIGHE CHE NESSUNO CONOSCE
+// Version: 2.0 - Con foto Unsplash reali
 // ============================================
 
 const DESTINATIONS_DB = [
-    // ========== MARE SEGRETO (5 chicche) ==========
+    // MARE (Sea) Destinations
     {
         name: "Faroe Islands",
         country: "Danimarca",
@@ -11,9 +11,12 @@ const DESTINATIONS_DB = [
         type: "sea",
         distance: "curious",
         moods: ["wild", "zen", "culture"],
-        tagline: {
-            it: "Scogliere epiche e pecore ovunque",
-            en: "Epic cliffs and sheep everywhere"
+        translations: {
+            it: "Faroe Islands",
+            en: "Faroe Islands",
+            es: "Islas Feroe",
+            fr: "Îles Féroé",
+            de: "Färöer"
         }
     },
     {
@@ -23,9 +26,12 @@ const DESTINATIONS_DB = [
         type: "sea",
         distance: "bloom",
         moods: ["wild", "culture", "zen"],
-        tagline: {
-            it: "L'isola aliena con alberi drago",
-            en: "Alien island with dragon trees"
+        translations: {
+            it: "Socotra",
+            en: "Socotra",
+            es: "Socotra",
+            fr: "Socotra",
+            de: "Sokotra"
         }
     },
     {
@@ -35,9 +41,12 @@ const DESTINATIONS_DB = [
         type: "sea",
         distance: "curious",
         moods: ["wild", "zen", "romantic"],
-        tagline: {
-            it: "Aurora boreale e casette rosse",
-            en: "Northern lights and red cabins"
+        translations: {
+            it: "Lofoten",
+            en: "Lofoten",
+            es: "Lofoten",
+            fr: "Lofoten",
+            de: "Lofoten"
         }
     },
     {
@@ -47,9 +56,12 @@ const DESTINATIONS_DB = [
         type: "sea",
         distance: "bloom",
         moods: ["zen", "romantic", "wild"],
-        tagline: {
-            it: "L'anti-Bali senza turisti",
-            en: "The anti-Bali without tourists"
+        translations: {
+            it: "Gili Nanggu",
+            en: "Gili Nanggu",
+            es: "Gili Nanggu",
+            fr: "Gili Nanggu",
+            de: "Gili Nanggu"
         }
     },
     {
@@ -59,13 +71,16 @@ const DESTINATIONS_DB = [
         type: "sea",
         distance: "comfort",
         moods: ["zen", "glamour", "gourmet"],
-        tagline: {
-            it: "Gli Hamptons d'Europa",
-            en: "Europe's Hamptons"
+        translations: {
+            it: "Comporta",
+            en: "Comporta",
+            es: "Comporta",
+            fr: "Comporta",
+            de: "Comporta"
         }
     },
-
-    // ========== CITTÀ SEGRETE (5 chicche) ==========
+    
+    // CITTÀ (City) Destinations
     {
         name: "Tbilisi",
         country: "Georgia",
@@ -73,9 +88,12 @@ const DESTINATIONS_DB = [
         type: "city",
         distance: "curious",
         moods: ["culture", "movida", "gourmet", "wild"],
-        tagline: {
-            it: "Techno e khachapuri",
-            en: "Techno and khachapuri"
+        translations: {
+            it: "Tbilisi",
+            en: "Tbilisi",
+            es: "Tiflis",
+            fr: "Tbilissi",
+            de: "Tiflis"
         }
     },
     {
@@ -85,9 +103,12 @@ const DESTINATIONS_DB = [
         type: "city",
         distance: "bloom",
         moods: ["culture", "wild", "design", "movida"],
-        tagline: {
-            it: "Street art e funicolari pazze",
-            en: "Street art and crazy funiculars"
+        translations: {
+            it: "Valparaiso",
+            en: "Valparaiso",
+            es: "Valparaíso",
+            fr: "Valparaiso",
+            de: "Valparaíso"
         }
     },
     {
@@ -97,9 +118,12 @@ const DESTINATIONS_DB = [
         type: "city",
         distance: "comfort",
         moods: ["zen", "culture", "romantic", "gourmet"],
-        tagline: {
-            it: "Draghi e hipster balcanici",
-            en: "Dragons and Balkan hipsters"
+        translations: {
+            it: "Lubiana",
+            en: "Ljubljana",
+            es: "Liubliana",
+            fr: "Ljubljana",
+            de: "Ljubljana"
         }
     },
     {
@@ -109,9 +133,12 @@ const DESTINATIONS_DB = [
         type: "city",
         distance: "bloom",
         moods: ["culture", "gourmet", "wild", "design"],
-        tagline: {
-            it: "Mezcal e morti viventi",
-            en: "Mezcal and Day of the Dead"
+        translations: {
+            it: "Oaxaca",
+            en: "Oaxaca",
+            es: "Oaxaca",
+            fr: "Oaxaca",
+            de: "Oaxaca"
         }
     },
     {
@@ -121,13 +148,16 @@ const DESTINATIONS_DB = [
         type: "city",
         distance: "comfort",
         moods: ["gourmet", "culture", "romantic", "movida"],
-        tagline: {
-            it: "Azulejos e vino che spacca",
-            en: "Tiles and wine that rocks"
+        translations: {
+            it: "Porto",
+            en: "Porto",
+            es: "Oporto",
+            fr: "Porto",
+            de: "Porto"
         }
     },
-
-    // ========== MONTAGNE SEGRETE (5 chicche) ==========
+    
+    // MONTAGNA (Mountain) Destinations
     {
         name: "Svaneti",
         country: "Georgia",
@@ -135,9 +165,12 @@ const DESTINATIONS_DB = [
         type: "mountain",
         distance: "bloom",
         moods: ["wild", "culture", "zen"],
-        tagline: {
-            it: "Torri medievali nel Caucaso",
-            en: "Medieval towers in Caucasus"
+        translations: {
+            it: "Svaneti",
+            en: "Svaneti",
+            es: "Svaneti",
+            fr: "Svanétie",
+            de: "Swanetien"
         }
     },
     {
@@ -147,9 +180,12 @@ const DESTINATIONS_DB = [
         type: "mountain",
         distance: "curious",
         moods: ["wild", "zen", "culture"],
-        tagline: {
-            it: "Le Alpi che nessuno conosce",
-            en: "The Alps nobody knows"
+        translations: {
+            it: "Valbona",
+            en: "Valbona",
+            es: "Valbona",
+            fr: "Valbona",
+            de: "Valbona"
         }
     },
     {
@@ -159,9 +195,12 @@ const DESTINATIONS_DB = [
         type: "mountain",
         distance: "bloom",
         moods: ["wild", "culture", "zen"],
-        tagline: {
-            it: "Ande senza folla di Machu Picchu",
-            en: "Andes without Machu Picchu crowds"
+        translations: {
+            it: "Huaraz",
+            en: "Huaraz",
+            es: "Huaraz",
+            fr: "Huaraz",
+            de: "Huaraz"
         }
     },
     {
@@ -171,9 +210,12 @@ const DESTINATIONS_DB = [
         type: "mountain",
         distance: "bloom",
         moods: ["wild", "zen", "glamour"],
-        tagline: {
-            it: "Sci e aurora boreale insieme",
-            en: "Skiing under northern lights"
+        translations: {
+            it: "Alpi di Lyngen",
+            en: "Lyngen Alps",
+            es: "Alpes de Lyngen",
+            fr: "Alpes de Lyngen",
+            de: "Lyngenalpen"
         }
     },
     {
@@ -183,9 +225,12 @@ const DESTINATIONS_DB = [
         type: "mountain",
         distance: "comfort",
         moods: ["culture", "romantic", "gourmet", "glamour"],
-        tagline: {
-            it: "Castelli di Dracula sulla neve",
-            en: "Dracula's castles on snow"
+        translations: {
+            it: "Sinaia",
+            en: "Sinaia",
+            es: "Sinaia",
+            fr: "Sinaia",
+            de: "Sinaia"
         }
     }
 ];
