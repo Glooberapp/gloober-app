@@ -255,4 +255,6 @@ const destinations = [
         }
     }
 ];
+
+// Esporta la variabile destinations
 window.destinations = destinations;
