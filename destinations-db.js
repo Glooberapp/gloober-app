@@ -79,7 +79,7 @@ const DESTINATIONS_DB = [
     {
         name: "Tbilisi",
         country: "Georgia",
-        image: "https://via.placeholder.com/800x600/8B4513/FFFFFF?text=Tbilisi",
+        image: "images/tbilisi.jpg",
         type: "city",
         distance: "curious",
         moods: ["culture", "gourmet", "movida"],
@@ -93,7 +93,7 @@ const DESTINATIONS_DB = [
     {
         name: "Valparaíso",
         country: "Chile",
-        image: "https://via.placeholder.com/800x600/FF6347/FFFFFF?text=Valparaiso",
+        image: "images/valparaiso.jpg",
         type: "city",
         distance: "bloom",
         moods: ["culture", "design", "movida"],
@@ -151,7 +151,7 @@ const DESTINATIONS_DB = [
     {
         name: "Svaneti",
         country: "Georgia",
-        image: "https://via.placeholder.com/800x600/708090/FFFFFF?text=Svaneti",
+        image: "images/svaneti.jpg",
         type: "mountain",
         distance: "bloom",
         moods: ["wild", "culture", "zen"],
@@ -165,7 +165,7 @@ const DESTINATIONS_DB = [
     {
         name: "Valbona Valley",
         country: "Albania",
-        image: "https://via.placeholder.com/800x600/228B22/FFFFFF?text=Valbona+Valley",
+        image: "images/valbona.jpg",
         type: "mountain",
         distance: "curious",
         moods: ["wild", "zen", "culture"],
