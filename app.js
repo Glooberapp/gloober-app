@@ -539,8 +539,11 @@ function generateNarrative(destination) {
 function bookTrip() {
     const destination = document.getElementById('destination-name').textContent;
     
-    // Usa l'URL che funzionava prima MA senza il paese
-    window.open(`https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}`, '_blank');
+    // Aggiungi un timestamp per forzare una nuova ricerca
+    const timestamp = new Date().getTime();
+    
+    // URL con parametri per evitare la cache
+    window.open(`https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}&t=${timestamp}`, '_blank');
 }
 
 // GESTIONE CAMBIO LINGUA
