@@ -1,606 +1,641 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Slide your travel vibes and discover your perfect destination">
     <title>Gloober - Slide Your Travel Vibes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
     <style>
-        /* RESET E BASE */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0a0a;
-            color: #fff;
-            overflow-x: hidden;
+            background: #000000;
             min-height: 100vh;
-            position: relative;
+            min-height: -webkit-fill-available;
+            overflow-x: hidden;
+            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
-        /* CONTAINER PRINCIPALE */
-        .container {
-            max-width: 1200px;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Logo circle con gradiente e EFFETTO 3D */
+        .logo-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            background-image: 
+                radial-gradient(circle at 30% 30%, 
+                    rgba(255, 255, 255, 0.3) 0%, 
+                    rgba(255, 255, 255, 0.1) 20%,
+                    transparent 40%),
+                radial-gradient(circle at 70% 70%, 
+                    transparent 40%, 
+                    rgba(0, 0, 0, 0.4) 70%),
+                linear-gradient(#000000, #000000), 
+                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
+            background-origin: content-box, content-box, border-box, border-box;
+            background-clip: content-box, content-box, content-box, border-box;
+            display: inline-block;
+            margin-right: 15px;
+            box-shadow: 0 4px 16px rgba(0, 180, 216, 0.4);
+        }
+        
+        /* Container principale responsive */
+        .main-container {
+            max-width: 600px;
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
+            min-height: -webkit-fill-available;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
         }
         
-        /* HEADER E LOGO */
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            position: relative;
-            width: 100%;
+        /* Glass card responsive */
+        .glass-card {
+            padding: 30px 20px;
         }
         
-        .logo {
-            font-size: 48px;
-            font-weight: 100;
-            letter-spacing: 8px;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-        
-        .tagline {
-            font-size: 18px;
-            color: #888;
-            letter-spacing: 2px;
-        }
-        
-        /* LANGUAGE SELECTOR */
-        .language-selector {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+        /* Language selector */
+        .lang-selector {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
             display: flex;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px;
-            border-radius: 20px;
-            z-index: 1000;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            flex-wrap: wrap;
+            max-width: 320px;
+        }
+        
+        /* Mobile: language selector ANCORA più in basso */
+        @media (max-width: 768px) {
+            .lang-selector {
+                bottom: 10px;
+                left: 10px;
+                padding: 4px;
+                gap: 3px;
+                max-width: 250px;
+            }
         }
         
         .lang-btn {
-            width: 32px;
-            height: 32px;
-            border: none;
-            background: transparent;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 20px;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            opacity: 0.6;
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .lang-btn:hover {
             opacity: 1;
-            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
         }
         
         .lang-btn.active {
             opacity: 1;
-            background: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+            border: 2px solid #00b4d8;
         }
         
-        /* STEPS CONTAINER */
-        .step {
-            width: 100%;
-            max-width: 600px;
-            opacity: 1;
-            transition: opacity 0.5s ease;
-        }
-        
-        .step.hidden {
-            display: none;
-        }
-        
-        /* SLIDERS */
-        .slider-group {
-            margin-bottom: 30px;
-        }
-        
-        .slider-label {
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: #666;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
+        /* Stile unificato per tutti gli slider */
         .slider-container {
+            width: 100%;
+            height: 60px;
+            margin: 15px auto;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
             position: relative;
-            height: 70px;
-            margin-bottom: 30px;
+            overflow: hidden;
         }
         
-        .slider-track {
+        /* Location slider gradient */
+        .location-slider {
+            background: linear-gradient(to right, #60a5fa 0%, #f97316 50%, #10b981 100%);
+        }
+        
+        /* Distance slider gradient */
+        .distance-slider {
+            background: linear-gradient(to right, #94a3b8 0%, #64748b 50%, #334155 100%);
+        }
+        
+        /* Labels dentro lo slider */
+        .slider-inner-labels {
             position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #333;
-            transform: translateY(-50%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            pointer-events: none;
+            user-select: none;
         }
         
+        .slider-inner-labels span {
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        
+        .slider-inner-labels span.visible {
+            opacity: 1;
+        }
+        
+        .slider-inner-labels .label-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+        }
+        
+        .slider-inner-labels.active span {
+            opacity: 1;
+        }
+        
+        /* Slider dot con EFFETTO 3D GRADIENTE */
         .slider-dot {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle at 30% 30%, #3b82f6, #1e40af);
+            width: 56px;
+            height: 56px;
+            border: 3px solid transparent;
+            background-image: 
+                radial-gradient(circle at 30% 30%, 
+                    rgba(255, 255, 255, 0.3) 0%, 
+                    rgba(255, 255, 255, 0.1) 20%,
+                    transparent 40%),
+                radial-gradient(circle at 70% 70%, 
+                    transparent 40%, 
+                    rgba(0, 0, 0, 0.4) 70%),
+                linear-gradient(#000000, #000000), 
+                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
+            background-origin: content-box, content-box, border-box, border-box;
+            background-clip: content-box, content-box, content-box, border-box;
             border-radius: 50%;
-            transform: translate(-50%, -50%);
+            top: 2px;
             cursor: grab;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
-            transition: box-shadow 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 180, 216, 0.4);
+            transition: left 0.15s ease-out;
+            will-change: left;
+            z-index: 10;
+            transform: translateX(-50%);
         }
         
         .slider-dot:active {
             cursor: grabbing;
-            box-shadow: 0 6px 30px rgba(59, 130, 246, 0.5);
+            transform: translateX(-50%) scale(0.95);
+            transition: none;
         }
         
-        .slider-labels {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 40px;
-            pointer-events: none;
-        }
-        
-        .slider-labels span {
-            font-size: 10px;
-            color: #666;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            letter-spacing: 1px;
-        }
-        
-        .slider-labels.active span {
-            opacity: 1;
-        }
-        
-        /* MOOD SELECTOR */
-        .mood-container {
-            margin: 40px 0;
-        }
-        
+        /* Mood selector rettangolare */
         .mood-selector {
             position: relative;
-            width: 250px;
-            height: 250px;
-            background: #111;
-            border: 1px solid #333;
-            margin: 0 auto;
-            border-radius: 8px;
-        }
-        
-        .mood-globe {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background: radial-gradient(circle at 30% 30%, #3b82f6, #1e40af);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            cursor: grab;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+            width: 100%;
+            height: 200px;
+            margin: 15px auto;
+            background: linear-gradient(135deg, 
+                #ec4899 0%, 
+                #8b5cf6 25%, 
+                #3b82f6 50%, 
+                #10b981 75%, 
+                #f59e0b 100%);
+            border-radius: 20px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            overflow: hidden;
         }
         
         .mood-labels {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
+            user-select: none;
         }
         
         .mood-label {
             position: absolute;
-            font-size: 10px;
-            color: #666;
-            opacity: 0.5;
-            transition: all 0.3s ease;
-            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            letter-spacing: 0.08em;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        /* Posizioni etichette mood */
+        .mood-label.top { 
+            top: 10px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+        }
+        .mood-label.bottom { 
+            bottom: 10px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+        }
+        .mood-label.left { 
+            left: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+        }
+        .mood-label.right { 
+            right: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+        }
+        .mood-label.top-left { 
+            top: 25px; 
+            left: 25px; 
+        }
+        .mood-label.top-right { 
+            top: 25px; 
+            right: 25px; 
+        }
+        .mood-label.bottom-left { 
+            bottom: 25px; 
+            left: 25px; 
+        }
+        .mood-label.bottom-right { 
+            bottom: 25px; 
+            right: 25px; 
         }
         
         .mood-label.visible {
             opacity: 1;
-            color: #3b82f6;
-            font-weight: 500;
         }
         
-        /* Posizioni mood */
-        .mood-label.top { top: 5px; left: 50%; transform: translateX(-50%); }
-        .mood-label.bottom { bottom: 5px; left: 50%; transform: translateX(-50%); }
-        .mood-label.left { left: 5px; top: 50%; transform: translateY(-50%); }
-        .mood-label.right { right: 5px; top: 50%; transform: translateY(-50%); }
-        .mood-label.top-left { top: 20px; left: 20px; }
-        .mood-label.top-right { top: 20px; right: 20px; }
-        .mood-label.bottom-left { bottom: 20px; left: 20px; }
-        .mood-label.bottom-right { bottom: 20px; right: 20px; }
-        
-        /* BUTTON */
-        .gloob-button {
-            background: linear-gradient(135deg, #3b82f6, #1e40af);
-            border: none;
-            color: white;
-            padding: 20px 60px;
-            font-size: 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            letter-spacing: 2px;
-            margin: 30px auto;
-            display: block;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
-            transition: all 0.3s ease;
+        /* Joystick globe */
+        .joystick-globe {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            border: 3px solid transparent;
+            background-image: 
+                radial-gradient(circle at 30% 30%, 
+                    rgba(255, 255, 255, 0.3) 0%, 
+                    rgba(255, 255, 255, 0.1) 20%,
+                    transparent 40%),
+                radial-gradient(circle at 70% 70%, 
+                    transparent 40%, 
+                    rgba(0, 0, 0, 0.4) 70%),
+                linear-gradient(#000000, #000000), 
+                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
+            background-origin: content-box, content-box, border-box, border-box;
+            background-clip: content-box, content-box, content-box, border-box;
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            box-shadow: 0 8px 24px rgba(0, 180, 216, 0.5);
+            transition: left 0.1s ease-out, top 0.1s ease-out;
+            will-change: left, top;
+            z-index: 10;
         }
         
-        .gloob-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(59, 130, 246, 0.5);
+        .joystick-globe:active {
+            cursor: grabbing;
+            transform: translate(-50%, -50%) scale(0.95);
+            transition: none;
         }
         
-        /* LOADING */
-        .loading-container {
-            text-align: center;
-            padding: 100px 20px;
+        /* Globo loading */
+        @keyframes spinGlobe {
+            from { 
+                transform: rotateY(0deg) rotateX(10deg); 
+            }
+            to { 
+                transform: rotateY(360deg) rotateX(10deg); 
+            }
         }
         
         .loading-globe {
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle at 30% 30%, #3b82f6, #1e40af);
-            border-radius: 50%;
-            margin: 0 auto 30px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-        
-        .loading-text {
-            font-size: 24px;
-            letter-spacing: 3px;
-            color: #888;
-        }
-        
-        /* RISULTATO */
-        .result-container {
-            text-align: center;
-            max-width: 600px;
+            width: 180px;
+            height: 180px;
             margin: 0 auto;
+            border-radius: 50%;
+            border: 6px solid transparent;
+            background-image: 
+                radial-gradient(circle at 30% 30%, 
+                    rgba(255, 255, 255, 0.3) 0%, 
+                    rgba(255, 255, 255, 0.1) 20%,
+                    transparent 40%),
+                radial-gradient(circle at 70% 70%, 
+                    transparent 40%, 
+                    rgba(0, 0, 0, 0.4) 70%),
+                linear-gradient(#000000, #000000), 
+                linear-gradient(135deg, #00b4d8, #0077b6, #90e0ef);
+            background-origin: content-box, content-box, border-box, border-box;
+            background-clip: content-box, content-box, content-box, border-box;
+            box-shadow: 0 8px 24px rgba(0, 180, 216, 0.5);
+            animation: spinGlobe 2s linear infinite;
+            transform-style: preserve-3d;
         }
         
-        .destination-card {
-            background: #111;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        }
-        
-        .destination-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-        }
-        
-        .destination-info {
-            padding: 30px;
-        }
-        
-        .destination-name {
-            font-size: 36px;
-            font-weight: 300;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-        
-        .destination-tagline {
-            font-size: 16px;
-            color: #888;
-            margin-bottom: 5px;
-            font-style: italic;
-        }
-        
-        .destination-country {
-            font-size: 14px;
-            color: #666;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        
-        .narrative {
-            margin: 30px 0;
-            padding: 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
+        /* Narrative text */
+        .narrative-text {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #00b4d8;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 400;
             line-height: 1.8;
-            font-size: 16px;
-            color: #ccc;
-        }
-        
-        .quote-container {
-            margin: 30px 0;
-            padding: 20px;
-            border-left: 3px solid #3b82f6;
             font-style: italic;
         }
         
-        .travel-quote {
-            font-size: 18px;
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-        
-        .quote-author {
-            font-size: 14px;
-            color: #666;
-            text-align: right;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        
-        .book-button, .reload-button {
-            padding: 15px 40px;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 1px;
-        }
-        
-        .book-button {
-            background: linear-gradient(135deg, #3b82f6, #1e40af);
+        /* Bottone principale */
+        .gloob-button {
+            background: linear-gradient(135deg, #00b4d8, #0077b6);
             color: white;
+            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 700;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
         }
         
-        .reload-button {
-            background: transparent;
-            color: #3b82f6;
-            border: 2px solid #3b82f6;
+        .gloob-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(0, 180, 216, 0.4);
         }
         
-        .book-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        /* Labels */
+        label {
+            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.6);
         }
         
-        .reload-button:hover {
-            background: rgba(59, 130, 246, 0.1);
-        }
+        .hidden { display: none; }
         
-        /* MOBILE OTTIMIZZAZIONI */
+        /* MOBILE SUPER OTTIMIZZATO - TUTTO IN UNA SCHERMATA */
         @media (max-width: 768px) {
-            /* Previeni scroll */
+            /* Blocca scroll verticale */
             body {
+                margin: 0;
+                padding: 0;
                 overflow: hidden;
                 height: 100vh;
                 position: fixed;
                 width: 100%;
             }
             
-            .container {
+            .main-container {
                 padding: 10px;
-                height: 100vh;
+                max-width: 100%;
                 justify-content: flex-start;
+                height: 100vh;
+                overflow: hidden;
             }
             
-            /* Header più compatto */
-            .header {
-                margin-bottom: 10px;
+            /* Header super compatto */
+            .text-center.mb-6 {
+                margin-bottom: 10px !important;
             }
             
-            .logo {
-                font-size: 32px;
-                letter-spacing: 4px;
-                margin-bottom: 5px;
+            h1 {
+                font-size: 2rem !important;
+                margin-bottom: 2px !important;
             }
             
-            .tagline {
-                font-size: 14px;
+            .logo-circle {
+                width: 35px;
+                height: 35px;
+                margin-right: 8px;
             }
             
-            /* Language selector più piccolo */
-            .language-selector {
-                top: 10px;
-                right: 10px;
-                padding: 4px;
-                gap: 4px;
+            .text-lg {
+                font-size: 0.875rem !important;
+            }
+            
+            .glass-card {
+                padding: 15px 10px !important;
+            }
+            
+            /* Slider SUPER compatti */
+            .slider-container {
+                height: 45px !important;
+                margin: 10px auto !important;
+            }
+            
+            .slider-inner-labels {
+                padding: 0 20px;
+            }
+            
+            /* Etichette più piccole */
+            .slider-inner-labels span {
+                font-size: 9px;
+            }
+            
+            .slider-inner-labels .label-center {
+                display: none;
+            }
+            
+            /* Mostra solo etichette laterali */
+            .slider-inner-labels span:first-child,
+            .slider-inner-labels span:last-child {
+                opacity: 0.6;
+            }
+            
+            /* Pallino più piccolo */
+            .slider-dot {
+                width: 40px;
+                height: 40px;
+                transform: translateX(-50%);
+            }
+            
+            /* Mood selector molto più piccolo */
+            .mood-selector {
+                height: 150px !important;
+                margin: 10px auto !important;
+            }
+            
+            /* Etichette mood ancora più piccole */
+            .mood-label {
+                font-size: 9px;
+                opacity: 0.4;
+            }
+            
+            /* Riposiziona etichette mood più vicine */
+            .mood-label.top { top: 5px; }
+            .mood-label.bottom { bottom: 5px; }
+            .mood-label.left { left: 8px; }
+            .mood-label.right { right: 8px; }
+            .mood-label.top-left { top: 15px; left: 15px; }
+            .mood-label.top-right { top: 15px; right: 15px; }
+            .mood-label.bottom-left { bottom: 15px; left: 15px; }
+            .mood-label.bottom-right { bottom: 15px; right: 15px; }
+            
+            .mood-label.visible {
+                opacity: 1;
+            }
+            
+            /* Pallino mood più piccolo */
+            .joystick-globe {
+                width: 40px;
+                height: 40px;
+            }
+            
+            /* Bottone più piccolo ma visibile */
+            .gloob-button {
+                width: 100%;
+                padding: 14px 30px;
+                font-size: 1rem;
+                margin-top: 10px;
+            }
+            
+            /* Language selector super piccolo */
+            .lang-selector {
+                bottom: 5px;
+                left: 5px;
+                padding: 3px;
+                gap: 2px;
             }
             
             .lang-btn {
-                width: 24px;
-                height: 24px;
-                font-size: 16px;
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
             }
             
-            /* Slider ANCORA più compatti */
-            .slider-group {
-                margin-bottom: 15px;
+            /* Spazi verticali minimi */
+            .mb-6 {
+                margin-bottom: 8px !important;
             }
             
-            .slider-container {
-                height: 45px !important;
-                margin-bottom: 15px;
-            }
-            
-            .slider-dot {
-                width: 40px !important;
-                height: 40px !important;
-            }
-            
-            .slider-label {
-                font-size: 11px;
-                margin-bottom: 8px;
-            }
-            
-            .slider-labels span {
-                font-size: 9px;
-            }
-            
-            /* Mood selector più piccolo */
-            .mood-container {
-                margin: 20px 0;
-            }
-            
-            .mood-selector {
-                width: 150px !important;
-                height: 150px !important;
-            }
-            
-            .mood-globe {
-                width: 35px !important;
-                height: 35px !important;
-            }
-            
-            .mood-label {
-                font-size: 9px;
-            }
-            
-            /* Bottone più piccolo */
-            .gloob-button {
-                padding: 15px 40px;
-                font-size: 16px;
-                margin: 20px auto;
-            }
-            
-            /* Risultati ottimizzati */
-            .result-container {
-                padding: 10px;
-            }
-            
-            .destination-image {
-                height: 200px;
-            }
-            
-            .destination-info {
-                padding: 20px;
-            }
-            
-            .destination-name {
-                font-size: 24px;
-            }
-            
-            .destination-tagline {
-                font-size: 14px;
-            }
-            
-            .narrative {
-                font-size: 14px;
-                padding: 15px;
-                margin: 20px 0;
-            }
-            
-            .quote-container {
-                padding: 15px;
-                margin: 20px 0;
-            }
-            
-            .travel-quote {
-                font-size: 14px;
-            }
-            
-            .action-buttons {
-                gap: 10px;
-            }
-            
-            .book-button, .reload-button {
-                padding: 12px 30px;
-                font-size: 14px;
+            label {
+                margin-bottom: 5px !important;
+                font-size: 0.7rem;
             }
         }
         
-        /* Fix per iPhone notch */
+        /* Extra small devices (iPhone SE, etc) */
+        @media (max-width: 380px) {
+            h1 {
+                font-size: 1.75rem !important;
+            }
+            
+            .logo-circle {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .mood-selector {
+                height: 120px !important;
+            }
+            
+            .slider-container {
+                height: 40px !important;
+            }
+            
+            .slider-dot,
+            .joystick-globe {
+                width: 35px;
+                height: 35px;
+            }
+        }
+        
+        /* Fix per iPhone notch e safe areas */
         @supports (padding-top: env(safe-area-inset-top)) {
-            .container {
+            body {
                 padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
             }
         }
     </style>
 </head>
-<body>
+<body class="text-white">
     <!-- Language Selector -->
-    <div class="language-selector">
-        <button class="lang-btn" data-lang="en" title="English">🇬🇧</button>
-        <button class="lang-btn" data-lang="fr" title="Français">🇫🇷</button>
-        <button class="lang-btn" data-lang="ar" title="العربية">🇸🇦</button>
-        <button class="lang-btn" data-lang="zh" title="中文">🇨🇳</button>
-        <button class="lang-btn" data-lang="hi" title="हिन्दी">🇮🇳</button>
-        <button class="lang-btn" data-lang="es" title="Español">🇪🇸</button>
-        <button class="lang-btn" data-lang="it" title="Italiano">🇮🇹</button>
+    <div class="lang-selector">
+        <div class="lang-btn active" data-lang="en" title="English">🇬🇧</div>
+        <div class="lang-btn" data-lang="fr" title="Français">🇫🇷</div>
+        <div class="lang-btn" data-lang="ar" title="العربية">🇸🇦</div>
+        <div class="lang-btn" data-lang="zh" title="中文">🇨🇳</div>
+        <div class="lang-btn" data-lang="hi" title="हिन्दी">🇮🇳</div>
+        <div class="lang-btn" data-lang="es" title="Español">🇪🇸</div>
+        <div class="lang-btn" data-lang="it" title="Italiano">🇮🇹</div>
     </div>
-    
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1 class="logo">GLOOBER</h1>
-            <p class="tagline" data-translate="tagline">Slide your travel vibes</p>
-        </div>
-        
-        <!-- Step 1: Sliders -->
-        <div id="slider-step" class="step">
-            <div class="slider-group">
+
+    <!-- STEP 1: SLIDERS -->
+    <div id="slider-step">
+        <div class="main-container">
+            <div class="text-center mb-6">
+                <h1 class="text-5xl font-bold mb-3 text-white flex items-center justify-center">
+                    <span class="logo-circle"></span>
+                    Gloober
+                </h1>
+                <p class="text-lg text-gray-400" data-translate="tagline">Slide your travel vibes</p>
+            </div>
+
+            <div class="glass-card rounded-2xl">
                 <!-- Location Slider -->
-                <div class="slider-label" data-translate="habitatLabel">HABITAT</div>
-                <div class="slider-container" id="location-slider">
-                    <div class="slider-track"></div>
-                    <div class="slider-dot" id="location-dot"></div>
-                    <div class="slider-labels" id="location-labels">
-                        <span data-translate="sea">SEA</span>
-                        <span data-translate="city">CITY</span>
-                        <span data-translate="mountain">MOUNTAIN</span>
+                <div class="mb-6">
+                    <label class="block text-center mb-2" data-translate="habitatLabel">HABITAT</label>
+                    <div class="slider-container location-slider" id="location-slider">
+                        <div class="slider-inner-labels" id="location-labels">
+                            <span data-translate="sea">MARE</span>
+                            <span class="label-center" data-translate="city">CITTÀ</span>
+                            <span data-translate="mountain">MONTAGNA</span>
+                        </div>
+                        <div class="slider-dot" id="location-dot" style="left: 50%;"></div>
                     </div>
                 </div>
-                
+
                 <!-- Distance Slider -->
-                <div class="slider-label" data-translate="rangeLabel">RANGE</div>
-                <div class="slider-container" id="distance-slider">
-                    <div class="slider-track"></div>
-                    <div class="slider-dot" id="distance-dot"></div>
-                    <div class="slider-labels" id="distance-labels">
-                        <span data-translate="comfort">COMFORT</span>
-                        <span data-translate="curious">CURIOUS</span>
-                        <span data-translate="bloom">BLOOM</span>
+                <div class="mb-6">
+                    <label class="block text-center mb-2" data-translate="rangeLabel">RANGE</label>
+                    <div class="slider-container distance-slider" id="distance-slider">
+                        <div class="slider-inner-labels" id="distance-labels">
+                            <span data-translate="comfort">COMFORT</span>
+                            <span class="label-center" data-translate="curious">CURIOUS</span>
+                            <span data-translate="bloom">BLOOM</span>
+                        </div>
+                        <div class="slider-dot" id="distance-dot" style="left: 50%;"></div>
                     </div>
                 </div>
-                
+
                 <!-- Mood Selector -->
-                <div class="mood-container">
-                    <div class="slider-label" data-translate="vibesLabel">VIBES</div>
+                <div class="mb-6">
+                    <label class="block text-center mb-2" data-translate="vibesLabel">VIBES</label>
                     <div class="mood-selector" id="mood-selector">
-                        <div class="mood-globe" id="mood-globe"></div>
                         <div class="mood-labels">
-                            <span class="mood-label top" data-translate="movida">NIGHTLIFE</span>
+                            <span class="mood-label top" data-translate="movida">MOVIDA</span>
                             <span class="mood-label bottom" data-translate="zen">ZEN</span>
                             <span class="mood-label left" data-translate="gourmet">GOURMET</span>
                             <span class="mood-label right" data-translate="wild">WILD</span>
@@ -609,50 +644,76 @@
                             <span class="mood-label bottom-left" data-translate="culture">CULTURE</span>
                             <span class="mood-label bottom-right" data-translate="romantic">ROMANTIC</span>
                         </div>
+                        <div class="joystick-globe" id="mood-globe"></div>
                     </div>
                 </div>
-            </div>
-            
-            <button class="gloob-button" id="gloob-button" data-translate="gloobIt">Gloob it!</button>
-        </div>
-        
-        <!-- Step 2: Loading -->
-        <div id="loading-step" class="step hidden">
-            <div class="loading-container">
-                <div class="loading-globe"></div>
-                <p class="loading-text" data-translate="gloobing">Gloobing...</p>
-            </div>
-        </div>
-        
-        <!-- Step 3: Result -->
-        <div id="result-step" class="step hidden">
-            <div class="result-container">
-                <div class="destination-card">
-                    <img id="destination-image" class="destination-image" src="" alt="">
-                    <div class="destination-info">
-                        <h2 id="destination-name" class="destination-name"></h2>
-                        <p id="destination-tagline" class="destination-tagline"></p>
-                        <p id="destination-country" class="destination-country"></p>
-                    </div>
-                </div>
-                
-                <div class="narrative">
-                    <p id="narrative-text"></p>
-                </div>
-                
-                <div class="quote-container">
-                    <p id="travel-quote" class="travel-quote"></p>
-                    <p id="quote-author" class="quote-author"></p>
-                </div>
-                
-                <div class="action-buttons">
-                    <button id="book-button" class="book-button" data-translate="bookNow">Book Now</button>
-                    <button id="reload-button" class="reload-button" data-translate="tryAgain">Regloob</button>
+
+                <!-- Gloob Button -->
+                <div class="text-center">
+                    <button id="gloob-button" class="gloob-button">
+                        <span data-translate="gloobIt">Gloob it!</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <!-- STEP 2: LOADING -->
+    <div id="loading-step" class="hidden min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <div style="width: 200px; height: 200px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                <div class="loading-globe"></div>
+            </div>
+            <h2 class="text-3xl font-bold mt-6" data-translate="gloobing" style="font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">Gloobing...</h2>
+        </div>
+    </div>
+
+    <!-- STEP 3: RESULTS -->
+    <div id="result-step" class="hidden">
+        <div class="container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <!-- Destination Header -->
+                <div class="glass-card rounded-2xl p-8 text-center mb-8">
+                    <h2 class="text-5xl font-bold text-white mb-3" id="destination-name" style="font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">Loading...</h2>
+                    <p class="text-xl italic mb-2" id="destination-tagline">...</p>
+                    <p class="text-gray-400" id="destination-country">...</p>
+                </div>
+
+                <!-- Narrative -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold mb-6 text-center" data-translate="yourJourney">Il tuo viaggio</h3>
+                    <div class="narrative-text glass-card rounded-xl" id="narrative-text">
+                        <!-- La narrativa verrà inserita qui -->
+                    </div>
+                </div>
+
+                <!-- Immagine destinazione -->
+                <div class="mb-8 text-center">
+                    <img id="destination-image" class="rounded-xl shadow-2xl mx-auto max-w-full" style="max-height: 400px;" alt="Destination">
+                </div>
+
+                <!-- Citazione -->
+                <div class="mb-8">
+                    <blockquote class="text-center italic text-lg text-gray-400">
+                        <p id="travel-quote" class="mb-2"></p>
+                        <cite class="text-sm text-gray-500">— <span id="quote-author"></span></cite>
+                    </blockquote>
+                </div>
+
+                <!-- Book Button -->
+                <div class="text-center">
+                    <button id="book-button" class="gloob-button mb-4">
+                        <span data-translate="bookNow">Prenota</span> →
+                    </button>
+                    <br>
+                    <button id="reload-button" class="text-gray-500 hover:text-white transition-all">
+                        <span data-translate="tryAgain">Regloob</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Script separati -->
     <script src="destinations-db.js"></script>
     <script src="app.js"></script>
