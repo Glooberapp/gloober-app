@@ -418,14 +418,22 @@
         
         /* MOBILE SUPER OTTIMIZZATO - TUTTO IN UNA SCHERMATA */
         @media (max-width: 768px) {
-            /* Blocca scroll verticale */
-            body {
+            /* Blocca scroll verticale SOLO per slider e loading */
+            body:has(#slider-step:not(.hidden)),
+            body:has(#loading-step:not(.hidden)) {
                 margin: 0;
                 padding: 0;
                 overflow: hidden;
                 height: 100vh;
                 position: fixed;
                 width: 100%;
+            }
+            
+            /* Permetti scroll per la pagina risultati */
+            body:has(#result-step:not(.hidden)) {
+                overflow: auto !important;
+                height: auto !important;
+                position: relative !important;
             }
             
             .main-container {
@@ -554,83 +562,6 @@
             label {
                 margin-bottom: 5px !important;
                 font-size: 0.7rem;
-            }
-            
-            /* PAGINA RISULTATI SUPER COMPATTA SU MOBILE */
-            #result-step .container {
-                padding: 5px !important;
-            }
-
-            #result-step .max-w-4xl {
-                max-width: 100% !important;
-            }
-
-            /* Header destinazione mini */
-            #result-step .glass-card {
-                padding: 10px !important;
-                margin-bottom: 10px !important;
-            }
-
-            #result-step .text-5xl {
-                font-size: 1.5rem !important;
-                margin-bottom: 5px !important;
-            }
-
-            #result-step .text-xl {
-                font-size: 0.875rem !important;
-                margin-bottom: 2px !important;
-            }
-
-            #result-step .text-gray-400 {
-                font-size: 0.75rem !important;
-            }
-
-            /* Rimuovi "Il tuo viaggio" per risparmiare spazio */
-            #result-step h3 {
-                display: none !important;
-            }
-
-            /* Narrativa mini */
-            #result-step .narrative-text {
-                padding: 10px !important;
-                margin-bottom: 10px !important;
-                font-size: 0.75rem !important;
-                line-height: 1.3 !important;
-                max-height: 60px !important;
-                overflow: hidden !important;
-            }
-
-            /* Immagine più piccola */
-            #result-step #destination-image {
-                max-height: 120px !important;
-                margin-bottom: 10px !important;
-            }
-
-            /* Rimuovi citazione per risparmiare spazio */
-            #result-step blockquote {
-                display: none !important;
-            }
-
-            /* Bottoni affiancati e più piccoli */
-            #result-step .text-center {
-                margin-top: 10px !important;
-            }
-
-            #result-step .gloob-button {
-                padding: 10px 20px !important;
-                font-size: 0.875rem !important;
-                display: inline-block !important;
-                width: 45% !important;
-                margin: 0 2% !important;
-            }
-
-            #result-step #reload-button {
-                display: inline-block !important;
-                width: 45% !important;
-                margin: 0 2% !important;
-                margin-top: 0 !important;
-                padding: 10px 20px !important;
-                font-size: 0.875rem !important;
             }
         }
         
