@@ -533,8 +533,8 @@
 <body class="text-white">
     <!-- Language Selector -->
     <div class="lang-selector">
-        <div class="lang-btn active" data-lang="it" title="Italiano">🇮🇹</div>
-        <div class="lang-btn" data-lang="en" title="English">🇬🇧</div>
+        <div class="lang-btn" data-lang="it" title="Italiano">🇮🇹</div>
+        <div class="lang-btn active" data-lang="en" title="English">🇬🇧</div>
         <div class="lang-btn" data-lang="es" title="Español">🇪🇸</div>
         <div class="lang-btn" data-lang="fr" title="Français">🇫🇷</div>
     </div>
@@ -547,7 +547,7 @@
                     <span class="logo-circle"></span>
                     Gloober
                 </h1>
-                <p class="text-lg text-gray-400" data-translate="tagline">Muovi le tue vibrazioni di viaggio</p>
+                <p class="text-lg text-gray-400" data-translate="tagline">Slide your travel vibes</p>
             </div>
 
             <div class="glass-card rounded-2xl">
@@ -665,115 +665,67 @@
     <script src="destinations-db.js"></script>
     <script src="app.js"></script>
     <script>
-    // SETUP CORRETTO DEGLI EVENT LISTENERS
-    window.addEventListener('load', function() {
-        console.log('Setup event listeners CORRETTO...');
+    // Setup degli event listeners dopo che tutto è caricato
+    window.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM caricato - setup event listeners...');
         
         // Location slider
         const locationSlider = document.getElementById('location-slider');
-        const locationDot = document.getElementById('location-dot');
+        if (locationSlider) {
+            locationSlider.addEventListener('mousedown', startLocationDrag);
+            locationSlider.addEventListener('mousemove', dragLocation);
+            locationSlider.addEventListener('mouseup', stopLocationDrag);
+            locationSlider.addEventListener('mouseleave', stopLocationDrag);
+            locationSlider.addEventListener('touchstart', startLocationDrag);
+            locationSlider.addEventListener('touchmove', dragLocation);
+            locationSlider.addEventListener('touchend', stopLocationDrag);
+        }
         
-        locationSlider.onmousedown = function(e) {
-            e.preventDefault();
-            isDraggingLocation = true;
-            document.getElementById('location-labels').classList.add('active');
-            
-            const moveHandler = function(e) {
-                if (!isDraggingLocation) return;
-                const rect = locationSlider.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const percentage = Math.max(5, Math.min(95, (x / rect.width) * 100));
-                locationDot.style.left = percentage + '%';
-                userPreferences.location = percentage;
-            };
-            
-            const upHandler = function() {
-                isDraggingLocation = false;
-                document.getElementById('location-labels').classList.remove('active');
-                document.removeEventListener('mousemove', moveHandler);
-                document.removeEventListener('mouseup', upHandler);
-            };
-            
-            document.addEventListener('mousemove', moveHandler);
-            document.addEventListener('mouseup', upHandler);
-        };
-        
-        // Distance slider
+        // Distance slider  
         const distanceSlider = document.getElementById('distance-slider');
-        const distanceDot = document.getElementById('distance-dot');
-        
-        distanceSlider.onmousedown = function(e) {
-            e.preventDefault();
-            isDraggingDistance = true;
-            document.getElementById('distance-labels').classList.add('active');
-            
-            const moveHandler = function(e) {
-                if (!isDraggingDistance) return;
-                const rect = distanceSlider.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const percentage = Math.max(5, Math.min(95, (x / rect.width) * 100));
-                distanceDot.style.left = percentage + '%';
-                userPreferences.distance = percentage;
-            };
-            
-            const upHandler = function() {
-                isDraggingDistance = false;
-                document.getElementById('distance-labels').classList.remove('active');
-                document.removeEventListener('mousemove', moveHandler);
-                document.removeEventListener('mouseup', upHandler);
-            };
-            
-            document.addEventListener('mousemove', moveHandler);
-            document.addEventListener('mouseup', upHandler);
-        };
+        if (distanceSlider) {
+            distanceSlider.addEventListener('mousedown', startDistanceDrag);
+            distanceSlider.addEventListener('mousemove', dragDistance);
+            distanceSlider.addEventListener('mouseup', stopDistanceDrag);
+            distanceSlider.addEventListener('mouseleave', stopDistanceDrag);
+            distanceSlider.addEventListener('touchstart', startDistanceDrag);
+            distanceSlider.addEventListener('touchmove', dragDistance);
+            distanceSlider.addEventListener('touchend', stopDistanceDrag);
+        }
         
         // Mood selector
         const moodSelector = document.getElementById('mood-selector');
-        const moodGlobe = document.getElementById('mood-globe');
-        
-        moodSelector.onmousedown = function(e) {
-            e.preventDefault();
-            isDraggingMood = true;
-            
-            const moveHandler = function(e) {
-                if (!isDraggingMood) return;
-                const rect = moodSelector.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const percentX = Math.max(0, Math.min(100, (x / rect.width) * 100));
-                const percentY = Math.max(0, Math.min(100, (y / rect.height) * 100));
-                
-                moodGlobe.style.left = percentX + '%';
-                moodGlobe.style.top = percentY + '%';
-                userPreferences.moodX = percentX;
-                userPreferences.moodY = percentY;
-                
-                // Update mood labels
-                updateMoodLabels(percentX, percentY);
-            };
-            
-            const upHandler = function() {
-                isDraggingMood = false;
-                document.removeEventListener('mousemove', moveHandler);
-                document.removeEventListener('mouseup', upHandler);
-            };
-            
-            document.addEventListener('mousemove', moveHandler);
-            document.addEventListener('mouseup', upHandler);
-        };
+        if (moodSelector) {
+            moodSelector.addEventListener('mousedown', startDragging);
+            moodSelector.addEventListener('mousemove', dragGlobe);
+            moodSelector.addEventListener('mouseup', stopDragging);
+            moodSelector.addEventListener('mouseleave', stopDragging);
+            moodSelector.addEventListener('touchstart', startDragging);
+            moodSelector.addEventListener('touchmove', dragGlobe);
+            moodSelector.addEventListener('touchend', stopDragging);
+        }
         
         // Gloob button
-        document.getElementById('gloob-button').onclick = gloobIt;
+        const gloobButton = document.getElementById('gloob-button');
+        if (gloobButton) {
+            gloobButton.addEventListener('click', gloobIt);
+        }
         
         // Book button
         const bookButton = document.getElementById('book-button');
-        if (bookButton) bookButton.onclick = bookTrip;
+        if (bookButton) {
+            bookButton.addEventListener('click', bookTrip);
+        }
         
         // Reload button
         const reloadButton = document.getElementById('reload-button');
-        if (reloadButton) reloadButton.onclick = function() { location.reload(); };
+        if (reloadButton) {
+            reloadButton.addEventListener('click', function() {
+                location.reload();
+            });
+        }
         
-        console.log('TUTTI GLI SLIDER CONFIGURATI!');
+        console.log('Event listeners configurati!');
     });
     </script>
 </body>
