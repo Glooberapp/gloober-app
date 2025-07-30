@@ -539,10 +539,8 @@ function generateNarrative(destination) {
 function bookTrip() {
     const destination = document.getElementById('destination-name').textContent;
     
-    // URL semplice che funziona per tutte le città
-    const tripUrl = `https://www.trip.com/hotels?locale=en-US&curr=EUR&searchType=CT&searchWord=${encodeURIComponent(destination)}`;
-    
-    window.open(tripUrl, '_blank');
+    // Usa l'URL che funzionava prima MA senza il paese
+    window.open(`https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}`, '_blank');
 }
 
 // GESTIONE CAMBIO LINGUA
