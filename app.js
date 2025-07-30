@@ -538,9 +538,20 @@ function generateNarrative(destination) {
 // GESTIONE PRENOTAZIONE CON TRIP.COM
 function bookTrip() {
     const destination = document.getElementById('destination-name').textContent;
+    const country = document.getElementById('destination-country').textContent;
     
-    // Apri Trip.com con la destinazione
-    window.open(`https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}`, '_blank');
+    // Crea URL per Trip.com con città e date suggerite
+    const today = new Date();
+    const checkIn = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000); // +30 giorni
+    const checkOut = new Date(checkIn.getTime() + 7 * 24 * 60 * 60 * 1000); // +7 giorni
+    
+    const checkInStr = checkIn.toISOString().split('T')[0];
+    const checkOutStr = checkOut.toISOString().split('T')[0];
+    
+    // URL con parametri per Trip.com
+    const tripUrl = `https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}&countryId=&checkin=${checkInStr}&checkout=${checkOutStr}&searchWord=${encodeURIComponent(destination + ', ' + country)}`;
+    
+    window.open(tripUrl, '_blank');
 }
 
 // GESTIONE CAMBIO LINGUA
@@ -573,12 +584,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Inizializza con italiano
-    changeLanguage('it');
+    // Inizializza con inglese
+    changeLanguage('en');
     
     // Debug - verifica che le funzioni siano disponibili
-    console.log('App inizializzata!');
-    console.log('Database caricato:', typeof DESTINATIONS_DB !== 'undefined' ? DESTINATIONS_DB.length + ' destinazioni' : 'ERRORE');
+    console.log('App initialized!');
+    console.log('Database loaded:', typeof DESTINATIONS_DB !== 'undefined' ? DESTINATIONS_DB.length + ' destinations' : 'ERROR');
 });
 
 // Rendi le funzioni globali per l'HTML
@@ -593,17 +604,3 @@ window.dragGlobe = dragGlobe;
 window.stopDragging = stopDragging;
 window.gloobIt = gloobIt;
 window.bookTrip = bookTrip;
-// ESPORTA LE FUNZIONI GLOBALMENTE - AGGIUNGI ALLA FINE DI app.js
-window.startLocationDrag = startLocationDrag;
-window.dragLocation = dragLocation;
-window.stopLocationDrag = stopLocationDrag;
-window.startDistanceDrag = startDistanceDrag;
-window.dragDistance = dragDistance;
-window.stopDistanceDrag = stopDistanceDrag;
-window.startDragging = startDragging;
-window.dragGlobe = dragGlobe;
-window.stopDragging = stopDragging;
-window.gloobIt = gloobIt;
-window.bookTrip = bookTrip;
-
-console.log('Funzioni esportate globalmente!');
