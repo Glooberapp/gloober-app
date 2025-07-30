@@ -404,6 +404,11 @@
         
         .hidden { display: none; }
         
+        /* NASCONDI LINGUE NELLA PAGINA RISULTATI - SEMPRE */
+        #result-step .lang-selector {
+            display: none !important;
+        }
+        
         /* MOBILE SUPER OTTIMIZZATO - TUTTO IN UNA SCHERMATA */
         @media (max-width: 768px) {
             /* Blocca scroll verticale */
@@ -466,16 +471,6 @@
             .slider-inner-labels .label-center {
                 display: none !important;
             }
-            
-            /* NASCONDI LINGUE NELLA PAGINA RISULTATI */
-#result-step .lang-selector {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    position: absolute !important;
-    left: -9999px !important;
-}
             
             /* Mostra solo etichette laterali */
             .slider-inner-labels span:first-child,
