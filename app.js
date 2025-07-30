@@ -538,12 +538,20 @@ function generateNarrative(destination) {
 // GESTIONE PRENOTAZIONE CON TRIP.COM
 function bookTrip() {
     const destination = document.getElementById('destination-name').textContent;
+    const country = document.getElementById('destination-country').textContent;
     
-    // Aggiungi un timestamp per forzare una nuova ricerca
-    const timestamp = new Date().getTime();
+    // Crea URL per Trip.com con città e date suggerite
+    const today = new Date();
+    const checkIn = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000); // +30 giorni
+    const checkOut = new Date(checkIn.getTime() + 7 * 24 * 60 * 60 * 1000); // +7 giorni
     
-    // URL con parametri per evitare la cache
-    window.open(`https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}&t=${timestamp}`, '_blank');
+    const checkInStr = checkIn.toISOString().split('T')[0];
+    const checkOutStr = checkOut.toISOString().split('T')[0];
+    
+    // URL con parametri per Trip.com - VERSIONE ORIGINALE CHE FUNZIONAVA
+    const tripUrl = `https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}&countryId=&checkin=${checkInStr}&checkout=${checkOutStr}&searchWord=${encodeURIComponent(destination + ', ' + country)}`;
+    
+    window.open(tripUrl, '_blank');
 }
 
 // GESTIONE CAMBIO LINGUA
