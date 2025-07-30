@@ -539,16 +539,8 @@ function generateNarrative(destination) {
 function bookTrip() {
     const destination = document.getElementById('destination-name').textContent;
     
-    // Crea URL per Trip.com con solo il nome della città (senza paese)
-    const today = new Date();
-    const checkIn = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000); // +30 giorni
-    const checkOut = new Date(checkIn.getTime() + 7 * 24 * 60 * 60 * 1000); // +7 giorni
-    
-    const checkInStr = checkIn.toISOString().split('T')[0];
-    const checkOutStr = checkOut.toISOString().split('T')[0];
-    
-    // URL con parametri per Trip.com - SOLO nome città
-    const tripUrl = `https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}&checkin=${checkInStr}&checkout=${checkOutStr}`;
+    // URL semplice che funziona per tutte le città
+    const tripUrl = `https://www.trip.com/hotels?locale=en-US&curr=EUR&searchType=CT&searchWord=${encodeURIComponent(destination)}`;
     
     window.open(tripUrl, '_blank');
 }
