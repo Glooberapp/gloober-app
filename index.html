@@ -404,9 +404,16 @@
         
         .hidden { display: none; }
         
-        /* NASCONDI LINGUE NELLA PAGINA RISULTATI - SEMPRE */
-        #result-step .lang-selector {
+        /* NASCONDI LINGUE NELLE PAGINE RISULTATI E LOADING - SUPER AGGRESSIVO */
+        #result-step:not(.hidden) ~ .lang-selector,
+        #loading-step:not(.hidden) ~ .lang-selector,
+        body:has(#result-step:not(.hidden)) .lang-selector,
+        body:has(#loading-step:not(.hidden)) .lang-selector {
             display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            z-index: -9999 !important;
         }
         
         /* MOBILE SUPER OTTIMIZZATO - TUTTO IN UNA SCHERMATA */
