@@ -535,23 +535,45 @@ function generateNarrative(destination) {
     return typeNarratives[Math.floor(Math.random() * typeNarratives.length)];
 }
 
+// MAPPATURA URL TRIP.COM PER OGNI DESTINAZIONE
+const TRIPCOM_URLS = {
+    // MARE
+    "Faroe Islands": "https://www.trip.com/hotels/list?city=-1&provinceId=0&countryId=283&districtId=C&searchWord=Faroe%20Islands",
+    "Socotra Island": "https://www.trip.com/hotels/list?city=5822&cityName=Socotra&provinceId=11988&countryId=102",
+    "Lofoten Islands": "https://www.trip.com/hotels/list?city=0&provinceId=10205&countryId=76&searchWord=Lofoten",
+    "Gili Nanggu": "https://www.trip.com/hotels/list?city=158115&cityName=Sekotong%20Barat&provinceId=11531&countryId=108&searchWord=Gili%20Nanggu",
+    "Comporta": "https://www.trip.com/hotels/list?city=54322&cityName=Comporta&provinceId=97857&countryId=77",
+    
+    // CITTÀ
+    "Tbilisi": "https://www.trip.com/hotels/list?city=7612&cityName=Tbilisi&provinceId=0&countryId=180",
+    "Valparaíso": "https://www.trip.com/hotels/list?city=9178&cityName=Valparaiso&provinceId=10410&countryId=115",
+    "Ljubljana": "https://www.trip.com/hotels/list?city=1266&cityName=Ljubljana&provinceId=0&countryId=84",
+    "Oaxaca": "https://www.trip.com/hotels/list?city=36449&cityName=Oaxaca&provinceId=10687&countryId=72",
+    "Porto": "https://www.trip.com/hotels/list?city=826&cityName=Porto&provinceId=97868&countryId=77",
+    
+    // MONTAGNA
+    "Svaneti": "https://www.trip.com/hotels/list?city=-1&provinceId=112101&countryId=180&searchWord=Samegrelo-Zemo%20Svaneti",
+    "Valbona Valley": "https://www.trip.com/hotels/list?city=649473&cityName=Valbone&provinceId=12713&countryId=5",
+    "Huaraz": "https://www.trip.com/hotels/list?city=9728&cityName=Huaraz&provinceId=10791&countryId=69",
+    "Lyngen Alps": "https://www.trip.com/hotels/list?city=297939&cityName=Nord-lenangen&provinceId=10751&countryId=76&searchWord=Lyngen%20Alps",
+    "Sinaia": "https://www.trip.com/hotels/list?city=3743&cityName=Sinaia&provinceId=10213&countryId=63"
+};
+
 // GESTIONE PRENOTAZIONE CON TRIP.COM
 function bookTrip() {
     const destination = document.getElementById('destination-name').textContent;
-    const country = document.getElementById('destination-country').textContent;
     
-    // Crea URL per Trip.com con città e date suggerite
-    const today = new Date();
-    const checkIn = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000); // +30 giorni
-    const checkOut = new Date(checkIn.getTime() + 7 * 24 * 60 * 60 * 1000); // +7 giorni
+    // Usa l'URL specifico per ogni destinazione
+    const tripUrl = TRIPCOM_URLS[destination];
     
-    const checkInStr = checkIn.toISOString().split('T')[0];
-    const checkOutStr = checkOut.toISOString().split('T')[0];
-    
-    // URL con parametri per Trip.com - VERSIONE ORIGINALE CHE FUNZIONAVA
-    const tripUrl = `https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}&countryId=&checkin=${checkInStr}&checkout=${checkOutStr}&searchWord=${encodeURIComponent(destination + ', ' + country)}`;
-    
-    window.open(tripUrl, '_blank');
+    if (tripUrl) {
+        // Aggiungi parametri comuni a tutti gli URL
+        const fullUrl = tripUrl + "&locale=en-US&curr=EUR";
+        window.open(fullUrl, '_blank');
+    } else {
+        // Fallback se la destinazione non è mappata
+        window.open(`https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}&locale=en-US&curr=EUR`, '_blank');
+    }
 }
 
 // GESTIONE CAMBIO LINGUA
