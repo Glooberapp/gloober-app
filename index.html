@@ -464,7 +464,7 @@
             }
             
             .slider-inner-labels .label-center {
-                display: none;
+                display: none !important; /* Aggiungo !important */
             }
             
             /* Mostra solo etichette laterali */
@@ -542,6 +542,119 @@
             label {
                 margin-bottom: 5px !important;
                 font-size: 0.7rem;
+            }
+            
+            /* NASCONDI LINGUE NELLA PAGINA RISULTATI */
+            #result-step .lang-selector {
+                display: none !important;
+            }
+            
+            /* RISULTATI MOBILE SUPER COMPATTI */
+            .result-container-mobile {
+                padding: 10px;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            
+            .result-header-mobile {
+                text-align: center;
+                padding: 10px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                margin-bottom: 10px;
+            }
+            
+            .destination-name-mobile {
+                font-size: 1.5rem !important;
+                font-weight: bold;
+                margin-bottom: 5px;
+                font-family: 'Satoshi', sans-serif;
+            }
+            
+            .destination-tagline-mobile {
+                font-size: 0.875rem;
+                font-style: italic;
+                color: #ccc;
+                margin-bottom: 2px;
+            }
+            
+            .destination-country-mobile {
+                font-size: 0.75rem;
+                color: #888;
+            }
+            
+            .image-container-mobile {
+                flex-shrink: 0;
+                margin-bottom: 10px;
+            }
+            
+            .destination-image-mobile {
+                width: 100%;
+                height: 150px;
+                object-fit: cover;
+                border-radius: 12px;
+            }
+            
+            .narrative-mobile {
+                flex: 1;
+                overflow-y: auto;
+                margin-bottom: 10px;
+                padding: 10px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                border-left: 3px solid #00b4d8;
+            }
+            
+            .narrative-text-mobile {
+                font-size: 0.875rem;
+                line-height: 1.4;
+                font-style: italic;
+            }
+            
+            .quote-mobile {
+                padding: 8px;
+                margin-bottom: 10px;
+                font-size: 0.75rem;
+                text-align: center;
+                color: #888;
+            }
+            
+            .travel-quote-mobile {
+                font-style: italic;
+                margin-bottom: 2px;
+            }
+            
+            .quote-author-mobile {
+                font-size: 0.7rem;
+            }
+            
+            .buttons-mobile {
+                display: flex;
+                gap: 10px;
+                padding-bottom: 10px;
+            }
+            
+            .book-button-mobile {
+                flex: 1;
+                background: linear-gradient(135deg, #00b4d8, #0077b6);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 25px;
+                font-weight: bold;
+                font-size: 0.9rem;
+                border: none;
+            }
+            
+            .reload-button-mobile {
+                background: transparent;
+                color: #00b4d8;
+                border: 2px solid #00b4d8;
+                padding: 12px 20px;
+                border-radius: 25px;
+                font-size: 0.9rem;
+                font-weight: bold;
             }
         }
         
@@ -670,46 +783,38 @@
 
     <!-- STEP 3: RESULTS -->
     <div id="result-step" class="hidden">
-        <div class="container mx-auto px-4 py-8">
-            <div class="max-w-4xl mx-auto">
-                <!-- Destination Header -->
-                <div class="glass-card rounded-2xl p-8 text-center mb-8">
-                    <h2 class="text-5xl font-bold text-white mb-3" id="destination-name" style="font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">Loading...</h2>
-                    <p class="text-xl italic mb-2" id="destination-tagline">...</p>
-                    <p class="text-gray-400" id="destination-country">...</p>
-                </div>
+        <div class="result-container-mobile">
+            <!-- Destination Header COMPATTO -->
+            <div class="result-header-mobile">
+                <h2 id="destination-name" class="destination-name-mobile">Loading...</h2>
+                <p id="destination-tagline" class="destination-tagline-mobile">...</p>
+                <p id="destination-country" class="destination-country-mobile">...</p>
+            </div>
 
-                <!-- Narrative -->
-                <div class="mb-8">
-                    <h3 class="text-2xl font-bold mb-6 text-center" data-translate="yourJourney">Il tuo viaggio</h3>
-                    <div class="narrative-text glass-card rounded-xl" id="narrative-text">
-                        <!-- La narrativa verrà inserita qui -->
-                    </div>
-                </div>
+            <!-- Immagine destinazione RIDOTTA -->
+            <div class="image-container-mobile">
+                <img id="destination-image" class="destination-image-mobile" alt="Destination">
+            </div>
 
-                <!-- Immagine destinazione -->
-                <div class="mb-8 text-center">
-                    <img id="destination-image" class="rounded-xl shadow-2xl mx-auto max-w-full" style="max-height: 400px;" alt="Destination">
-                </div>
+            <!-- Narrative COMPATTA -->
+            <div class="narrative-mobile">
+                <p id="narrative-text" class="narrative-text-mobile"></p>
+            </div>
 
-                <!-- Citazione -->
-                <div class="mb-8">
-                    <blockquote class="text-center italic text-lg text-gray-400">
-                        <p id="travel-quote" class="mb-2"></p>
-                        <cite class="text-sm text-gray-500">— <span id="quote-author"></span></cite>
-                    </blockquote>
-                </div>
+            <!-- Citazione MINI -->
+            <div class="quote-mobile">
+                <p id="travel-quote" class="travel-quote-mobile"></p>
+                <cite class="quote-author-mobile">— <span id="quote-author"></span></cite>
+            </div>
 
-                <!-- Book Button -->
-                <div class="text-center">
-                    <button id="book-button" class="gloob-button mb-4">
-                        <span data-translate="bookNow">Prenota</span> →
-                    </button>
-                    <br>
-                    <button id="reload-button" class="text-gray-500 hover:text-white transition-all">
-                        <span data-translate="tryAgain">Regloob</span>
-                    </button>
-                </div>
+            <!-- Bottoni -->
+            <div class="buttons-mobile">
+                <button id="book-button" class="book-button-mobile">
+                    <span data-translate="bookNow">Prenota</span> →
+                </button>
+                <button id="reload-button" class="reload-button-mobile">
+                    <span data-translate="tryAgain">Regloob</span>
+                </button>
             </div>
         </div>
     </div>
