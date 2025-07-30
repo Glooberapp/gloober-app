@@ -236,9 +236,9 @@ const TRAVEL_QUOTES = [
 ];
 
 // FUNZIONI SLIDER LOCATION - CON FIX PER EVITARE CHE ESCANO
-function startLocationDrag(e) {
-    isDraggingLocation = true;
-    dragLocation(e);
+function stopLocationDrag() {
+    isDraggingLocation = false;
+    // Etichette rimangono visibili
 }
 
 function dragLocation(e) {
@@ -292,9 +292,7 @@ function dragDistance(e) {
 
 function stopDistanceDrag() {
     isDraggingDistance = false;
-    setTimeout(() => {
-        document.getElementById('distance-labels').classList.remove('active');
-    }, 1000);
+    // Etichette rimangono visibili
 }
 
 // FUNZIONI MOOD SELECTOR
