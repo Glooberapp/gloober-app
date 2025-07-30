@@ -65,8 +65,8 @@
         /* Language selector */
         .lang-selector {
             position: fixed;
-            top: 10px;
-            right: 10px;
+            bottom: 20px;
+            left: 20px;
             z-index: 100;
             display: flex;
             gap: 6px;
@@ -78,14 +78,14 @@
             max-width: 320px;
         }
         
-        /* Mobile: sposta language selector più in basso */
+        /* Mobile: language selector in basso */
         @media (max-width: 768px) {
             .lang-selector {
-                top: 60px; /* Spostiamo sotto il logo */
-                right: 5px;
+                bottom: 10px;
+                left: 10px;
                 padding: 4px;
                 gap: 3px;
-                max-width: 200px;
+                max-width: 250px;
             }
         }
         
