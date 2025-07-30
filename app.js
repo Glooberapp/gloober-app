@@ -538,9 +538,8 @@ function generateNarrative(destination) {
 // GESTIONE PRENOTAZIONE CON TRIP.COM
 function bookTrip() {
     const destination = document.getElementById('destination-name').textContent;
-    const country = document.getElementById('destination-country').textContent;
     
-    // Crea URL per Trip.com con città e date suggerite
+    // Crea URL per Trip.com con solo il nome della città (senza paese)
     const today = new Date();
     const checkIn = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000); // +30 giorni
     const checkOut = new Date(checkIn.getTime() + 7 * 24 * 60 * 60 * 1000); // +7 giorni
@@ -548,8 +547,8 @@ function bookTrip() {
     const checkInStr = checkIn.toISOString().split('T')[0];
     const checkOutStr = checkOut.toISOString().split('T')[0];
     
-    // URL con parametri per Trip.com
-    const tripUrl = `https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}&countryId=&checkin=${checkInStr}&checkout=${checkOutStr}&searchWord=${encodeURIComponent(destination + ', ' + country)}`;
+    // URL con parametri per Trip.com - SOLO nome città
+    const tripUrl = `https://www.trip.com/hotels/list?city=${encodeURIComponent(destination)}&checkin=${checkInStr}&checkout=${checkOutStr}`;
     
     window.open(tripUrl, '_blank');
 }
