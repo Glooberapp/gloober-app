@@ -1,10 +1,17 @@
-const destinations = [
+// GLOOBER DESTINATIONS DATABASE
+// Version: 1.0 - Con le tue 15 destinazioni
+// ============================================
+
+const DESTINATIONS_DB = [
     {
         id: 1,
         name: "Faroe Islands",
         country: "Denmark",
+        type: "sea",
+        distance: "curious",
+        moods: ["wild", "zen"],
         location: 0.15, // More sea
-        distance: 0.5,  // Medium distance
+        distance_value: 0.5,  // Medium distance
         mood: { x: 0.7, y: 0.3 }, // Blue-green, calm
         image: "https://i.ibb.co/Pt6jLg8/1.png",
         tripUrl: "https://www.trip.com/hotels/list?city=6422&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -27,8 +34,11 @@ const destinations = [
         id: 2,
         name: "Socotra Island",
         country: "Yemen",
+        type: "sea",
+        distance: "bloom",
+        moods: ["wild", "culture"],
         location: 0.2, // Coastal
-        distance: 0.9, // Far
+        distance_value: 0.9, // Far
         mood: { x: 0.9, y: 0.7 }, // Purple-pink, mysterious
         image: "https://i.ibb.co/hLwxmvp/2.png",
         tripUrl: "https://www.trip.com/hotels/list?city=62263&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -51,8 +61,11 @@ const destinations = [
         id: 3,
         name: "Tbilisi",
         country: "Georgia",
+        type: "city",
+        distance: "curious",
+        moods: ["culture", "gourmet"],
         location: 0.5, // City
-        distance: 0.6, // Medium-far
+        distance_value: 0.6, // Medium-far
         mood: { x: 0.3, y: 0.6 }, // Orange-yellow, warm
         image: "https://i.ibb.co/7WxL4MH/3.png",
         tripUrl: "https://www.trip.com/hotels/list?city=707&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -75,8 +88,11 @@ const destinations = [
         id: 4,
         name: "Easter Island",
         country: "Chile",
+        type: "sea",
+        distance: "bloom",
+        moods: ["culture", "wild"],
         location: 0.1, // Very coastal
-        distance: 1.0, // Very far
+        distance_value: 1.0, // Very far
         mood: { x: 0.8, y: 0.2 }, // Blue-purple, mystical
         image: "https://i.ibb.co/KybDKGZ/4.png",
         tripUrl: "https://www.trip.com/hotels/list?city=10146&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -99,8 +115,11 @@ const destinations = [
         id: 5,
         name: "Salar de Uyuni",
         country: "Bolivia",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["wild", "zen"],
         location: 0.8, // Mountain/highland
-        distance: 0.85, // Far
+        distance_value: 0.85, // Far
         mood: { x: 0.15, y: 0.85 }, // Red-orange, adventurous
         image: "https://i.ibb.co/RBdDzJt/5.png",
         tripUrl: "https://www.trip.com/hotels/list?city=58308&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -123,8 +142,11 @@ const destinations = [
         id: 6,
         name: "Cappadocia",
         country: "Turkey",
+        type: "mountain",
+        distance: "comfort",
+        moods: ["romantic", "culture"],
         location: 0.75, // Mountain/inland
-        distance: 0.4, // Medium
+        distance_value: 0.4, // Medium
         mood: { x: 0.5, y: 0.5 }, // Green center, balanced
         image: "https://i.ibb.co/M8Lsmrh/6.png",
         tripUrl: "https://www.trip.com/hotels/list?city=59411&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -147,8 +169,11 @@ const destinations = [
         id: 7,
         name: "Raja Ampat",
         country: "Indonesia",
+        type: "sea",
+        distance: "bloom",
+        moods: ["wild", "zen"],
         location: 0.05, // Pure sea
-        distance: 0.75, // Far
+        distance_value: 0.75, // Far
         mood: { x: 0.6, y: 0.7 }, // Blue-green, serene
         image: "https://i.ibb.co/W6XrG8m/7.png",
         tripUrl: "https://www.trip.com/hotels/list?city=26983&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -171,8 +196,11 @@ const destinations = [
         id: 8,
         name: "Atacama Desert",
         country: "Chile",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["wild", "zen"],
         location: 0.9, // Mountain/desert
-        distance: 0.9, // Very far
+        distance_value: 0.9, // Very far
         mood: { x: 0.2, y: 0.3 }, // Orange-red, intense
         image: "https://i.ibb.co/XJq9Zwf/8.png",
         tripUrl: "https://www.trip.com/hotels/list?city=26857&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -195,8 +223,11 @@ const destinations = [
         id: 9,
         name: "Svalbard",
         country: "Norway",
+        type: "sea",
+        distance: "bloom",
+        moods: ["wild", "zen"],
         location: 0.3, // Coastal/tundra
-        distance: 0.7, // Far
+        distance_value: 0.7, // Far
         mood: { x: 0.85, y: 0.15 }, // Deep blue, extreme
         image: "https://i.ibb.co/cYXbqH5/9.png",
         tripUrl: "https://www.trip.com/hotels/list?city=60934&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -219,8 +250,11 @@ const destinations = [
         id: 10,
         name: "Wadi Rum",
         country: "Jordan",
+        type: "mountain",
+        distance: "curious",
+        moods: ["wild", "culture"],
         location: 0.85, // Desert/mountain
-        distance: 0.5, // Medium
+        distance_value: 0.5, // Medium
         mood: { x: 0.3, y: 0.2 }, // Orange, adventurous
         image: "https://i.ibb.co/z8kQ8mK/10.png",
         tripUrl: "https://www.trip.com/hotels/list?city=26969&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -243,8 +277,11 @@ const destinations = [
         id: 11,
         name: "Tasmania",
         country: "Australia",
+        type: "sea",
+        distance: "bloom",
+        moods: ["wild", "zen"],
         location: 0.35, // Mixed coastal/mountain
-        distance: 0.95, // Very far
+        distance_value: 0.95, // Very far
         mood: { x: 0.7, y: 0.6 }, // Blue-purple, wild
         image: "https://i.ibb.co/zZ4Q6xV/11.png",
         tripUrl: "https://www.trip.com/hotels/list?city=737&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -267,8 +304,11 @@ const destinations = [
         id: 12,
         name: "Lofoten Islands",
         country: "Norway",
+        type: "sea",
+        distance: "curious",
+        moods: ["wild", "romantic"],
         location: 0.25, // Coastal/mountain mix
-        distance: 0.6, // Far
+        distance_value: 0.6, // Far
         mood: { x: 0.65, y: 0.35 }, // Blue-green, dramatic
         image: "https://i.ibb.co/HGVdP2Z/12.png",
         tripUrl: "https://www.trip.com/hotels/list?city=60902&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -291,8 +331,11 @@ const destinations = [
         id: 13,
         name: "Madagascar",
         country: "Madagascar",
+        type: "sea",
+        distance: "bloom",
+        moods: ["wild", "culture"],
         location: 0.4, // Mixed terrain
-        distance: 0.8, // Far
+        distance_value: 0.8, // Far
         mood: { x: 0.55, y: 0.8 }, // Green-blue, unique
         image: "https://i.ibb.co/sP2QZDK/13.png",
         tripUrl: "https://www.trip.com/hotels/list?city=770&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -315,8 +358,11 @@ const destinations = [
         id: 14,
         name: "Bhutan",
         country: "Bhutan",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["zen", "culture"],
         location: 0.95, // Mountain
-        distance: 0.7, // Far
+        distance_value: 0.7, // Far
         mood: { x: 0.4, y: 0.9 }, // Yellow-green, spiritual
         image: "https://i.ibb.co/gR9nQHz/14.png",
         tripUrl: "https://www.trip.com/hotels/list?city=1653&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
@@ -339,8 +385,11 @@ const destinations = [
         id: 15,
         name: "Patagonia",
         country: "Argentina/Chile",
+        type: "mountain",
+        distance: "bloom",
+        moods: ["wild", "zen"],
         location: 0.6, // Mixed mountain/coast
-        distance: 0.95, // Very far
+        distance_value: 0.95, // Very far
         mood: { x: 0.1, y: 0.1 }, // Red, extreme adventure
         image: "https://i.ibb.co/Yy9MX6Q/15.png",
         tripUrl: "https://www.trip.com/hotels/list?city=10308&checkin=2024-07-10&checkout=2024-07-11&adult=1&children=0&searchboxarg=t&searchtype=City&crn=1",
