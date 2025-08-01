@@ -3,7 +3,7 @@
 // ============================================
 
 // Stato globale dell'app
-let currentLang = 'en';
+let currentLang = 'it';
 let userPreferences = {
     location: 50,
     distance: 50,
@@ -16,7 +16,7 @@ let isDraggingLocation = false;
 let isDraggingDistance = false;
 let isDraggingMood = false;
 
-// TRADUZIONI UI - TUTTE LE 7 LINGUE
+// TRADUZIONI UI
 const translations = {
     it: {
         tagline: "Muovi le tue vibrazioni di viaggio",
@@ -117,81 +117,6 @@ const translations = {
         yourJourney: "Votre voyage",
         bookNow: "Réserver",
         tryAgain: "Regloob"
-    },
-    ar: {
-        tagline: "حرك ذبذبات سفرك",
-        habitatLabel: "الموطن",
-        sea: "بحر",
-        city: "مدينة",
-        mountain: "جبل",
-        rangeLabel: "المدى",
-        comfort: "راحة",
-        curious: "فضولي",
-        bloom: "ازدهار",
-        vibesLabel: "الأجواء",
-        movida: "الحياة الليلية",
-        zen: "زين",
-        gourmet: "الذواقة",
-        wild: "بري",
-        design: "تصميم",
-        glamour: "سحر",
-        culture: "ثقافة",
-        romantic: "رومانسي",
-        gloobIt: "!Gloob it",
-        gloobing: "...جاري البحث",
-        yourJourney: "رحلتك",
-        bookNow: "احجز الآن",
-        tryAgain: "بحث جديد"
-    },
-    zh: {
-        tagline: "滑动你的旅行氛围",
-        habitatLabel: "栖息地",
-        sea: "海",
-        city: "城市",
-        mountain: "山",
-        rangeLabel: "范围",
-        comfort: "舒适",
-        curious: "好奇",
-        bloom: "绽放",
-        vibesLabel: "氛围",
-        movida: "夜生活",
-        zen: "禅",
-        gourmet: "美食",
-        wild: "野性",
-        design: "设计",
-        glamour: "魅力",
-        culture: "文化",
-        romantic: "浪漫",
-        gloobIt: "开始探索!",
-        gloobing: "探索中...",
-        yourJourney: "你的旅程",
-        bookNow: "立即预订",
-        tryAgain: "重新探索"
-    },
-    hi: {
-        tagline: "अपनी यात्रा की वाइब्स स्लाइड करें",
-        habitatLabel: "निवास",
-        sea: "समुद्र",
-        city: "शहर",
-        mountain: "पहाड़",
-        rangeLabel: "रेंज",
-        comfort: "आराम",
-        curious: "जिज्ञासु",
-        bloom: "खिलना",
-        vibesLabel: "वाइब्स",
-        movida: "नाइटलाइफ़",
-        zen: "ज़ेन",
-        gourmet: "पेटू",
-        wild: "जंगली",
-        design: "डिज़ाइन",
-        glamour: "ग्लैमर",
-        culture: "संस्कृति",
-        romantic: "रोमांटिक",
-        gloobIt: "ग्लूब करें!",
-        gloobing: "खोज रहे हैं...",
-        yourJourney: "आपकी यात्रा",
-        bookNow: "अभी बुक करें",
-        tryAgain: "फिर से खोजें"
     }
 };
 
@@ -202,10 +127,7 @@ const TRAVEL_QUOTES = [
             it: "Il mondo è un libro e chi non viaggia ne legge solo una pagina.",
             en: "The world is a book and those who do not travel read only one page.",
             es: "El mundo es un libro y quienes no viajan solo leen una página.",
-            fr: "Le monde est un livre et ceux qui ne voyagent pas n'en lisent qu'une page.",
-            ar: "العالم كتاب ومن لا يسافر يقرأ صفحة واحدة فقط.",
-            zh: "世界是一本书，不旅行的人只读了一页。",
-            hi: "दुनिया एक किताब है और जो यात्रा नहीं करते वे केवल एक पृष्ठ पढ़ते हैं।"
+            fr: "Le monde est un livre et ceux qui ne voyagent pas n'en lisent qu'une page."
         },
         author: "Sant'Agostino"
     },
@@ -214,10 +136,7 @@ const TRAVEL_QUOTES = [
             it: "La vita è un viaggio e chi viaggia vive due volte.",
             en: "Life is a journey and those who travel live twice.",
             es: "La vida es un viaje y quien viaja vive dos veces.",
-            fr: "La vie est un voyage et ceux qui voyagent vivent deux fois.",
-            ar: "الحياة رحلة ومن يسافر يعيش مرتين.",
-            zh: "人生是一场旅行，旅行的人活两次。",
-            hi: "जीवन एक यात्रा है और जो यात्रा करते हैं वे दो बार जीते हैं।"
+            fr: "La vie est un voyage et ceux qui voyagent vivent deux fois."
         },
         author: "Omar Khayyam"
     },
@@ -226,10 +145,7 @@ const TRAVEL_QUOTES = [
             it: "Non tutti quelli che vagano sono perduti.",
             en: "Not all those who wander are lost.",
             es: "No todos los que vagan están perdidos.",
-            fr: "Tous ceux qui errent ne sont pas perdus.",
-            ar: "ليس كل من يتجول ضائع.",
-            zh: "并非所有流浪的人都迷失了方向。",
-            hi: "सभी भटकने वाले खोए हुए नहीं हैं।"
+            fr: "Tous ceux qui errent ne sont pas perdus."
         },
         author: "J.R.R. Tolkien"
     }
@@ -375,9 +291,6 @@ function updateMoodLabels(x, y) {
 
 // FUNZIONE PRINCIPALE GLOOB
 function gloobIt() {
-    // Nascondi le lingue quando inizia il gloob
-    document.querySelector('.lang-selector').style.display = 'none';
-    
     // Mostra loading
     document.getElementById('slider-step').classList.add('hidden');
     document.getElementById('loading-step').classList.remove('hidden');
@@ -611,48 +524,6 @@ function generateNarrative(destination) {
             mountain: [
                 `Les sommets de ${destination.name} vous appellent vers le haut, où l'air est pur et le silence parle. Un sanctuaire naturel qui réveille l'âme.`,
                 `${destination.name} vous offre la majesté de la montagne, où chaque sentier est une méditation et chaque sommet une conquête personnelle.`
-            ]
-        },
-        ar: {
-            sea: [
-                `${destination.name} ينتظرك بمياهه الصافية وغروب الشمس الذي يرسم السماء. مكان يتباطأ فيه الزمن وكل موجة تحكي قصة.`,
-                `دع نفسك تهدأ بإيقاع البحر في ${destination.name}. هنا، حيث تلتقي الرمال باللانهاية، ستجد السلام الذي كنت تبحث عنه.`
-            ],
-            city: [
-                `${destination.name} ينبض بالطاقة والإمكانيات. كل شارع يخفي مفاجأة، كل زاوية مغامرة حضرية جديدة تنتظرك.`,
-                `انغمس في الفوضى الإبداعية في ${destination.name}. مدينة لا تنام أبدًا، حيث تتشكل الأحلام بين ناطحات السحاب والأزقة المخفية.`
-            ],
-            mountain: [
-                `قمم ${destination.name} تناديك إلى الأعلى، حيث الهواء نقي والصمت يتحدث. ملاذ طبيعي يوقظ الروح.`,
-                `${destination.name} يقدم لك عظمة الجبال، حيث كل مسار تأمل وكل قمة إنجاز شخصي.`
-            ]
-        },
-        zh: {
-            sea: [
-                `${destination.name} 以其清澈的海水和绘画天空的日落等待着您。一个时间放慢的地方，每一个波浪都在讲述一个故事。`,
-                `让自己在 ${destination.name} 被大海的节奏摇篮。在这里，沙滩与无限相遇，您会找到一直在寻找的宁静。`
-            ],
-            city: [
-                `${destination.name} 充满活力和可能性。每条街道都隐藏着惊喜，每个角落都有新的城市冒险等着您。`,
-                `沉浸在 ${destination.name} 的创意混乱中。一个永不眠的大都市，梦想在摩天大楼和隐藏的小巷之间成形。`
-            ],
-            mountain: [
-                `${destination.name} 的山峰召唤您向上，那里空气纯净，寂静在说话。一个唤醒灵魂的自然圣地。`,
-                `${destination.name} 为您提供山脉的威严，每条小径都是冥想，每个山顶都是个人征服。`
-            ]
-        },
-        hi: {
-            sea: [
-                `${destination.name} अपने क्रिस्टल पानी और आसमान को रंगने वाले सूर्यास्त के साथ आपका इंतजार कर रहा है। एक ऐसी जगह जहां समय धीमा हो जाता है और हर लहर एक कहानी कहती है।`,
-                `${destination.name} में समुद्र की लय से खुद को शांत होने दें। यहां, जहां रेत अनंत से मिलती है, आपको वह शांति मिलेगी जिसकी आप तलाश कर रहे थे।`
-            ],
-            city: [
-                `${destination.name} ऊर्जा और संभावनाओं से भरा है। हर सड़क एक आश्चर्य छुपाती है, हर कोना एक नया शहरी साहसिक आपका इंतजार कर रहा है।`,
-                `${destination.name} की रचनात्मक अराजकता में खुद को डुबो दें। एक महानगर जो कभी नहीं सोता, जहां सपने गगनचुंबी इमारतों और छिपी गलियों के बीच आकार लेते हैं।`
-            ],
-            mountain: [
-                `${destination.name} की चोटियां आपको ऊपर की ओर बुलाती हैं, जहां हवा शुद्ध है और मौन बोलता है। एक प्राकृतिक अभयारण्य जो आत्मा को जगाता है।`,
-                `${destination.name} आपको पहाड़ों की भव्यता प्रदान करता है, जहां हर रास्ता एक ध्यान है और हर शिखर एक व्यक्तिगत विजय है।`
             ]
         }
     };
